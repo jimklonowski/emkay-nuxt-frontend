@@ -13,15 +13,20 @@
     "test": "jest"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.7.0",
-    "@nuxtjs/axios": "^5.3.6",
+    "@babel/runtime-corejs2": "^7.7.4",
+    "@nuxtjs/auth": "^4.8.4",
+    "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/dotenv": "^1.4.0",
-    "nuxt": "^2.10.2"
+    "@nuxtjs/moment": "^1.4.0",
+    "axios-mock-adapter": "^1.17.0",
+    "core-js": "^2.6.10",
+    "jsonwebtoken": "^8.5.1",
+    "nuxt": "^2.10.2",
+    "nuxt-i18n": "^6.4.0",
+    "vue-json-excel": "^0.2.98",
+    "vue-snotify": "^3.2.1"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
-    "@babel/runtime-corejs2": "^7.7.4",
     "@nuxt/babel-preset-app": "^2.10.2",
     "@nuxtjs/eslint-config": "^1.0.1",
     "@nuxtjs/eslint-module": "^1.0.0",
@@ -29,7 +34,6 @@
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
-    "core-js": "^2.6.10",
     "eslint": "^6.1.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "jest": "^24.1.0",

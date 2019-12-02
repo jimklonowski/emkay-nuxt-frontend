@@ -10,8 +10,11 @@ module.exports = {
   extends: [
     '@nuxtjs',
     'plugin:nuxt/recommended'
+    // 'eslint:recommended'
   ],
   // add your custom rules here
   rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }
 }

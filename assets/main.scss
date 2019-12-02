@@ -1,0 +1,18 @@
+/* OVERRIDES */
+
+/* no wrapping on datatable columns */
+.report-column {
+  min-width: 120px;
+  // max-width: 250px;
+  // text-overflow: ellipsis;
+  white-space: nowrap;
+  // overflow: hidden;
+}
+
+/* striped datatable using .striped class */
+.theme--light.striped.v-data-table tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.theme--dark.striped.v-data-table tbody tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
