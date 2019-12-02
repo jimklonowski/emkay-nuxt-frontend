@@ -2,7 +2,7 @@
   <v-container class="welcome" fill-height>
     <v-row justify="center">
       <v-col cols="auto">
-        <h1 v-t="'common.welcome_to_emkay'" class="display-2 font-weight-thin" />
+        <h1 v-t="'common.welcome_to_emkay'" class="display-3 font-weight-thin" />
       </v-col>
     </v-row>
   </v-container>

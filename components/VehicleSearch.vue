@@ -2,11 +2,15 @@
   <v-form @submit.stop="onSubmit">
     <v-autocomplete
       v-model="selection"
+      :append-outer-icon="'mdi-search-web'"
       :label="$t('common.search')"
       :loading="loading"
       :items="items"
       :menu-props="{ 'nudgeBottom': 10, 'maxHeight': 360 }"
       :search-input.sync="query"
+      @change="onSubmit"
+      @click:append-outer="onSubmit"
+      @keydown.enter.native.prevent="onSubmit"
       item-value="vehicle_number"
       item-text="description"
       autocomplete="off"
@@ -16,10 +20,6 @@
       no-filter
       return-object
       full-width
-      append-outer-icon="mdi-search-web"
-      @change="onSubmit"
-      @click:append-outer="onSubmit"
-      @keydown.enter.native.prevent="onSubmit"
     >
       <template #progress>
         <v-progress-linear

@@ -9,7 +9,7 @@ export default {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
+    titleTemplate: 'EMKAY :: %s',
     title: process.env.npm_package_name || '',
     meta: [
       { charset: 'utf-8' },
@@ -39,6 +39,7 @@ export default {
   loading: {
     // color: colors.deepPurple
     color: colors.amber.base,
+    continuous: true,
     failedColor: colors.deepOrange.accent4,
     height: '4px'
   },
@@ -87,7 +88,8 @@ export default {
   */
   axios: {
     // baseURL: 'http://localhost:3000/api'
-    baseURL: process.env.BASE_URLf
+    baseURL: process.env.BASE_URL
+    // ,credentials: true
   },
   /*
   ** Auth module configuration
@@ -100,6 +102,11 @@ export default {
         src: '~/plugins/vue-mock-axios'
       }
     ],
+    // cookie: false,
+    // localStorage: false,
+    token: {
+      prefix: 'token.'
+    },
     redirect: {
       login: '/login',
       logout: '/login',
@@ -107,20 +114,17 @@ export default {
     },
     strategies: {
       local: {
-        // _scheme: 'refresh',
-        token: {
-          property: 'access_token'
-        },
-        refreshToken: {
-          property: 'refresh_token'
-        },
-        user: 'user',
         endpoints: {
-          login: { url: '/auth/login', method: 'post', propertyName: 'token' },
-          // refresh: { url: '/auth/refresh', method: 'post' },
-          user: { url: '/auth/user', method: 'get' },
-          logout: { url: '/auth/logout', method: 'post' }
+          // the backend accepts a POST of login credentials at /auth/login and returns an object { accessToken, refreshToken, expiresIn, clientId }.  see plugins/vue-mock-axios.js
+          login: { url: '/auth/login', method: 'post', propertyName: 'accessToken' },
+          // the backend accepts a GET at /auth/logout that logs out the current session
+          logout: { url: '/auth/logout', method: 'get' },
+          // the backend accepts a GET at /auth/user that returns an object { account, username, ... }
+          user: { url: '/auth/user', method: 'get', propertyName: 'user' }
+          // logout: false,
         }
+        // tokenRequired: true,
+        // tokenType: 'Bearer'
       }
     }
   },
@@ -209,7 +213,7 @@ export default {
     // vendor: ['@babel/polyfill'],
     transpile: ['vuetify/lib'],
     // transpile: [/^vuetify/],
-    plugins: [new VuetifyLoaderPlugin()],
+    // plugins: [new VuetifyLoaderPlugin()],
     /*
     ** You can extend webpack config here
     */

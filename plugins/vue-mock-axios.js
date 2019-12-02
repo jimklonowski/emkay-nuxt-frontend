@@ -5,39 +5,29 @@ export default function ({ $axios, redirect }) {
   const mock = new MockAdapter($axios)
   mock
     .onPost('/auth/login').reply((config) => {
-      return [200]
-    })
-    .onPost('/auth/logout').reply(200, { status: 'OK' })
-    .onGet('/auth/user').reply((config) => {
-      // debugger
-      // const data = JSON.parse(config.data)
       const account = 'EM102'
-      const username = 'TEST'
-      const valid = true
+      const username = 'JCK'
+      // const valid = true
       const expiresIn = 15
       const refreshToken = Math.floor(Math.random() * (1000000000000000 - 1 + 1)) + 1
-
-      if (!valid) {
-        throw new Error('Invalid username or password')
-      }
-      const accessToken = JWT.sign(
-        {
-          account,
-          username
-        }, 'dummy', {
-          expiresIn
-        }
-      )
-
+      const accessToken = JWT.sign({ account, username }, 'dummy', { expiresIn })
       const token = {
         accessToken,
         refreshToken,
         expiresIn,
-        clientId: '123'
+        clientId: account
       }
-      // debugger
+      return [200, token]
+    })
+    .onGet('/auth/logout').reply(200, { status: 'OK' })
+    .onGet('/auth/user').reply((config) => {
+      const user = {
+        account: 'EM102',
+        username: 'JCK'
+      }
       console.log('Returning mocked user EM102-JCK')
-      return [200, { user: { account: 'EM102', username: 'JCK', token } }]
+      // return [200, { user: { account, username, token } }]
+      return [200, { user }]
     })
     .onGet('/vehicles/search')
     .reply(function (config) {

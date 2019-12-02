@@ -15,17 +15,17 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field v-model="account" :label="$t('auth.account')" />
+                    <v-text-field v-model="account" :label="$t('auth.account')" autocomplete="organization" />
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field v-model="username" :label="$t('auth.username')" />
+                    <v-text-field v-model="username" :label="$t('auth.username')" autocomplete="username" />
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field v-model="password" :label="$t('auth.password')" type="password" />
+                    <v-text-field v-model="password" :label="$t('auth.password')" type="password" autocomplete="current-password" />
                   </v-col>
                 </v-row>
                 <v-row>
@@ -78,6 +78,7 @@ export default {
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/demo/pages/login.vue
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/api/auth.js
       this.loading = true
+      // debugger
       // const loginLocale = this.$i18n.locale
       await this.$auth
         .loginWith('local', {
@@ -87,13 +88,17 @@ export default {
             password: this.password
           }
         })
+        .then(() => {
+          // debugger
+          this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
+        })
         .catch((e) => {
           // debugger
           this.error = e + ''
         })
         .finally((a) => {
           this.loading = false
-          debugger
+          // debugger
           this.$router.push(this.localePath({ name: 'index' }))
         })
       // forward them to /{locale}/index.vue (i.e. /fr/)

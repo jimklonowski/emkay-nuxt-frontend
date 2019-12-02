@@ -301,6 +301,7 @@ export default {
       return headers
     },
     /**
+     * For vue-json-excel, map columns and
      * return a single object: { text1: key1, text2: key2, ... }
      */
     downloadHeaders () {
@@ -598,13 +599,13 @@ export default {
   /**
    * asyncData is called every time before loading the page component. The result from asyncData will be merged with data.
    * https://nuxtjs.org/guide/async-data */
-  async asyncData ({ app, query }) {
+  async asyncData ({ app, $axios, query }) {
     // always show at least 1 months of data on first load by default (daterange set one month ago until today)
     const start = query.start || app.$moment().subtract(1, 'months').startOf('month').format('YYYY-MM')
     const end = query.end || app.$moment().startOf('month').format('YYYY-MM')
     const filters = { start_date: start, end_date: end }
     const options = { /* cancelToken */ } // not used for now
-    const { data: { data: items } } = await app.$axios.post(`${process.env.EMKAY_API}/rest-test/fuel-detail`, filters, options) // ES6 destructuring response object
+    const { data: { data: items } } = await $axios.post(`${process.env.EMKAY_API}/rest-test/fuel-detail`, filters, options) // ES6 destructuring response object
 
     // The returned object from asyncData() is merged with the returned object from data()
     // data: { items: items [], ...data }

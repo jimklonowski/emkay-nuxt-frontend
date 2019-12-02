@@ -111,10 +111,9 @@ export default {
   methods: {
     async logout () {
       this.drawer = false
-      // this.$route.query = null
       await this.$auth.logout()
-      // $nuxt.$router.push({ path: '/', query: {} })
-      // this.$auth.redirect('/', true)
+      // if a french user is logging out, make sure we redirect to /fr-ca/login instead of /login
+      this.$router.push(this.localePath({ name: 'login' }))
     }
   }
 }
