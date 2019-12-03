@@ -57,21 +57,35 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="'EMKAY'" />
-      <v-spacer />
-      <v-btn @click.stop="$vuetify.theme.dark = !$vuetify.theme.dark" icon>
-        <v-icon>{{ $vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-7' }}</v-icon>
-      </v-btn>
 
-      <language-picker />
+      <v-spacer />
+
+      <mega-menu :menu="orderingMenu" />
+      <mega-menu :menu="reportingMenu" />
+      <!-- <v-divider class="mx-4" vertical inset /> -->
+      <dark-mode-toggle class="mx-1" />
+      <!-- <v-divider class="mx-4" vertical inset /> -->
+      <language-picker class="mx-1" />
     </v-app-bar>
   </nav>
 </template>
 
 <script>
+import ordering from 'static/data/ordering.js'
+import reports from 'static/data/reports.js'
+
+import DarkModeToggle from '@/components/DarkModeToggle'
 import LanguagePicker from '@/components/LanguagePicker'
+import MegaMenu from '@/components/MegaMenu'
+
 export default {
+  // custom properties, reference as this.$options.reports, this.$options.ordering, etc.
+  ordering,
+  reports,
   components: {
-    LanguagePicker
+    DarkModeToggle,
+    LanguagePicker,
+    MegaMenu
   },
   data: () => ({
     clipped: false,
@@ -108,6 +122,28 @@ export default {
     rightDrawer: false,
     title: 'EMKAY Nuxt.js'
   }),
+  computed: {
+    orderingMenu () {
+      return {
+        categories: this.$options.ordering.categories,
+        icon: 'mdi-history',
+        showArrow: true,
+        subtitleKey: 'ordering.menu_subtitle',
+        titleKey: 'ordering.menu_title'
+      }
+    },
+    reportingMenu () {
+      return {
+        categories: this.$options.reports.categories,
+        icon: 'mdi-monitor-dashboard',
+        showArrow: true,
+        // style: 'background-image:linear-gradient(to top right, #f6d365, #fda085);',
+        // style: 'background-image:linear-gradient(135deg,#667eea,#764ba2)!important;',
+        subtitleKey: 'reports.menu_subtitle',
+        titleKey: 'reports.menu_title'
+      }
+    }
+  },
   methods: {
     async logout () {
       this.drawer = false

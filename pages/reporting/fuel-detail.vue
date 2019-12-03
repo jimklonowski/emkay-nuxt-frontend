@@ -5,15 +5,20 @@
         <v-col>
           <v-card>
             <v-card-title>
-              Fuel Detail Report
+              {{ $t(`${i18nNamespace}.report`) }}
               <v-spacer />
               <v-text-field
                 v-model="search"
                 :label="$t('common.search')"
-                prepend-icon="mdi-magnify"
                 clearable
-                single-line
+                dense
+                flat
                 hide-details
+                outlined
+                prepend-inner-icon="mdi-magnify"
+                rounded
+                solo
+                single-line
               />
             </v-card-title>
             <v-card-actions>
@@ -119,7 +124,7 @@
                   <template #top>
                     <v-row no-gutters>
                       <v-spacer />
-                      <v-btn :ripple="{ class: 'amber--text' }" :title="'Save .xls'" small depressed>
+                      <v-btn :ripple="{ class: 'amber--text' }" :title="`${$t('common.save')} .xls`" small depressed>
                         <v-icon small class="mr-2">
                           mdi-cloud-download
                         </v-icon>
@@ -202,7 +207,7 @@ export default {
    * https://vuejs.org/v2/api/#data */
   data () {
     return {
-      i18nNamespace: 'reports.fuel_detail',
+      i18nNamespace: 'reports.expenses.fuel_detail',
       initialized: true,
       start: this.$route.query.start || this.$moment().subtract(1, 'months').startOf('month').format('YYYY-MM'),
       start_menu: false,
@@ -639,9 +644,9 @@ export default {
    * https://nuxtjs.org/api/pages-head */
   head () {
     return {
-      title: this.$t('reports.fuel_detail_report'),
+      title: this.$t(`${this.i18nNamespace}.report`),
       meta: [
-        { hid: 'og:description', property: 'og:description', content: this.$t('reports.fuel_detail_report') }
+        { hid: 'og:description', property: 'og:description', content: this.$t(`${this.i18nNamespace}.report`) }
       ]
     }
   },

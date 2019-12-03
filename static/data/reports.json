@@ -1,0 +1,90 @@
+{
+  "categories": [
+    {
+      "key": "reports.fleet",
+      "icon": "",
+      "items": [
+        {
+          "key": "reports.inventory_report",
+          "to": {
+            "path": "/reporting/inventory"
+          }
+        },
+        {
+          "key": "reports.order_status",
+          "to": {
+            "path": "/reporting/todo"
+          }
+        },
+        {
+          "key": "reports.replacement_analysis",
+          "to": {
+            "path": "/reporting/todo"
+          }
+        },
+        {
+          "key": "reports.sold_vehicle_analysis",
+          "to": {
+            "path": "/reporting/todo"
+          }
+        }
+      ]
+    },
+    {
+      "key": "reports.expenses",
+      "icon": "",
+      "items": [
+        {
+          "key": "reports.fuel_detail_report",
+          "to": {
+            "path": "/reporting/fuel-detail"
+          }
+        },
+        {
+          "key": "reports.maintenance_detail_report",
+          "to": {
+            "path": "/reporting/maintenance-detail"
+          }
+        },
+        {
+          "key": "reports.expense_summary",
+          "to": {
+            "path": "/reporting/expense-summary"
+          }
+        },
+        {
+          "key": "reports.short_term_rental_detail",
+          "to": {
+            "path": "/reporting/short-term-rental-detail"
+          }
+        },
+        {
+          "key": "reports.toll_detail",
+          "to": {
+            "path": "/reporting/toll-detail"
+          }
+        }
+      ]
+    },
+    {
+      "key": "reports.invoicing",
+      "icon": "",
+      "items": []
+    },
+    {
+      "key": "reports.services",
+      "icon": "",
+      "items": []
+    },
+    {
+      "key": "reports.safety_and_telematics",
+      "icon": "",
+      "items": []
+    },
+    {
+      "key": "reports.fleet",
+      "icon": "",
+      "items": []
+    }
+  ]
+}
