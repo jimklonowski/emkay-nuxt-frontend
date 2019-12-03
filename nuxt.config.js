@@ -1,10 +1,25 @@
-import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+// import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
 import { en, fr, en as enCA } from 'vuetify/lib/locale'
 // import nodeExternals from 'webpack-node-externals'
 import colors from 'vuetify/es5/util/colors'
 
 export default {
   mode: 'universal',
+  /*
+  ** vue.config: https://nuxtjs.org/api/configuration-vue-config
+  */
+  vue: {
+    config: {
+      productionTip: false,
+      devtools: true // process.env.NODE_ENV === 'development'
+    }
+  },
+  /*
+  ** Customize vue-router https://nuxtjs.org/api/configuration-router
+  */
+  router: {
+    base: process.env.NODE_ENV === 'production' ? '/nuxt/' : '/'
+  },
   /*
   ** Headers of the page
   */
