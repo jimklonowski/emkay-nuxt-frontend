@@ -61,7 +61,14 @@
         <v-tab-item v-for="(category, key) in model.categories" :key="`item${key}`">
           <v-card-text class="pa-0">
             <v-list nav tile dense>
-              <v-list-item v-for="(item, name, key2) in category.items" :key="key2" :to="localePath(item.to)" :color="category.color" @click="open = false">
+              <v-list-item
+                v-for="(item, name, key2) in category.items"
+                :key="key2"
+                :to="localePath(item.to)"
+                :color="category.color"
+                @click="open = false"
+                nuxt
+              >
                 <v-list-item-icon>
                   <v-icon :color="item.icon ? 'currentColor' : 'error lighten-2'" v-text="item.icon || 'mdi-alert-outline'" />
                 </v-list-item-icon>
@@ -78,9 +85,10 @@
 </template>
 
 <script>
-/* eslint-disable vue/require-prop-types */
+import { VBtn } from 'vuetify/lib'
+// import * as VBtn from 'vuetify/es5/components/VBtn'
 const defaultProps = {
-  activator: 'VBtn',
+  activator: 'v-btn',
   categories: [],
   color: 'primary',
   icon: 'mdi-alert',
@@ -92,6 +100,8 @@ const defaultProps = {
 }
 
 export default {
+  /* eslint-disable vue/no-unused-components */
+  components: { VBtn },
   props: {
     menu: {
       type: Object,

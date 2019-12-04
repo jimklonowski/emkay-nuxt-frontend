@@ -1,4 +1,4 @@
-// import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
 import { en as enUS, fr as frCA, en as enCA } from 'vuetify/lib/locale'
 // import nodeExternals from 'webpack-node-externals'
 import colors from 'vuetify/es5/util/colors'
@@ -180,7 +180,8 @@ export default {
       }
     ],
     defaultLocale: 'en',
-    strategy: 'prefix_and_default',
+    // strategy: 'prefix_and_default',
+    strategy: 'prefix_except_default',
     detectBrowserLanguage: false,
     noPrefixDefaultLocale: false,
     redirectCookieKey: true,
@@ -197,6 +198,7 @@ export default {
   ** See https://github.com/nuxt-community/moment-module
   */
   moment: {
+    defaultLocale: 'en',
     locales: ['fr-ca', 'en-ca']
   },
   /*
@@ -209,6 +211,7 @@ export default {
       current: 'en'
     },
     customVariables: ['~/assets/variables.scss'],
+    treeShake: true,
     theme: {
       dark: true,
       themes: {

@@ -24,7 +24,8 @@
     "nuxt": "^2.10.2",
     "nuxt-i18n": "^6.4.0",
     "vue-json-excel": "^0.2.98",
-    "vue-snotify": "^3.2.1"
+    "vue-snotify": "^3.2.1",
+    "vuetify-loader": "^1.4.3"
   },
   "devDependencies": {
     "@nuxt/babel-preset-app": "^2.10.2",
