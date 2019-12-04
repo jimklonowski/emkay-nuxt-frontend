@@ -36,6 +36,53 @@ export default {
     service_time: "Temps de service",
     start_date: "Date de début"
   },
+  footer: {
+    about: "À propos",
+    about_emkay: "À propos d'EMKAY",
+    blog: "Blog",
+    careers: "Carrières",
+    contact: "Contact",
+    more: "Plus",
+    automotive_links: "Liens automobiles",
+    fleet_incentives: "Incentives de la flotte",
+    leadtime_guides: "Guides de délais",
+    press_releases: "Communiqués de presse",
+    technology: "La technologie",
+    tech: "Tech",
+    celsius: "Celsius",
+    driver_360: "Driver 360",
+    fleet_360: "Fleet 360",
+    fleet_exchange: "Échange de flotte",
+    geotab: "Geotab"
+  },
+  management: {
+    menu_title: "Gestion",
+    menu_subtitle: "Configurer les paramètres de votre flotte",
+    fleet: {
+      category: "Flotte",
+      customize_your_fleet_labels: "Personnaliser les étiquettes de votre flotte",
+      manage_your_cases: "Gérer vos cas",
+      manage_your_drivers: "Gérer vos chauffeurs",
+      manage_your_driver_fuel_pins: "Gérez les codes PIN carburant de votre conducteur",
+      manage_your_enotifications: "Gérez vos eNotifications",
+      manage_your_fleet_policies: "Gérez les politiques de votre flotte",
+      manage_your_online_users: "Gérez vos utilisateurs en ligne",
+      view_your_fuel_auth_profiles: "Affichez vos profils d'authentification de carburant"
+    },
+    customization: {
+      category: "Personnalisation",
+      approve_your_driver_orders: "Approuver vos commandes de chauffeur",
+      approve_your_maintenance_repairs: "Approuver vos réparations d'entretien",
+      request_an_mvr: "Demander un MVR",
+      upload_your_odometers: "Téléchargez vos odomètres"
+    },
+    tools: {
+      category: "Outils",
+      locate_preferred_shops: "Localiser les magasins préférés",
+      quote_a_transport: "Estimer un transport",
+      lcca: "LCCA"
+    }
+  },
   ordering: {
     menu_title: "Commande",
     menu_subtitle: "Passer des commandes, vérifier le statut des commandes, etc.",
@@ -264,26 +311,10 @@ export default {
     }
   },
   navigation: {
-    footer: {
-      about: "À propos",
-      about_emkay: "À propos d'EMKAY",
-      blog: "Blog",
-      careers: "Carrières",
-      contact: "Contact",
-      more: "Plus",
-      automotive_links: "Liens automobiles",
-      fleet_incentives: "Incentives de la flotte",
-      leadtime_guides: "Guides de délais",
-      press_releases: "Communiqués de presse",
-      technology: "La technologie",
-      tech: "Tech",
-      celsius: "Celsius",
-      driver_360: "Driver 360",
-      fleet_360: "Fleet 360",
-      fleet_exchange: "Échange de flotte",
-      geotab: "Geotab"
-    },
+    account_management: "Gestion de compte",
     home: "Accueil",
+    ordering: "Commande",
+    reporting: "Rapport",
     vehicle_dashboard: "Tableau du véhicule"
   },
   vehicle_dashboard: {

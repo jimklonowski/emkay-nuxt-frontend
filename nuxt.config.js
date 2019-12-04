@@ -1,5 +1,5 @@
 // import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
-import { en, fr as frCA, en as enCA } from 'vuetify/lib/locale'
+import { en as enUS, fr as frCA, en as enCA } from 'vuetify/lib/locale'
 // import nodeExternals from 'webpack-node-externals'
 import colors from 'vuetify/es5/util/colors'
 
@@ -160,18 +160,21 @@ export default {
       {
         name: 'English',
         code: 'en',
+        alt: 'enUS',
         iso: 'en-US',
         file: 'en-us.js'
       },
       {
         name: 'English (Metric)',
-        code: 'enCA',
+        code: 'en-ca',
+        alt: 'enCA',
         iso: 'en-CA',
         file: 'en-ca.js'
       },
       {
         name: 'Français',
-        code: 'frCA',
+        code: 'fr-ca',
+        alt: 'frCA',
         iso: 'fr-CA',
         file: 'fr-ca.js'
       }
@@ -202,7 +205,7 @@ export default {
   */
   vuetify: {
     lang: {
-      locales: { en, frCA, enCA },
+      locales: { enUS, frCA, enCA },
       current: 'en'
     },
     customVariables: ['~/assets/variables.scss'],
@@ -241,6 +244,15 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+      // run ESLint on save
+      if (ctx.isDev && ctx.isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/
+        })
+      }
       // if (process.server) {
       //   config.externals = [
       //     nodeExternals({

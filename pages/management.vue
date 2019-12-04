@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-row no-gutters>
+    <v-row>
       <h1 class="display-3">
-        {{ $t('reports.menu_title') }}
+        {{ $t('management.menu_title') }}
       </h1>
     </v-row>
     <v-row>

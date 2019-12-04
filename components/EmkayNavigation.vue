@@ -56,14 +56,16 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="'EMKAY'" />
+      <v-toolbar-title v-t="'common.emkay'" />
 
       <v-spacer />
 
-      <mega-menu :menu="managementMenu" />
-      <mega-menu :menu="orderingMenu" />
-      <mega-menu :menu="reportingMenu" />
-      <!-- <v-divider class="mx-4" vertical inset /> -->
+      <v-toolbar-items v-if="$auth.loggedIn">
+        <mega-menu :menu="reportingMenu" />
+        <mega-menu :menu="orderingMenu" />
+        <mega-menu :menu="managementMenu" />
+      </v-toolbar-items>
+      <v-divider class="mx-4" vertical inset />
       <dark-mode-toggle class="mx-1" />
       <!-- <v-divider class="mx-4" vertical inset /> -->
       <language-picker class="mx-1" />
@@ -97,21 +99,28 @@ export default {
     items: [
       {
         icon: 'mdi-widgets',
-        title: 'Home',
         key: 'navigation.home',
         to: { name: 'index' }
       },
       {
         icon: 'mdi-chart-bubble',
-        title: 'Vehicle Dashboard',
         key: 'navigation.vehicle_dashboard',
         to: { name: 'vehicle' }
       },
       {
-        icon: 'mdi-file-chart',
-        title: 'Reporting',
+        icon: 'mdi-file-chart-outline',
         key: 'navigation.reporting',
         to: { name: 'reporting' }
+      },
+      {
+        icon: 'mdi-timetable',
+        key: 'navigation.ordering',
+        to: { name: 'ordering' }
+      },
+      {
+        icon: 'mdi-apps',
+        key: 'navigation.account_management',
+        to: { name: 'management' }
       }
       // {
       //   icon: 'mdi-login',
@@ -137,7 +146,7 @@ export default {
     orderingMenu () {
       return {
         categories: this.$options.menus.ordering.categories,
-        icon: 'mdi-history',
+        icon: 'mdi-timetable',
         subtitleKey: 'ordering.menu_subtitle',
         titleKey: 'ordering.menu_title'
       }
@@ -145,7 +154,7 @@ export default {
     reportingMenu () {
       return {
         categories: this.$options.menus.reports.categories,
-        icon: 'mdi-monitor-dashboard',
+        icon: 'mdi-file-chart-outline',
         // style: 'background-image:linear-gradient(to top right, #f6d365, #fda085);',
         // style: 'background-image:linear-gradient(135deg,#667eea,#764ba2)!important;',
         subtitleKey: 'reports.menu_subtitle',

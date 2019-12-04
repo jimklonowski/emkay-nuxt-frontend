@@ -22,6 +22,8 @@ export default {
     cancel: "Cancel",
     dark_mode: "Dark Mode",
     download: "Download",
+    emkay: "EMKAY",
+    emkay_inc: "EMKAY, Inc.",
     fleet: "Fleet",
     language: "Language",
     loading: "Loading...",
@@ -39,6 +41,25 @@ export default {
     service_date: "Service Date",
     service_time: "Service Time",
     start_date: "Start Date"
+  },
+  footer: {
+    about: "About",
+    about_emkay: "About EMKAY",
+    blog: "Blog",
+    careers: "Careers",
+    contact: "Contact",
+    more: "More",
+    automotive_links: "Automotive Links",
+    fleet_incentives: "Fleet Incentives",
+    leadtime_guides: "Leadtime Guides",
+    press_releases: "Press Releases",
+    technology: "Technology",
+    tech: "Tech",
+    celsius: "Celsius",
+    driver_360: "Driver 360",
+    fleet_360: "Fleet 360",
+    fleet_exchange: "Fleet Exchange",
+    geotab: "Geotab"
   },
   management: {
     menu_title: "Management",
@@ -296,26 +317,9 @@ export default {
     }
   },
   navigation: {
-    footer: {
-      about: "About",
-      about_emkay: "About EMKAY",
-      blog: "Blog",
-      careers: "Careers",
-      contact: "Contact",
-      more: "More",
-      automotive_links: "Automotive Links",
-      fleet_incentives: "Fleet Incentives",
-      leadtime_guides: "Leadtime Guides",
-      press_releases: "Press Releases",
-      technology: "Technology",
-      tech: "Tech",
-      celsius: "Celsius",
-      driver_360: "Driver 360",
-      fleet_360: "Fleet 360",
-      fleet_exchange: "Fleet Exchange",
-      geotab: "Geotab"
-    },
+    account_management: "Account Management",
     home: "Home",
+    ordering: "Ordering",
     reporting: "Reporting",
     vehicle_dashboard: "Vehicle Dashboard"
   },

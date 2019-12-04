@@ -13,8 +13,9 @@
       <v-list>
         <v-list-item v-for="locale in availableLocales" :key="locale.code">
           <v-btn
-            :to="switchLocalePath(locale.code)"
             @click="changeLocale(locale)"
+            :disabled="$nuxt.$i18n.locale === locale.code"
+            :outlined="$nuxt.$i18n.locale === locale.code"
             small
             text
             block
@@ -40,8 +41,16 @@ export default {
     }
   },
   methods: {
+    /**
+     * Several plugins currently change with the lang/locale, so make sure we trigger all of the changes in this one place.
+     * see nuxt.config.js
+     * moment: date formats
+     * vuetify: datatables pagination and other vuetify library core text
+     */
     changeLocale (locale) {
-      this.$vuetify.lang.current = locale.code
+      this.$moment.locale(locale.iso) // $moment.locale('en-ca')
+      this.$vuetify.lang.current = locale.alt // = 'enCA'
+      this.$router.replace(this.switchLocalePath(locale.code)) // navigates to current route with current locale set.
     }
   }
 }

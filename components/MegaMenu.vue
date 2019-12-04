@@ -21,7 +21,7 @@
       >
         <span v-show="$vuetify.breakpoint.mdAndDown">
           <v-icon v-text="model.icon" />
-          <v-icon v-show="model.showArrow">mdi-chevron-down</v-icon>
+          <v-icon v-show="model.showArrowCollapsed">mdi-chevron-down</v-icon>
         </span>
         <span v-show="$vuetify.breakpoint.lgAndUp">
           {{ $t(model.titleKey) }}
@@ -80,15 +80,17 @@
 <script>
 /* eslint-disable vue/require-prop-types */
 const defaultProps = {
-  activator: 'v-btn',
+  activator: 'VBtn',
   categories: [],
   color: 'primary',
   icon: 'mdi-alert',
   showArrow: true,
+  showArrowCollapsed: false,
   style: '',
   subtitleKey: '',
   titleKey: ''
 }
+
 export default {
   props: {
     menu: {
