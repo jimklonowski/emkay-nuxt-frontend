@@ -60,6 +60,7 @@
 
       <v-spacer />
 
+      <mega-menu :menu="managementMenu" />
       <mega-menu :menu="orderingMenu" />
       <mega-menu :menu="reportingMenu" />
       <!-- <v-divider class="mx-4" vertical inset /> -->
@@ -71,17 +72,19 @@
 </template>
 
 <script>
-import ordering from 'static/data/ordering.js'
-import reports from 'static/data/reports.js'
+import { management, ordering, reports } from '@/static/data/menus'
 
 import DarkModeToggle from '@/components/DarkModeToggle'
 import LanguagePicker from '@/components/LanguagePicker'
 import MegaMenu from '@/components/MegaMenu'
 
 export default {
-  // custom properties, reference as this.$options.reports, this.$options.ordering, etc.
-  ordering,
-  reports,
+  // custom properties, reference as this.$options.menus.reports, this.$options.menus.ordering, etc.
+  menus: {
+    management,
+    ordering,
+    reports
+  },
   components: {
     DarkModeToggle,
     LanguagePicker,
@@ -123,20 +126,26 @@ export default {
     title: 'EMKAY Nuxt.js'
   }),
   computed: {
+    managementMenu () {
+      return {
+        categories: this.$options.menus.management.categories,
+        icon: 'mdi-apps',
+        subtitleKey: 'management.menu_subtitle',
+        titleKey: 'management.menu_title'
+      }
+    },
     orderingMenu () {
       return {
-        categories: this.$options.ordering.categories,
+        categories: this.$options.menus.ordering.categories,
         icon: 'mdi-history',
-        showArrow: true,
         subtitleKey: 'ordering.menu_subtitle',
         titleKey: 'ordering.menu_title'
       }
     },
     reportingMenu () {
       return {
-        categories: this.$options.reports.categories,
+        categories: this.$options.menus.reports.categories,
         icon: 'mdi-monitor-dashboard',
-        showArrow: true,
         // style: 'background-image:linear-gradient(to top right, #f6d365, #fda085);',
         // style: 'background-image:linear-gradient(135deg,#667eea,#764ba2)!important;',
         subtitleKey: 'reports.menu_subtitle',

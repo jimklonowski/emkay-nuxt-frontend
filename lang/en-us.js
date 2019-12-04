@@ -40,6 +40,34 @@ export default {
     service_time: "Service Time",
     start_date: "Start Date"
   },
+  management: {
+    menu_title: "Management",
+    menu_subtitle: "Configure your fleet settings",
+    fleet: {
+      category: "Fleet",
+      customize_your_fleet_labels: "Customize your fleet labels",
+      manage_your_cases: "Manage your cases",
+      manage_your_drivers: "Manage your drivers",
+      manage_your_driver_fuel_pins: "Manage your driver fuel pins",
+      manage_your_enotifications: "Manage your enotifications",
+      manage_your_fleet_policies: "Manage your fleet policies",
+      manage_your_online_users: "Manage your online users",
+      view_your_fuel_auth_profiles: "View your fuel auth profiles"
+    },
+    customization: {
+      category: "Customization",
+      approve_your_driver_orders: "Approve your driver orders",
+      approve_your_maintenance_repairs: "Approve your maintenance repairs",
+      request_an_mvr: "Request an MVR",
+      upload_your_odometers: "Upload your odometers"
+    },
+    tools: {
+      category: "Tools",
+      locate_preferred_shops: "Locate preferred shops",
+      quote_a_transport: "Quote a transport",
+      lcca: "LCCA"
+    }
+  },
   ordering: {
     menu_title: "Ordering",
     menu_subtitle: "Place orders, check order status, etc.",
