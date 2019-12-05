@@ -40,9 +40,12 @@ export default {
       { hid: 'og:site_name', property: 'og:site_name', content: 'EMKAY' }
     ],
     script: [
-      {
-        src: 'https://cdn.jsdelivr.net/npm/babel-polyfill/dist/polyfill.min.js'
-      }
+      // {
+      //   src: 'https://cdn.jsdelivr.net/npm/babel-polyfill/dist/polyfill.min.js'
+      // }
+      // {
+      //   src: 'https://cdn.jsdelivr.net/npm/idempotent-babel-polyfill@7.4.4/lib/index.min.js'
+      // }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -76,6 +79,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/polyfills',
     '~/plugins/custom-filters',
     '~/plugins/vue-mock-axios',
     { src: '~/plugins/vue-json-excel', ssr: false },
