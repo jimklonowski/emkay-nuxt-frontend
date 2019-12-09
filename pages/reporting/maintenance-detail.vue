@@ -197,13 +197,14 @@
 
 <script>
 /**
- * Fuel Detail Report
+ * Maintenance Detail Report
  * When a date filter changes, a call is made to updateFilters which updates the route's query parameters (?start=2019-11&end=2019-11&...)
  * watchQuery listens for changes in the query parameters and onchange triggers all component methods (i.e. asyncData which will re-request data with new parameters)
  */
+
 /* eslint-disable camelcase */
 export default {
-  name: 'FuelDetail',
+  name: 'MaintenanceDetail',
 
   /**
    * The data object for the Vue instance.
@@ -231,7 +232,9 @@ export default {
     // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
     downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(`${vm.namespace}.${column}`)]: column }))))
   },
-
+  beforeCreate () {
+    console.log('beforeCreate')
+  },
   /**
    * asyncData is called every time before loading the page component and is only available for such.
    * The result from asyncData will be merged with data.
@@ -239,8 +242,8 @@ export default {
    */
   async asyncData ({ $moment, query, store }) {
     // console.info('asyncData()')
-    const namespace = 'reports.expenses.fuel_detail'
-    const report = 'fuel-detail'
+    const namespace = 'reports.expenses.maintenance_detail'
+    const report = 'maintenance-detail'
     store.commit('reports/setNamespace', namespace)
     store.commit('reports/setReport', report)
 
@@ -249,12 +252,12 @@ export default {
     const use_bill_date = query.use_bill_date || false
 
     const filters = {
-      command: 'FUEL',
-      subcommand: 'JSONDETAIL',
+      command: 'MAINTHISTORY',
       customer: 'EM102',
       start_date,
       end_date,
-      use_bill_date
+      use_bill_date,
+      json: 'Y'
     }
 
     // Get the headers, then get the data.
@@ -270,6 +273,9 @@ export default {
       use_bill_date,
       rows: store.getters['reports/getData']
     }
+  },
+  beforeMount () {
+    console.log('beforemount')
   },
 
   /**

@@ -97,7 +97,7 @@ const reports = {
       items: [
         { key: 'reports.expenses.expense_summary.report', icon: '', to: { path: '/reporting/todo' } },
         { key: 'reports.expenses.fuel_detail.report', icon: 'mdi-gas-station', to: { path: '/reporting/fuel-detail' } },
-        { key: 'reports.expenses.maintenance_detail.report', icon: '', to: { path: '/reporting/todo' } },
+        { key: 'reports.expenses.maintenance_detail.report', icon: 'mdi-wrench', to: { path: '/reporting/maintenance-detail' } },
         { key: 'reports.expenses.short_term_rental_detail.report', icon: '', to: { path: '/reporting/todo' } },
         { key: 'reports.expenses.toll_detail.report', icon: '', to: { path: '/reporting/todo' } }
       ]
