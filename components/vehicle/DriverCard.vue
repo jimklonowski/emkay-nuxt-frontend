@@ -2,28 +2,36 @@
   <v-card outlined shaped>
     <v-card-title class="pa-0">
       <v-list-item>
-        <v-list-item-avatar @click.stop="" tile size="32" class="d-flex flex-column" style="cursor:pointer;">
+        <v-list-item-avatar @click.stop="editDriver" tile size="32" class="d-flex flex-column" style="cursor:pointer;">
           <v-icon>mdi-account-edit</v-icon>
           <p class="ma-0 overline">
-            Edit
+            {{ $t('common.edit') }}
           </p>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="body-1">
-            <span class="font-weight-bold">First Name</span>
-            <span class="font-weight-light">Last Name</span>
+            <span class="font-weight-bold">{{ driver.first_name }}</span>
+            <span class="font-weight-light">{{ driver.last_name }}</span>
           </v-list-item-title>
           <v-list-item-subtitle class="caption">
             <p class="mb-0">
-              IL 123456IL1234567883242
+              {{ driver.license_number }}
+            </p>
+          </v-list-item-subtitle>
+          <v-list-item-subtitle class="caption">
+            <p class="mb-0">
+              {{ driver.license_state_province }}
             </p>
           </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
-          <v-list-item-action-text>Driver #</v-list-item-action-text>
-          <v-chip pill outlined small>
-            {{ $route.params.vehicle }}
+          <v-list-item-action-text>{{ $t('driver.driver_#') }}</v-list-item-action-text>
+          <v-chip :title="$t('driver.driver_number')" pill outlined x-small>
+            {{ driver.driver_number }}
           </v-chip>
+          <!-- <v-chip pill outlined x-small>
+            {{ 'asdf' }}
+          </v-chip> -->
         </v-list-item-action>
       </v-list-item>
     </v-card-title>
@@ -41,13 +49,13 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  EMKAY, Inc.
+                  {{ driver.address_1 }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
-                  805 W THORNDALE AVE
+                  {{ driver.address_2 }}
                 </v-list-item-subtitle>
                 <v-list-item-subtitle class="caption">
-                  ITASCA, IL 60143
+                  {{ cityStateZip }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -58,10 +66,10 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  1234567890
+                  {{ driver.employee_id }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
-                  Employee ID
+                  {{ $t('driver.employee_id') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -72,10 +80,10 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  Executive
+                  {{ driver.selector_level }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
-                  Selector Level
+                  {{ $t('driver.selector_level') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -89,10 +97,10 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  Phone
+                  {{ driver.phone }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
-                  Phone
+                  {{ $t('address.phone') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -102,10 +110,10 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  Cell Phone
+                  {{ driver.cell }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
-                  Cell
+                  {{ $t('address.cell') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -115,10 +123,10 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  Email
+                  {{ driver.email }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
-                  Phone
+                  {{ $t('address.email') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -128,13 +136,13 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-spacer />
+      <!-- <v-spacer />
       <v-btn text small>
         <v-icon small class="mr-1">
           mdi-pencil
         </v-icon>
         Edit
-      </v-btn>
+      </v-btn> -->
     </v-card-actions>
   </v-card>
   <!-- </v-col> -->
@@ -143,13 +151,26 @@
 <script>
 import { dialTo, emailTo } from '@/utility/helpers'
 export default {
+  props: {
+    driver: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data: () => ({
-    showMore: false
 
   }),
+  computed: {
+    cityStateZip () {
+      return `${this.driver.city}, ${this.driver.state_province} ${this.driver.postal_code}`
+    }
+  },
   methods: {
     dialTo,
-    emailTo
+    emailTo,
+    editDriver () {
+      this.$router.push({ path: `${this.$route.fullPath}/edit-driver` })
+    }
   }
 }
 </script>

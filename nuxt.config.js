@@ -1,7 +1,8 @@
-import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+// import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
 import { en as enUS, fr as frCA, en as enCA } from 'vuetify/lib/locale'
 // import nodeExternals from 'webpack-node-externals'
 import colors from 'vuetify/es5/util/colors'
+require('dotenv').config()
 
 export default {
   mode: 'universal',
@@ -73,12 +74,13 @@ export default {
   ** Global CSS
   */
   css: [
-    './assets/main.scss'
+    '~/assets/styles/main.scss'
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/axios',
     '~/plugins/polyfills',
     '~/plugins/custom-filters',
     '~/plugins/vue-mock-axios',
@@ -96,7 +98,9 @@ export default {
     // Doc: https://github.com/nuxt-community/vuetify-module
     '@nuxtjs/vuetify',
     // Doc: https://github.com/nuxt-community/moment-module
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    // Doc: https://github.com/nuxt-community/analytics-module
+    '@nuxtjs/google-analytics'
   ],
   /*
   ** Nuxt.js modules
@@ -107,15 +111,17 @@ export default {
     // Doc: https://auth.nuxtjs.org/
     '@nuxtjs/auth',
     // Doc: https://nuxt-community.github.io/nuxt-i18n/
-    'nuxt-i18n'
+    'nuxt-i18n',
+    // Doc: https://github.com/nuxt-community/sitemap-module
+    '@nuxtjs/sitemap'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    // baseURL: 'http://localhost:3000/api'
     baseURL: process.env.BASE_URL
+    // ,timeout: 5
     // ,credentials: true
   },
   /*
@@ -198,6 +204,29 @@ export default {
     }
   },
   /*
+   ** google analytics module configuration
+   ** See: https://github.com/nuxt-community/analytics-module
+   */
+  googleAnalytics: {
+    id: process.env.GA_ID || '',
+    dev: true,
+    debug: {
+      enabled: false, // disable debug console.logs
+      sendHitTask: true
+    }
+  },
+  /*
+  ** webfontloader configuration
+  ** See: https://github.com/Developmint/nuxt-webfontloader
+  ** Also: https://github.com/nuxt-community/vuetify-module
+  ** Note: https://github.com/nuxt-community/vuetify-module#defaultassets
+  */
+  webfontloader: {
+    font: {
+      family: 'Roboto'
+    }
+  },
+  /*
   ** moment.js module configuration
   ** See https://github.com/nuxt-community/moment-module
   */
@@ -214,7 +243,7 @@ export default {
       locales: { enUS, frCA, enCA },
       current: 'en'
     },
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ['~/assets/styles/variables.scss'],
     treeShake: true,
     theme: {
       dark: true,
@@ -240,11 +269,38 @@ export default {
     }
   },
   /*
+  ** robots.txt configuration
+  */
+  robots: {
+    UserAgent: '*',
+    Disallow: process.env.NODE_ENV === 'production' ? '' : '/',
+    Sitemap: '/sitemap.xml'
+  },
+  /*
+  ** sitemap configuration
+  */
+  sitemap: {
+    path: '/sitemap.xml',
+    hostname: 'https://www.ifoo.bar',
+    // generate: true,
+    exclude: [],
+    routes: []
+  },
+  /*
+  ** dotenv configuration
+  */
+  env: {
+    BASE_URL: process.env.BASE_URL,
+    EMKAY_API: process.env.EMKAY_API,
+    GA_ID: process.env.GA_ID
+  },
+  /*
   ** Build configuration
   */
   build: {
+    profile: true,
     // vendor: ['@babel/polyfill'],
-    transpile: ['vuetify/lib'],
+    transpile: ['vuetify'],
     // transpile: [/^vuetify/],
     // plugins: [new VuetifyLoaderPlugin()],
     /*
@@ -252,6 +308,12 @@ export default {
     */
     extend (config, ctx) {
       // run ESLint on save
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+        // config.devtool = '#source-map'
+        // config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+        // config.devtool = ctx.isClient ? 'eval-source-map' : 'inline-source-map'
+      }
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',

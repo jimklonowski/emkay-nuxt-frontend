@@ -17,7 +17,8 @@ import VehicleSearch from '@/components/VehicleSearch'
 
 export default {
   name: 'Vehicle',
-  components: { VehicleSearch }
+  components: { VehicleSearch },
+  layout: 'vehicle'
 }
 </script>
 

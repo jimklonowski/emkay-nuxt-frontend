@@ -4,6 +4,7 @@ const getDefaultState = () => ({
   columns: [],
   data: [],
   downloadHeaders: [],
+  error: null,
   headers: [],
   loading: false,
   namespace: '',
@@ -24,6 +25,7 @@ export const actions = {
       commit('setColumns', data)
     } catch (error) {
       debugger
+      commit('setError', error)
     } finally {
       commit('setLoading', false)
     }
@@ -48,7 +50,7 @@ export const actions = {
       })
     } catch (error) {
       debugger
-      throw new Error(error)
+      commit('setError', error)
     }
   },
   /**
@@ -63,6 +65,7 @@ export const actions = {
       commit('setData', data)
     } catch (error) {
       debugger
+      commit('setError', error)
     } finally {
       commit('setLoading', false)
     }
@@ -77,6 +80,7 @@ export const mutations = {
   setColumns: set('columns'),
   setData: set('data'),
   setDownloadHeaders: set('downloadHeaders'),
+  setError: set('error'),
   setHeaders: set('headers'),
   setLoading: set('loading'),
   setNamespace: set('namespace'),
@@ -84,6 +88,7 @@ export const mutations = {
 }
 
 export const getters = {
+  getError: state => state.error,
   getLoading: state => state.loading,
   getColumns: state => state.columns,
   getData: state => state.data,

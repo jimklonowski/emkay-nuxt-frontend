@@ -232,9 +232,7 @@ export default {
     // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
     downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(`${vm.namespace}.${column}`)]: column }))))
   },
-  beforeCreate () {
-    console.log('beforeCreate')
-  },
+
   /**
    * asyncData is called every time before loading the page component and is only available for such.
    * The result from asyncData will be merged with data.
@@ -273,9 +271,6 @@ export default {
       use_bill_date,
       rows: store.getters['reports/getData']
     }
-  },
-  beforeMount () {
-    console.log('beforemount')
   },
 
   /**

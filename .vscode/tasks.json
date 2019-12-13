@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "serve-background",
+      "type": "shell",
+      "command": "npm run dev",
+      "isBackground": true,
+      "args": [],
+      "problemMatcher": {
+        "owner": "nuxt",
+        "fileLocation": "relative",
+        "pattern": {
+          "regexp": "ERROR"
+        },
+        "background": {
+          "activeOnStart": false,
+          "beginsPattern": "Listening",
+          "endsPattern": "Compiled successfully in"
+        }
+      }
+    },
+    {
+      "label": "kill-terminal",
+      "type": "process",
+      "command": "${command:workbench.action.terminal.kill}"
+    }
+  ]
+}

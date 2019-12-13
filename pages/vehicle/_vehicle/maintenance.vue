@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" class="display-2 font-weight-thin">
-        Fuel Dashboard
+        Maintenance Dashboard
       </v-col>
     </v-row>
     <v-row>
@@ -26,6 +26,6 @@
 
 <script>
 export default {
-  name: 'Fuel'
+  name: 'Maintenance'
 }
 </script>

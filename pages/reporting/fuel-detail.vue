@@ -237,7 +237,7 @@ export default {
    * The result from asyncData will be merged with data.
    * https://nuxtjs.org/guide/async-data
    */
-  async asyncData ({ $moment, query, store }) {
+  async asyncData ({ $moment, query, store, error }) {
     // console.info('asyncData()')
     const namespace = 'reports.expenses.fuel_detail'
     const report = 'fuel-detail'
@@ -257,10 +257,14 @@ export default {
       use_bill_date
     }
 
-    // Get the headers, then get the data.
-    await store.dispatch('reports/fetchHeaders').then(async () => {
-      await store.dispatch('reports/fetchData', filters)
-    })
+    try {
+      // Get the headers, then get the data.
+      await store.dispatch('reports/fetchHeaders').then(async () => {
+        await store.dispatch('reports/fetchData', filters)
+      })
+    } catch (err) {
+      error({ statusCode: 408, message: 'Timed Out' })
+    }
 
     return {
       namespace,

@@ -16,3 +16,8 @@
 .theme--dark.striped.v-data-table tbody tr:nth-of-type(odd) {
   background-color: rgba(255, 255, 255, 0.05);
 }
+
+/* remove text-underline */
+.text-decoration-none {
+  text-decoration: none;
+}

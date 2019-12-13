@@ -1,54 +1,18 @@
 <template>
   <v-flex>
-    <v-app-bar
-      :src="require('@/assets/dash1.jpg')"
-      :elevate-on-scroll="false"
-      style="position:sticky; top:64px; left: 0; right: 0;z-index:4;"
-      dark
-      extended
-      prominent
-      flat
-      hide-on-scroll
-      scroll-threshold="60"
-    >
-      <template #img="{ props }">
-        <v-img
-          v-bind="props"
-          gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
-        />
-      </template>
-      <v-toolbar-title class="display-1">
-        {{ $t('navigation.vehicle_dashboard') }}
-        <!-- <v-list-item-subtitle>{{ $route.params.vehicle }}</v-list-item-subtitle> -->
-      </v-toolbar-title>
-      <v-spacer />
-      <template #extension>
-        <v-toolbar-items>
-          <v-btn text x-small>
-            Edit Custom Labels
-          </v-btn>
-          <v-btn text x-small>
-            Re-Assign Vehicle
-          </v-btn>
-          <v-btn text x-small>
-            <v-icon small class="mr-1">
-              mdi-timetable
-            </v-icon>
-            Order Status
-          </v-btn>
-        </v-toolbar-items>
-        <v-spacer />
-
-        <v-btn title="Edit Vehicle" icon>
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-      </template>
-    </v-app-bar>
     <v-container>
       <v-row style="top:64px;">
-        <v-col v-for="(item, key) in layout" :key="key" v-bind="item.flex">
-          <!-- eslint-disable-next-line vue/require-component-is -->
-          <component :is="item.is" :expand.sync="item.expand" @expand="item.expand = !item.expand" />
+        <v-col cols="12" lg="6">
+          <vehicle-card :vehicle="getVehicleInfo" />
+        </v-col>
+        <v-col cols="12" lg="6">
+          <driver-card :driver="getDriverInfo" />
+        </v-col>
+        <v-col cols="12" xl="6">
+          <fuel-table />
+        </v-col>
+        <v-col cols="12" xl="6">
+          <maintenance-table />
         </v-col>
       </v-row>
     </v-container>
@@ -56,26 +20,31 @@
 </template>
 
 <script>
-import AccidentCard from '@/components/vehicle/AccidentCard'
+import { mapGetters } from 'vuex'
 import DriverCard from '@/components/vehicle/DriverCard'
-import FuelCard from '@/components/vehicle/FuelCard'
+import VehicleCard from '@/components/vehicle/VehicleCard'
+import FuelTable from '@/components/vehicle/FuelTable'
+import MaintenanceTable from '@/components/vehicle/MaintenanceTable'
+
+import AccidentCard from '@/components/vehicle/AccidentCard'
 import InvoiceCard from '@/components/vehicle/InvoiceCard'
-import MaintenanceCard from '@/components/vehicle/MaintenanceCard'
 import TollCard from '@/components/vehicle/TollCard'
 import ViolationCard from '@/components/vehicle/ViolationCard'
-import VehicleCard from '@/components/vehicle/VehicleCard'
 
 export default {
   name: 'VehicleDashboard',
   /* eslint-disable vue/no-unused-components */
   components: {
-    AccidentCard,
-    DriverCard,
-    FuelCard,
-    InvoiceCard,
-    MaintenanceCard,
-    TollCard,
     VehicleCard,
+    DriverCard,
+    FuelTable,
+    MaintenanceTable,
+    // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
+    // 'maintenance-table': () => import('@/components/vehicle/MaintenanceTable'),
+
+    AccidentCard,
+    InvoiceCard,
+    TollCard,
     ViolationCard
   },
   data: () => ({
@@ -89,18 +58,8 @@ export default {
         flex: { cols: 12, sm: 12, md: 6, lg: 6, xl: 6 }
       },
       {
-        is: 'fuel-card',
-        flex: { cols: 12, sm: 6, md: 6, lg: 4, xl: 4 },
-        expand: false
-      },
-      {
         is: 'accident-card',
         flex: { cols: 12, sm: 6, md: 6, lg: 4, xl: 4 },
-        expand: false
-      },
-      {
-        is: 'maintenance-card',
-        flex: { cols: 12, sm: 6, md: 4, lg: 4, xl: 4 },
         expand: false
       },
       {
@@ -132,6 +91,22 @@ export default {
     //   { x: 8, y: 30, w: 6, h: 6, i: 7, is: 'violation-card' }
     // ]
   }),
+  computed: {
+    ...mapGetters({
+      getVehicleInfo: 'vehicle/getVehicleInfo',
+      getDriverInfo: 'vehicle/getDriverInfo'
+    })
+  },
+  async asyncData ({ store }) {
+    // await console.log('asyncData()')
+  },
+  async fetch ({ params, store }) {
+    // console.log('fetching the vehicle summary before sending data to individual vehicle dashboard components')
+    if (params.vehicle) {
+      const filters = { vehicle: params.vehicle }
+      await store.dispatch('vehicle/fetchVehicleDashboardSummary', filters)
+    }
+  },
   methods: {
     expand () {
       alert('expand in vehicle dashboard')
@@ -143,7 +118,8 @@ export default {
    * https://nuxtjs.org/guide/routing/#validate-route-params
    */
   validate ({ params }) {
-    // To test, vehicle param must be a number
+    // To test, vehicle param must be alphanumeric
+    // return true
     return /^[a-z0-9]+$/i.test(params.vehicle)
   }
 }

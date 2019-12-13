@@ -2,15 +2,13 @@
   <v-form @submit.stop="onSubmit">
     <v-autocomplete
       v-model="selection"
-      :append-outer-icon="'mdi-search-web'"
       :label="$t('common.search')"
       :loading="loading"
       :items="items"
       :menu-props="{ 'nudgeBottom': 10, 'maxHeight': 360 }"
       :search-input.sync="query"
       @change="onSubmit"
-      @click:append-outer="onSubmit"
-      @keydown.enter.native.prevent="onSubmit"
+      @keydown.enter.stop="onSubmit"
       item-value="vehicle_number"
       item-text="description"
       autocomplete="off"

@@ -1,0 +1,229 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "client: chrome",
+      "url": "http://localhost:3000",
+      "runtimeArgs": [
+        "--remote-debugging-port=9222"
+      ],
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "server: nuxt",
+      "protocol": "inspector",
+      "args": [
+        "dev"
+      ],
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+        "webpack:///./*": "${workspaceRoot}/*",
+        "webpack:///*": "${workspaceRoot}/*"
+      },
+      "stopOnEntry": false,
+      "program": "${workspaceRoot}/node_modules/nuxt/bin/nuxt"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "fullstack: debugger",
+      "configurations": [
+        "server: nuxt",
+        "client: chrome"
+      ]
+    }
+  ]
+}
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "type": "chrome",
+//       "request": "launch",
+//       "name": "Launch Chrome",
+//       "url": "http://localhost:3000",
+//       "webRoot": "${workspaceFolder}",
+//       "runtimeArgs": [
+//         "--remote-debugging-port=9222"
+//       ]
+//     },
+//     {
+//       "type": "node",
+//       "request": "launch",
+//       "name": "Launch via NPM",
+//       "runtimeExecutable": "npm",
+//       "windows": {
+//         "runtimeExecutable": "npm.cmd"
+//       },
+//       "runtimeArgs": [
+//         "run",
+//         "dev-debug"
+//       ],
+//       "port": 9229
+//     }
+//   ],
+//   "compounds": [
+//     {
+//       "name": "DEBUG NUXT",
+//       "configurations": [
+//         "Launch via NPM",
+//         "Launch Chrome"
+//       ]
+//     }
+//   ]
+// }
+// // {
+// //   "version": "0.2.0",
+// //   "configurations": [
+// //     {
+// //       "type": "chrome",
+// //       "request": "launch",
+// //       "name": "Launch Chrome",
+// //       "url": "http://localhost:3000",
+// //       "webRoot": "${workspaceFolder}",
+// //       "sourceMaps": true,
+// //       "sourceMapPathOverrides": {
+// //         "webpack:///*": "*"
+// //       },
+// //       "runtimeArgs": [
+// //         "--remote-debugging-port=9222"
+// //       ],
+// //     },
+// //     {
+// //       "type": "node",
+// //       "request": "launch",
+// //       "name": "Launch via NPM",
+// //       "runtimeExecutable": "npm",
+// //       "windows": {
+// //         "runtimeExecutable": "npm.cmd"
+// //       },
+// //       "runtimeArgs": [
+// //         "run",
+// //         "dev-debug"
+// //       ],
+// //       "port": 9229,
+// //       "skipFiles": [
+// //         "<node_internals>/**"
+// //       ]
+// //     }
+// //   ],
+// //   "compounds": []
+// // }
+// // // {
+// // //   "version": "0.2.0",
+// // //   "configurations": [
+// // //     {
+// // //       "type": "chrome",
+// // //       "request": "launch",
+// // //       "name": "vuejs: chrome",
+// // //       "url": "http://localhost:3000",
+// // //       "webRoot": "${workspaceFolder}",
+// // //       "breakOnLoad": true,
+// // //       "sourceMaps": true,
+// // //       "sourceMapPathOverrides": {
+// // //         "webpack:///*": "${webRoot}/*",
+// // //         "webpack:///./*": "${webRoot}/*"
+// // //       }
+// // //     },
+// // //     {
+// // //       "name": "nuxt: chrome",
+// // //       "type": "node",
+// // //       "request": "launch",
+// // //       "protocol": "inspector",
+// // //       "program": "${workspaceRoot}/node_modules/nuxt/bin/nuxt",
+// // //       "stopOnEntry": false,
+// // //       "args": [
+// // //         "dev"
+// // //       ],
+// // //       "cwd": "${workspaceRoot}",
+// // //       "sourceMaps": true,
+// // //       "env": {
+// // //         "NODE_ENV": "development",
+// // //         "DEBUG": "nuxt:*,app"
+// // //       }
+// // //     }
+// // //   ]
+// // // }
+// // // // {
+// // // //   "version": "0.2.0",
+// // // //   "configurations": [
+// // // //     {
+// // // //       "type": "chrome",
+// // // //       "request": "launch",
+// // // //       "name": "vue: chrome",
+// // // //       "url": "http://localhost:3000",
+// // // //       "webRoot": "${workspaceFolder}/*",
+// // // //       "breakOnLoad": true,
+// // // //       // "sourceMaps": true,
+// // // //       "sourceMapPathOverrides": {
+// // // //         "webpack:///@": "${webRoot}/*",
+// // // //         "webpack:///@@": "${webRoot}/*",
+// // // //         "webpack:///~": "${webRoot}/*",
+// // // //         "webpack:///~~": "${webRoot}/*",
+// // // //       }
+// // // //     },
+// // // //     {
+// // // //       "name": "nuxt: chrome",
+// // // //       "type": "node",
+// // // //       "request": "launch",
+// // // //       "protocol": "inspector",
+// // // //       "program": "${workspaceRoot}/node_modules/nuxt/bin/nuxt",
+// // // //       "stopOnEntry": false,
+// // // //       "args": [
+// // // //         "dev"
+// // // //       ],
+// // // //       "cwd": "${workspaceRoot}",
+// // // //       "sourceMaps": true,
+// // // //       "env": {
+// // // //         "NODE_ENV": "development",
+// // // //         "DEBUG": "nuxt:*,app"
+// // // //       }
+// // // //     },
+// // // //   ]
+// // // // }
+// // // // // {
+// // // // //   "version": "0.2.0",
+// // // // //   "configurations": [
+// // // // //     {
+// // // // //       "type": "chrome",
+// // // // //       "request": "launch",
+// // // // //       "name": "client: chrome",
+// // // // //       "url": "http://localhost:3000",
+// // // // //       "runtimeArgs": [
+// // // // //         "--remote-debugging-port=9222"
+// // // // //       ],
+// // // // //       "webRoot": "${workspaceFolder}"
+// // // // //     },
+// // // // //     {
+// // // // //       "type": "node",
+// // // // //       "request": "launch",
+// // // // //       "name": "server: nuxt",
+// // // // //       "protocol": "inspector",
+// // // // //       "args": [
+// // // // //         "dev"
+// // // // //       ],
+// // // // //       "sourceMaps": true,
+// // // // //       "sourceMapPathOverrides": {
+// // // // //         "webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+// // // // //         "webpack:///./*": "${workspaceRoot}/*",
+// // // // //         "webpack:///*": "${workspaceRoot}/*"
+// // // // //       },
+// // // // //       "stopOnEntry": false,
+// // // // //       "program": "${workspaceRoot}/node_modules/nuxt/bin/nuxt"
+// // // // //     }
+// // // // //   ],
+// // // // //   "compounds": [
+// // // // //     {
+// // // // //       "name": "fullstack: debugger",
+// // // // //       "configurations": [
+// // // // //         "server: nuxt",
+// // // // //         "client: chrome"
+// // // // //       ]
+// // // // //     }
+// // // // //   ]
+// // // // // }

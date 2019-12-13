@@ -1,5 +1,6 @@
 import * as JWT from 'jsonwebtoken'
 import MockAdapter from 'axios-mock-adapter'
+/* eslint-disable camelcase */
 export default function ({ $axios, redirect }) {
   // debugger
   const mock = new MockAdapter($axios)
@@ -64,7 +65,7 @@ export default function ({ $axios, redirect }) {
       }
       const vehicles = [
         {
-          vehicle_number: 'E22444',
+          vehicle_number: 'E09490',
           driver_name: 'Andrew Griffith',
           description: '2012 Jeep Compass'
         },
@@ -203,6 +204,47 @@ export default function ({ $axios, redirect }) {
         'voucher'
       ]
       return [200, headers]
+    })
+    // 12-12-2019 mock vehicle summary
+    .onGet('/vehicle/summary')
+    .reply(function (config) {
+      const vehicle_info = {
+        billing_sort: 'AABBCC',
+        center_code: '001',
+        center_name: 'Executive',
+        client_vehicle_number: 'CV12345',
+        vehicle_classification: 'Sport Utility - 4x4',
+        vehicle_color: 'Black',
+        vehicle_make: 'Jeep',
+        vehicle_model: 'Compass',
+        vehicle_year: '2019',
+        vehicle_number: config.params.vehicle,
+        vin: 'VIN1234567890'
+      }
+      const driver_info = {
+        address_1: 'EMKAY, Inc.',
+        address_2: '805 W THORNDALE AVE',
+        city: 'ITASCA',
+        county: 'DUPAGE',
+        driver_misc_1: '',
+        driver_misc_2: '',
+        driver_misc_3: '',
+        driver_misc_4: '',
+        driver_number: '123456',
+        email: 'jklo@emkay.com',
+        employee_id: 'ID123456',
+        first_name: 'Jimmy',
+        last_name: 'Klonowski',
+        license_number: '123456IL1234567883242',
+        license_state_province: 'IL',
+        phone: '630-250-9999',
+        cell: '630-250-9999',
+        pool: false,
+        postal_code: '60143',
+        selector_level: 'asdf',
+        state_province: 'IL'
+      }
+      return [200, { vehicle_info, driver_info }]
     })
     .onAny().passThrough()
   // debugger

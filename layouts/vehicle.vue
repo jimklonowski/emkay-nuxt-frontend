@@ -2,7 +2,8 @@
   <v-app>
     <emkay-navigation />
     <v-content>
-      <!-- main router view -->
+      <vehicle-dashboard-navigation v-if="$route.params.vehicle" />
+      <!-- main vehicle dashboard router-view -->
       <nuxt />
     </v-content>
     <emkay-footer />
@@ -15,10 +16,13 @@
 <script>
 import EmkayFooter from '@/components/EmkayFooter'
 import EmkayNavigation from '@/components/EmkayNavigation'
+import VehicleDashboardNavigation from '@/components/vehicle/VehicleDashboardNavigation'
+
 export default {
   components: {
     EmkayFooter,
-    EmkayNavigation
+    EmkayNavigation,
+    VehicleDashboardNavigation
   },
   head () {
     return {
@@ -28,8 +32,11 @@ export default {
     }
   },
   mounted () {
-    // debugger
     this.$meta().setOptions({ debounceWait: 50 })
   }
 }
 </script>
+
+<style>
+
+</style>

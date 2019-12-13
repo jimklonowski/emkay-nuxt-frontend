@@ -1,24 +1,18 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" class="display-2 font-weight-thin">
-        Fuel Dashboard
-      </v-col>
-    </v-row>
-    <v-row>
       <v-col cols="auto">
         <v-btn @click="$router.go(-1)" text>
-          Back
+          <v-icon class="mr-2">
+            mdi-chevron-left
+          </v-icon>
+          {{ $t('navigation.back') }}
         </v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-card outlined shaped>
-          <v-card-text>
-            <v-data-table />
-          </v-card-text>
-        </v-card>
+        <h1>Edit Driver</h1>
       </v-col>
     </v-row>
   </v-container>
@@ -26,6 +20,6 @@
 
 <script>
 export default {
-  name: 'Fuel'
+  name: 'edit-driver'
 }
 </script>

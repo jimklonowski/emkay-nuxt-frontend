@@ -1,4 +1,5 @@
 /* eslint-disable quotes */
+// prettier-ignore
 export default {
   actions: {
     edit_custom_labels: "Editer les étiquettes personnalisées",
@@ -6,6 +7,15 @@ export default {
     schedule_ac: "Planifier A/C",
     terminate_vehicle: "Terminer le véhicule",
     used_vehicle_quote: "Devis de véhicule d'occasion"
+  },
+  address: {
+    address: "Adresse",
+    city: "Ville",
+    cell: "Téléphone portable",
+    email: "Email",
+    phone: "Téléphone",
+    state_province: "Province",
+    postal_code: "Code Postal"
   },
   auth: {
     account: "Compte",
@@ -21,6 +31,7 @@ export default {
     amount: "Montant",
     billing_sort: "Tri de facturation",
     cancel: "Annuler",
+    center: "Centre",
     center_code: "Code du centre",
     center_name: "Nom du centre",
     client_use_1: "Utilisation client 1",
@@ -34,6 +45,7 @@ export default {
     download: "Télécharger",
     driver_id: "ID du pilote",
     driver_name: "Nom du pilote",
+    edit: "Modifier",
     emkay: "EMKAY",
     emkay_inc: "EMKAY, Inc.",
     fleet: "La flotte",
@@ -45,7 +57,9 @@ export default {
     no_search_results: "Votre recherche pour \"{query}\" n'a trouvé aucun résultat.",
     odometer: "Odomètre",
     ok: "OK",
+    only_one_request: "Une seule demande autorisée à la fois.",
     quantity: "Quantité",
+    request_cancelled: "Demande annulée",
     save: "Sauver",
     search: "Chercher",
     to_vehicle_dashboard: "Au tableau de bord du véhicule",
@@ -55,9 +69,19 @@ export default {
   date: {
     bill_date: "Date de facturation",
     end_date: "Date de fin",
+    invoice_date: "Date de facturation",
+    past_days: "0 derniers jours | Dernier Jour | {n} derniers jours",
     service_date: "Date de service",
     service_time: "Temps de service",
     start_date: "Date de début"
+  },
+  driver: {
+    driver_id: "ID du pilote",
+    driver_name: "Nom du pilote",
+    driver_number: "Numéro de pilote",
+    'driver_#': "Pilote #",
+    employee_id: "ID d'employé",
+    selector_level: "Niveau de sélection"
   },
   footer: {
     about: "À propos",
@@ -65,7 +89,7 @@ export default {
     blog: "Blog",
     careers: "Carrières",
     contact: "Contact",
-    more: "Plus",
+    more: "@:navigation.more",
     automotive_links: "Liens automobiles",
     fleet_incentives: "Incentives de la flotte",
     leadtime_guides: "Guides de délais",
@@ -182,7 +206,7 @@ export default {
         report: "Détails du carburant",
         amount: "@:common.amount",
         bill_date: "@:date.bill_date",
-        bill_sort: "@:common.bill_sort",
+        bill_sort: "@:common.billing_sort",
         card_number: "Numéro de carte",
         center_code: "@:common.center_code",
         center_name: "@:common.center_name",
@@ -228,7 +252,7 @@ export default {
       },
       // maintenance detail report
       maintenance_detail: {
-        report: "Détails de maintenance",
+        report: "Détails de Entretien",
         active: "Active",
         amount: "@:common.amount",
         ata_group: "Groupe ATA",
@@ -395,17 +419,25 @@ export default {
   },
   navigation: {
     account_management: "Gestion de compte",
+    back: "Retourner",
     home: "Accueil",
+    more: "Plus",
     ordering: "Commande",
     reporting: "Rapport",
+    see_more: "Voir Plus",
     vehicle_dashboard: "@:vehicle.dashboard"
   },
   vehicle: {
+    client_vehicle_number: "Numéro de véhicule client",
     dashboard: "Tableau du véhicule",
-    model_year: "Année modèle",
+    fuel: "Carburant",
+    maintenance: "Entretien",
     make: "Marque du véhicule",
     model: "Modèle de véhicule",
+    model_year: "Année modèle",
+    vehicle_classification: "Classification du véhicule",
     vehicle_number: "Numéro de véhicule",
+    'vehicle_#': "Véhicule #",
     vin: "Numéro VIN"
   },
   vehicle_dashboard: {

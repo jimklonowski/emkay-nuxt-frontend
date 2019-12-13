@@ -6,10 +6,12 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
+    "dev-debug": "node --inspect node_modules/nuxt/bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint",
     "test": "jest"
   },
   "dependencies": {
@@ -18,11 +20,14 @@
     "@nuxtjs/axios": "^5.8.0",
     "@nuxtjs/dotenv": "^1.4.0",
     "@nuxtjs/moment": "^1.4.0",
+    "@nuxtjs/robots": "^2.4.2",
+    "@nuxtjs/sitemap": "^2.0.1",
     "axios-mock-adapter": "^1.17.0",
     "core-js": "^2.6.10",
     "jsonwebtoken": "^8.5.1",
     "nuxt": "^2.10.2",
     "nuxt-i18n": "^6.4.0",
+    "nuxt-webfontloader": "^1.1.0",
     "vue-json-excel": "^0.2.98",
     "vue-snotify": "^3.2.1",
     "vuetify-loader": "^1.4.3"
@@ -31,6 +36,7 @@
     "@nuxt/babel-preset-app": "^2.10.2",
     "@nuxtjs/eslint-config": "^1.0.1",
     "@nuxtjs/eslint-module": "^1.0.0",
+    "@nuxtjs/google-analytics": "^2.2.2",
     "@nuxtjs/vuetify": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.0.1",
