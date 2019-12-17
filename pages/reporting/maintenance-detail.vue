@@ -161,32 +161,76 @@
                   </div>
                 </template>
 
-                <!-- format 'amount' as currency -->
-                <template #item.amount="{ item }">
-                  {{ item.amount | currency }}
+                <!-- format report columns -->
+                <template #body="{ items }">
+                  <tbody>
+                    <tr v-for="(item, key) in items" :key="key">
+                      <td>{{ item.active }}</td>
+                      <td>{{ item.amount | currency }}</td>
+                      <td>{{ item.ata_group }}</td>
+                      <td>{{ item.ata_group_description }}</td>
+                      <td>{{ item.bill_sort }}</td>
+                      <td>{{ item.brake_manufacturer }}</td>
+                      <td>{{ item.brake_thickness }}</td>
+                      <td>{{ item.center_code }}</td>
+                      <td>{{ item.center_name }}</td>
+                      <td>{{ item.charge_code }}</td>
+                      <td>{{ item.client_use_1 }}</td>
+                      <td>{{ item.client_use_2 }}</td>
+                      <td>{{ item.client_use_3 }}</td>
+                      <td>{{ item.client_use_4 }}</td>
+                      <td>{{ item.client_use_5 }}</td>
+                      <td>{{ item.client_vehicle_number }}</td>
+                      <td>{{ item.customer_po }}</td>
+                      <td>{{ item.description }}</td>
+                      <td>{{ item.driver_name }}</td>
+                      <td>{{ item.engine_hours }}</td>
+                      <td>{{ item.expense_category }}</td>
+                      <td>{{ item.front_left_brake }}</td>
+                      <td>{{ item.front_left_drum }}</td>
+                      <td>{{ item.front_left_rotor }}</td>
+                      <td>{{ item.front_left_tire }}</td>
+                      <td>{{ item.front_right_brake }}</td>
+                      <td>{{ item.front_right_drum }}</td>
+                      <td>{{ item.front_right_rotor }}</td>
+                      <td>{{ item.front_right_tire }}</td>
+                      <td>{{ item.gl_code }}</td>
+                      <td>{{ item.invoice_number }}</td>
+                      <td>{{ item.labor_or_part }}</td>
+                      <td>{{ item.level_01 }}</td>
+                      <td>{{ item.level_02 }}</td>
+                      <td>{{ item.level_03 }}</td>
+                      <td>{{ item.maintenance_category }}</td>
+                      <td>{{ item.maintenance_code }}</td>
+                      <td>{{ item.model_year }}</td>
+                      <td>{{ item.odometer }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>{{ item.rear_left_brake }}</td>
+                      <td>{{ item.rear_left_drum }}</td>
+                      <td>{{ item.rear_left_rotor }}</td>
+                      <td>{{ item.rear_left_tire }}</td>
+                      <td>{{ item.rear_right_brake }}</td>
+                      <td>{{ item.rear_right_drum }}</td>
+                      <td>{{ item.rear_right_rotor }}</td>
+                      <td>{{ item.rear_right_tire }}</td>
+                      <td>{{ item.service_date | date }}</td>
+                      <td>{{ item.tire_manufacturer }}</td>
+                      <td>{{ item.tire_model }}</td>
+                      <td>{{ item.tire_size }}</td>
+                      <td>{{ item.vehicle_make }}</td>
+                      <td>{{ item.vehicle_model }}</td>
+                      <td>
+                        <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
+                      </td>
+                      <td>{{ item.vendor_factor }}</td>
+                      <td>{{ item.vendor_name }}</td>
+                      <td>{{ item.vendor_number }}</td>
+                      <td>{{ item.voucher }}</td>
+                    </tr>
+                  </tbody>
                 </template>
-
-                <!-- format 'bill_date' as locale date -->
-                <template #item.bill_date="{ item }">
-                  {{ item.bill_date | date }}
-                </template>
-
-                <!-- format 'service_date' as locale date -->
-                <template #item.service_date="{ item }">
-                  {{ item.service_date | date }}
-                </template>
-
-                <!-- format 'card_number' as a chip -->
-                <template #item.card_number="{ item }">
-                  <v-chip :outlined="$vuetify.theme.dark" v-text="item.card_number" small />
-                </template>
-
-                <!-- format vehicle_number as a vehicle-dashboard link -->
-                <template #item.vehicle_number="{ item }">
-                  <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
-                </template>
+                <!-- </v-skeleton-loader> -->
               </v-data-table>
-              <!-- </v-skeleton-loader> -->
             </v-card-text>
           </v-card>
         </v-col>
@@ -230,7 +274,7 @@ export default {
     dataLoading: vm => vm.$store.getters['reports/getLoading'],
     reportHeaders: vm => vm.$store.getters['reports/getHeaders'],
     // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(`${vm.namespace}.${column}`)]: column }))))
+    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
   },
 
   /**

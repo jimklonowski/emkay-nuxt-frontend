@@ -161,29 +161,61 @@
                   </div>
                 </template>
 
-                <!-- format 'amount' as currency -->
-                <template #item.amount="{ item }">
-                  {{ item.amount | currency }}
-                </template>
-
-                <!-- format 'bill_date' as locale date -->
-                <template #item.bill_date="{ item }">
-                  {{ item.bill_date | date }}
-                </template>
-
-                <!-- format 'service_date' as locale date -->
-                <template #item.service_date="{ item }">
-                  {{ item.service_date | date }}
-                </template>
-
-                <!-- format 'card_number' as a chip -->
-                <template #item.card_number="{ item }">
-                  <v-chip :outlined="$vuetify.theme.dark" v-text="item.card_number" small />
-                </template>
-
-                <!-- format vehicle_number as a vehicle-dashboard link -->
-                <template #item.vehicle_number="{ item }">
-                  <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
+                <!-- format report columns -->
+                <template #body="{ items }">
+                  <tbody>
+                    <tr v-for="(item, key) in items" :key="key">
+                      <td>{{ item.amount | currency }}</td>
+                      <td>{{ item.bill_date | date }}</td>
+                      <td>{{ item.bill_sort }}</td>
+                      <td>
+                        <v-chip :outlined="$vuetify.theme.dark" v-text="item.card_number" small />
+                      </td>
+                      <td>{{ item.center_code }}</td>
+                      <td>{{ item.center_name }}</td>
+                      <td>{{ item.client_use_1 }}</td>
+                      <td>{{ item.client_use_2 }}</td>
+                      <td>{{ item.client_use_3 }}</td>
+                      <td>{{ item.client_use_4 }}</td>
+                      <td>{{ item.client_use_5 }}</td>
+                      <td>{{ item.client_vehicle_number }}</td>
+                      <td>{{ item.driver_id }}</td>
+                      <td>{{ item.driver_name }}</td>
+                      <td>{{ item.emkay_invoice_date | date }}</td>
+                      <td>{{ item.emkay_invoice_number }}</td>
+                      <td>{{ item.engine_fuel_type }}</td>
+                      <td>{{ item.exception }}</td>
+                      <td>{{ item.fuel_card_vendor }}</td>
+                      <td>{{ item.fuel_company_name }}</td>
+                      <td>{{ item.fuel_company_number }}</td>
+                      <td>{{ item.invoice_number }}</td>
+                      <td>{{ item.level_01 }}</td>
+                      <td>{{ item.level_02 }}</td>
+                      <td>{{ item.level_03 }}</td>
+                      <td>{{ item.merchant_address }}</td>
+                      <td>{{ item.merchant_city }}</td>
+                      <td>{{ item.merchant_state }}</td>
+                      <td>{{ item.merchant_zip }}</td>
+                      <td>{{ item.model_year }}</td>
+                      <td>{{ item.odometer }}</td>
+                      <td>{{ item.premium }}</td>
+                      <td>{{ item.product }}</td>
+                      <td>{{ item.product_type }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>{{ item.service_date | date }}</td>
+                      <td>{{ item.service_time }}</td>
+                      <td>{{ item.tank_capacity }}</td>
+                      <td>{{ item.tax_exempt }}</td>
+                      <td>{{ item.unit_price | currency(3,3) }}</td>
+                      <td>{{ item.vehicle_make }}</td>
+                      <td>{{ item.vehicle_model }}</td>
+                      <td>
+                        <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
+                      </td>
+                      <td>{{ item.vin }}</td>
+                      <td>{{ item.voucher }}</td>
+                    </tr>
+                  </tbody>
                 </template>
               </v-data-table>
               <!-- </v-skeleton-loader> -->
@@ -229,7 +261,7 @@ export default {
     dataLoading: vm => vm.$store.getters['reports/getLoading'],
     reportHeaders: vm => vm.$store.getters['reports/getHeaders'],
     // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(`${column}`)]: column }))))
+    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
   },
 
   /**

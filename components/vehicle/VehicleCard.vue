@@ -227,7 +227,7 @@ export default {
             {
               text: this.$i18n.t(`license_plate_expiration_date`),
               icon: '',
-              value: this.vehicle_info.license_plate_expiration_date
+              value: this.$moment(this.vehicle_info.license_plate_expiration_date).format('L')
             }
           ]
         },
