@@ -246,6 +246,19 @@ export default function ({ $axios, redirect }) {
       }
       return [200, { vehicle_info, driver_info }]
     })
+    .onGet('/account/account-info')
+    .reply(function (config) {
+      const center_hierarchy = {}
+      const custom_labels = {
+        client_use_1_label: 'My Custom Label 1',
+        client_use_2_label: 'Our New Label 2',
+        client_use_3_label: 'A Label 3',
+        client_use_4_label: 'The Label 4',
+        client_use_5_label: 'JCK 5'
+      }
+      // const custom_labels = ['Client Use 1 Label', 'Client Use 2 Label', 'Client Use 3 Label', 'Client Use 4 Label', 'Client Use 5 Label']
+      return [200, { center_hierarchy, custom_labels }]
+    })
     .onAny().passThrough()
   // debugger
   // $axios.onRequest((config) => {

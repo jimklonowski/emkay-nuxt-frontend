@@ -6,7 +6,7 @@
           <v-icon class="mr-2">
             mdi-chevron-left
           </v-icon>
-          {{ $t('navigation.back') }}
+          {{ $t('back') }}
         </v-btn>
       </v-col>
     </v-row>

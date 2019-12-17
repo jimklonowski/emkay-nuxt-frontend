@@ -10,34 +10,34 @@
           raised
         >
           <v-form ref="form" @submit.prevent="login">
-            <v-card-title v-t="'auth.login'" />
+            <v-card-title v-t="'login'" />
             <v-card-text>
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field v-model="account" :label="$t('auth.account')" autocomplete="organization" />
+                    <v-text-field v-model="account" :label="$t('account')" autocomplete="organization" />
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field v-model="username" :label="$t('auth.username')" autocomplete="username" />
+                    <v-text-field v-model="username" :label="$t('username')" autocomplete="username" />
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field v-model="password" :label="$t('auth.password')" type="password" autocomplete="current-password" />
+                    <v-text-field v-model="password" :label="$t('password')" type="password" autocomplete="current-password" />
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <v-checkbox v-model="remember" :label="$t('auth.remember_me')" />
+                    <v-checkbox v-model="remember" :label="$t('remember_me')" />
                   </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
             <v-card-actions class="flex-column">
               <v-btn
-                v-t="'auth.login'"
+                v-t="'login'"
                 :ripple="false"
                 type="submit"
                 color="primary"
@@ -46,7 +46,7 @@
                 block
               />
               <v-btn
-                v-t="'auth.forgot_password'"
+                v-t="'forgot_password'"
                 tabindex="-1"
                 small
                 text
@@ -89,8 +89,9 @@ export default {
           }
         })
         .then(() => {
-          // debugger
+          debugger
           this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
+          this.$store.dispatch('account/init')
         })
         .catch((e) => {
           // debugger

@@ -2,7 +2,7 @@
   <v-form @submit.stop="onSubmit">
     <v-autocomplete
       v-model="selection"
-      :label="$t('common.search')"
+      :label="$t('search')"
       :loading="loading"
       :items="items"
       :menu-props="{ 'nudgeBottom': 10, 'maxHeight': 360 }"
@@ -31,7 +31,7 @@
       </template>
       <template #no-data>
         <v-list-item dense>
-          <v-list-item-title v-t="'vehicle_dashboard.search_placeholder'" />
+          <v-list-item-title v-t="'search_placeholder'" />
         </v-list-item>
       </template>
       <template #selection="data">
@@ -71,10 +71,10 @@ export default {
     schema () {
       return {
         vehicle: {
-          label: this.$t('common.search'),
+          label: this.$t('search'),
           type: 'text',
-          placeholder: this.$t('vehicle_dashboard.search_placeholder'),
-          hint: this.$t('vehicle_dashboard.search_hint'),
+          placeholder: this.$t('search_placeholder'),
+          hint: this.$t('search_hint'),
           counter: 6,
           appendOuterIcon: 'send',
           required: true,

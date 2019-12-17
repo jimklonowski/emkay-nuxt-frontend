@@ -44,7 +44,7 @@
             <v-icon v-text="'mdi-logout'" />
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('auth.logout') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('logout') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -56,7 +56,7 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-t="'common.emkay'" />
+      <v-toolbar-title v-t="'emkay'" />
 
       <v-spacer />
 
@@ -99,27 +99,27 @@ export default {
     items: [
       {
         icon: 'mdi-widgets',
-        key: 'navigation.home',
+        key: 'home',
         to: { name: 'index' }
       },
       {
         icon: 'mdi-chart-bubble',
-        key: 'navigation.vehicle_dashboard',
+        key: 'vehicle_dashboard',
         to: { name: 'vehicle' }
       },
       {
         icon: 'mdi-file-chart-outline',
-        key: 'navigation.reporting',
+        key: 'reporting',
         to: { name: 'reporting' }
       },
       {
         icon: 'mdi-timetable',
-        key: 'navigation.ordering',
+        key: 'ordering',
         to: { name: 'ordering' }
       },
       {
         icon: 'mdi-apps',
-        key: 'navigation.account_management',
+        key: 'account_management',
         to: { name: 'management' }
       }
       // {
@@ -139,16 +139,16 @@ export default {
       return {
         categories: this.$options.menus.management.categories,
         icon: 'mdi-apps',
-        subtitleKey: 'management.menu_subtitle',
-        titleKey: 'management.menu_title'
+        subtitleKey: 'configure_your_fleet_settings',
+        titleKey: 'management'
       }
     },
     orderingMenu () {
       return {
         categories: this.$options.menus.ordering.categories,
         icon: 'mdi-timetable',
-        subtitleKey: 'ordering.menu_subtitle',
-        titleKey: 'ordering.menu_title'
+        subtitleKey: 'ordering_subtitle',
+        titleKey: 'ordering'
       }
     },
     reportingMenu () {
@@ -157,8 +157,8 @@ export default {
         icon: 'mdi-file-chart-outline',
         // style: 'background-image:linear-gradient(to top right, #f6d365, #fda085);',
         // style: 'background-image:linear-gradient(135deg,#667eea,#764ba2)!important;',
-        subtitleKey: 'reports.menu_subtitle',
-        titleKey: 'reports.menu_title'
+        subtitleKey: 'reporting_subtitle',
+        titleKey: 'reporting'
       }
     }
   },

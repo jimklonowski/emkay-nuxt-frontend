@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <h1 class="display-3">
-        {{ $t('management.menu_title') }}
+        {{ $t('management') }}
       </h1>
     </v-row>
     <v-row>

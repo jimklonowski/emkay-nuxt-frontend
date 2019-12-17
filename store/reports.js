@@ -7,7 +7,6 @@ const getDefaultState = () => ({
   error: null,
   headers: [],
   loading: false,
-  namespace: '',
   report: ''
 })
 
@@ -41,7 +40,7 @@ export const actions = {
         let headers = []
         headers = state.columns.map((column) => {
           return {
-            text: this.$i18n.t(`${state.namespace}.${column}`),
+            text: this.$i18n.t(column),
             value: column,
             class: 'report-column'
           }
@@ -73,7 +72,7 @@ export const actions = {
 }
 
 export const mutations = {
-  resetState (state) {
+  reset (state) {
     Object.assign(state, getDefaultState())
     console.log('resetState clearing data')
   },
@@ -83,7 +82,6 @@ export const mutations = {
   setError: set('error'),
   setHeaders: set('headers'),
   setLoading: set('loading'),
-  setNamespace: set('namespace'),
   setReport: set('report')
 }
 
@@ -94,6 +92,5 @@ export const getters = {
   getData: state => state.data,
   getDownloadHeaders: state => state.downloadHeaders,
   getHeaders: state => state.headers,
-  getNamespace: state => state.namespace,
   getReport: state => state.report
 }

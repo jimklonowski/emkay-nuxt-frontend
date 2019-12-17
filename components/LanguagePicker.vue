@@ -5,7 +5,7 @@
     offset-y
   >
     <template #activator="{ on }">
-      <v-btn :title="$t('common.language')" v-on="on" icon>
+      <v-btn :title="$t('language')" v-on="on" icon>
         <v-icon v-text="'mdi-web'" />
       </v-btn>
     </template>

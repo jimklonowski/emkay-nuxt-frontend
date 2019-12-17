@@ -17,7 +17,7 @@
       />
     </template>
     <v-toolbar-title class="display-1">
-      {{ $t('navigation.vehicle_dashboard') }}
+      {{ $t('vehicle_dashboard') }}
     </v-toolbar-title>
     <v-spacer />
     <template #extension>
@@ -40,17 +40,17 @@ export default {
     actions () {
       return [
         {
-          key: 'vehicle.edit_custom_labels',
+          key: 'edit_custom_labels',
           icon: '',
           to: { path: `${this.$route.fullPath}/edit-custom-labels` }
         },
         {
-          key: 'vehicle.reassign_vehicle',
+          key: 'reassign_vehicle',
           icon: '',
           to: { path: `${this.$route.fullPath}/reassign-vehicle` }
         },
         {
-          key: 'vehicle.order_status',
+          key: 'order_status',
           icon: '',
           to: { path: `${this.$route.fullPath}/order-status` }
         }

@@ -1,12 +1,29 @@
 <template>
   <v-container>
     <v-row>
+      <v-col cols="auto">
+        <v-btn @click="$router.go(-1)" text>
+          {{ $t('back') }}
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="12">
         <v-card>
-          <v-card-title>{{ $t('vehicle.edit_custom_labels') }}</v-card-title>
+          <v-card-title>{{ $t('edit_custom_labels') }}</v-card-title>
           <v-card-text>
             <v-form>
-              form stuff
+              <v-container>
+                <v-row>
+                  <v-col v-for="(item, name, key) in model" :key="key" cols="12">
+                    <v-text-field
+                      v-model="model[name]"
+                      :label="custom_labels[`${name}_label`]"
+                      outlined
+                    />
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -21,7 +38,34 @@
 
 <script>
 export default {
-
+  data: () => ({
+    model: {
+      client_use_1: '',
+      client_use_2: '',
+      client_use_3: '',
+      client_use_4: '',
+      client_use_5: ''
+    }
+  }),
+  computed: {
+    vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
+    custom_labels: vm => vm.$store.getters['account/getCustomLabels']
+  },
+  mounted () {
+    this.loadLabels()
+  },
+  methods: {
+    loadLabels () {
+      this.model = {
+        ...this.model,
+        client_use_1: this.vehicle_info.client_use_1,
+        client_use_2: this.vehicle_info.client_use_2,
+        client_use_3: this.vehicle_info.client_use_3,
+        client_use_4: this.vehicle_info.client_use_4,
+        client_use_5: this.vehicle_info.client_use_5
+      }
+    }
+  }
 }
 </script>
 

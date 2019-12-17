@@ -10,7 +10,7 @@
       nuxt
     >
       <v-icon v-text="'mdi-copyright'" class="mr-2" x-small />
-      {{ new Date().getFullYear() }} - {{ $t('common.emkay_inc') }}
+      {{ new Date().getFullYear() }} - {{ $t('emkay_inc') }}
     </v-btn>
     <v-spacer />
     <v-menu v-for="(menu, i) in menus" :key="i" top offset-y>
@@ -33,31 +33,31 @@ export default {
   data: () => ({
     menus: [
       {
-        key: 'footer.about',
+        key: 'about',
         items: [
-          { title: 'About EMKAY', key: 'footer.about_emkay', to: {} },
-          { title: 'Blog', key: 'footer.blog', to: {} },
-          { title: 'Careers', key: 'footer.careers', to: {} },
-          { title: 'Contact', key: 'footer.contact', to: {} }
+          { title: 'About EMKAY', key: 'about_emkay', to: {} },
+          { title: 'Blog', key: 'blog', to: {} },
+          { title: 'Careers', key: 'careers', to: {} },
+          { title: 'Contact', key: 'contact', to: {} }
         ]
       },
       {
-        key: 'footer.more',
+        key: 'more',
         items: [
-          { title: 'Press Releases', key: 'footer.press_releases', to: {} },
-          { title: 'Leadtime Guides', key: 'footer.leadtime_guides', to: {} },
-          { title: 'Fleet Incentives', key: 'footer.fleet_incentives', to: {} },
-          { title: 'Automotive Links', key: 'footer.automotive_links', to: {} }
+          { title: 'Press Releases', key: 'press_releases', to: {} },
+          { title: 'Leadtime Guides', key: 'leadtime_guides', to: {} },
+          { title: 'Fleet Incentives', key: 'fleet_incentives', to: {} },
+          { title: 'Automotive Links', key: 'automotive_links', to: {} }
         ]
       },
       {
-        key: 'footer.tech',
+        key: 'tech',
         items: [
-          { title: 'Celsius', key: 'footer.celsius', to: {} },
-          { title: 'Driver 360', key: 'footer.driver_360', to: {} },
-          { title: 'Fleet 360', key: 'footer.fleet_360', to: {} },
-          { title: 'Fleet Exchange', key: 'footer.fleet_exchange', to: {} },
-          { title: 'Geotab', key: 'footer.geotab', to: {} }
+          { title: 'Celsius', key: 'celsius', to: {} },
+          { title: 'Driver 360', key: 'driver_360', to: {} },
+          { title: 'Fleet 360', key: 'fleet_360', to: {} },
+          { title: 'Fleet Exchange', key: 'fleet_exchange', to: {} },
+          { title: 'Geotab', key: 'geotab', to: {} }
         ]
       }
     ]

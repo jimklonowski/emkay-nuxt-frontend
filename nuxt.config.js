@@ -85,7 +85,8 @@ export default {
     '~/plugins/custom-filters',
     '~/plugins/vue-mock-axios',
     { src: '~/plugins/vue-json-excel', ssr: false },
-    { src: '~/plugins/vue-snotify', ssr: false }
+    { src: '~/plugins/vue-snotify', ssr: false },
+    { src: '~/plugins/vuex-persist', ssr: false }
   ],
   /*
   ** Nuxt.js dev-modules

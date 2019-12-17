@@ -2,7 +2,7 @@
   <v-container>
     <v-row no-gutters>
       <h1 class="display-3">
-        {{ $t('ordering.menu_title') }}
+        {{ $t('ordering') }}
       </h1>
     </v-row>
     <v-row>

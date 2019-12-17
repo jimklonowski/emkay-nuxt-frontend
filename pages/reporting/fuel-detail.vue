@@ -5,11 +5,11 @@
         <v-col>
           <v-card>
             <v-card-title>
-              {{ $t(`${namespace}.report`) }}
+              {{ $t(`fuel_detail`) }}
               <v-spacer />
               <v-text-field
                 v-model="search"
-                :label="$t('common.search')"
+                :label="$t('search')"
                 clearable
                 dense
                 flat
@@ -38,7 +38,7 @@
                       <template #activator="{ on }">
                         <v-text-field
                           v-model="start_date"
-                          :label="$t('date.start_date')"
+                          :label="$t('start_date')"
                           v-on="on"
                           prepend-icon="mdi-calendar"
                           readonly
@@ -52,10 +52,10 @@
                       >
                         <v-spacer />
                         <v-btn @click="start_menu = false" text>
-                          {{ $t('common.cancel') }}
+                          {{ $t('cancel') }}
                         </v-btn>
                         <v-btn @click="$refs.start_menu.save(start_date), updateFilters()" text>
-                          {{ $t('common.ok') }}
+                          {{ $t('ok') }}
                         </v-btn>
                       </v-date-picker>
                     </v-menu>
@@ -74,7 +74,7 @@
                       <template #activator="{ on }">
                         <v-text-field
                           v-model="end_date"
-                          :label="$t('date.end_date')"
+                          :label="$t('end_date')"
                           v-on="on"
                           prepend-icon="mdi-calendar"
                           readonly
@@ -88,10 +88,10 @@
                       >
                         <v-spacer />
                         <v-btn @click="end_menu = false" text>
-                          {{ $t('common.cancel') }}
+                          {{ $t('cancel') }}
                         </v-btn>
                         <v-btn @click="$refs.end_menu.save(end_date), updateFilters()" text>
-                          {{ $t('common.ok') }}
+                          {{ $t('ok') }}
                         </v-btn>
                       </v-date-picker>
                     </v-menu>
@@ -99,7 +99,7 @@
                   <v-col cols="12" md="6">
                     <v-switch
                       v-model="use_bill_date"
-                      :label="$t(`date.bill_date`)"
+                      :label="$t(`bill_date`)"
                       @change="updateFilters()"
                       hint="Not Yet Implemented..."
                       messages="Not Yet Implemented..."
@@ -122,11 +122,11 @@
                 <template #top>
                   <v-row no-gutters>
                     <v-spacer />
-                    <v-btn :ripple="{ class: 'amber--text' }" :title="`${$t('common.save')} .xls`" small depressed>
+                    <v-btn :ripple="{ class: 'amber--text' }" :title="`${$t('save')} .xls`" small depressed>
                       <v-icon small class="mr-2">
                         mdi-cloud-download
                       </v-icon>
-                      <download-excel v-t="'common.download'" :fields="downloadHeaders" :data="rows" />
+                      <download-excel v-t="'download'" :fields="downloadHeaders" :data="rows" />
                     </v-btn>
                   </v-row>
                 </template>
@@ -135,7 +135,7 @@
                 <template #progress>
                   <!-- Shows an overlay when data is currently loading -->
                   <v-overlay :opacity="0.69" absolute>
-                    <span>{{ $t('common.loading') }}</span>
+                    <span>{{ $t('loading') }}</span>
                     <v-progress-linear
                       :buffer-value="0"
                       :value="0"
@@ -157,7 +157,7 @@
                 <!-- No Results (search) -->
                 <template #no-results>
                   <div class="text-left">
-                    {{ $t('common.no_search_results', { 'query': search }) }}
+                    {{ $t('no_search_results', { 'query': search }) }}
                   </div>
                 </template>
 
@@ -183,7 +183,7 @@
 
                 <!-- format vehicle_number as a vehicle-dashboard link -->
                 <template #item.vehicle_number="{ item }">
-                  <v-btn :title="$t(`common.to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
+                  <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
                 </template>
               </v-data-table>
               <!-- </v-skeleton-loader> -->
@@ -229,7 +229,7 @@ export default {
     dataLoading: vm => vm.$store.getters['reports/getLoading'],
     reportHeaders: vm => vm.$store.getters['reports/getHeaders'],
     // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(`${vm.namespace}.${column}`)]: column }))))
+    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(`${column}`)]: column }))))
   },
 
   /**
@@ -239,9 +239,7 @@ export default {
    */
   async asyncData ({ $moment, query, store, error }) {
     // console.info('asyncData()')
-    const namespace = 'reports.expenses.fuel_detail'
     const report = 'fuel-detail'
-    store.commit('reports/setNamespace', namespace)
     store.commit('reports/setReport', report)
 
     const start_date = query.start_date || $moment().subtract(1, 'months').startOf('month').format('YYYY-MM')
@@ -267,7 +265,6 @@ export default {
     }
 
     return {
-      namespace,
       report,
       end_date,
       start_date,
@@ -283,9 +280,9 @@ export default {
   head () {
     // console.info('head()')
     return {
-      title: this.$t(`${this.namespace}.report`),
+      title: this.$t(`fuel_detail`),
       meta: [
-        { hid: 'og:description', property: 'og:description', content: this.$t(`${this.namespace}.report`) }
+        { hid: 'og:description', property: 'og:description', content: this.$t(`fuel_detail`) }
       ]
     }
   },

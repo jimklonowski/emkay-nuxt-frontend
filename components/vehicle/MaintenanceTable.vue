@@ -3,14 +3,14 @@
     <v-card-title>
       <v-list-item-content two-line>
         <p class="overline text--disabled">
-          {{ $tc('date.past_days', days) }}
+          {{ $tc('past_days', days) }}
         </p>
         <v-list-item-title>
-          {{ $t('vehicle.maintenance') }}
+          {{ $t('maintenance') }}
         </v-list-item-title>
         <v-list-item-subtitle class="caption">
           <nuxt-link :to="{ path: `${this.$route.fullPath}/maintenance` }" class="text-decoration-none">
-            {{ $t('navigation.see_more') }}
+            {{ $t('more') }}
           </nuxt-link>
         </v-list-item-subtitle>
       </v-list-item-content>
@@ -18,7 +18,7 @@
       <v-spacer />
       <v-text-field
         v-model="search"
-        :label="$t('common.search')"
+        :label="$t('search')"
         clearable
         dense
         flat
@@ -63,7 +63,6 @@ export default {
     return {
       days: 180,
       initialized: false,
-      namespace: 'reports.expenses.maintenance_detail',
       search: ''
     }
   },
@@ -84,7 +83,7 @@ export default {
     headers () {
       return this.columns.map((column) => {
         return {
-          text: this.$i18n.t(`${this.namespace}.${column}`),
+          text: this.$i18n.t(column),
           value: column,
           class: 'report-column'
         }

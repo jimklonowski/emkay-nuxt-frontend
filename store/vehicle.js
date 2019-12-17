@@ -4,6 +4,8 @@ const getDefaultState = () => ({
   error: null,
   loading: false,
   driver_info: {},
+  sale_info: {},
+  order_status: {},
   vehicle_info: {},
 
   fuel_error: null,
@@ -21,11 +23,14 @@ export const actions = {
   async fetchVehicleDashboardSummary ({ commit }, filters) {
     commit('setLoading', true)
     try {
-      // const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const url = '/vehicle/summary' // mocked response
-      const { data } = await this.$axios.get(url, { params: filters })
+      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      // eslint-disable-next-line no-unused-vars
+      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      // debugger
       commit('setVehicleInfo', data.vehicle_info)
       commit('setDriverInfo', data.driver_info)
+      commit('setSaleInfo', data.sale_info)
+      commit('setOrderStatus', data.order_status_info)
     } catch (error) {
       console.error(error)
       commit('setError', error)
@@ -58,17 +63,19 @@ export const actions = {
     } finally {
       commit('setMaintenanceLoading', false)
     }
+  },
+  reset ({ commit }) {
+    commit('resetState')
   }
 }
 
 export const mutations = {
   resetState (state) {
     Object.assign(state, getDefaultState())
-    console.log('resetState clearning data')
+    console.log('vehicle state reset')
   },
   setError: set('error'),
   setLoading: set('loading'),
-  setDriverInfo: set('driver_info'),
 
   setFuelError: set('fuel_error'),
   setFuelHistory: set('fuel_history'),
@@ -77,6 +84,10 @@ export const mutations = {
   setMaintenanceError: set('maintenance_error'),
   setMaintenanceHistory: set('maintenance_history'),
   setMaintenanceLoading: set('maintenance_loading'),
+
+  setDriverInfo: set('driver_info'),
+  setSaleInfo: set('sale_info'),
+  setOrderStatus: set('order_status'),
   setVehicleInfo: set('vehicle_info')
 }
 
@@ -93,6 +104,9 @@ export const getters = {
   getMaintenanceError: state => state.maintenance_error,
   getMaintenanceHistory: state => state.maintenance_history,
   getMaintenanceLoading: state => state.maintenance_loading,
+
+  getSaleInfo: state => state.sale_info,
+  getOrderStatus: state => state.order_status,
 
   getVehicleInfo: state => state.vehicle_info,
   getVehicleNumber: state => state.vehicle_info.vehicle_number
