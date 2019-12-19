@@ -8,13 +8,13 @@ export const actions = {
    */
   async nuxtServerInit ({ commit, state }, { req }) {
     if (process.server) {
-      console.info('im the server')
+      // console.info('im the server')
     }
     const vuex = this.$cookies.get('vuex')
-    console.log('vuex:')
-    await console.dir(vuex)
+    // console.log('vuex:')
+    // await console.dir(vuex)
     if (vuex) {
-      console.log('restoring vuex from cookies')
+      await console.log('found vuex from cookies')
     }
   }
 }
