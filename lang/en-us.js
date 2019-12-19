@@ -99,6 +99,7 @@ export default {
   invoicing: "Invoicing",
   invoice_history: "Invoice History",
   invoice_number: "Invoice Number",
+  labels: "Labels",
   labor_or_part: "Labor or Part",
   language: "Language",
   lcca: "LCCA",

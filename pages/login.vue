@@ -89,7 +89,7 @@ export default {
           }
         })
         .then(() => {
-          debugger
+          // debugger
           this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
           this.$store.dispatch('account/init')
         })
@@ -97,7 +97,7 @@ export default {
           // debugger
           this.error = e + ''
         })
-        .finally((a) => {
+        .finally(() => {
           this.loading = false
           // debugger
           this.$router.push(this.localePath({ name: 'index' }))

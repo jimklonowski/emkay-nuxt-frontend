@@ -18,7 +18,8 @@ import VehicleSearch from '@/components/VehicleSearch'
 export default {
   name: 'Vehicle',
   components: { VehicleSearch },
-  layout: 'vehicle'
+  layout: 'vehicle',
+  middleware: ['auth']
 }
 </script>
 

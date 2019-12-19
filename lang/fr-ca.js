@@ -99,6 +99,7 @@ export default {
   invoicing: "Facturation",
   invoice_history: "Historique des factures",
   invoice_number: "Numéro de facture",
+  labels: "Étiquettes",
   labor_or_part: "Travail ou pièce",
   language: "La langue",
   lcca: "LCCA",

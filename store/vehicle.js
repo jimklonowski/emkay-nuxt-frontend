@@ -65,12 +65,12 @@ export const actions = {
     }
   },
   reset ({ commit }) {
-    commit('resetState')
+    commit('reset')
   }
 }
 
 export const mutations = {
-  resetState (state) {
+  reset (state) {
     Object.assign(state, getDefaultState())
     console.log('vehicle state reset')
   },

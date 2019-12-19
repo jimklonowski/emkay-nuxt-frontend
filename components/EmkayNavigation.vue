@@ -164,10 +164,9 @@ export default {
   },
   methods: {
     async logout () {
-      this.drawer = false
-      await this.$auth.logout()
+      await this.$store.dispatch('account/logout')
       // if a french user is logging out, make sure we redirect to /fr-ca/login instead of /login
-      this.$router.push(this.localePath({ name: 'login' }))
+      this.$router.push(this.$nuxt.localePath({ name: 'login' }))
     }
   }
 }

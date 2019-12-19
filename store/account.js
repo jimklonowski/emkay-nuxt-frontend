@@ -18,13 +18,22 @@ export const actions = {
       // get custom labels
       const url = '/account/account-info'
       const { data } = await this.$axios.get(url)
-      debugger
       commit('setCenterHierarchy', data.center_hierarchy)
       commit('setCustomLabels', data.custom_labels)
       // ...
     } catch (error) {
       console.error(error)
     }
+  },
+  async logout ({ commit }) {
+    // purge the current vuex state
+    commit('account/reset', null, { root: true }) // saved custom labels, centers
+    commit('reports/reset', null, { root: true }) // vuex data from the last report viewed
+    commit('vehicle/reset', null, { root: true }) // vuex data from the last vehicle dashboard viewed
+    await this.$auth.logout()
+    debugger
+    // if a french user is logging out, make sure we redirect to /fr-ca/login instead of /login
+    this.$router.push(this.$nuxt.localePath({ name: 'login' }))
   }
 }
 
