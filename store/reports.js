@@ -1,4 +1,4 @@
-import { set } from '@/utility/vuex'
+import { set, assign } from '@/utility/vuex'
 
 const getDefaultState = () => ({
   columns: [],
@@ -68,14 +68,14 @@ export const actions = {
     } finally {
       commit('setLoading', false)
     }
+  },
+  reset ({ commit }) {
+    commit('reset')
   }
 }
 
 export const mutations = {
-  reset (state) {
-    Object.assign(state, getDefaultState())
-    console.log('resetState clearing data')
-  },
+  reset: assign(getDefaultState()),
   setColumns: set('columns'),
   setData: set('data'),
   setDownloadHeaders: set('downloadHeaders'),

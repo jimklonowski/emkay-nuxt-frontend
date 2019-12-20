@@ -1,4 +1,4 @@
-import { set } from '@/utility/vuex'
+import { set, assign } from '@/utility/vuex'
 
 const getDefaultState = () => ({
   error: null,
@@ -70,10 +70,7 @@ export const actions = {
 }
 
 export const mutations = {
-  reset (state) {
-    Object.assign(state, getDefaultState())
-    console.log('vehicle state reset')
-  },
+  reset: assign(getDefaultState()),
   setError: set('error'),
   setLoading: set('loading'),
 

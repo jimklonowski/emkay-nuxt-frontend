@@ -248,6 +248,7 @@ export default function ({ $axios, redirect }) {
     })
     .onGet('/account/account-info')
     .reply(function (config) {
+      const login_messages = []
       const center_hierarchy = {}
       const custom_labels = {
         client_use_1_label: 'My Custom Label 1',
@@ -257,7 +258,7 @@ export default function ({ $axios, redirect }) {
         client_use_5_label: 'JCK 5'
       }
       // const custom_labels = ['Client Use 1 Label', 'Client Use 2 Label', 'Client Use 3 Label', 'Client Use 4 Label', 'Client Use 5 Label']
-      return [200, { center_hierarchy, custom_labels }]
+      return [200, { login_messages, center_hierarchy, custom_labels }]
     })
     .onAny().passThrough()
   // debugger
