@@ -43,7 +43,6 @@
             <tbody>
               <tr v-for="(item, key) in items" :key="key">
                 <td>{{ item.bill_date | date }}</td>
-                <td>{{ item.card_number }}</td>
                 <td>{{ item.fuel_company_name }}</td>
                 <td>
                   <v-chip :outlined="$vuetify.theme.dark" v-text="item.product_type" small />
@@ -77,7 +76,6 @@ export default {
     columns () {
       return [
         'bill_date',
-        'card_number',
         'fuel_company_name',
         'product_type',
         'quantity',

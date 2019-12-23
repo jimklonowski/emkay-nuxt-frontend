@@ -11,10 +11,10 @@
 
 /* striped datatable using .striped class */
 .theme--light.striped.v-data-table tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 .theme--dark.striped.v-data-table tbody tr:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 /* remove text-underline */

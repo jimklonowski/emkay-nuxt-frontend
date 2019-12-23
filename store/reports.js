@@ -57,14 +57,19 @@ export const actions = {
    * @param {*} filters The dbc command, subcommand, and other params
    */
   async fetchData ({ commit }, filters) {
+    commit('setError', null)
     commit('setLoading', true)
     try {
       const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.post(url, filters)
       commit('setData', data)
+      if (!success) {
+        throw new Error(message)
+      }
     } catch (error) {
-      debugger
-      commit('setError', error)
+      // debugger
+      console.error(`ERROR: ${error}`)
+      commit('setError', error.message)
     } finally {
       commit('setLoading', false)
     }

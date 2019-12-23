@@ -22,7 +22,7 @@
     <v-spacer />
     <template #extension>
       <v-toolbar-items>
-        <v-btn v-for="(item, key) in actions" :key="key" :to="item.to" text x-small>
+        <v-btn v-for="(item, key) in actions" :key="key" :to="localePath(item.to)" text x-small>
           {{ $t(item.key) }}
         </v-btn>
       </v-toolbar-items>
@@ -42,17 +42,17 @@ export default {
         {
           key: 'edit_custom_labels',
           icon: '',
-          to: { path: `${this.$route.fullPath}/edit-custom-labels` }
+          to: { path: `/vehicle/${this.$route.params.vehicle}/edit-custom-labels` }
         },
         {
           key: 'reassign_vehicle',
           icon: '',
-          to: { path: `${this.$route.fullPath}/reassign-vehicle` }
+          to: { path: `/vehicle/${this.$route.params.vehicle}/reassign-vehicle` }
         },
         {
           key: 'order_status',
           icon: '',
-          to: { path: `${this.$route.fullPath}/order-status` }
+          to: { path: `/vehicle/${this.$route.params.vehicle}/order-status` }
         }
       ]
     }

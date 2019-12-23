@@ -52,14 +52,18 @@ export const actions = {
     }
   },
   async fetchMaintenanceHistory ({ commit }, filters) {
+    commit('setMaintenanceError', null)
     commit('setMaintenanceLoading', true)
     try {
       const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { data } } = await this.$axios.post(url, filters)
+      const { data: { data, success, message } } = await this.$axios.post(url, filters)
+      if (!success) {
+        throw new Error(message)
+      }
       commit('setMaintenanceHistory', data)
     } catch (error) {
-      console.error(error)
-      commit('setMaintenanceError', error)
+      commit('setMaintenanceError', error.message)
+      commit('setMaintenanceHistory', [])
     } finally {
       commit('setMaintenanceLoading', false)
     }

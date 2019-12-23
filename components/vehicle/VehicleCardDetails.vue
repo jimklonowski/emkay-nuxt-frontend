@@ -1,44 +1,48 @@
 <template>
   <v-tabs
     v-model="tab"
-    slider-size="3"
-    vertical
+    grow
+    show-arrows
+    icons-and-text
   >
     <v-tab v-for="(category, c) in tabs" :key="`tab${c}`" class="justify-start overline">
-      <v-icon v-text="`${category.icon}`" left />
       {{ $t(category.key) }}
+      <v-icon v-text="`${category.icon}`" left />
     </v-tab>
-    <v-tabs-items v-model="tab" vertical>
+    <v-tabs-items v-model="tab">
       <v-tab-item v-for="(category, c) in tabs" :key="`tabitem${c}`">
-        <v-flex>
-          <v-list>
-            <v-list-item v-for="(item, i) in category.items" :key="`item${i}`" dense>
-              <v-list-item-icon>
-                <v-icon v-text="item.icon" />
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title class="body-2">
-                  {{ item.value }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="caption">
-                  {{ item.text }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-          <client-only>
-            <v-spacer />
-            <v-btn
-              v-for="(action, a) in category.actions"
-              :key="a"
-              :to="action.to"
-              v-text="$t(action.key)"
-              small
-              text
-              nuxt
-            />
-          </client-only>
-        </v-flex>
+        <v-sheet color="transparent darken-1">
+          <v-container>
+            <v-row>
+              <v-col v-for="(item, i) in category.items" :key="`item${i}`" cols="6" dense>
+                <v-list-item dense>
+                  <v-list-item-icon>
+                    <v-icon v-text="item.icon" />
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title class="body-2">
+                      {{ item.value }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="caption">
+                      {{ item.text }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-col>
+              <v-col v-for="(action, a) in category.actions" :key="a" cols="6" dense>
+                <client-only>
+                  <v-btn
+                    :to="localePath(action.to)"
+                    v-text="$t(action.key)"
+                    small
+                    text
+                    nuxt
+                  />
+                </client-only>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-sheet>
       </v-tab-item>
     </v-tabs-items>
   </v-tabs>
@@ -86,7 +90,7 @@ export default {
           actions: [
             {
               key: 'edit_custom_labels',
-              to: { path: `${this.$route.fullPath}/edit-custom-labels` }
+              to: { path: `/vehicle/${this.$route.params.vehicle}/edit-custom-labels` }
             }
           ],
           items: [

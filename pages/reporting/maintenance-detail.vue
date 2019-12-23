@@ -150,7 +150,7 @@
                 <!-- No Data (from server) -->
                 <template #no-data>
                   <div class="text-left">
-                    No data was returned.
+                    {{ $t('no_results') }}
                   </div>
                 </template>
 
@@ -270,6 +270,7 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    rows: vm => vm.$store.getters['reports/getData'],
     columns: vm => vm.$store.getters['reports/getColumns'],
     dataLoading: vm => vm.$store.getters['reports/getLoading'],
     reportHeaders: vm => vm.$store.getters['reports/getHeaders'],
@@ -309,8 +310,7 @@ export default {
       report,
       end_date,
       start_date,
-      use_bill_date,
-      rows: store.getters['reports/getData']
+      use_bill_date
     }
   },
 

@@ -4,11 +4,11 @@ const getDefaultState = () => ({
   login_messages: [],
   center_hierarchy: {},
   custom_labels: {
-    client_use_label_1: 'Client Use Label 1',
-    client_use_label_2: 'Client Use Label 2',
-    client_use_label_3: 'Client Use Label 3',
-    client_use_label_4: 'Client Use Label 4',
-    client_use_label_5: 'Client Use Label 5'
+    client_use_1_label: 'Client Use Label 1',
+    client_use_2_label: 'Client Use Label 2',
+    client_use_3_label: 'Client Use Label 3',
+    client_use_4_label: 'Client Use Label 4',
+    client_use_5_label: 'Client Use Label 5'
   }
 })
 
@@ -25,7 +25,6 @@ export const actions = {
       // get custom labels
       const url = '/account/account-info'
       const { data: { login_messages, center_hierarchy, custom_labels } } = await this.$axios.get(url)
-      debugger
       commit('setLoginMessages', login_messages)
       commit('setCenterHierarchy', center_hierarchy)
       commit('setCustomLabels', custom_labels)
