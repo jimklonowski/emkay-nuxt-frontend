@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="auto">
+      <v-col cols="12">
         <v-btn :to="localePath({ path: `/vehicle/${$route.params.vehicle}` })" exact nuxt text>
           <v-icon class="mr-2">
             mdi-chevron-left
@@ -13,15 +13,11 @@
     <v-row>
       <v-col cols="12">
         <v-card outlined shaped>
-          <v-card-title>
-            <v-list-item-content>
-              <p class="overline text--disabled">
-                {{ $route.params.vehicle }}
-              </p>
-              <v-list-item-title>
-                {{ $t('fuel') }}
-              </v-list-item-title>
-            </v-list-item-content>
+          <v-toolbar flat>
+            <v-toolbar-title>
+              {{ $t('fuel') }}
+              <span class="overline text--disabled">{{ $route.params.vehicle }}</span>
+            </v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -36,7 +32,7 @@
               solo
               single-line
             />
-          </v-card-title>
+          </v-toolbar>
           <v-card-actions>
             <v-container>
               <v-row>

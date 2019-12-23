@@ -235,7 +235,9 @@ export default {
   */
   moment: {
     defaultLocale: 'en',
-    locales: ['fr-ca', 'en-ca']
+    locales: ['fr-ca', 'en-ca'],
+    // This doesn't work.  Setting $nuxt.$moment.suppressDeprecationWarnings = true does work.
+    suppressDeprecationWarnings: true
   },
   /*
   ** vuetify module configuration

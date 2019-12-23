@@ -1,17 +1,17 @@
 <template>
   <v-container>
-    <v-row dense>
-      <v-col cols="12" class="mx-auto">
-        <v-card class="elevation-1">
+    <v-row>
+      <v-col cols="12">
+        <v-card shaped outlined>
           <v-toolbar flat>
-            <v-toolbar-title class="subtitle-1 hidden-sm-and-down">
+            <v-toolbar-title class="hidden-sm-and-down">
               {{ $t('fuel_detail') }}
             </v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
               :label="$t('search')"
-              append-icon="mdi-magnify"
+              prepend-inner-icon="mdi-magnify"
               clearable
               dense
               flat
@@ -22,7 +22,6 @@
               solo
             />
           </v-toolbar>
-          <v-divider />
           <v-subheader class="overline">
             {{ $t('report_filters') }}
           </v-subheader>
@@ -41,17 +40,15 @@
                 >
                   <template #activator="{ on }">
                     <v-text-field
-                      v-model="start_date"
+                      :value="$moment(start_date).format('L')"
                       :label="$t('start_date')"
                       v-on="on"
-                      max-width="50%"
                       prepend-icon="mdi-calendar"
                       readonly
                     />
                   </template>
                   <v-date-picker
                     v-model="start_date"
-                    type="month"
                     no-title
                     scrollable
                   >
@@ -78,17 +75,15 @@
                 >
                   <template #activator="{ on }">
                     <v-text-field
-                      v-model="end_date"
+                      :value="$moment(end_date).format('L')"
                       :label="$t('end_date')"
                       v-on="on"
-                      max-width="50%"
                       prepend-icon="mdi-calendar"
                       readonly
                     />
                   </template>
                   <v-date-picker
                     v-model="end_date"
-                    type="month"
                     no-title
                     scrollable
                   >
@@ -103,7 +98,6 @@
                 </v-menu>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-spacer />
                 <v-switch
                   v-model="use_bill_date"
                   :label="$t(`bill_date`)"
@@ -114,103 +108,101 @@
               </v-col>
             </v-row>
           </v-container>
-          <v-divider />
-          <v-skeleton-loader :loading="dataLoading" type="table">
-            <v-data-table
-              :headers="reportHeaders"
-              :hide-default-header="dataLoading"
-              :loading="dataLoading"
-              :items-per-page="15"
-              :items="rows"
-              :search="search"
-              class="striped"
-            >
-              <!-- configure the #no-data message -->
-              <template #no-data>
-                <div class="text-left">
-                  {{ $t('no_data_found', { 'message': error }) }}
-                </div>
-              </template>
-
-              <!-- configure the #no-results message -->
-              <template #no-results>
-                <div class="text-left">
-                  {{ $t('no_search_results', { 'query': search }) }}
-                </div>
-              </template>
-
-              <!-- configure how #item rows are rendered -->
-              <template #item="{ item }">
-                <tr>
-                  <td>{{ item.amount | currency }}</td>
-                  <td>{{ item.bill_date | date }}</td>
-                  <td>{{ item.bill_sort }}</td>
-                  <td>
-                    <client-only>
-                      <v-chip :outlined="$vuetify.theme.dark" v-text="item.card_number" small />
-                    </client-only>
-                  </td>
-                  <td>{{ item.center_code }}</td>
-                  <td>{{ item.center_name }}</td>
-                  <td>{{ item.client_use_1 }}</td>
-                  <td>{{ item.client_use_2 }}</td>
-                  <td>{{ item.client_use_3 }}</td>
-                  <td>{{ item.client_use_4 }}</td>
-                  <td>{{ item.client_use_5 }}</td>
-                  <td>{{ item.client_vehicle_number }}</td>
-                  <td>{{ item.driver_id }}</td>
-                  <td>{{ item.driver_name }}</td>
-                  <td>{{ item.emkay_invoice_date | date }}</td>
-                  <td>{{ item.emkay_invoice_number }}</td>
-                  <td>{{ item.engine_fuel_type }}</td>
-                  <td>{{ item.exception }}</td>
-                  <td>{{ item.fuel_card_vendor }}</td>
-                  <td>{{ item.fuel_company_name }}</td>
-                  <td>{{ item.fuel_company_number }}</td>
-                  <td>{{ item.invoice_number }}</td>
-                  <td>{{ item.level_01 }}</td>
-                  <td>{{ item.level_02 }}</td>
-                  <td>{{ item.level_03 }}</td>
-                  <td>{{ item.merchant_address }}</td>
-                  <td>{{ item.merchant_city }}</td>
-                  <td>{{ item.merchant_state }}</td>
-                  <td>{{ item.merchant_zip }}</td>
-                  <td>{{ item.model_year }}</td>
-                  <td>{{ item.odometer }}</td>
-                  <td>{{ item.premium }}</td>
-                  <td>{{ item.product }}</td>
-                  <td>{{ item.product_type }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.service_date | date }}</td>
-                  <td>{{ item.service_time }}</td>
-                  <td>{{ item.tank_capacity }}</td>
-                  <td>{{ item.tax_exempt }}</td>
-                  <td>{{ item.unit_price | currency(3,3) }}</td>
-                  <td>{{ item.vehicle_make }}</td>
-                  <td>{{ item.vehicle_model }}</td>
-                  <td>
-                    <client-only>
-                      <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt small />
-                    </client-only>
-                  </td>
-                  <td>{{ item.vin }}</td>
-                  <td>{{ item.voucher }}</td>
-                </tr>
-              </template>
-            </v-data-table>
-          </v-skeleton-loader>
-          <v-divider />
+          <!-- Download as XLS button -->
           <v-toolbar flat>
             <v-spacer />
-            <client-only>
-              <v-btn :ripple="false" :title="`${$t('save')} .xls`" small depressed>
-                <v-icon small class="mr-2">
-                  mdi-cloud-download
-                </v-icon>
-                <download-excel v-t="'download'" :fields="downloadHeaders" :data="rows" />
-              </v-btn>
-            </client-only>
+            <v-btn :title="`${$t('save')} .xls`" small depressed>
+              <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
+              <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
+            </v-btn>
           </v-toolbar>
+          <v-card-text class="px-0">
+            <v-skeleton-loader :loading="loading" type="table">
+              <v-data-table
+                :headers="headers"
+                :hide-default-header="loading"
+                :loading="loading"
+                :items-per-page="10"
+                :items="rows"
+                :search="search"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                class="striped"
+              >
+                <!-- Configure the #no-data message (no data from server) -->
+                <template #no-data>
+                  <div class="text-left">
+                    {{ $t('no_data_found', { 'message': error }) }}
+                  </div>
+                </template>
+
+                <!-- Configure the #no-results message (no rows in filtered search) -->
+                <template #no-results>
+                  <div class="text-left">
+                    {{ $t('no_search_results', { 'query': search }) }}
+                  </div>
+                </template>
+
+                <!-- Configure each #item row is rendered -->
+                <template #item="{ item }">
+                  <tr>
+                    <td>{{ item.amount | currency }}</td>
+                    <td>{{ item.bill_date | date }}</td>
+                    <td>{{ item.bill_sort }}</td>
+                    <td>
+                      <client-only>
+                        <v-chip :outlined="$vuetify.theme.dark" v-text="item.card_number" small />
+                      </client-only>
+                    </td>
+                    <td>{{ item.center_code }}</td>
+                    <td>{{ item.center_name }}</td>
+                    <td>{{ item.client_use_1 }}</td>
+                    <td>{{ item.client_use_2 }}</td>
+                    <td>{{ item.client_use_3 }}</td>
+                    <td>{{ item.client_use_4 }}</td>
+                    <td>{{ item.client_use_5 }}</td>
+                    <td>{{ item.client_vehicle_number }}</td>
+                    <td>{{ item.driver_id }}</td>
+                    <td>{{ item.driver_name }}</td>
+                    <td>{{ item.emkay_invoice_date | date }}</td>
+                    <td>{{ item.emkay_invoice_number }}</td>
+                    <td>{{ item.engine_fuel_type }}</td>
+                    <td>{{ item.exception }}</td>
+                    <td>{{ item.fuel_card_vendor }}</td>
+                    <td>{{ item.fuel_company_name }}</td>
+                    <td>{{ item.fuel_company_number }}</td>
+                    <td>{{ item.invoice_number }}</td>
+                    <td>{{ item.level_01 }}</td>
+                    <td>{{ item.level_02 }}</td>
+                    <td>{{ item.level_03 }}</td>
+                    <td>{{ item.merchant_address }}</td>
+                    <td>{{ item.merchant_city }}</td>
+                    <td>{{ item.merchant_state }}</td>
+                    <td>{{ item.merchant_zip }}</td>
+                    <td>{{ item.model_year }}</td>
+                    <td>{{ item.odometer }}</td>
+                    <td>{{ item.premium }}</td>
+                    <td>{{ item.product }}</td>
+                    <td>{{ item.product_type }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.service_date | date }}</td>
+                    <td>{{ item.service_time }}</td>
+                    <td>{{ item.tank_capacity }}</td>
+                    <td>{{ item.tax_exempt }}</td>
+                    <td>{{ item.unit_price | currency(3,3) }}</td>
+                    <td>{{ item.vehicle_make }}</td>
+                    <td>{{ item.vehicle_model }}</td>
+                    <td>
+                      <client-only>
+                        <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt small />
+                      </client-only>
+                    </td>
+                    <td>{{ item.vin }}</td>
+                    <td>{{ item.voucher }}</td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-skeleton-loader>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -249,13 +241,10 @@ export default {
     rows: vm => vm.$store.getters['reports/getData'],
     error: vm => vm.$store.getters['reports/getError'],
     columns: vm => vm.$store.getters['reports/getColumns'],
-    dataLoading: vm => vm.$store.getters['reports/getLoading'],
-    reportHeaders: vm => vm.$store.getters['reports/getHeaders'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
+    headers: vm => vm.$store.getters['reports/getHeaders'],
     // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
-    reportText () {
-      return `${this.$moment(this.start_date).format('L')} - ${this.$moment(this.end_date).format('L')}`
-    }
+    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
   },
 
   /**
@@ -268,27 +257,23 @@ export default {
     const report = 'fuel-detail'
     store.commit('reports/setReport', report)
 
-    const start_date = query.start_date || $moment().subtract(1, 'months').startOf('month').format('YYYY-MM')
-    const end_date = query.end_date || $moment().startOf('month').format('YYYY-MM')
+    const start_date = query.start_date || $moment().subtract(30, 'days').format('YYYY-MM-DD')
+    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
     const filters = {
       command: 'FUEL',
-      subcommand: 'JSONDETAIL',
       customer: 'EM102',
+      json: 'Y',
       start_date,
       end_date,
       use_bill_date
     }
 
-    try {
-      // Get the headers, then get the data.
-      await store.dispatch('reports/fetchHeaders').then(async () => {
-        await store.dispatch('reports/fetchData', filters)
-      })
-    } catch (err) {
-      error({ statusCode: 408, message: 'Timed Out' })
-    }
+    // Get the headers, then get the data.
+    await store.dispatch('reports/fetchHeaders').then(async () => {
+      await store.dispatch('reports/fetchData', filters)
+    })
 
     return {
       report,
@@ -303,11 +288,11 @@ export default {
    * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
    * https://nuxtjs.org/api/pages-head */
   head () {
-    // console.info('head()')
+    const title = this.$t('fuel_detail')
     return {
-      title: this.$t(`fuel_detail`),
+      title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: this.$t(`fuel_detail`) }
+        { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
   },

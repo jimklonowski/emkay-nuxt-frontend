@@ -1,242 +1,226 @@
 <template>
-  <client-only>
-    <v-container>
-      <v-row>
-        <v-col>
-          <v-card>
-            <v-card-title>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <v-card shaped outlined>
+          <v-toolbar flat>
+            <v-toolbar-title class="hidden-sm-and-down">
               {{ $t(`maintenance_detail`) }}
-              <v-spacer />
-              <v-text-field
-                v-model="search"
-                :label="$t('search')"
-                clearable
-                dense
-                flat
-                hide-details
-                outlined
-                prepend-inner-icon="mdi-magnify"
-                rounded
-                solo
-                single-line
-              />
-            </v-card-title>
-            <v-card-actions>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-menu
-                      ref="start_menu"
-                      v-model="start_menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="start_date"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <template #activator="{ on }">
-                        <v-text-field
-                          v-model="start_date"
-                          :label="$t('start_date')"
-                          v-on="on"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                        />
-                      </template>
-                      <v-date-picker
-                        v-model="start_date"
-                        type="month"
-                        no-title
-                        scrollable
-                      >
-                        <v-spacer />
-                        <v-btn @click="start_menu = false" text>
-                          {{ $t('cancel') }}
-                        </v-btn>
-                        <v-btn @click="$refs.start_menu.save(start_date), updateFilters()" text>
-                          {{ $t('ok') }}
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-menu
-                      ref="end_menu"
-                      v-model="end_menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="end_date"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <template #activator="{ on }">
-                        <v-text-field
-                          v-model="end_date"
-                          :label="$t('end_date')"
-                          v-on="on"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                        />
-                      </template>
-                      <v-date-picker
-                        v-model="end_date"
-                        type="month"
-                        no-title
-                        scrollable
-                      >
-                        <v-spacer />
-                        <v-btn @click="end_menu = false" text>
-                          {{ $t('cancel') }}
-                        </v-btn>
-                        <v-btn @click="$refs.end_menu.save(end_date), updateFilters()" text>
-                          {{ $t('ok') }}
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-switch
-                      v-model="use_bill_date"
-                      :label="$t(`bill_date`)"
-                      @change="updateFilters()"
-                      hint="Not Yet Implemented..."
-                      messages="Not Yet Implemented..."
+            </v-toolbar-title>
+            <v-spacer />
+            <v-text-field
+              v-model="search"
+              :label="$t('search')"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              dense
+              flat
+              hide-details
+              outlined
+              rounded
+              single-line
+              solo
+            />
+          </v-toolbar>
+          <v-subheader class="overline">
+            {{ $t('report_filters') }}
+          </v-subheader>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-menu
+                  ref="start_menu"
+                  v-model="start_menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="start_date"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(start_date).format('L')"
+                      :label="$t('start_date')"
+                      v-on="on"
+                      prepend-icon="mdi-calendar"
+                      readonly
                     />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-actions>
-            <v-card-text>
-              <!-- <v-skeleton-loader :loading="dataLoading" type="table"> -->
+                  </template>
+                  <v-date-picker
+                    v-model="start_date"
+                    no-title
+                    scrollable
+                  >
+                    <v-spacer />
+                    <v-btn @click="start_menu = false" text>
+                      {{ $t('cancel') }}
+                    </v-btn>
+                    <v-btn @click="$refs.start_menu.save(start_date), updateFilters()" text>
+                      {{ $t('ok') }}
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-menu
+                  ref="end_menu"
+                  v-model="end_menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="end_date"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(end_date).format('L')"
+                      :label="$t('end_date')"
+                      v-on="on"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="end_date"
+                    no-title
+                    scrollable
+                  >
+                    <v-spacer />
+                    <v-btn @click="end_menu = false" text>
+                      {{ $t('cancel') }}
+                    </v-btn>
+                    <v-btn @click="$refs.end_menu.save(end_date), updateFilters()" text>
+                      {{ $t('ok') }}
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-switch
+                  v-model="use_bill_date"
+                  :label="$t(`bill_date`)"
+                  @change="updateFilters()"
+                  hint="Not Yet Implemented..."
+                  messages="Not Yet Implemented..."
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+          <!-- Download as XLS button -->
+          <v-toolbar flat>
+            <v-spacer />
+            <client-only>
+              <v-btn :ripple="false" :title="`${$t('save')} .xls`" small depressed>
+                <v-icon small class="mr-2">
+                  mdi-cloud-download
+                </v-icon>
+                <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
+              </v-btn>
+            </client-only>
+          </v-toolbar>
+          <v-card-text class="px-0">
+            <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                ref="dt"
-                :loading="dataLoading"
-                :headers="reportHeaders"
+                :headers="headers"
+                :hide-default-header="loading"
+                :loading="loading"
+                :items-per-page="10"
                 :items="rows"
                 :search="search"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
                 class="striped"
               >
-                <!-- ** BELOW ARE (some) SLOTS THAT CAN BE CUSTOMIZED FOR THE DEFAULT V-DATA-TABLE https://vuetifyjs.com/en/components/data-tables#api ** -->
-                <template #top>
-                  <v-row no-gutters>
-                    <v-spacer />
-                    <v-btn :ripple="{ class: 'amber--text' }" :title="`${$t('save')} .xls`" small depressed>
-                      <v-icon small class="mr-2">
-                        mdi-cloud-download
-                      </v-icon>
-                      <download-excel v-t="'download'" :fields="downloadHeaders" :data="rows" />
-                    </v-btn>
-                  </v-row>
-                </template>
-
-                <!-- Datatable loading indicator -->
-                <template #progress>
-                  <!-- Shows an overlay when data is currently loading -->
-                  <v-overlay :opacity="0.69" absolute>
-                    <span>{{ $t('loading') }}</span>
-                    <v-progress-linear
-                      :buffer-value="0"
-                      :value="0"
-                      color="amber"
-                      height="6"
-                      rounded
-                      stream
-                    />
-                  </v-overlay>
-                </template>
-
-                <!-- No Data (from server) -->
+                <!-- Configure the #no-data message (no data from server) -->
                 <template #no-data>
                   <div class="text-left">
-                    {{ $t('no_results') }}
+                    {{ $t('no_data_found', { 'message': error }) }}
                   </div>
                 </template>
 
-                <!-- No Results (search) -->
+                <!-- Configure the #no-results message (no rows in filtered search) -->
                 <template #no-results>
                   <div class="text-left">
                     {{ $t('no_search_results', { 'query': search }) }}
                   </div>
                 </template>
 
-                <!-- format report columns -->
-                <template #body="{ items }">
-                  <tbody>
-                    <tr v-for="(item, key) in items" :key="key">
-                      <td>{{ item.active }}</td>
-                      <td>{{ item.amount | currency }}</td>
-                      <td>{{ item.ata_group }}</td>
-                      <td>{{ item.ata_group_description }}</td>
-                      <td>{{ item.bill_sort }}</td>
-                      <td>{{ item.brake_manufacturer }}</td>
-                      <td>{{ item.brake_thickness }}</td>
-                      <td>{{ item.center_code }}</td>
-                      <td>{{ item.center_name }}</td>
-                      <td>{{ item.charge_code }}</td>
-                      <td>{{ item.client_use_1 }}</td>
-                      <td>{{ item.client_use_2 }}</td>
-                      <td>{{ item.client_use_3 }}</td>
-                      <td>{{ item.client_use_4 }}</td>
-                      <td>{{ item.client_use_5 }}</td>
-                      <td>{{ item.client_vehicle_number }}</td>
-                      <td>{{ item.customer_po }}</td>
-                      <td>{{ item.description }}</td>
-                      <td>{{ item.driver_name }}</td>
-                      <td>{{ item.engine_hours }}</td>
-                      <td>{{ item.expense_category }}</td>
-                      <td>{{ item.front_left_brake }}</td>
-                      <td>{{ item.front_left_drum }}</td>
-                      <td>{{ item.front_left_rotor }}</td>
-                      <td>{{ item.front_left_tire }}</td>
-                      <td>{{ item.front_right_brake }}</td>
-                      <td>{{ item.front_right_drum }}</td>
-                      <td>{{ item.front_right_rotor }}</td>
-                      <td>{{ item.front_right_tire }}</td>
-                      <td>{{ item.gl_code }}</td>
-                      <td>{{ item.invoice_number }}</td>
-                      <td>{{ item.labor_or_part }}</td>
-                      <td>{{ item.level_01 }}</td>
-                      <td>{{ item.level_02 }}</td>
-                      <td>{{ item.level_03 }}</td>
-                      <td>{{ item.maintenance_category }}</td>
-                      <td>{{ item.maintenance_code }}</td>
-                      <td>{{ item.model_year }}</td>
-                      <td>{{ item.odometer }}</td>
-                      <td>{{ item.quantity }}</td>
-                      <td>{{ item.rear_left_brake }}</td>
-                      <td>{{ item.rear_left_drum }}</td>
-                      <td>{{ item.rear_left_rotor }}</td>
-                      <td>{{ item.rear_left_tire }}</td>
-                      <td>{{ item.rear_right_brake }}</td>
-                      <td>{{ item.rear_right_drum }}</td>
-                      <td>{{ item.rear_right_rotor }}</td>
-                      <td>{{ item.rear_right_tire }}</td>
-                      <td>{{ item.service_date | date }}</td>
-                      <td>{{ item.tire_manufacturer }}</td>
-                      <td>{{ item.tire_model }}</td>
-                      <td>{{ item.tire_size }}</td>
-                      <td>{{ item.vehicle_make }}</td>
-                      <td>{{ item.vehicle_model }}</td>
-                      <td>
+                <!-- Configure each #item row is rendered -->
+                <template #item="{ item }">
+                  <tr>
+                    <td>{{ item.active }}</td>
+                    <td>{{ item.amount | currency }}</td>
+                    <td>{{ item.ata_group }}</td>
+                    <td>{{ item.ata_group_description }}</td>
+                    <td>{{ item.bill_sort }}</td>
+                    <td>{{ item.brake_manufacturer }}</td>
+                    <td>{{ item.brake_thickness }}</td>
+                    <td>{{ item.center_code }}</td>
+                    <td>{{ item.center_name }}</td>
+                    <td>{{ item.charge_code }}</td>
+                    <td>{{ item.client_use_1 }}</td>
+                    <td>{{ item.client_use_2 }}</td>
+                    <td>{{ item.client_use_3 }}</td>
+                    <td>{{ item.client_use_4 }}</td>
+                    <td>{{ item.client_use_5 }}</td>
+                    <td>{{ item.client_vehicle_number }}</td>
+                    <td>{{ item.customer_po }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.driver_name }}</td>
+                    <td>{{ item.engine_hours }}</td>
+                    <td>{{ item.expense_category }}</td>
+                    <td>{{ item.front_left_brake }}</td>
+                    <td>{{ item.front_left_drum }}</td>
+                    <td>{{ item.front_left_rotor }}</td>
+                    <td>{{ item.front_left_tire }}</td>
+                    <td>{{ item.front_right_brake }}</td>
+                    <td>{{ item.front_right_drum }}</td>
+                    <td>{{ item.front_right_rotor }}</td>
+                    <td>{{ item.front_right_tire }}</td>
+                    <td>{{ item.gl_code }}</td>
+                    <td>{{ item.invoice_number }}</td>
+                    <td>{{ item.labor_or_part }}</td>
+                    <td>{{ item.level_01 }}</td>
+                    <td>{{ item.level_02 }}</td>
+                    <td>{{ item.level_03 }}</td>
+                    <td>{{ item.maintenance_category }}</td>
+                    <td>{{ item.maintenance_code }}</td>
+                    <td>{{ item.model_year }}</td>
+                    <td>{{ item.odometer }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.rear_left_brake }}</td>
+                    <td>{{ item.rear_left_drum }}</td>
+                    <td>{{ item.rear_left_rotor }}</td>
+                    <td>{{ item.rear_left_tire }}</td>
+                    <td>{{ item.rear_right_brake }}</td>
+                    <td>{{ item.rear_right_drum }}</td>
+                    <td>{{ item.rear_right_rotor }}</td>
+                    <td>{{ item.rear_right_tire }}</td>
+                    <td>{{ item.service_date | date }}</td>
+                    <td>{{ item.tire_manufacturer }}</td>
+                    <td>{{ item.tire_model }}</td>
+                    <td>{{ item.tire_size }}</td>
+                    <td>{{ item.vehicle_make }}</td>
+                    <td>{{ item.vehicle_model }}</td>
+                    <td>
+                      <client-only>
                         <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
-                      </td>
-                      <td>{{ item.vendor_factor }}</td>
-                      <td>{{ item.vendor_name }}</td>
-                      <td>{{ item.vendor_number }}</td>
-                      <td>{{ item.voucher }}</td>
-                    </tr>
-                  </tbody>
+                      </client-only>
+                    </td>
+                    <td>{{ item.vendor_factor }}</td>
+                    <td>{{ item.vendor_name }}</td>
+                    <td>{{ item.vendor_number }}</td>
+                    <td>{{ item.voucher }}</td>
+                  </tr>
                 </template>
-                <!-- </v-skeleton-loader> -->
               </v-data-table>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </client-only>
+            </v-skeleton-loader>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -256,11 +240,9 @@ export default {
    * Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain!
    */
   data (context) {
-    // console.info('data()')
     return {
       end_menu: false,
       start_menu: false,
-      loading: false,
       search: ''
     }
   },
@@ -271,11 +253,12 @@ export default {
    */
   computed: {
     rows: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
     columns: vm => vm.$store.getters['reports/getColumns'],
-    dataLoading: vm => vm.$store.getters['reports/getLoading'],
-    reportHeaders: vm => vm.$store.getters['reports/getHeaders'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
+    headers: vm => vm.$store.getters['reports/getHeaders'],
     // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-    downloadHeaders: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
+    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
   },
 
   /**
@@ -284,12 +267,12 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store }) {
-    // console.info('asyncData()')
     const report = 'maintenance-detail'
     store.commit('reports/setReport', report)
 
-    const start_date = query.start_date || $moment().subtract(1, 'months').startOf('month').format('YYYY-MM')
-    const end_date = query.end_date || $moment().startOf('month').format('YYYY-MM')
+    // if no date params in query, then use 30day period ending with today
+    const start_date = query.start_date || $moment().subtract(30, 'days').format('YYYY-MM-DD')
+    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
     const filters = {
@@ -319,11 +302,11 @@ export default {
    * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
    * https://nuxtjs.org/api/pages-head */
   head () {
-    // console.info('head()')
+    const title = this.$t(`maintenance_detail`)
     return {
-      title: this.$t(`maintenance_detail`),
+      title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: this.$t(`maintenance_detail`) }
+        { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
   },
@@ -354,6 +337,11 @@ export default {
    * Nuxt.js lets you define a validator method inside your dynamic route component.
    * https://nuxtjs.org/api/pages-validate */
   validate ({ $moment, query }) {
+    // if (query.start_date && query.end_date) {
+    //   if ($moment(query.start_date).isAfter(query.end_date)) {
+    //     throw new Error('Start Date cannot be after End Date')
+    //   }
+    // }
     // console.info('validate()')
     // add this later, we can forbid invalid queries from being manually typed
     // if (query.start_date && !$moment(query.start_date).isValid()) {

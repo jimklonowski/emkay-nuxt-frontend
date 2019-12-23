@@ -49,7 +49,7 @@ export default {
      */
     changeLocale (locale) {
       this.$moment.locale(locale.iso) // $moment.locale('en-ca')
-      this.$vuetify.lang.current = locale.alt // = 'enCA'
+      this.$vuetify.lang.current = locale.code === 'en' ? locale.code : locale.alt // $vuetify.lang.current='en'||'enCA'||'frCA'
       this.$router.replace(this.switchLocalePath(locale.code)) // navigates to current route with current locale set.
     }
   }
