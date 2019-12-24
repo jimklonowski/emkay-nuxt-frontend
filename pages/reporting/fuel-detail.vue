@@ -22,10 +22,10 @@
               solo
             />
           </v-toolbar>
-          <v-subheader class="overline">
-            {{ $t('report_filters') }}
-          </v-subheader>
           <v-container>
+            <v-subheader class="overline">
+              {{ $t('report_filters') }}
+            </v-subheader>
             <v-row>
               <v-col cols="12" sm="6">
                 <v-menu
@@ -113,19 +113,22 @@
             <v-spacer />
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-              <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
+              <client-only>
+                <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
+              </client-only>
             </v-btn>
           </v-toolbar>
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                :headers="headers"
-                :hide-default-header="loading"
-                :loading="loading"
-                :items-per-page="10"
-                :items="rows"
-                :search="search"
                 :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                :headers="headers"
+                :items="rows"
+                :items-per-page="15"
+                :loading="loading"
+                :search="search"
+                :sort-by="['service_date']"
+                :sort-desc="[true, true]"
                 class="striped"
               >
                 <!-- Configure the #no-data message (no data from server) -->
@@ -145,8 +148,9 @@
                 <!-- Configure each #item row is rendered -->
                 <template #item="{ item }">
                   <tr>
-                    <td>{{ item.amount | currency }}</td>
+                    <td>{{ item.service_date | date }}</td>
                     <td>{{ item.bill_date | date }}</td>
+                    <td>{{ item.amount | currency }}</td>
                     <td>{{ item.bill_sort }}</td>
                     <td>
                       <client-only>
@@ -184,7 +188,6 @@
                     <td>{{ item.product }}</td>
                     <td>{{ item.product_type }}</td>
                     <td>{{ item.quantity }}</td>
-                    <td>{{ item.service_date | date }}</td>
                     <td>{{ item.service_time }}</td>
                     <td>{{ item.tank_capacity }}</td>
                     <td>{{ item.tax_exempt }}</td>
@@ -215,7 +218,6 @@
  * When a date filter changes, a call is made to updateFilters which updates the route's query parameters (?start=2019-11&end=2019-11&...)
  * watchQuery listens for changes in the query parameters and onchange triggers all component methods (i.e. asyncData which will re-request data with new parameters)
  */
-/* eslint-disable camelcase */
 export default {
   name: 'FuelDetail',
 
@@ -225,7 +227,6 @@ export default {
    * Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain!
    */
   data (context) {
-    // console.info('data()')
     return {
       end_menu: false,
       start_menu: false,
@@ -238,13 +239,80 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    // columns: vm => vm.$store.getters['reports/getColumns'],
+    // downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
+    // headers: vm => vm.$store.getters['reports/getHeaders'],
     rows: vm => vm.$store.getters['reports/getData'],
     error: vm => vm.$store.getters['reports/getError'],
-    columns: vm => vm.$store.getters['reports/getColumns'],
     loading: vm => vm.$store.getters['reports/getLoading'],
-    headers: vm => vm.$store.getters['reports/getHeaders'],
-    // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
+    columns () {
+      // TODO: Additional logic for ordering of columns and which columns should be in report
+      // Returns an array of string[]
+      return [
+        'service_date',
+        'bill_date',
+        'amount',
+        'bill_sort',
+        'card_number',
+        'center_code',
+        'center_name',
+        'client_use_1',
+        'client_use_2',
+        'client_use_3',
+        'client_use_4',
+        'client_use_5',
+        'client_vehicle_number',
+        'driver_id',
+        'driver_name',
+        'emkay_invoice_date',
+        'emkay_invoice_number',
+        'engine_fuel_type',
+        'exception',
+        'fuel_card_vendor',
+        'fuel_company_name',
+        'fuel_company_number',
+        'invoice_number',
+        'level_01',
+        'level_02',
+        'level_03',
+        'merchant_address',
+        'merchant_city',
+        'merchant_state',
+        'merchant_zip',
+        'model_year',
+        'odometer',
+        'premium',
+        'product',
+        'product_type',
+        'quantity',
+        'service_time',
+        'tank_capacity',
+        'tax_exempt',
+        'unit_price',
+        'vehicle_make',
+        'vehicle_model',
+        'vehicle_number',
+        'vin',
+        'voucher'
+      ]
+    },
+    headers () {
+      // Returns an array of TableHeader[]
+      return this.columns.map(column => {
+        return {
+          text: this.$i18n.t(column),
+          value: column,
+          class: 'report-column'
+        }
+      })
+    },
+    downloadFields () {
+      // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
+      // example:
+      // { 'Amount': 'amount', 'Service Date': 'service_date', .... } or
+      // { 'Montant': 'amount', 'Date de service': 'service_date', ... }
+      return Object.assign({}, ...this.columns.map(column => ({ [this.$i18n.t(column)]: column })))
+    }
   },
 
   /**
@@ -253,10 +321,7 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store, error }) {
-    // console.info('asyncData()')
-    const report = 'fuel-detail'
-    store.commit('reports/setReport', report)
-
+    // if no date params in query, then use 30day period ending with today
     const start_date = query.start_date || $moment().subtract(30, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
@@ -264,19 +329,16 @@ export default {
     const filters = {
       command: 'FUEL',
       customer: 'EM102',
-      json: 'Y',
       start_date,
       end_date,
-      use_bill_date
+      use_bill_date,
+      json: 'Y'
     }
 
-    // Get the headers, then get the data.
-    await store.dispatch('reports/fetchHeaders').then(async () => {
-      await store.dispatch('reports/fetchData', filters)
-    })
+    // Fetch the report data using the above filters
+    await store.dispatch('reports/fetchData', filters)
 
     return {
-      report,
       end_date,
       start_date,
       use_bill_date

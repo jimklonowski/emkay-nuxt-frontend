@@ -14,7 +14,11 @@ const getDefaultState = () => ({
 
   maintenance_error: null,
   maintenance_history: [],
-  maintenance_loading: false
+  maintenance_loading: false,
+
+  toll_error: null,
+  toll_history: [],
+  toll_loading: false
 })
 
 export const state = () => getDefaultState()
@@ -42,11 +46,15 @@ export const actions = {
     commit('setFuelLoading', true)
     try {
       const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { data } } = await this.$axios.post(url, filters)
+      const { data: { data, success, message } } = await this.$axios.post(url, filters)
+      if (!success) {
+        throw new Error(message)
+      }
       commit('setFuelHistory', data)
     } catch (error) {
-      console.error(error)
-      commit('setFuelError', error)
+      // console.error(error)
+      commit('setFuelError', error.message)
+      commit('setFuelHistory', [])
     } finally {
       commit('setFuelLoading', false)
     }
@@ -68,6 +76,23 @@ export const actions = {
       commit('setMaintenanceLoading', false)
     }
   },
+  async fetchTollHistory ({ commit }, filters) {
+    commit('setTollError', null)
+    commit('setTollLoading', true)
+    try {
+      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      const { data: { data, success, message } } = await this.$axios.post(url, filters)
+      if (!success) {
+        throw new Error(message)
+      }
+      commit('setTollHistory', data)
+    } catch (error) {
+      commit('setTollError', error.message)
+      commit('setTollHistory', [])
+    } finally {
+      commit('setTollLoading', false)
+    }
+  },
   reset ({ commit }) {
     commit('reset')
   }
@@ -85,6 +110,10 @@ export const mutations = {
   setMaintenanceError: set('maintenance_error'),
   setMaintenanceHistory: set('maintenance_history'),
   setMaintenanceLoading: set('maintenance_loading'),
+
+  setTollError: set('toll_error'),
+  setTollHistory: set('toll_history'),
+  setTollLoading: set('toll_loading'),
 
   setDriverInfo: set('driver_info'),
   setSaleInfo: set('sale_info'),
@@ -105,6 +134,10 @@ export const getters = {
   getMaintenanceError: state => state.maintenance_error,
   getMaintenanceHistory: state => state.maintenance_history,
   getMaintenanceLoading: state => state.maintenance_loading,
+
+  getTollError: state => state.toll_error,
+  getTollHistory: state => state.toll_history,
+  getTollLoading: state => state.toll_loading,
 
   getSaleInfo: state => state.sale_info,
   getOrderStatus: state => state.order_status,

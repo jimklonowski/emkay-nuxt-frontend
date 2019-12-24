@@ -7,9 +7,9 @@ export default ({ app }) => {
   Vue.filter('currency', formatCurrency)
 
   // format date (uses current locale)
-  Vue.filter('date', value => {
+  Vue.filter('date', (value, inFormat = 'YYYY-MM-DD', outFormat = 'L') => {
     if (value) {
-      return app.$moment(value).format('L')
+      return app.$moment(value, inFormat).format(outFormat)
     }
   })
 

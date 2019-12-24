@@ -129,6 +129,8 @@
                 :items-per-page="10"
                 :items="rows"
                 :search="search"
+                :sort-by="['service_date']"
+                :sort-desc="[true]"
                 :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
                 class="striped"
               >
@@ -149,6 +151,7 @@
                 <!-- Configure each #item row is rendered -->
                 <template #item="{ item }">
                   <tr>
+                    <td>{{ item.service_date | date }}</td>
                     <td>{{ item.active }}</td>
                     <td>{{ item.amount | currency }}</td>
                     <td>{{ item.ata_group }}</td>
@@ -197,7 +200,6 @@
                     <td>{{ item.rear_right_drum }}</td>
                     <td>{{ item.rear_right_rotor }}</td>
                     <td>{{ item.rear_right_tire }}</td>
-                    <td>{{ item.service_date | date }}</td>
                     <td>{{ item.tire_manufacturer }}</td>
                     <td>{{ item.tire_model }}</td>
                     <td>{{ item.tire_size }}</td>
@@ -252,13 +254,94 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    // columns: vm => vm.$store.getters['reports/getColumns'],
+    // downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
+    // headers: vm => vm.$store.getters['reports/getHeaders'],
     rows: vm => vm.$store.getters['reports/getData'],
     error: vm => vm.$store.getters['reports/getError'],
-    columns: vm => vm.$store.getters['reports/getColumns'],
     loading: vm => vm.$store.getters['reports/getLoading'],
-    headers: vm => vm.$store.getters['reports/getHeaders'],
-    // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
+    columns () {
+      return [
+        'service_date',
+        'active',
+        'amount',
+        'ata_group',
+        'ata_group_description',
+        'bill_sort',
+        'brake_manufacturer',
+        'brake_thickness',
+        'center_code',
+        'center_name',
+        'charge_code',
+        'client_use_1',
+        'client_use_2',
+        'client_use_3',
+        'client_use_4',
+        'client_use_5',
+        'client_vehicle_number',
+        'customer_po',
+        'description',
+        'driver_name',
+        // 'driver_first_name',
+        // 'driver_last_name',
+        'engine_hours',
+        'expense_category',
+        'front_left_brake',
+        'front_left_drum',
+        'front_left_rotor',
+        'front_left_tire',
+        'front_right_brake',
+        'front_right_drum',
+        'front_right_rotor',
+        'front_right_tire',
+        'gl_code',
+        'invoice_number',
+        'labor_or_part',
+        'level_01',
+        'level_02',
+        'level_03',
+        'maintenance_category',
+        'maintenance_code',
+        'model_year',
+        'odometer',
+        'quantity',
+        'rear_left_brake',
+        'rear_left_drum',
+        'rear_left_rotor',
+        'rear_left_tire',
+        'rear_right_brake',
+        'rear_right_drum',
+        'rear_right_rotor',
+        'rear_right_tire',
+        'tire_manufacturer',
+        'tire_model',
+        'tire_size',
+        'vehicle_make',
+        'vehicle_model',
+        'vehicle_number',
+        'vendor_factor',
+        'vendor_name',
+        'vendor_number',
+        'voucher'
+      ]
+    },
+    headers () {
+      // Returns an array of TableHeader[]
+      return this.columns.map(column => {
+        return {
+          text: this.$i18n.t(column),
+          value: column,
+          class: 'report-column'
+        }
+      })
+    },
+    downloadFields () {
+      // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
+      // example:
+      // { 'Amount': 'amount', 'Service Date': 'service_date', .... } or
+      // { 'Montant': 'amount', 'Date de service': 'service_date', ... }
+      return Object.assign({}, ...this.columns.map(column => ({ [this.$i18n.t(column)]: column })))
+    }
   },
 
   /**
@@ -267,9 +350,6 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store }) {
-    const report = 'maintenance-detail'
-    store.commit('reports/setReport', report)
-
     // if no date params in query, then use 30day period ending with today
     const start_date = query.start_date || $moment().subtract(30, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
@@ -284,13 +364,10 @@ export default {
       json: 'Y'
     }
 
-    // Get the headers, then get the data.
-    await store.dispatch('reports/fetchHeaders').then(async () => {
-      await store.dispatch('reports/fetchData', filters)
-    })
+    // Fetch the report data using the above filters
+    await store.dispatch('reports/fetchData', filters)
 
     return {
-      report,
       end_date,
       start_date,
       use_bill_date

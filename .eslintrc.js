@@ -14,6 +14,7 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
+    'arrow-parens': 'off',
     'camelcase': 'off',
     'vue/name-property-casing': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',

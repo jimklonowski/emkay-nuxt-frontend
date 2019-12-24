@@ -90,7 +90,7 @@
           </v-list>
         </v-col>
         <v-col cols="6" sm="6">
-          <v-list class="text-left">
+          <v-list class="text-left" shaped>
             <v-list-item @click.stop="dialTo(driver.phone)">
               <v-list-item-icon>
                 <v-icon>mdi-phone</v-icon>

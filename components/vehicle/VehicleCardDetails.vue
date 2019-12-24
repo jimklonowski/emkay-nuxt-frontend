@@ -3,11 +3,10 @@
     v-model="tab"
     grow
     show-arrows
-    icons-and-text
   >
-    <v-tab v-for="(category, c) in tabs" :key="`tab${c}`" class="justify-start overline">
+    <v-tab v-for="(category, c) in tabs" :key="`tab${c}`">
       {{ $t(category.key) }}
-      <v-icon v-text="`${category.icon}`" left />
+      <!-- <v-icon v-text="`${category.icon}`" left /> -->
     </v-tab>
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="(category, c) in tabs" :key="`tabitem${c}`">

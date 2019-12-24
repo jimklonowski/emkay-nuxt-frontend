@@ -14,6 +14,9 @@
         <v-col cols="12" xl="6">
           <maintenance-table />
         </v-col>
+        <v-col cols="12" xl="6">
+          <toll-card />
+        </v-col>
       </v-row>
     </v-container>
   </v-flex>
@@ -118,6 +121,15 @@ export default {
         await store.dispatch('account/init')
       }
       await store.dispatch('vehicle/fetchVehicleDashboardSummary', filters)
+    }
+  },
+  head () {
+    const title = `${this.$route.params.vehicle} - ${this.$t('vehicle_dashboard')}`
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
     }
   },
   methods: {
