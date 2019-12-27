@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-btn :to="localePath({ path: `/vehicle/${$route.params.vehicle}` })" exact nuxt text>
+        <v-btn :to="vehicleRoute" exact nuxt text>
           <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
           {{ $t('to_vehicle_dashboard') }}
         </v-btn>
@@ -66,7 +66,7 @@
                     <v-btn @click="start_menu = false" text>
                       {{ $t('cancel') }}
                     </v-btn>
-                    <v-btn @click="$refs.start_menu.save(start_date), updateFilters()" text>
+                    <v-btn @click="$refs.start_menu.save(start_date), updateQuery()" text>
                       {{ $t('ok') }}
                     </v-btn>
                   </v-date-picker>
@@ -102,7 +102,7 @@
                     <v-btn @click="end_menu = false" text>
                       {{ $t('cancel') }}
                     </v-btn>
-                    <v-btn @click="$refs.end_menu.save(end_date), updateFilters()" text>
+                    <v-btn @click="$refs.end_menu.save(end_date), updateQuery()" text>
                       {{ $t('ok') }}
                     </v-btn>
                   </v-date-picker>
@@ -112,7 +112,7 @@
                 <v-switch
                   v-model="use_bill_date"
                   :label="$t('bill_date')"
-                  @change="updateFilters()"
+                  @change="updateQuery()"
                   hint="Not Yet Implemented.."
                   messages="Not Yet Implemented.."
                 />
@@ -125,7 +125,7 @@
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
               <client-only>
-                <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
+                <download-excel v-t="'download'" :fields="downloadFields" :data="items" />
               </client-only>
             </v-btn>
           </v-toolbar>
@@ -134,7 +134,7 @@
               <v-data-table
                 :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
                 :headers="headers"
-                :items="rows"
+                :items="items"
                 :items-per-page="15"
                 :loading="loading"
                 :search="search"
@@ -142,13 +142,6 @@
                 :sort-desc="true"
                 class="striped"
               >
-                <!-- Configure the #no-data message (no data from server) -->
-                <template #no-data>
-                  <div class="text-left">
-                    {{ $t('no_data_found', { 'message': error }) }}
-                  </div>
-                </template>
-
                 <!-- Configure the #no-results message (no rows in filtered search) -->
                 <template #no-results>
                   <div class="text-left">
@@ -178,8 +171,11 @@
 
 <script>
 // import { SnotifyPosition } from 'vue-snotify'
+import { downloadFields, headers } from '@/mixins/datatables'
+import { updateQuery, vehicleRoute } from '@/mixins/routing'
 export default {
   name: 'Maintenance',
+  mixins: [downloadFields, headers, updateQuery, vehicleRoute],
   data () {
     return {
       end_menu: false,
@@ -188,10 +184,6 @@ export default {
     }
   },
   computed: {
-    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
-    error: vm => vm.$store.getters['vehicle/getMaintenanceError'],
-    loading: vm => vm.$store.getters['vehicle/getMaintenanceLoading'],
-    rows: vm => vm.$store.getters['vehicle/getMaintenanceHistory'],
     columns () {
       return [
         'service_date',
@@ -202,23 +194,18 @@ export default {
         'amount'
       ]
     },
-    headers () {
-      return this.columns.map((column, index) => {
-        return {
-          text: this.$i18n.t(column),
-          value: column,
-          class: 'report-column'
-        }
-      })
+    error: vm => vm.$store.getters['vehicle/getMaintenanceError'],
+    items: vm => vm.$store.getters['vehicle/getMaintenanceHistory'],
+    loading: vm => vm.$store.getters['vehicle/getMaintenanceLoading'],
+    query () {
+      const query = {
+        start_date: this.start_date,
+        end_date: this.end_date,
+        use_bill_date: this.use_bill_date
+      }
+      return query
     }
   },
-  // watch: {
-  //   error () {
-  //     if (this.error) {
-  //       this.$snotify.error(this.error, 'Error', { position: SnotifyPosition.centerBottom })
-  //     }
-  //   }
-  // },
   async asyncData ({ $moment, params, query, store, error }) {
     const report_length = 30
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
@@ -236,17 +223,8 @@ export default {
     }
     await store.dispatch('vehicle/fetchMaintenanceHistory', filters)
 
-    return { start_date, end_date, use_bill_date, report_length }
+    return { start_date, end_date, use_bill_date }
   },
-  // mounted () {
-  //   if (this.error) {
-  //     if (process.browser) {
-  //       this.$snotify.error(this.error, 'Error', { position: SnotifyPosition.centerBottom })
-  //     } else {
-  //       console.log(this.error)
-  //     }
-  //   }
-  // },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('maintenance')}`
     return {
@@ -256,11 +234,22 @@ export default {
       ]
     }
   },
-  methods: {
-    updateFilters () {
-      this.$router.push({ query: { start_date: this.start_date, end_date: this.end_date, use_bill_date: this.use_bill_date } })
-    }
-  },
   watchQuery: ['start_date', 'end_date', 'use_bill_date']
+  // watch: {
+  //   error () {
+  //     if (this.error) {
+  //       this.$snotify.error(this.error, 'Error', { position: SnotifyPosition.centerBottom })
+  //     }
+  //   }
+  // },
+  // mounted () {
+  //   if (this.error) {
+  //     if (process.browser) {
+  //       this.$snotify.error(this.error, 'Error', { position: SnotifyPosition.centerBottom })
+  //     } else {
+  //       console.log(this.error)
+  //     }
+  //   }
+  // },
 }
 </script>

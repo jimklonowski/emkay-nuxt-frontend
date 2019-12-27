@@ -48,8 +48,9 @@ export default {
      * vuetify: datatables pagination and other vuetify library core text
      */
     changeLocale (locale) {
-      this.$moment.locale(locale.iso) // $moment.locale('en-ca')
-      this.$vuetify.lang.current = locale.code === 'en' ? locale.code : locale.alt // $vuetify.lang.current='en'||'enCA'||'frCA'
+      // this.$moment.locale(locale.iso) // $moment.locale('en-ca')
+      // this.$vuetify.lang.current = locale.code === 'en' ? locale.code : locale.alt // $vuetify.lang.current='en'||'enCA'||'frCA'
+      debugger
       this.$router.replace(this.switchLocalePath(locale.code)) // navigates to current route with current locale set.
     }
   }

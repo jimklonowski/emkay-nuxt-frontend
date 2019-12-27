@@ -2,7 +2,7 @@
   <v-card outlined shaped>
     <v-card-title class="pa-0">
       <v-list-item>
-        <v-list-item-avatar @click.stop="editDriver" tile size="32" class="d-flex flex-column" style="cursor:pointer;">
+        <v-list-item-avatar @click="goToEditDriver" tile size="32" class="d-flex flex-column" style="cursor:pointer;">
           <v-icon>mdi-account-edit</v-icon>
           <p class="ma-0 overline">
             {{ $t('edit') }}
@@ -10,8 +10,7 @@
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="body-1">
-            <span class="font-weight-bold">{{ driverName || 'driver_name' }}</span>
-            <!-- <span class="font-weight-light">{{ driver.last_name }}</span> -->
+            <span class="font-weight-bold">{{ driverName }}</span>
           </v-list-item-title>
           <v-list-item-subtitle class="caption">
             <p class="mb-0">
@@ -49,13 +48,13 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  {{ driver.address_1 || 'address_1' }}
+                  {{ driver.address_1 }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
                   {{ driver.address_2 || '' }}
                 </v-list-item-subtitle>
                 <v-list-item-subtitle class="caption">
-                  {{ cityStateZip || 'city_state_zip' }}
+                  {{ cityStateZip }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -66,7 +65,7 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  {{ driver.employee_id || 'employee_id' }}
+                  {{ driver.employee_id }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
                   {{ $t('employee_id') }}
@@ -80,7 +79,7 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  {{ driver.selector || 'selector' }}
+                  {{ driver.selector }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
                   {{ $t('selector_level') }}
@@ -91,39 +90,39 @@
         </v-col>
         <v-col cols="6" sm="6">
           <v-list class="text-left" shaped>
-            <v-list-item @click.stop="dialTo(driver.phone)">
+            <v-list-item @click="dialTo(driver.phone)">
               <v-list-item-icon>
                 <v-icon>mdi-phone</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  {{ driver.phone || 'phone' }}
+                  {{ driver.phone }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
                   {{ $t('phone') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item @click.stop="dialTo(driver.mobile)">
+            <v-list-item @click="dialTo(driver.mobile)">
               <v-list-item-icon>
                 <v-icon>mdi-cellphone-basic</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  {{ driver.mobile || 'mobile' }}
+                  {{ driver.mobile }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
                   {{ $t('mobile') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item @click.stop="emailTo(driver.email)">
+            <v-list-item @click="emailTo(driver.email)">
               <v-list-item-icon>
                 <v-icon>mdi-email</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="body-2">
-                  {{ driver.email || 'email' }}
+                  {{ driver.email }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="caption">
                   {{ $t('email') }}
@@ -167,13 +166,14 @@ export default {
     },
     driverName () {
       return [this.driver.first_name, this.driver.last_name].filter(Boolean).join(' ')
-    }
+    },
+    editDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-driver` })
   },
   methods: {
     dialTo,
     emailTo,
-    editDriver () {
-      this.$router.push({ path: `${this.$route.fullPath}/edit-driver` })
+    goToEditDriver () {
+      this.$router.push(this.editDriverRoute)
     }
   }
 }

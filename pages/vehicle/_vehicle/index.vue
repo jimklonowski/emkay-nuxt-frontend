@@ -9,10 +9,10 @@
           <driver-card :driver="getDriverInfo" />
         </v-col>
         <v-col cols="12" xl="6">
-          <fuel-table />
+          <fuel-card />
         </v-col>
         <v-col cols="12" xl="6">
-          <maintenance-table />
+          <maintenance-card />
         </v-col>
         <v-col cols="12" xl="6">
           <toll-card />
@@ -26,8 +26,8 @@
 import { mapGetters } from 'vuex'
 import DriverCard from '@/components/vehicle/DriverCard'
 import VehicleCard from '@/components/vehicle/VehicleCard'
-import FuelTable from '@/components/vehicle/FuelTable'
-import MaintenanceTable from '@/components/vehicle/MaintenanceTable'
+import FuelCard from '@/components/vehicle/FuelCard'
+import MaintenanceCard from '@/components/vehicle/MaintenanceCard'
 
 import AccidentCard from '@/components/vehicle/AccidentCard'
 import InvoiceCard from '@/components/vehicle/InvoiceCard'
@@ -40,8 +40,8 @@ export default {
   components: {
     VehicleCard,
     DriverCard,
-    FuelTable,
-    MaintenanceTable,
+    FuelCard,
+    MaintenanceCard,
     // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
     // 'maintenance-table': () => import('@/components/vehicle/MaintenanceTable'),
 

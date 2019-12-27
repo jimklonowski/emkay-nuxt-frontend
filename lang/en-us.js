@@ -209,6 +209,7 @@ export default {
   tire_size: "Tire Size",
   to_vehicle_dashboard: "To Vehicle Dashboard",
   toll_detail: "Toll Detail",
+  toll: "Toll",
   tolls: "Tolls",
   tools: "Tools",
   unit_price: "Unit Price",

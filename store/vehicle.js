@@ -28,16 +28,22 @@ export const actions = {
     commit('setLoading', true)
     try {
       const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      // eslint-disable-next-line no-unused-vars
       const { data: { success, message, data } } = await this.$axios.post(url, filters)
       // debugger
+      if (!success) {
+        throw new Error(message)
+      }
       commit('setVehicleInfo', data.vehicle_info)
       commit('setDriverInfo', data.driver_info)
       commit('setSaleInfo', data.sale_info)
       commit('setOrderStatus', data.order_status_info)
     } catch (error) {
-      console.error(error)
+      // console.error(error)
       commit('setError', error)
+      commit('setVehicleInfo', {})
+      commit('setDriverInfo', {})
+      commit('setSaleInfo', {})
+      commit('setOrderStatus', {})
     } finally {
       commit('setLoading', false)
     }

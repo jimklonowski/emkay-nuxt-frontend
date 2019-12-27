@@ -78,8 +78,6 @@ export default {
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/demo/pages/login.vue
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/api/auth.js
       this.loading = true
-      // debugger
-      // const loginLocale = this.$i18n.locale
       await this.$auth
         .loginWith('local', {
           data: {
@@ -93,17 +91,12 @@ export default {
           this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
           this.$store.dispatch('account/init')
         })
-        .catch((e) => {
-          // debugger
+        .catch(e => {
           this.error = e + ''
         })
         .finally(() => {
           this.loading = false
-          // debugger
-          this.$router.push(this.localePath({ name: 'index' }))
         })
-      // forward them to /{locale}/index.vue (i.e. /fr/)
-      // this.$router.push(this.localePath({ name: 'index' }))
     }
   }
 }

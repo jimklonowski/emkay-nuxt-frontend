@@ -18,7 +18,6 @@
       </v-list-item>
       <v-spacer />
     </v-card-title>
-    <v-card-subtitle>Monthly Tolls</v-card-subtitle>
     <v-card-title v-text="'$201.00'" class="display-2" />
     <v-card-text class="font-italic font-weight-light">
       This has
@@ -29,7 +28,7 @@
     </v-card-text>
     <v-expand-transition>
       <v-card :loading="loading" v-show="showMore" flat>
-        <v-data-table :headers="headers" :items="items" style="min-width:650px;" />
+        <v-data-table :headers="headers" :items="items" />
       </v-card>
     </v-expand-transition>
     <v-card-actions>

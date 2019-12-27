@@ -1,66 +1,96 @@
 <template>
-  <!-- <v-col :cols="12" :md="showMore ? 12 : 6" :lg="showMore ? 6 : 4"> -->
   <v-card outlined shaped>
-    <v-card-subtitle>Monthly Maintenance Cost</v-card-subtitle>
-    <v-card-title v-text="'$23.60'" class="display-2" />
-    <v-card-text class="font-italic font-weight-light">
-      This has
-      <v-chip class="font-weight-regular mx-1 px-1" x-small label color="error">
-        increased
-      </v-chip>
-      by 23% since last month.
+    <v-card-title class="pa-0">
+      <v-list-item>
+        <v-list-item-avatar @click="goToMaintenance" style="cursor:pointer;">
+          <v-icon>mdi-tools</v-icon>
+        </v-list-item-avatar>
+        <v-list-item-content two-line>
+          <p class="overline text--disabled">
+            {{ $tc('past_days', days) }}
+          </p>
+          <v-list-item-title>
+            {{ $t('maintenance') }}
+          </v-list-item-title>
+          <v-list-item-subtitle class="caption">
+            <nuxt-link :to="maintenanceRoute" class="text-decoration-none">
+              {{ $t('more') }}
+            </nuxt-link>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </v-card-title>
+    <v-divider />
+    <v-card-text class="pa-0">
+      <v-skeleton-loader :loading="!initialized" type="table">
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :items-per-page="5"
+          :sort-by="['service_date']"
+          :sort-desc="true"
+          class="striped"
+        >
+          <!-- Configure each #item row is rendered -->
+          <template #item="{ item }">
+            <tr>
+              <td>{{ item.service_date | date }}</td>
+              <td>{{ item.odometer }}</td>
+              <td>{{ item.vendor_name }}</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.amount | currency }}</td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-skeleton-loader>
     </v-card-text>
-    <v-expand-transition>
-      <v-card :loading="loading" v-show="showMore" flat>
-        <v-card-text>
-          <v-data-table :headers="headers" :items="items" />
-        </v-card-text>
-      </v-card>
-    </v-expand-transition>
-    <v-card-actions>
-      <v-spacer />
-      <v-btn @click="showMore = !showMore" icon>
-        <v-icon>{{ showMore ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
   </v-card>
-<!-- </v-col> -->
 </template>
 
 <script>
+import { headers } from '@/mixins/datatables'
 export default {
-  name: 'MaintenanceCard',
-  data: () => ({
-    headers: [
-      {
-        text: 'Date',
-        align: 'left',
-        sortable: false,
-        value: 'date'
-      },
-      { text: 'Service Location', value: 'location' },
-      { text: 'Maintenance Details', value: 'details' },
-      { text: 'In Network?', value: 'network' },
-      { text: 'Amount', value: 'amount' }
-    ],
-    items: [
-      { date: '2019-01-01', location: 'Klonowski AUTO', details: 'Tires', network: 'false', amount: '$43.51' }
-    ],
-    loading: false,
-    showMore: false
-  })
-  // async created () {
-  //   try {
-  //     const data = await this.$axios.get('/maintenance')
-  //     this.items = data
-  //   } catch (err) {
-  //     debugger
-  //     console.log(err)
-  //   }
-  // }
+  mixins: [headers],
+  data () {
+    return {
+      days: 30,
+      initialized: false
+    }
+  },
+  computed: {
+    columns () {
+      return [
+        'service_date',
+        'odometer',
+        'vendor_name',
+        'description',
+        'amount'
+      ]
+    },
+    items: vm => vm.$store.getters['vehicle/getMaintenanceHistory'],
+    maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/maintenance` })
+  },
+  async mounted () {
+    const vehicle_number = this.$route.params.vehicle
+    const end_date = this.$moment().format('YYYY-MM-DD')
+    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const use_bill_date = false
+    const filters = {
+      command: 'MAINTHISTORY',
+      customer: 'EM102',
+      start_date,
+      end_date,
+      use_bill_date,
+      vehicle_number,
+      json: 'Y'
+    }
+    await this.$store.dispatch('vehicle/fetchMaintenanceHistory', filters)
+    this.initialized = true
+  },
+  methods: {
+    goToMaintenance () {
+      this.$router.push(this.maintenanceRoute)
+    }
+  }
 }
 </script>
-
-<style>
-
-</style>

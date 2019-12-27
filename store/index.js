@@ -6,7 +6,7 @@ export const actions = {
    * We can restore the auth and account vuex states and re-login from here
    * https://nuxtjs.org/guide/vuex-store#the-nuxtserverinit-action
    */
-  async nuxtServerInit ({ commit, state }, { req }) {
+  async nuxtServerInit ({ commit, dispatch }, { req }) {
     if (process.server) {
       // console.info('im the server')
     }
@@ -15,6 +15,7 @@ export const actions = {
     // await console.dir(vuex)
     if (vuex) {
       await console.log('found vuex from cookies')
+      debugger
     }
   }
 }

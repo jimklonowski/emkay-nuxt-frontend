@@ -1,7 +1,7 @@
 // import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
-import { en as enUS, fr as frCA, en as enCA } from 'vuetify/lib/locale'
-// import nodeExternals from 'webpack-node-externals'
+import { en, fr, en as ca } from 'vuetify/lib/locale'
 import colors from 'vuetify/es5/util/colors'
+import locales from './plugins/i18n/locales'
 require('dotenv').config()
 
 export default {
@@ -81,9 +81,10 @@ export default {
   */
   plugins: [
     '~/plugins/axios',
-    '~/plugins/polyfills',
     '~/plugins/custom-filters',
     '~/plugins/vue-mock-axios',
+    '~/plugins/i18n/vue-i18n',
+    { src: '~/plugins/polyfills', ssr: false },
     { src: '~/plugins/vue-json-excel', ssr: false },
     { src: '~/plugins/vue-snotify', ssr: false },
     { src: '~/plugins/vuex-persist', ssr: false }
@@ -116,7 +117,9 @@ export default {
     // Doc: https://github.com/nuxt-community/sitemap-module
     '@nuxtjs/sitemap',
     // Doc: https://github.com/microcipcip/cookie-universal/tree/master/packages/cookie-universal-nuxt#readme
-    'cookie-universal-nuxt'
+    'cookie-universal-nuxt',
+    // Doc: https://github.com/Developmint/nuxt-webfontloader
+    'nuxt-webfontloader'
   ],
   /*
   ** Axios module configuration
@@ -136,7 +139,8 @@ export default {
       {
         // In production, we shouldn't be using mock-axios...
         src: '~/plugins/vue-mock-axios'
-      }
+      },
+      { src: '~/plugins/auth-lang-redirects', ssr: false }
     ],
     // cookie: false,
     // localStorage: false,
@@ -146,7 +150,8 @@ export default {
     redirect: {
       login: '/login',
       logout: '/login',
-      home: '/'
+      home: '/',
+      callback: false
     },
     strategies: {
       local: {
@@ -169,42 +174,70 @@ export default {
   ** See https://nuxt-community.github.io/nuxt-i18n/
   */
   i18n: {
-    locales: [
-      {
-        name: 'English',
-        code: 'en',
-        alt: 'enUS',
-        iso: 'en-US',
-        file: 'en-us.js'
-      },
-      {
-        name: 'English (Metric)',
-        code: 'en-ca',
-        alt: 'enCA',
-        iso: 'en-CA',
-        file: 'en-ca.js'
-      },
-      {
-        name: 'Français',
-        code: 'fr-ca',
-        alt: 'frCA',
-        iso: 'fr-CA',
-        file: 'fr-ca.js'
-      }
-    ],
+    locales,
     defaultLocale: 'en',
-    // strategy: 'prefix_and_default',
-    strategy: 'prefix_except_default',
-    detectBrowserLanguage: false,
-    noPrefixDefaultLocale: false,
-    redirectCookieKey: true,
-    useRedirectCookie: true,
-    lazy: true,
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected'
+    },
     langDir: 'lang/',
+    lazy: true,
+    strategy: 'prefix_except_default',
+    vuex: {
+      moduleName: 'i18n',
+      syncLocale: true
+    },
     vueI18n: {
       fallbackLocale: 'en',
       silentFallbackWarn: true
     }
+    // {
+    //   name: 'English',
+    //   code: 'en',
+    //   alt: 'enUS',
+    //   iso: 'en-US',
+    //   file: 'en-us.js'
+    // },
+    // {
+    //   name: 'English (Metric)',
+    //   code: 'ca',
+    //   alt: 'enCA',
+    //   iso: 'en-CA',
+    //   file: 'en-ca.js'
+    // },
+    // {
+    //   name: 'Français',
+    //   code: 'fr',
+    //   alt: 'frCA',
+    //   iso: 'fr-CA',
+    //   file: 'fr-ca.js'
+    // }
+    // ],
+    // defaultLocale: 'en',
+    // // strategy: 'prefix_and_default',
+    // strategy: 'prefix_except_default',
+    // // detectBrowserLanguage: false,
+    // detectBrowserLanguage: {
+    //   useCookie: true,
+    //   cookieKey: 'i18n_redirected',
+    //   alwaysRedirect: true,
+    //   fallbackLocale: 'en'
+    // },
+    // vuex: {
+    //   moduleName: 'i18n',
+    //   syncLocale: true,
+    //   syncMessages: false,
+    //   syncRouteParams: false
+    // },
+    // noPrefixDefaultLocale: false,
+    // redirectCookieKey: true,
+    // useRedirectCookie: true,
+    // lazy: true,
+    // langDir: 'lang/',
+    // vueI18n: {
+    //   fallbackLocale: 'en',
+    //   silentFallbackWarn: true
+    // }
   },
   /*
    ** google analytics module configuration
@@ -225,8 +258,8 @@ export default {
   ** Note: https://github.com/nuxt-community/vuetify-module#defaultassets
   */
   webfontloader: {
-    font: {
-      family: 'Roboto'
+    google: {
+      // families: ['Roboto']
     }
   },
   /*
@@ -245,7 +278,8 @@ export default {
   */
   vuetify: {
     lang: {
-      locales: { enUS, frCA, enCA },
+      // locales: { enUS, frCA, enCA },
+      locales: { en, fr, ca },
       current: 'en'
     },
     customVariables: ['~/assets/styles/variables.scss'],

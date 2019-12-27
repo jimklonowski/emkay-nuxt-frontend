@@ -46,7 +46,7 @@ export default {
   details: "Détails",
   download: "Télécharger",
   driver: "Pilote",
-  'driver_#': "Pilote #",
+  'driver_#': "N° de Pilote",
   driver_360: "Pilote 360",
   driver_360_mileage: "Pilote 360 Mileage",
   driver_id: "ID du pilote",

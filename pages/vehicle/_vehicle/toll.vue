@@ -2,18 +2,10 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-btn :to="vehicleRoute" exact nuxt text>
-          <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
-          {{ $t('to_vehicle_dashboard') }}
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
         <v-card outlined shaped>
           <v-toolbar flat>
             <v-toolbar-title class="hidden-sm-and-down">
-              {{ $t('fuel') }}
+              {{ $t('toll') }}
               <span class="overline text--disabled">{{ $route.params.vehicle }}</span>
             </v-toolbar-title>
             <v-spacer />
@@ -125,7 +117,7 @@
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
               <client-only>
-                <download-excel v-t="'download'" :fields="downloadFields" :data="items" />
+                <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
               </client-only>
             </v-btn>
           </v-toolbar>
@@ -134,7 +126,7 @@
               <v-data-table
                 :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
                 :headers="headers"
-                :items="items"
+                :items="rows"
                 :items-per-page="15"
                 :loading="loading"
                 :search="search"
@@ -142,6 +134,13 @@
                 :sort-desc="true"
                 class="striped"
               >
+                <!-- Configure the #no-data message (no data from server) -->
+                <template #no-data>
+                  <div class="text-left">
+                    {{ $t('no_data_found', { 'message': error }) }}
+                  </div>
+                </template>
+
                 <!-- Configure the #no-results message (no rows in filtered search) -->
                 <template #no-results>
                   <div class="text-left">
@@ -175,11 +174,8 @@
 </template>
 
 <script>
-import { downloadFields, headers } from '@/mixins/datatables'
-import { updateQuery, vehicleRoute } from '@/mixins/routing'
 export default {
-  name: 'Fuel',
-  mixins: [downloadFields, headers, updateQuery, vehicleRoute],
+  name: 'Toll',
   data () {
     return {
       end_menu: false,
@@ -188,6 +184,10 @@ export default {
     }
   },
   computed: {
+    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
+    error: vm => vm.$store.getters['vehicle/getTollError'],
+    loading: vm => vm.$store.getters['vehicle/getTollLoading'],
+    rows: vm => vm.$store.getters['vehicle/getTollHistory'],
     columns () {
       return [
         'service_date',
@@ -199,44 +199,52 @@ export default {
         'amount'
       ]
     },
-    error: vm => vm.$store.getters['vehicle/getFuelError'],
-    items: vm => vm.$store.getters['vehicle/getFuelHistory'],
-    loading: vm => vm.$store.getters['vehicle/getFuelLoading'],
-    query () {
-      const query = {
-        start_date: this.start_date,
-        end_date: this.end_date,
-        use_bill_date: this.use_bill_date
-      }
-      return query
+    headers () {
+      return this.columns.map((column, index) => {
+        return {
+          text: this.$i18n.t(column),
+          value: column,
+          class: 'report-column'
+        }
+      })
     }
   },
-  async asyncData ({ $moment, params, query, store, error }) {
+  async asyncData ({ $moment, params, query, store }) {
     const report_length = 30
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
     const filters = {
-      command: 'FUEL',
+      command: 'TOLL',
       customer: 'EM102',
       start_date,
       end_date,
       use_bill_date,
-      vehicle_number: params.vehicle,
+      vehicle_number: params.vehicle_number,
       json: 'Y'
     }
-    await store.dispatch('vehicle/fetchFuelHistory', filters)
+    await store.dispatch('vehicle/fetchTollHistory', filters)
 
-    return { start_date, end_date, use_bill_date }
+    return { start_date, end_date, use_bill_date, report_length }
   },
   head () {
-    const title = `${this.$route.params.vehicle} - ${this.$t('fuel')}`
+    const title = `${this.$route.params.vehicle} - ${this.$t('toll')}`
     return {
       title,
       meta: [
         { hid: 'og:description', property: 'og:description', content: title }
       ]
+    }
+  },
+  methods: {
+    updateQuery () {
+      const filters = {
+        start_date: this.start_date,
+        end_date: this.end_date,
+        use_bill_date: this.use_bill_date
+      }
+      this.$router.push({ query: filters })
     }
   },
   watchQuery: ['start_date', 'end_date', 'use_bill_date']

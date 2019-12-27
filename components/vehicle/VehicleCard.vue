@@ -2,7 +2,7 @@
   <v-card :shaped="!showTabs" outlined>
     <v-card-title class="pa-0">
       <v-list-item>
-        <v-list-item-avatar @click.stop="editVehicle" tile size="32" class="d-flex flex-column" style="cursor:pointer;">
+        <v-list-item-avatar @click="goToEditVehicle" tile size="32" class="d-flex flex-column" style="cursor:pointer;">
           <v-icon>mdi-car-info</v-icon>
           <p class="ma-0 overline">
             {{ $t('edit') }}
@@ -134,6 +134,7 @@
         <v-icon v-text="showTabs ? `mdi-chevron-up` : `mdi-chevron-down`" class="ml-2" />
       </v-btn>
     </v-card-actions>
+    <!-- Vehicle Details -->
     <vehicle-card-details v-show="showTabs" />
   </v-card>
 </template>
@@ -159,9 +160,9 @@ export default {
       return [this.vehicle_info.center_name, this.vehicle_info.center_code].filter(Boolean).join(' - ')
     },
     colorYearMakeModel () {
-      // return `${this.vehicle_info.vehicle_year} ${this.vehicle_info.vehicle_make} ${this.vehicle_info.vehicle_model}`
       return [this.vehicle_info.exterior_color, this.vehicle_info.year, this.vehicle_info.make, this.vehicle_info.model].filter(Boolean).join(' ')
-    }
+    },
+    editVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-vehicle` })
   },
   async created () {
     if (!this.custom_labels) {
@@ -170,8 +171,8 @@ export default {
     }
   },
   methods: {
-    editVehicle () {
-      this.$router.push({ path: `${this.$route.fullPath}/edit-vehicle` })
+    goToEditVehicle () {
+      this.$router.push(this.editVehicleRoute)
     }
   }
 }

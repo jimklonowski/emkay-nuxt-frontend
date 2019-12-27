@@ -2,18 +2,18 @@
   <v-card outlined shaped>
     <v-card-title class="pa-0">
       <v-list-item>
-        <v-list-item-avatar @click="$router.push(localePath(toMaintenanceDashboard))" style="cursor:pointer;">
-          <v-icon>mdi-tools</v-icon>
+        <v-list-item-avatar @click="goToFuel" style="cursor:pointer;">
+          <v-icon>mdi-gas-station</v-icon>
         </v-list-item-avatar>
         <v-list-item-content two-line>
           <p class="overline text--disabled">
             {{ $tc('past_days', days) }}
           </p>
           <v-list-item-title>
-            {{ $t('maintenance') }}
+            {{ $t('fuel') }}
           </v-list-item-title>
           <v-list-item-subtitle class="caption">
-            <nuxt-link :to="localePath(toMaintenanceDashboard)" class="text-decoration-none">
+            <nuxt-link :to="fuelRoute" class="text-decoration-none">
               {{ $t('more') }}
             </nuxt-link>
           </v-list-item-subtitle>
@@ -27,7 +27,6 @@
           :headers="headers"
           :items="items"
           :items-per-page="5"
-          :search="search"
           :sort-by="['service_date']"
           :sort-desc="true"
           class="striped"
@@ -36,15 +35,19 @@
           <template #item="{ item }">
             <tr>
               <td>{{ item.service_date | date }}</td>
-              <td>{{ item.odometer }}</td>
-              <td>{{ item.vendor_name }}</td>
-              <td>{{ item.description }}</td>
+              <td>{{ item.fuel_company_name }}</td>
+              <td>
+                <v-chip :outlined="$vuetify.theme.dark" v-text="item.product_type" small />
+              </td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unit_price | currency(3,3) }}</td>
               <td>{{ item.amount | currency }}</td>
             </tr>
           </template>
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
+    <v-card-actions />
   </v-card>
 </template>
 
@@ -57,22 +60,21 @@ export default {
     }
   },
   computed: {
-    toMaintenanceDashboard () {
-      return { path: `${this.$route.fullPath}/maintenance` }
-    },
-    items: vm => vm.$store.getters['vehicle/getMaintenanceHistory'],
+    fuelRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/fuel` }),
+    items: vm => vm.$store.getters['vehicle/getFuelHistory'],
     vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     columns () {
       return [
         'service_date',
-        'odometer',
-        'vendor_name',
-        'description',
+        'fuel_company_name',
+        'product_type',
+        'quantity',
+        'unit_price',
         'amount'
       ]
     },
     headers () {
-      return this.columns.map((column) => {
+      return this.columns.map((column, index) => {
         return {
           text: this.$i18n.t(column),
           value: column,
@@ -82,12 +84,12 @@ export default {
     }
   },
   async mounted () {
-    const vehicle_number = this.vehicleNumber
+    const vehicle_number = this.vehicleNumber || ''
     const end_date = this.$moment().format('YYYY-MM-DD')
     const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
     const use_bill_date = false
     const filters = {
-      command: 'MAINTHISTORY',
+      command: 'FUEL',
       customer: 'EM102',
       start_date,
       end_date,
@@ -95,8 +97,13 @@ export default {
       vehicle_number,
       json: 'Y'
     }
-    await this.$store.dispatch('vehicle/fetchMaintenanceHistory', filters)
+    await this.$store.dispatch('vehicle/fetchFuelHistory', filters)
     this.initialized = true
+  },
+  methods: {
+    goToFuel () {
+      this.$router.push(this.fuelRoute)
+    }
   }
 }
 </script>
