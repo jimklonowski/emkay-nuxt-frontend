@@ -52,7 +52,9 @@
 </template>
 
 <script>
+import { headers } from '@/mixins/datatables'
 export default {
+  mixins: [headers],
   data () {
     return {
       days: 30,
@@ -60,9 +62,6 @@ export default {
     }
   },
   computed: {
-    fuelRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/fuel` }),
-    items: vm => vm.$store.getters['vehicle/getFuelHistory'],
-    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     columns () {
       return [
         'service_date',
@@ -73,18 +72,11 @@ export default {
         'amount'
       ]
     },
-    headers () {
-      return this.columns.map((column, index) => {
-        return {
-          text: this.$i18n.t(column),
-          value: column,
-          class: 'report-column'
-        }
-      })
-    }
+    fuelRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/fuel` }),
+    items: vm => vm.$store.getters['vehicle/getFuelHistory']
   },
   async mounted () {
-    const vehicle_number = this.vehicleNumber || ''
+    const vehicle_number = this.$route.params.vehicle
     const end_date = this.$moment().format('YYYY-MM-DD')
     const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
     const use_bill_date = false

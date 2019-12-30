@@ -43,6 +43,7 @@ const management = {
  * Ordering Mega Menu Config
  */
 const ordering = {
+  to: { path: '/ordering' },
   categories: [
     {
       key: 'orders',
@@ -86,21 +87,21 @@ const reports = {
       key: 'fleet',
       icon: '',
       items: [
-        { key: 'inventory_report', icon: '', to: { path: '/reporting/inventory' } },
-        { key: 'order_status_report', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'replacement_analysis', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'sold_vehicle_analysis', icon: '', to: { path: '/reporting/todo' } }
+        { key: 'inventory_report', icon: 'mdi-bus-multiple', to: { path: '/reporting/inventory' } },
+        { key: 'order_status_report', icon: 'mdi-bus-clock', to: { path: '/reporting/order-status' } },
+        { key: 'replacement_analysis', icon: 'mdi-find-replace', to: { path: '/reporting/replacement-analysis' } },
+        { key: 'sold_vehicle_analysis', icon: 'mdi-sim', to: { path: '/reporting/sold-vehicle-analysis' } }
       ]
     },
     {
       key: 'expenses',
       icon: '',
       items: [
-        { key: 'expense_summary', icon: '', to: { path: '/reporting/todo' } },
+        { key: 'expense_detail', icon: 'mdi-currency-usd', to: { path: '/reporting/expense-detail' } },
         { key: 'fuel_detail', icon: 'mdi-gas-station', to: { path: '/reporting/fuel-detail' } },
         { key: 'maintenance_detail', icon: 'mdi-wrench', to: { path: '/reporting/maintenance-detail' } },
-        { key: 'short_term_rental_detail', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'toll_detail', icon: '', to: { path: '/reporting/todo' } }
+        { key: 'short_term_rental_detail', icon: 'mdi-bus-clock', to: { path: '/reporting/short-term-rental-detail' } },
+        { key: 'toll_detail', icon: 'mdi-coins', to: { path: '/reporting/toll-detail' } }
       ]
     },
     // {
@@ -121,28 +122,28 @@ const reports = {
       icon: '',
       items: [
         { key: 'custom_invoicing', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'invoice_history', icon: '', to: { path: '/reporting/todo' } }
+        { key: 'invoice_history', icon: 'mdi-receipt', to: { path: '/reporting/invoice-history' } }
       ]
     },
     {
       key: 'services',
       icon: '',
       items: [
-        { key: 'accident_claim_report', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'driver_360_mileage', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'evoucher', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'license_renewal_report', icon: '', to: { path: '/reporting/todo' } }
+        { key: 'accident_claim_status', icon: 'mdi-car-traction-control', to: { path: '/reporting/accident-claim-status' } },
+        { key: 'driver_360_mileage', icon: 'mdi-cellphone-iphone', to: { path: '/reporting/driver-360-mileage' } },
+        { key: 'evoucher_report', icon: 'mdi-ticket-percent', to: { path: '/reporting/evoucher-report' } },
+        { key: 'license_renewal_report', icon: 'mdi-calendar-question', to: { path: '/reporting/license-renewal' } }
       ]
     },
     {
       key: 'safety_and_telematics',
       icon: '',
       items: [
-        { key: 'driver_record', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'driver_safety_report', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'engine_faults', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'saferoads_fleet_summary', icon: '', to: { path: '/reporting/todo' } },
-        { key: 'saferoads_trip_detail', icon: '', to: { path: '/reporting/todo' } }
+        { key: 'driver_record', icon: 'mdi-history', to: { path: '/reporting/driver-record' } },
+        { key: 'driver_safety_report', icon: 'mdi-safety-goggles', to: { path: '/reporting/driver-safety-report' } },
+        { key: 'engine_faults', icon: 'mdi-engine', to: { path: '/reporting/engine-faults' } },
+        { key: 'saferoads_fleet_summary', icon: 'mdi-train-car', to: { path: '/reporting/saferoads-fleet-summary' } },
+        { key: 'saferoads_trip_detail', icon: 'mdi-map-clock', to: { path: '/reporting/saferoads-trip-detail' } }
       ]
     }
   ]

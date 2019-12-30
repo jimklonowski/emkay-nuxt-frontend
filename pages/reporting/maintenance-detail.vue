@@ -4,9 +4,7 @@
       <v-col cols="12">
         <v-card shaped outlined>
           <v-toolbar flat>
-            <v-toolbar-title class="hidden-sm-and-down">
-              {{ $t(`maintenance_detail`) }}
-            </v-toolbar-title>
+            <v-toolbar-title v-t="'maintenance_detail'" class="hidden-sm-and-down" />
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -22,9 +20,7 @@
               solo
             />
           </v-toolbar>
-          <v-subheader class="overline">
-            {{ $t('report_filters') }}
-          </v-subheader>
+          <v-subheader v-t="'report_filters'" class="overline" />
           <v-container>
             <v-row>
               <v-col cols="12" sm="6">
@@ -53,12 +49,8 @@
                     scrollable
                   >
                     <v-spacer />
-                    <v-btn @click="start_menu = false" text>
-                      {{ $t('cancel') }}
-                    </v-btn>
-                    <v-btn @click="$refs.start_menu.save(start_date), updateFilters()" text>
-                      {{ $t('ok') }}
-                    </v-btn>
+                    <v-btn v-t="'cancel'" @click="start_menu = false" text />
+                    <v-btn v-t="'ok'" @click="$refs.start_menu.save(start_date), updateQuery()" text />
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -88,12 +80,8 @@
                     scrollable
                   >
                     <v-spacer />
-                    <v-btn @click="end_menu = false" text>
-                      {{ $t('cancel') }}
-                    </v-btn>
-                    <v-btn @click="$refs.end_menu.save(end_date), updateFilters()" text>
-                      {{ $t('ok') }}
-                    </v-btn>
+                    <v-btn v-t="'cancel'" @click="end_menu = false" text />
+                    <v-btn v-t="'ok'" @click="$refs.end_menu.save(end_date), updateQuery()" text />
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -101,7 +89,7 @@
                 <v-switch
                   v-model="use_bill_date"
                   :label="$t(`bill_date`)"
-                  @change="updateFilters()"
+                  @change="updateQuery()"
                   hint="Not Yet Implemented..."
                   messages="Not Yet Implemented..."
                 />
@@ -111,14 +99,12 @@
           <!-- Download as XLS button -->
           <v-toolbar flat>
             <v-spacer />
-            <client-only>
-              <v-btn :ripple="false" :title="`${$t('save')} .xls`" small depressed>
-                <v-icon small class="mr-2">
-                  mdi-cloud-download
-                </v-icon>
-                <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
-              </v-btn>
-            </client-only>
+            <v-btn :ripple="false" :title="`${$t('save')} .xls`" small depressed>
+              <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
+              <client-only>
+                <download-excel v-t="'download'" :fields="downloadFields" :data="items" />
+              </client-only>
+            </v-btn>
           </v-toolbar>
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
@@ -127,7 +113,7 @@
                 :hide-default-header="loading"
                 :loading="loading"
                 :items-per-page="10"
-                :items="rows"
+                :items="items"
                 :search="search"
                 :sort-by="['service_date']"
                 :sort-desc="[true]"
@@ -226,15 +212,16 @@
 </template>
 
 <script>
+import { downloadFields, headers } from '@/mixins/datatables'
+import { updateQuery } from '@/mixins/routing'
 /**
  * Maintenance Detail Report
- * When a date filter changes, a call is made to updateFilters which updates the route's query parameters (?start=2019-11&end=2019-11&...)
+ * When a date filter changes, a call is made to updateQuery which updates the route's query parameters (?start=2019-11&end=2019-11&...)
  * watchQuery listens for changes in the query parameters and onchange triggers all component methods (i.e. asyncData which will re-request data with new parameters)
  */
-
-/* eslint-disable camelcase */
 export default {
   name: 'MaintenanceDetail',
+  mixins: [downloadFields, headers, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -254,12 +241,6 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
-    // columns: vm => vm.$store.getters['reports/getColumns'],
-    // downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
-    // headers: vm => vm.$store.getters['reports/getHeaders'],
-    rows: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading'],
     columns () {
       return [
         'service_date',
@@ -325,22 +306,16 @@ export default {
         'voucher'
       ]
     },
-    headers () {
-      // Returns an array of TableHeader[]
-      return this.columns.map(column => {
-        return {
-          text: this.$i18n.t(column),
-          value: column,
-          class: 'report-column'
-        }
-      })
-    },
-    downloadFields () {
-      // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-      // example:
-      // { 'Amount': 'amount', 'Service Date': 'service_date', .... } or
-      // { 'Montant': 'amount', 'Date de service': 'service_date', ... }
-      return Object.assign({}, ...this.columns.map(column => ({ [this.$i18n.t(column)]: column })))
+    error: vm => vm.$store.getters['reports/getError'],
+    items: vm => vm.$store.getters['reports/getData'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
+    query () {
+      const query = {
+        start_date: this.start_date,
+        end_date: this.end_date,
+        use_bill_date: this.use_bill_date
+      }
+      return query
     }
   },
 
@@ -351,7 +326,8 @@ export default {
    */
   async asyncData ({ $moment, query, store }) {
     // if no date params in query, then use 30day period ending with today
-    const start_date = query.start_date || $moment().subtract(30, 'days').format('YYYY-MM-DD')
+    const report_length = 30
+    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
@@ -367,11 +343,7 @@ export default {
     // Fetch the report data using the above filters
     await store.dispatch('reports/fetchData', filters)
 
-    return {
-      end_date,
-      start_date,
-      use_bill_date
-    }
+    return { end_date, start_date, use_bill_date }
   },
 
   /**
@@ -436,30 +408,6 @@ export default {
    */
   async fetch ({ $moment, query, store }) {
     // await console.info('fetch()')
-  },
-
-  /**
-   * Methods
-   * https://vuejs.org/v2/api/#methods
-   */
-  methods: {
-    updateFilters () {
-      this.$router.push({ query: { start_date: this.start_date, end_date: this.end_date, use_bill_date: this.use_bill_date } })
-    }
-  },
-
-  /**
-   * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
-   * https://nuxtjs.org/api/pages-scrolltotop */
-  // scrollToTop: true,
-
-  /**
-   * To define a custom transition for a specific route, simply add the transition key to the page component.
-   * @type {String|Object|Function}
-   * https://nuxtjs.org/api/pages-transition */
-  transition (to, from) {
-    // if (!from) { return 'slide-left' }
-    // return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
   },
 
   /**

@@ -67,6 +67,7 @@ export const actions = {
       // debugger
       console.error(`ERROR: ${error}`)
       commit('setError', error.message)
+      commit('setData', [])
     } finally {
       commit('setLoading', false)
     }

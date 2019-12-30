@@ -118,16 +118,11 @@ export default {
       } else if (this.query.length >= 3) {
         await this.search()
       }
-      // if (this.loading) { return }
-      // if (!this.query) {
-      //   this.$store.commit('search/reset')
-      //   return
-      // }
-      // if (this.query.length < 3) { return }
     }
   },
   mounted () {
     this.axiosCancelTokenSource = this.$axios.CancelToken.source()
+    // clear existing results before rendering search box (back button perhaps, stale results)
     if (this.results && this.results.length !== 0) {
       this.$store.dispatch('search/reset')
     }
@@ -167,7 +162,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

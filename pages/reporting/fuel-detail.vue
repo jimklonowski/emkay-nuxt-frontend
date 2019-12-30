@@ -4,9 +4,7 @@
       <v-col cols="12">
         <v-card shaped outlined>
           <v-toolbar flat>
-            <v-toolbar-title class="hidden-sm-and-down">
-              {{ $t('fuel_detail') }}
-            </v-toolbar-title>
+            <v-toolbar-title v-t="'fuel_detail'" class="hidden-sm-and-down" />
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -22,10 +20,9 @@
               solo
             />
           </v-toolbar>
+          <!-- Report Filters -->
           <v-container>
-            <v-subheader class="overline">
-              {{ $t('report_filters') }}
-            </v-subheader>
+            <v-subheader v-t="'report_filters'" class="overline" />
             <v-row>
               <v-col cols="12" sm="6">
                 <v-menu
@@ -53,12 +50,8 @@
                     scrollable
                   >
                     <v-spacer />
-                    <v-btn @click="start_menu = false" text>
-                      {{ $t('cancel') }}
-                    </v-btn>
-                    <v-btn @click="$refs.start_menu.save(start_date), updateFilters()" text>
-                      {{ $t('ok') }}
-                    </v-btn>
+                    <v-btn v-t="'cancel'" @click="start_menu = false" text />
+                    <v-btn v-t="'ok'" @click="$refs.start_menu.save(start_date), updateQuery()" text />
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -88,12 +81,8 @@
                     scrollable
                   >
                     <v-spacer />
-                    <v-btn @click="end_menu = false" text>
-                      {{ $t('cancel') }}
-                    </v-btn>
-                    <v-btn @click="$refs.end_menu.save(end_date), updateFilters()" text>
-                      {{ $t('ok') }}
-                    </v-btn>
+                    <v-btn v-t="'cancel'" @click="end_menu = false" text />
+                    <v-btn v-t="'ok'" @click="$refs.end_menu.save(end_date), updateQuery()" text />
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -101,7 +90,7 @@
                 <v-switch
                   v-model="use_bill_date"
                   :label="$t(`bill_date`)"
-                  @change="updateFilters()"
+                  @change="updateQuery()"
                   hint="Not Yet Implemented..."
                   messages="Not Yet Implemented..."
                 />
@@ -114,17 +103,18 @@
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
               <client-only>
-                <download-excel v-t="'download'" :fields="downloadFields" :data="rows" />
+                <download-excel v-t="'download'" :fields="downloadFields" :data="items" />
               </client-only>
             </v-btn>
           </v-toolbar>
+          <!-- Report Content -->
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
                 :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
                 :headers="headers"
-                :items="rows"
-                :items-per-page="15"
+                :items="items"
+                :items-per-page="10"
                 :loading="loading"
                 :search="search"
                 :sort-by="['service_date']"
@@ -145,7 +135,7 @@
                   </div>
                 </template>
 
-                <!-- Configure each #item row is rendered -->
+                <!-- Configure how each #item row is rendered -->
                 <template #item="{ item }">
                   <tr>
                     <td>{{ item.service_date | date }}</td>
@@ -213,13 +203,23 @@
 </template>
 
 <script>
+import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { updateQuery } from '@/mixins/routing'
 /**
  * Fuel Detail Report
- * When a date filter changes, a call is made to updateFilters which updates the route's query parameters (?start=2019-11&end=2019-11&...)
+ * When a date filter changes, a call is made to updateQuery which updates the route's query parameters (?start=2019-11&end=2019-11&...)
  * watchQuery listens for changes in the query parameters and onchange triggers all component methods (i.e. asyncData which will re-request data with new parameters)
  */
 export default {
   name: 'FuelDetail',
+
+  /**
+   * Mixins
+   * https://vuejs.org/v2/guide/mixins.html
+   * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
+   * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
+   */
+  mixins: [downloadFields, headers, reportGetters, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -239,12 +239,6 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
-    // columns: vm => vm.$store.getters['reports/getColumns'],
-    // downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
-    // headers: vm => vm.$store.getters['reports/getHeaders'],
-    rows: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading'],
     columns () {
       // TODO: Additional logic for ordering of columns and which columns should be in report
       // Returns an array of string[]
@@ -296,22 +290,13 @@ export default {
         'voucher'
       ]
     },
-    headers () {
-      // Returns an array of TableHeader[]
-      return this.columns.map(column => {
-        return {
-          text: this.$i18n.t(column),
-          value: column,
-          class: 'report-column'
-        }
-      })
-    },
-    downloadFields () {
-      // create an object { text1: key1, text2: key2, text3: key3, ...} for downloading report as excel
-      // example:
-      // { 'Amount': 'amount', 'Service Date': 'service_date', .... } or
-      // { 'Montant': 'amount', 'Date de service': 'service_date', ... }
-      return Object.assign({}, ...this.columns.map(column => ({ [this.$i18n.t(column)]: column })))
+    query () {
+      const query = {
+        start_date: this.start_date,
+        end_date: this.end_date,
+        use_bill_date: this.use_bill_date
+      }
+      return query
     }
   },
 
@@ -322,7 +307,8 @@ export default {
    */
   async asyncData ({ $moment, query, store, error }) {
     // if no date params in query, then use 30day period ending with today
-    const start_date = query.start_date || $moment().subtract(30, 'days').format('YYYY-MM-DD')
+    const report_length = 30
+    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
@@ -338,11 +324,8 @@ export default {
     // Fetch the report data using the above filters
     await store.dispatch('reports/fetchData', filters)
 
-    return {
-      end_date,
-      start_date,
-      use_bill_date
-    }
+    // Return the report parameters so they are merged with the data() object
+    return { end_date, start_date, use_bill_date }
   },
 
   /**
@@ -365,7 +348,7 @@ export default {
    * THIS IS SET IN THE PARENT reporting.vue to be the reports.vue layout
    * https://nuxtjs.org/api/pages-layout
    * https://nuxtjs.org/guide/views#layouts */
-  // layout: 'default',
+  // layout: 'report',
 
   /**
    * Nuxt.js gives you its own loading progress bar component that's shown between routes. You can customize it, disable it or create your own component.
@@ -402,16 +385,6 @@ export default {
    */
   async fetch ({ $moment, query, store }) {
     // await console.info('fetch()')
-  },
-
-  /**
-   * Methods
-   * https://vuejs.org/v2/api/#methods
-   */
-  methods: {
-    updateFilters () {
-      this.$router.push({ query: { start_date: this.start_date, end_date: this.end_date, use_bill_date: this.use_bill_date } })
-    }
   },
 
   /**

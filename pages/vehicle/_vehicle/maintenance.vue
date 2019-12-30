@@ -176,7 +176,7 @@ import { updateQuery, vehicleRoute } from '@/mixins/routing'
 export default {
   name: 'Maintenance',
   mixins: [downloadFields, headers, updateQuery, vehicleRoute],
-  data () {
+  data (context) {
     return {
       end_menu: false,
       start_menu: false,

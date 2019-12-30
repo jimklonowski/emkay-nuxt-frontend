@@ -1,3 +1,4 @@
+import { mapGetters } from 'vuex'
 /**
  * Maps an array of strings to an array of TableHeader[] objects { text, value, class }
  * @returns {TableHeader[]}
@@ -30,5 +31,22 @@ export const headers = {
 export const downloadFields = {
   computed: {
     downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
+  }
+}
+
+/**
+ * MapGetters for report data
+ */
+export const reportGetters = {
+  computed: {
+    ...mapGetters('reports', {
+      'items': 'getData',
+      'error': 'getError',
+      'loading': 'getLoading'
+    })
+    // above is equivalent to:
+    // items: vm => vm.$store.getters['reports/getData'],
+    // error: vm => vm.$store.getters['reports/getError'],
+    // loading: vm => vm.$store.getters['reports/getLoading']
   }
 }

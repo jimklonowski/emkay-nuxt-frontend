@@ -7,7 +7,7 @@
       <v-col cols="12">
         <v-card shaped outlined>
           <v-toolbar flat>
-            <v-toolbar-title v-t="'inventory_report'" class="hidden-sm-and-down" />
+            <v-toolbar-title v-t="'toll_detail'" class="hidden-sm-and-down" />
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -143,14 +143,14 @@
 </template>
 
 <script>
-import { downloadFields, headers } from '@/mixins/datatables'
+import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
- * Inventory Report (vehicle audit report)
+ * Toll Detail Report
  */
 export default {
-  name: 'Inventory',
-  mixins: [downloadFields, headers, updateQuery],
+  name: 'TollDetail',
+  mixins: [downloadFields, headers, reportGetters, updateQuery],
   data (context) {
     return {
       search: '',
@@ -161,13 +161,13 @@ export default {
   computed: {
     columns () {
       return [
-        'vehicle_number'
-        // ,...
+        'date',
+        'vehicle_number',
+        'description',
+        'location',
+        'amount'
       ]
     },
-    items: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading'],
     query () {
       const query = {
         start_date: this.start_date,
@@ -182,7 +182,7 @@ export default {
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
 
     const filters = {
-      command: 'INVENTORY',
+      command: 'TOLL',
       customer: 'EM102',
       start_date,
       end_date,
@@ -192,11 +192,11 @@ export default {
     // Fetch report data
     await store.dispatch('reports/fetchData', filters)
 
-    // Return report params
+    // Return the report parameters so they are merged with the data() object
     return { end_date, start_date }
   },
   head () {
-    const title = this.$t('inventory_report')
+    const title = this.$t('toll_detail')
     return {
       title,
       meta: [
@@ -206,6 +206,7 @@ export default {
   },
   loading: true,
   validate ({ $moment, query }) {
+    // ... validate params?
     return true
   },
   watchQuery: ['start_date', 'end_date']

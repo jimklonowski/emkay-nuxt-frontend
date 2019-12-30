@@ -10,10 +10,10 @@
         <v-card rounded shaped>
           <v-card-text>
             <keep-alive>
-              <v-tabs>
-                <v-tab v-for="(category, key) in $options.reports.categories" :key="key">
-                  {{ $t(category.key) }}
-                </v-tab>
+              <v-tabs
+                show-arrows
+              >
+                <v-tab v-for="(category, key) in $options.reports.categories" :key="key" v-t="category.key" />
                 <v-tab-item v-for="(category, key) in $options.reports.categories" :key="key">
                   <v-list>
                     <v-list-item v-for="(report, key2) in category.items" :key="key2" :to="localePath(report.to)">
@@ -21,9 +21,7 @@
                         <v-icon v-text="report.icon" />
                       </v-list-item-avatar>
                       <v-list-item-content>
-                        <v-list-item-title>
-                          {{ $t(report.key) }}
-                        </v-list-item-title>
+                        <v-list-item-title v-t="report.key" />
                       </v-list-item-content>
                     </v-list-item>
                   </v-list>
@@ -48,7 +46,6 @@ export default {
   reports,
   middleware: ['auth'],
   name: 'Reporting',
-
   /**
    * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
    * https://nuxtjs.org/api/pages-scrolltotop
