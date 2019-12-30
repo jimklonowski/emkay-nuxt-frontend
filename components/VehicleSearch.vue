@@ -50,9 +50,12 @@
 </template>
 
 <script>
+// import axios from 'axios'
+// let axiosCancelTokenSource = axios.CancelToken.source()
 export default {
   name: 'VehicleSearch',
   data: () => ({
+    axiosCancelTokenSource: null,
     query: '',
     selection: null
   }),
@@ -60,17 +63,6 @@ export default {
     error: vm => vm.$store.getters['search/getError'],
     loading: vm => vm.$store.getters['search/getLoading'],
     results: vm => vm.$store.getters['search/getResults'],
-    filters () {
-      const filters = {
-        command: 'WEBVEHICLE',
-        subcommand: 'VEHICLE_SEARCH',
-        search_type: 'VEHICLE_NUMBER',
-        search_data: this.query || '',
-        customer: 'EM102'
-        // ,user: 'EMKSALE'
-      }
-      return filters
-    },
     items () {
       if (!this.results.length) { return [] }
       // remove duplicates
@@ -96,16 +88,34 @@ export default {
   },
   watch: {
     async query () {
-      if (this.loading) { return }
       if (!this.query) {
         this.$store.commit('search/reset')
-        return
+      } else if (this.query.length >= 3) {
+        await this.search()
       }
-      if (this.query.length < 3) { return }
-      await this.$store.dispatch('search/fetchVehicles', this.filters)
+      // if (this.loading) { return }
+      // if (!this.query) {
+      //   this.$store.commit('search/reset')
+      //   return
+      // }
+      // if (this.query.length < 3) { return }
     }
   },
+  mounted () {
+    this.axiosCancelTokenSource = this.$axios.CancelToken.source()
+  },
   methods: {
+    filters () {
+      const filters = {
+        command: 'WEBVEHICLE',
+        subcommand: 'VEHICLE_SEARCH',
+        search_type: 'VEHICLE_NUMBER',
+        search_data: this.query || '',
+        customer: 'EM102'
+        // ,user: 'EMKSALE'
+      }
+      return filters
+    },
     driverName (item) {
       return [item.driver_first_name, item.driver_last_name].filter(Boolean).join(' ')
     },
@@ -116,6 +126,13 @@ export default {
       if (this.selection && this.selection.vehicle_number) {
         this.$router.push(this.localePath({ path: `/vehicle/${this.selection.vehicle_number}` }))
       }
+    },
+    async search () {
+      if (this.loading) {
+        this.axiosCancelTokenSource.cancel()
+        this.axiosCancelTokenSource = this.$axios.CancelToken.source()
+      }
+      await this.$store.dispatch('search/fetchVehicles', { filters: this.filters(), cancelToken: this.axiosCancelTokenSource.token })
     }
   }
 }

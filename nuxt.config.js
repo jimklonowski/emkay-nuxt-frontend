@@ -182,6 +182,7 @@ export default {
     },
     langDir: 'lang/',
     lazy: true,
+    // seo: false,
     strategy: 'prefix_except_default',
     vuex: {
       moduleName: 'i18n',

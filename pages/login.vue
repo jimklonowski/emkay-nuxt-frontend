@@ -73,6 +73,15 @@ export default {
     loading: false,
     remember: false
   }),
+  head () {
+    const title = this.$t('login')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  },
   methods: {
     async login () {
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/demo/pages/login.vue
