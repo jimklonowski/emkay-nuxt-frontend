@@ -451,7 +451,7 @@ export default {
   /**
    * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
    * https://nuxtjs.org/api/pages-scrolltotop */
-  scrollToTop: true,
+  // scrollToTop: true,
 
   /**
    * To define a custom transition for a specific route, simply add the transition key to the page component.

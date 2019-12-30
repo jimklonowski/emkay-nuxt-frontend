@@ -55,7 +55,7 @@
       fixed
       app
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" :aria-label="$t('open_the_menu')" />
       <v-toolbar-title v-t="'emkay'" />
 
       <v-spacer />
@@ -158,7 +158,8 @@ export default {
         // style: 'background-image:linear-gradient(to top right, #f6d365, #fda085);',
         // style: 'background-image:linear-gradient(135deg,#667eea,#764ba2)!important;',
         subtitleKey: 'reporting_subtitle',
-        titleKey: 'reporting'
+        titleKey: 'reporting',
+        path: this.$options.menus.reports.to
       }
     }
   },

@@ -30,7 +30,7 @@
       </component>
     </template>
     <v-card>
-      <v-list-item :style="model.style" :dark="$vuetify.theme.dark" two-line>
+      <v-list-item :style="model.style" :dark="$vuetify.theme.dark" :to="localePath(model.path)" two-line>
         <v-list-item-avatar :color="model.color">
           <v-icon v-text="model.icon" dark />
         </v-list-item-avatar>
@@ -96,7 +96,8 @@ const defaultProps = {
   showArrowCollapsed: false,
   style: '',
   subtitleKey: '',
-  titleKey: ''
+  titleKey: '',
+  path: null
 }
 
 export default {

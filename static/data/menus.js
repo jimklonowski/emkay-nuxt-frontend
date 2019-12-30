@@ -80,6 +80,7 @@ const ordering = {
  * Reporting Mega Menu Config
  */
 const reports = {
+  to: { path: '/reporting' },
   categories: [
     {
       key: 'fleet',

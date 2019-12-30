@@ -38,13 +38,38 @@
       {{ item.vehicle_number }}
     </template>
     <template #item="{ item }">
-      <v-list-item-avatar :size="48" color="primary lighten-2">
-        <span class="white--text caption">{{ item.vehicle_number }}</span>
+      <v-list-item-avatar :size="64" :title="$t('vehicle_#')" color="grey darken-2 white--text">
+        <span class="caption">{{ item.vehicle_number }}</span>
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-list-item-title>{{ yearMakeModel(item) }}</v-list-item-title>
-        <v-list-item-subtitle>{{ driverName(item) | lowercase | capitalize }}</v-list-item-subtitle>
+        <p v-if="item.client_vehicle_number">
+          <v-chip
+            :title="$t('client_vehicle_#')"
+            x-small
+            label
+            dark
+          >
+            {{ item.client_vehicle_number }}
+          </v-chip>
+        </p>
+        <v-list-item-title class="subtitle-2">
+          <span v-text="yearMakeModel(item)" :title="$t('vehicle')" />
+        </v-list-item-title>
+        <v-list-item-subtitle class="body-2">
+          <span v-text="driverName(item)" :title="$t('driver')" />
+        </v-list-item-subtitle>
+        <v-list-item-subtitle style="opacity:0.8;" class="caption">
+          <span v-text="item.vin" :title="$t('vin')" />
+        </v-list-item-subtitle>
       </v-list-item-content>
+      <v-list-item-action class="align-center justify-start">
+        <v-list-item-action-text v-if="item.plate_number" class="px-2">
+          {{ $t('plate_#') }}
+        </v-list-item-action-text>
+        <v-chip v-if="item.plate_number" :title="$t('plate_#')" label small dark>
+          {{ item.plate_number }}
+        </v-chip>
+      </v-list-item-action>
     </template>
   </v-autocomplete>
 </template>
@@ -103,6 +128,9 @@ export default {
   },
   mounted () {
     this.axiosCancelTokenSource = this.$axios.CancelToken.source()
+    if (this.results && this.results.length !== 0) {
+      this.$store.dispatch('search/reset')
+    }
   },
   methods: {
     filters () {
@@ -117,7 +145,9 @@ export default {
       return filters
     },
     driverName (item) {
-      return [item.driver_first_name, item.driver_last_name].filter(Boolean).join(' ')
+      // return [item.driver_first_name, item.driver_last_name].filter(Boolean).join(' ')
+      const name = [item.driver_first_name, item.driver_last_name].filter(Boolean).join(' ')
+      return this.$options.filters.capitalize(this.$options.filters.lowercase(name))
     },
     yearMakeModel (item) {
       return [item.color, item.year, item.make, item.model].filter(Boolean).join(' ')
