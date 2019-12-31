@@ -21,6 +21,8 @@
               <td>{{ item.amount | currency }}</td>
               <td>{{ item.cpm | currency(3,3) }}</td>
             </tr>
+          </tbody>
+          <tfoot>
             <tr>
               <td />
               <td class="font-weight-bold">
@@ -29,7 +31,7 @@
               <td>{{ total('amount') | currency }}</td>
               <td>{{ total('cpm') | currency(3,3) }}</td>
             </tr>
-          </tbody>
+          </tfoot>
         </template>
       </v-simple-table>
     </v-card-text>
