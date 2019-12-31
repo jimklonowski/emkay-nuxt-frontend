@@ -9,6 +9,11 @@
       </v-col>
     </v-row>
     <v-row>
+      <v-col cols="6">
+        <MaintenanceCPM />
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="12">
         <v-card outlined shaped>
           <v-toolbar flat>
@@ -173,8 +178,12 @@
 // import { SnotifyPosition } from 'vue-snotify'
 import { downloadFields, headers } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
+import MaintenanceCPM from '@/components/vehicle/maintenance/MaintenanceCPM'
 export default {
   name: 'Maintenance',
+  components: {
+    MaintenanceCPM
+  },
   mixins: [downloadFields, headers, updateQuery, vehicleRoute],
   data (context) {
     return {

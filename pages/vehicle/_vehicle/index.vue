@@ -3,19 +3,22 @@
     <v-container>
       <v-row style="top:64px;">
         <v-col cols="12" lg="6">
-          <vehicle-card />
+          <vehicle-widget />
         </v-col>
         <v-col cols="12" lg="6">
-          <driver-card :driver="getDriverInfo" />
+          <driver-widget :driver="getDriverInfo" />
         </v-col>
         <v-col cols="12" xl="6">
-          <fuel-card />
+          <fuel-widget />
         </v-col>
         <v-col cols="12" xl="6">
-          <maintenance-card />
+          <maintenance-widget />
         </v-col>
         <v-col cols="12" xl="6">
-          <toll-card />
+          <toll-widget />
+        </v-col>
+        <v-col cols="12" xl="6">
+          <accident-widget />
         </v-col>
       </v-row>
     </v-container>
@@ -24,76 +27,31 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import DriverCard from '@/components/vehicle/DriverCard'
-import VehicleCard from '@/components/vehicle/VehicleCard'
-import FuelCard from '@/components/vehicle/FuelCard'
-import MaintenanceCard from '@/components/vehicle/MaintenanceCard'
+import DriverWidget from '@/components/vehicle/DriverWidget'
+import VehicleWidget from '@/components/vehicle/VehicleWidget'
+import FuelWidget from '@/components/vehicle/FuelWidget'
+import MaintenanceWidget from '@/components/vehicle/MaintenanceWidget'
 
-import AccidentCard from '@/components/vehicle/AccidentCard'
-import InvoiceCard from '@/components/vehicle/InvoiceCard'
-import TollCard from '@/components/vehicle/TollCard'
-import ViolationCard from '@/components/vehicle/ViolationCard'
+import AccidentWidget from '@/components/vehicle/AccidentWidget'
+import TollWidget from '@/components/vehicle/TollWidget'
+import ViolationWidget from '@/components/vehicle/ViolationWidget'
 
 export default {
   name: 'VehicleDashboard',
   /* eslint-disable vue/no-unused-components */
   components: {
-    VehicleCard,
-    DriverCard,
-    FuelCard,
-    MaintenanceCard,
+    VehicleWidget,
+    DriverWidget,
+    FuelWidget,
+    MaintenanceWidget,
+    AccidentWidget,
+    TollWidget,
     // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
     // 'maintenance-table': () => import('@/components/vehicle/MaintenanceTable'),
 
-    AccidentCard,
-    InvoiceCard,
-    TollCard,
-    ViolationCard
+    ViolationWidget
   },
-  data: () => ({
-    layout: [
-      {
-        is: 'vehicle-card',
-        flex: { cols: 12, sm: 12, md: 6, lg: 6, xl: 6 }
-      },
-      {
-        is: 'driver-card',
-        flex: { cols: 12, sm: 12, md: 6, lg: 6, xl: 6 }
-      },
-      {
-        is: 'accident-card',
-        flex: { cols: 12, sm: 6, md: 6, lg: 4, xl: 4 },
-        expand: false
-      },
-      {
-        is: 'invoice-card',
-        flex: { cols: 12, sm: 6, md: 4, lg: 4, xl: 3 },
-        expand: false
-      },
-      {
-        is: 'toll-card',
-        flex: { cols: 12, sm: 6, md: 4, lg: 4, xl: 3 },
-        expand: false
-      },
-      {
-        is: 'violation-card',
-        flex: { cols: 12, sm: 6, md: 4, lg: 4, xl: 3 },
-        expand: false
-      }
-    ]
-
-    // breakpoints: { lg: 1904, md: 1264, sm: 960, xs: 600, xxs: 0 },
-    // layout: [
-    //   { x: 0, y: 0, w: 6, h: 10, i: 0, is: 'vehicle-card' },
-    //   { x: 6, y: 0, w: 6, h: 10, i: 1, is: 'driver-card' },
-    //   { x: 0, y: 10, w: 4, h: 6, i: 2, is: 'fuel-card' },
-    //   { x: 4, y: 10, w: 4, h: 6, i: 3, is: 'accident-card' },
-    //   { x: 8, y: 10, w: 4, h: 6, i: 4, is: 'invoice-card' },
-    //   { x: 0, y: 20, w: 6, h: 6, i: 5, is: 'maintenance-card' },
-    //   { x: 4, y: 20, w: 6, h: 6, i: 6, is: 'toll-card' },
-    //   { x: 8, y: 30, w: 6, h: 6, i: 7, is: 'violation-card' }
-    // ]
-  }),
+  data: () => ({}),
   computed: {
     ...mapGetters({
       getVehicleInfo: 'vehicle/getVehicleInfo',

@@ -8,6 +8,10 @@ const getDefaultState = () => ({
   order_status: {},
   vehicle_info: {},
 
+  accident_error: null,
+  accident_history: [],
+  accident_loading: false,
+
   fuel_error: null,
   fuel_history: [],
   fuel_loading: false,
@@ -18,7 +22,11 @@ const getDefaultState = () => ({
 
   toll_error: null,
   toll_history: [],
-  toll_loading: false
+  toll_loading: false,
+
+  violation_error: null,
+  violation_history: [],
+  violation_loading: false
 })
 
 export const state = () => getDefaultState()
@@ -48,7 +56,26 @@ export const actions = {
       commit('setLoading', false)
     }
   },
+  async fetchAccidentHistory ({ commit }, filters) {
+    commit('setAccidentError', null)
+    commit('setAccidentLoading', true)
+    try {
+      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      const { data: { data, success, message } } = await this.$axios.post(url, filters)
+      if (!success) {
+        throw new Error(message)
+      }
+      commit('setAccidentHistory', data)
+    } catch (error) {
+      // console.error(error)
+      commit('setAccidentError', error.message)
+      commit('setAccidentHistory', [])
+    } finally {
+      commit('setAccidentLoading', false)
+    }
+  },
   async fetchFuelHistory ({ commit }, filters) {
+    commit('setFuelError', null)
     commit('setFuelLoading', true)
     try {
       const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
@@ -99,6 +126,23 @@ export const actions = {
       commit('setTollLoading', false)
     }
   },
+  async fetchViolationHistory ({ commit }, filters) {
+    commit('setViolationError', null)
+    commit('setViolationLoading', true)
+    try {
+      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      const { data: { data, success, message } } = await this.$axios.post(url, filters)
+      if (!success) {
+        throw new Error(message)
+      }
+      commit('setViolationHistory', data)
+    } catch (error) {
+      commit('setViolationError', error.message)
+      commit('setViolationHistory', [])
+    } finally {
+      commit('setViolationLoading', false)
+    }
+  },
   reset ({ commit }) {
     commit('reset')
   }
@@ -108,6 +152,10 @@ export const mutations = {
   reset: assign(getDefaultState()),
   setError: set('error'),
   setLoading: set('loading'),
+
+  setAccidentError: set('accident_error'),
+  setAccidentHistory: set('accident_history'),
+  setAccidentLoading: set('accident_loading'),
 
   setFuelError: set('fuel_error'),
   setFuelHistory: set('fuel_history'),
@@ -121,6 +169,10 @@ export const mutations = {
   setTollHistory: set('toll_history'),
   setTollLoading: set('toll_loading'),
 
+  setViolationError: set('violation_error'),
+  setViolationHistory: set('violation_history'),
+  setViolationLoading: set('violation_loading'),
+
   setDriverInfo: set('driver_info'),
   setSaleInfo: set('sale_info'),
   setOrderStatus: set('order_status'),
@@ -133,6 +185,10 @@ export const getters = {
 
   getDriverInfo: state => state.driver_info,
 
+  getAccidentError: state => state.accident_error,
+  getAccidentHistory: state => state.accident_history,
+  getAccidentLoading: state => state.accident_loading,
+
   getFuelError: state => state.fuel_error,
   getFuelHistory: state => state.fuel_history,
   getFuelLoading: state => state.fuel_loading,
@@ -144,6 +200,10 @@ export const getters = {
   getTollError: state => state.toll_error,
   getTollHistory: state => state.toll_history,
   getTollLoading: state => state.toll_loading,
+
+  getViolationError: state => state.violation_error,
+  getViolationHistory: state => state.violation_history,
+  getViolationLoading: state => state.violation_loading,
 
   getSaleInfo: state => state.sale_info,
   getOrderStatus: state => state.order_status,

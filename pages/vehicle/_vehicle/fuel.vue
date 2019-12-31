@@ -9,12 +9,20 @@
       </v-col>
     </v-row>
     <v-row>
+      <v-col cols="12" md="6">
+        <fuel-card-list />
+      </v-col>
+      <v-col cols="12" md="6">
+        <fuel-authorization-profiles />
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="12">
         <v-card outlined shaped>
           <v-toolbar flat>
             <v-toolbar-title class="hidden-sm-and-down">
-              {{ $t('fuel') }}
-              <span class="overline text--disabled">{{ $route.params.vehicle }}</span>
+              {{ $t('fuel_purchases') }}
+              <span v-text="$route.params.vehicle" class="overline text--disabled" />
             </v-toolbar-title>
             <v-spacer />
             <v-text-field
@@ -177,8 +185,14 @@
 <script>
 import { downloadFields, headers } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
+import FuelAuthorizationProfiles from '@/components/vehicle/fuel/FuelAuthorizationProfiles'
+import FuelCardList from '@/components/vehicle/fuel/FuelCardList'
 export default {
   name: 'Fuel',
+  components: {
+    FuelAuthorizationProfiles,
+    FuelCardList
+  },
   mixins: [downloadFields, headers, updateQuery, vehicleRoute],
   data () {
     return {

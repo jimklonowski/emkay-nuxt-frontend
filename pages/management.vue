@@ -16,12 +16,12 @@
                 <v-tab v-for="(category, key) in $options.management.categories" :key="key" v-t="category.key" />
                 <v-tab-item v-for="(category, key) in $options.management.categories" :key="key">
                   <v-list>
-                    <v-list-item v-for="(report, key2) in category.items" :key="key2" :to="localePath(report.to)">
+                    <v-list-item v-for="(item, key2) in category.items" :key="key2" :to="localePath(item.to)">
                       <v-list-item-avatar>
-                        <v-icon v-text="report.icon" />
+                        <v-icon v-text="item.icon" />
                       </v-list-item-avatar>
                       <v-list-item-content>
-                        <v-list-item-title v-t="report.key" />
+                        <v-list-item-title v-t="item.key" />
                       </v-list-item-content>
                     </v-list-item>
                   </v-list>
