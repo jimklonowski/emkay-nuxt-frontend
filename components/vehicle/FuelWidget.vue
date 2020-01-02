@@ -29,6 +29,7 @@
           :items-per-page="5"
           :sort-by="['service_date']"
           :sort-desc="true"
+          dense
           class="striped"
         >
           <!-- Configure each #item row is rendered -->
@@ -37,7 +38,7 @@
               <td>{{ item.service_date | date }}</td>
               <td>{{ item.fuel_company_name }}</td>
               <td>
-                <v-chip :outlined="$vuetify.theme.dark" v-text="item.product_type" small />
+                <v-chip :outlined="$vuetify.theme.dark" v-text="item.product_type" x-small />
               </td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.unit_price | currency(3,3) }}</td>

@@ -38,19 +38,19 @@
 
     <v-divider />
 
-    <v-card-text>
+    <v-card-text class="px-0">
       <v-row no-gutters>
-        <v-col cols="6" sm="6">
-          <v-list class="text-left">
+        <v-col cols="6">
+          <v-list class="text-left" dense>
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-car-key</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ vehicle_info.vehicle_number }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('vehicle_number') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -60,10 +60,10 @@
                 <v-icon>mdi-car</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ vehicle_info.client_vehicle_number }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('client_vehicle_number') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -73,27 +73,27 @@
                 <v-icon>mdi-bus-multiple</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ vehicle_info.category }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('vehicle_category') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-col>
-        <v-col cols="6" sm="6">
-          <v-list class="text-left">
+        <v-col cols="6">
+          <v-list class="text-left" dense>
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-label</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ vehicle_info.vin }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('vin') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -103,10 +103,10 @@
                 <v-icon>mdi-account-card-details</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ vehicle_info.bill_sort }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('bill_sort') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -116,10 +116,10 @@
                 <v-icon>mdi-account-group</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ vehicleCenter }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('center') }}
                 </v-list-item-subtitle>
               </v-list-item-content>

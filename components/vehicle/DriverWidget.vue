@@ -37,23 +37,23 @@
 
     <v-divider />
 
-    <v-card-text>
+    <v-card-text class="px-0">
       <v-row no-gutters>
-        <v-col cols="6" sm="6">
-          <v-list class="text-left">
+        <v-col cols="6">
+          <v-list class="text-left" dense>
             <!-- address -->
             <v-list-item>
               <v-list-item-icon>
                 <v-icon>mdi-map-marker</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ driver.address_1 }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ driver.address_2 || '' }}
                 </v-list-item-subtitle>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ cityStateZip }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -64,10 +64,10 @@
                 <v-icon>mdi-account-card-details</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ driver.employee_id }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('employee_id') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -78,27 +78,27 @@
                 <v-icon>mdi-account-badge</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ driver.selector }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('selector_level') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-col>
-        <v-col cols="6" sm="6">
-          <v-list class="text-left" shaped>
+        <v-col cols="6">
+          <v-list class="text-left" dense shaped>
             <v-list-item @click="dialTo(driver.phone)">
               <v-list-item-icon>
                 <v-icon>mdi-phone</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ driver.phone }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('phone') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -108,10 +108,10 @@
                 <v-icon>mdi-cellphone-basic</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ driver.mobile }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('mobile') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -121,10 +121,10 @@
                 <v-icon>mdi-email</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="body-2">
+                <v-list-item-title>
                   {{ driver.email }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="caption">
+                <v-list-item-subtitle class="font-weight-light">
                   {{ $t('email') }}
                 </v-list-item-subtitle>
               </v-list-item-content>

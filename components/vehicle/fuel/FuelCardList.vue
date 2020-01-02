@@ -18,9 +18,43 @@
         <v-data-table
           :headers="headers"
           :items="items"
+          dense
+          disable-filtering
+          disable-pagination
           hide-default-footer
-          class="striped"
-        />
+        >
+          <template #item="{ item }">
+            <tr>
+              <td>{{ item.card_number }}</td>
+              <td>{{ item.vendor }}</td>
+              <td>{{ item.issue_date | date }}</td>
+              <td>{{ item.expiration_date | date }}</td>
+              <td>{{ item.restrictions }}</td>
+              <!-- <td>{{ item.pin }}</td> -->
+              <td>
+                <v-chip :outlined="$vuetify.theme.dark" v-text="item.status" small />
+              </td>
+              <td>
+                <v-tooltip top>
+                  <template #activator="{ on }">
+                    <v-btn v-on="on" color="" icon>
+                      <v-icon>mdi-credit-card-clock</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('replace_fuel_card') }}</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template #activator="{ on }">
+                    <v-btn v-on="on" color="red lighten-2" icon>
+                      <v-icon>mdi-credit-card-remove</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('terminate_fuel_card') }}</span>
+                </v-tooltip>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
     <v-card-actions />
@@ -39,17 +73,31 @@ export default {
   computed: {
     columns () {
       return [
-        'card_#',
+        'card_number',
         'vendor',
         'issue_date',
         'expiration_date',
         'restrictions',
-        'pin',
+        // 'pin',
         'status',
         'actions'
       ]
     },
-    items: vm => vm.$store.getters['vehicle/getFuelCardList']
+    items () {
+      return [
+        {
+          card_number: '8530-1',
+          vendor: 'WEX',
+          issue_date: '2019-10-25',
+          expiration_date: '2023-10',
+          restrictions: 'ID & ODOMETER, UNRESTRICTED',
+          pin: 1234,
+          status: 'ACTIVE',
+          actions: ''
+        }
+      ]
+    }
+    // items: vm => vm.$store.getters['vehicle/getFuelCardList']
   },
   async mounted () {
     const vehicle_number = this.$route.params.vehicle

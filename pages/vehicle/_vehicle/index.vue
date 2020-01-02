@@ -18,6 +18,9 @@
           <expense-widget />
         </v-col>
         <v-col cols="12" xl="6">
+          <billing-widget />
+        </v-col>
+        <v-col cols="12" xl="6">
           <toll-widget />
         </v-col>
         <v-col cols="12" xl="6">
@@ -35,7 +38,7 @@ import VehicleWidget from '@/components/vehicle/VehicleWidget'
 import FuelWidget from '@/components/vehicle/FuelWidget'
 import MaintenanceWidget from '@/components/vehicle/MaintenanceWidget'
 import ExpenseWidget from '@/components/vehicle/ExpenseWidget'
-
+import BillingWidget from '@/components/vehicle/BillingWidget'
 import AccidentWidget from '@/components/vehicle/AccidentWidget'
 import TollWidget from '@/components/vehicle/TollWidget'
 import ViolationWidget from '@/components/vehicle/ViolationWidget'
@@ -51,6 +54,7 @@ export default {
     AccidentWidget,
     TollWidget,
     ExpenseWidget,
+    BillingWidget,
     // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
     // 'maintenance-table': () => import('@/components/vehicle/MaintenanceTable'),
 

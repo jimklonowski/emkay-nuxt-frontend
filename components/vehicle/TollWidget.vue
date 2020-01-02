@@ -2,6 +2,9 @@
   <v-card outlined shaped>
     <v-card-title class="pa-0">
       <v-list-item>
+        <v-list-item-avatar>
+          <v-icon v-text="'mdi-highway'" />
+        </v-list-item-avatar>
         <v-list-item-content two-line>
           <p class="overline text--disabled">
             {{ $tc('past_days', days) }}
@@ -16,40 +19,32 @@
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
-      <v-spacer />
     </v-card-title>
-    <v-card-title v-text="'$201.00'" class="display-2" />
-    <v-card-text class="font-italic font-weight-light">
-      This has
-      <v-chip class="font-weight-regular mx-1 px-1" x-small label color="error">
-        increased
-      </v-chip>
-      by 3.3% since last month.
+    <v-divider />
+    <v-card-text class="pa-0">
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :items-per-page="5"
+        :sort-by="['date']"
+        :sort-desc="[true]"
+        dense
+        class="striped"
+      />
     </v-card-text>
-    <v-expand-transition>
-      <v-card :loading="loading" v-show="showMore" flat>
-        <v-data-table :headers="headers" :items="items" />
-      </v-card>
-    </v-expand-transition>
-    <v-card-actions>
-      <v-spacer />
-      <v-btn @click="showMore = !showMore" icon>
-        <v-icon>{{ showMore ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
+    <v-card-actions />
   </v-card>
 </template>
 
 <script>
+import { headers } from '@/mixins/datatables'
 export default {
   name: 'TollCard',
+  mixins: [headers],
   data () {
     return {
       days: 30,
-      initialized: false,
-      loading: false,
-      search: '',
-      showMore: false
+      initialized: false
     }
   },
   computed: {
@@ -63,15 +58,6 @@ export default {
         'in_network',
         'amount'
       ]
-    },
-    headers () {
-      return this.columns.map((column, index) => {
-        return {
-          text: this.$i18n.t(column),
-          value: column,
-          class: 'report-column'
-        }
-      })
     }
   },
   async mounted () {

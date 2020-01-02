@@ -18,7 +18,11 @@
     </template>
     <v-toolbar-title class="display-1">
       {{ $t('vehicle_dashboard') }}
+      <span class="caption text--disabled">
+        {{ $route.params.vehicle }}
+      </span>
     </v-toolbar-title>
+
     <v-spacer />
     <template #extension>
       <v-toolbar-items>

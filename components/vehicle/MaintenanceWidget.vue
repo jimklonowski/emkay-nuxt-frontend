@@ -29,6 +29,7 @@
           :items-per-page="5"
           :sort-by="['service_date']"
           :sort-desc="true"
+          dense
           class="striped"
         >
           <!-- Configure each #item row is rendered -->
@@ -44,6 +45,7 @@
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
+    <v-card-actions />
   </v-card>
 </template>
 
