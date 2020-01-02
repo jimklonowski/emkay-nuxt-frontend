@@ -15,6 +15,9 @@
           <maintenance-widget />
         </v-col>
         <v-col cols="12" xl="6">
+          <expense-widget />
+        </v-col>
+        <v-col cols="12" xl="6">
           <toll-widget />
         </v-col>
         <v-col cols="12" xl="6">
@@ -31,6 +34,7 @@ import DriverWidget from '@/components/vehicle/DriverWidget'
 import VehicleWidget from '@/components/vehicle/VehicleWidget'
 import FuelWidget from '@/components/vehicle/FuelWidget'
 import MaintenanceWidget from '@/components/vehicle/MaintenanceWidget'
+import ExpenseWidget from '@/components/vehicle/ExpenseWidget'
 
 import AccidentWidget from '@/components/vehicle/AccidentWidget'
 import TollWidget from '@/components/vehicle/TollWidget'
@@ -46,6 +50,7 @@ export default {
     MaintenanceWidget,
     AccidentWidget,
     TollWidget,
+    ExpenseWidget,
     // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
     // 'maintenance-table': () => import('@/components/vehicle/MaintenanceTable'),
 

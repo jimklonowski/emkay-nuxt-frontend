@@ -16,3 +16,15 @@ export const formatCurrency = (value, minDigits = 2, maxDigits = 2) => {
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits })
   return formatter.format(value)
 }
+
+/**
+ * Calculate Total of keys in array of objects
+ */
+export const computeTotalByKey = (items, key) => {
+  const total = items.reduce((a, b) => {
+    return {
+      [key]: a[key] + b[key]
+    }
+  })
+  return total[key]
+}

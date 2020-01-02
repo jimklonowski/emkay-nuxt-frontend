@@ -8,14 +8,14 @@
     </v-card-title>
     <v-card-text class="pa-0">
       <v-simple-table>
-        <template v-slot:default>
+        <template #default>
           <thead>
             <tr>
               <th v-for="header in headers" :key="header" v-t="header" />
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item.name">
+            <tr v-for="item in items" :key="item.key">
               <td>{{ $t(item.key) }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.amount | currency }}</td>
@@ -28,8 +28,8 @@
               <td class="font-weight-bold">
                 {{ $t('total') }}:
               </td>
-              <td>{{ total('amount') | currency }}</td>
-              <td>{{ total('cpm') | currency(3,3) }}</td>
+              <td>{{ totalAmount | currency }}</td>
+              <td>{{ totalCPM | currency(3,3) }}</td>
             </tr>
           </tfoot>
         </template>
@@ -40,11 +40,11 @@
 </template>
 
 <script>
+import { computeTotalByKey } from '@/utility/helpers'
 export default {
-  data () {
-    return {}
-  },
   computed: {
+    totalAmount: vm => vm.computeTotalByKey(vm.items, 'amount'),
+    totalCPM: vm => vm.computeTotalByKey(vm.items, 'cpm'),
     headers () {
       return [
         '',
@@ -83,10 +83,7 @@ export default {
     }
   },
   methods: {
-    total (key) {
-      const total = this.items.reduce((a, b) => { return { [key]: a[key] + b[key] } })
-      return total[key]
-    }
+    computeTotalByKey
   }
 }
 </script>
