@@ -6,7 +6,7 @@ import { mapGetters } from 'vuex'
 export const headers = {
   computed: {
     headers () {
-      return this.columns.map((column) => {
+      return this.columns.map((column, index) => {
         return {
           text: this.$i18n.t(column),
           value: column,

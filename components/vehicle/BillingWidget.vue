@@ -47,10 +47,18 @@
                 {{ item.invoice_number }}
               </nuxt-link>
             </td>
-            <td>{{ item.description }}</td>
-            <td>{{ item.bill_date | date }}</td>
-            <td>{{ item.bill_for_date | date }}</td>
-            <td>{{ item.amount | currency }}</td>
+            <td>
+              {{ item.description }}
+            </td>
+            <td>
+              {{ item.bill_date | date }}
+            </td>
+            <td>
+              {{ item.bill_for_date | date }}
+            </td>
+            <td>
+              {{ item.amount | currency }}
+            </td>
           </tr>
         </template>
       </v-data-table>

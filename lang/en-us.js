@@ -4,6 +4,7 @@ export default {
   about: "About",
   about_emkay: "About EMKAY",
   accident: "Accident",
+  accidents: "Accidents",
   accident_claim_status: "Accident Claim Status",
   account: "Account",
   account_management: "Account Management",

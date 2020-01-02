@@ -9,10 +9,10 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" md="6">
+      <v-col cols="12" lg="7">
         <fuel-card-list />
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" lg="5">
         <fuel-authorization-profiles />
       </v-col>
     </v-row>
@@ -21,7 +21,7 @@
         <v-card outlined shaped>
           <v-toolbar flat>
             <v-toolbar-title class="hidden-sm-and-down">
-              {{ $t('fuel_purchases') }}
+              {{ $t('fuel_history') }}
               <span v-text="$route.params.vehicle" class="overline text--disabled" />
             </v-toolbar-title>
             <v-spacer />

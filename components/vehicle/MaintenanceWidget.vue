@@ -29,6 +29,7 @@
           :items-per-page="5"
           :sort-by="['service_date']"
           :sort-desc="true"
+          :hide-default-footer="items.length <= 5"
           dense
           class="striped"
         >

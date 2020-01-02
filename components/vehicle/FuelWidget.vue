@@ -27,6 +27,7 @@
           :headers="headers"
           :items="items"
           :items-per-page="5"
+          :hide-default-footer="items.length <= 5"
           :sort-by="['service_date']"
           :sort-desc="true"
           dense

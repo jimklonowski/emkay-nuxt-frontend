@@ -1,65 +1,79 @@
 <template>
-  <!-- <v-col :cols="12" :md="showMore ? 12 : 6"> -->
-  <!-- <v-col :cols="showMore ? 12 : 'auto'"> -->
-  <!-- <v-col :cols="12" :md="showMore ? 12 : 6" :lg="showMore ? 6 : 4"> -->
-  <!-- <v-col cols="auto"> -->
   <v-card outlined shaped>
-    <v-card-subtitle>Accidents</v-card-subtitle>
-    <v-card-title v-text="0" class="display-2 success--text" />
-    <v-card-text class="font-italic font-weight-light">
-      nice!
+    <v-card-title class="pa-0">
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-icon v-text="'mdi-car-parking-lights'" />
+        </v-list-item-avatar>
+        <v-list-item-content two-line>
+          <p class="overline text--disabled">
+            {{ $tc('past_days', days) }}
+          </p>
+          <v-list-item-title>
+            {{ $t('accidents') }}
+          </v-list-item-title>
+          <v-list-item-subtitle class="caption">
+            {{ $t('more') }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </v-card-title>
+    <v-card-text class="pa-0">
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :items-per-page="5"
+        :hide-default-footer="items.length <= 5"
+        :sort-by="['date']"
+        :sort-desc="[true]"
+        dense
+        class="striped"
+      />
     </v-card-text>
-    <v-expand-transition>
-      <v-card v-show="expand" :loading="loading" flat>
-        <v-data-table :headers="headers" :items="items" />
-      </v-card>
-    </v-expand-transition>
-    <v-card-actions>
-      <v-spacer />
-      <!-- <v-btn @click="showMore = !showMore" icon> -->
-      <v-btn @click="$emit('expand', !expand)" icon>
-        <v-icon>{{ expand ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
+    <v-card-actions />
   </v-card>
-  <!-- </v-col> -->
 </template>
 
 <script>
+import { headers } from '@/mixins/datatables'
 export default {
   name: 'AccidentCard',
-  props: {
-    expand: {
-      type: Boolean,
-      default: false
+  mixins: [headers],
+  data () {
+    return {
+      days: 30,
+      initialized: false
     }
   },
-  data: () => ({
-    headers: [
-      {
-        text: 'Date',
-        align: 'left',
-        sortable: false,
-        value: 'date'
-      },
-      { text: 'Service Location', value: 'location' },
-      { text: 'Maintenance Details', value: 'details' },
-      { text: 'In Network?', value: 'network' },
-      { text: 'Amount', value: 'amount' }
-    ],
-    items: [{ date: '2019-01-01', location: 'Klonowski AUTO', details: 'Tires', network: 'false', amount: '$43.51' }],
-    loading: false,
-    showMore: false
-  })
-  // async created () {
-  //   try {
-  //     const data = await this.$axios.get('/maintenance')
-  //     this.items = data
-  //   } catch (err) {
-  //     debugger
-  //     console.log(err)
-  //   }
-  // }
+  computed: {
+    columns () {
+      return [
+        'date',
+        'location',
+        'details',
+        'in_network',
+        'amount'
+      ]
+    },
+    items: vm => vm.$store.getters['vehicle/getAccidentHistory'],
+    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber']
+  },
+  async mounted () {
+    const vehicle_number = this.vehicleNumber || ''
+    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const end_date = this.$moment().format('YYYY-MM-DD')
+
+    const filters = {
+      command: 'ACCIDENT',
+      customer: 'EM102',
+      start_date,
+      end_date,
+      vehicle_number,
+      json: 'Y'
+    }
+    await this.$store.dispatch('vehicle/fetchAccidentHistory', filters)
+    this.initialized = true
+  }
 }
 </script>
 
