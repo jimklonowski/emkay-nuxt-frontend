@@ -83,6 +83,7 @@ export default {
     '~/plugins/axios',
     '~/plugins/custom-filters',
     '~/plugins/vue-mock-axios',
+    '~/plugins/vee-validate',
     '~/plugins/i18n/vue-i18n',
     { src: '~/plugins/polyfills', ssr: false },
     { src: '~/plugins/vue-json-excel', ssr: false },
@@ -112,6 +113,8 @@ export default {
     '@nuxtjs/axios',
     // Doc: https://auth.nuxtjs.org/
     '@nuxtjs/auth',
+    // // Doc: https://github.com/lewyuburi/nuxt-validate
+    // 'nuxt-validate',
     // Doc: https://nuxt-community.github.io/nuxt-i18n/
     'nuxt-i18n',
     // Doc: https://github.com/nuxt-community/sitemap-module
@@ -192,54 +195,22 @@ export default {
       fallbackLocale: 'en',
       silentFallbackWarn: true
     }
-    // {
-    //   name: 'English',
-    //   code: 'en',
-    //   alt: 'enUS',
-    //   iso: 'en-US',
-    //   file: 'en-us.js'
-    // },
-    // {
-    //   name: 'English (Metric)',
-    //   code: 'ca',
-    //   alt: 'enCA',
-    //   iso: 'en-CA',
-    //   file: 'en-ca.js'
-    // },
-    // {
-    //   name: 'Français',
-    //   code: 'fr',
-    //   alt: 'frCA',
-    //   iso: 'fr-CA',
-    //   file: 'fr-ca.js'
-    // }
-    // ],
-    // defaultLocale: 'en',
-    // // strategy: 'prefix_and_default',
-    // strategy: 'prefix_except_default',
-    // // detectBrowserLanguage: false,
-    // detectBrowserLanguage: {
-    //   useCookie: true,
-    //   cookieKey: 'i18n_redirected',
-    //   alwaysRedirect: true,
-    //   fallbackLocale: 'en'
-    // },
-    // vuex: {
-    //   moduleName: 'i18n',
-    //   syncLocale: true,
-    //   syncMessages: false,
-    //   syncRouteParams: false
-    // },
-    // noPrefixDefaultLocale: false,
-    // redirectCookieKey: true,
-    // useRedirectCookie: true,
-    // lazy: true,
-    // langDir: 'lang/',
-    // vueI18n: {
-    //   fallbackLocale: 'en',
-    //   silentFallbackWarn: true
-    // }
   },
+  // /**
+  //  * nuxt-validate module configuration
+  //  * See: https://github.com/lewyuburi/nuxt-validate
+  //  */
+  // nuxtValidate: {
+  //   lang: 'en',
+  //   // rules: [],
+  //   nuxti18n: {
+  //     locale: {
+  //       'en': 'en',
+  //       'fr': 'fr',
+  //       'ca': 'en'
+  //     }
+  //   }
+  // },
   /*
    ** google analytics module configuration
    ** See: https://github.com/nuxt-community/analytics-module
@@ -340,13 +311,13 @@ export default {
   build: {
     profile: true,
     // vendor: ['@babel/polyfill'],
-    transpile: ['vuetify'],
+    transpile: ['vee-validate/dist/rules', 'vuetify'],
     // transpile: [/^vuetify/],
     // plugins: [new VuetifyLoaderPlugin()],
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend(config, ctx) {
       // run ESLint on save
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'

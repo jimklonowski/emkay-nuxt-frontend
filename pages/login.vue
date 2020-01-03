@@ -9,51 +9,61 @@
           outlined
           raised
         >
-          <v-form ref="form" @submit.prevent="login">
-            <v-card-title v-t="'login'" />
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field v-model="account" :label="$t('account')" autocomplete="organization" />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field v-model="username" :label="$t('username')" autocomplete="username" />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field v-model="password" :label="$t('password')" type="password" autocomplete="current-password" />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <v-checkbox v-model="remember" :label="$t('remember_me')" />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions class="flex-column">
-              <v-btn
-                v-t="'login'"
-                :ripple="false"
-                type="submit"
-                color="primary"
-                large
-                depressed
-                block
-              />
-              <v-btn
-                v-t="'forgot_password'"
-                tabindex="-1"
-                small
-                text
-                block
-              />
-            </v-card-actions>
-          </v-form>
+          <ValidationObserver ref="loginForm" v-slot="{ handleSubmit }">
+            <v-form @submit.prevent="handleSubmit(login)">
+              <v-card-title v-t="'login'" />
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <ValidationProvider v-slot="{ errors, valid }" rules="required" name="account">
+                        <v-text-field
+                          v-model="account"
+                          :label="$t('account')"
+                          :error-messages="errors"
+                          :success="valid"
+                          autocomplete="organization"
+                        />
+                      </ValidationProvider>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field v-model="username" :label="$t('username')" autocomplete="username" />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field v-model="password" :label="$t('password')" type="password" autocomplete="current-password" />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-checkbox v-model="remember" :label="$t('remember_me')" />
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions class="flex-column">
+                <v-btn
+                  v-t="'login'"
+                  :ripple="false"
+                  type="submit"
+                  color="primary"
+                  large
+                  depressed
+                  block
+                />
+                <v-btn
+                  v-t="'forgot_password'"
+                  tabindex="-1"
+                  small
+                  text
+                  block
+                />
+              </v-card-actions>
+            </v-form>
+          </ValidationObserver>
         </v-card>
       </v-col>
     </v-row>
@@ -84,6 +94,7 @@ export default {
   },
   methods: {
     async login () {
+      debugger
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/demo/pages/login.vue
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/api/auth.js
       this.loading = true

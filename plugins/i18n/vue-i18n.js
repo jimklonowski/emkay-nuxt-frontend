@@ -1,20 +1,24 @@
+import { localize } from 'vee-validate'
 export default ({ app }) => {
   const setLocale = (locale) => {
     switch (locale) {
       case 'ca': {
         app.vuetify.framework.lang.current = 'ca'
         app.$moment.locale('en-ca')
+        localize('ca')
         break
       }
       case 'fr': {
         app.vuetify.framework.lang.current = 'fr'
         app.$moment.locale('fr-ca')
+        localize('fr')
         break
       }
       case 'en': // fallthrough as default
       default: {
         app.vuetify.framework.lang.current = 'en'
         app.$moment.locale('en')
+        localize('en')
         break
       }
     }
