@@ -5,10 +5,10 @@
         {{ $t('reports') }}
       </h1>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col cols="12" sm="6">
         <v-card rounded shaped>
-          <v-card-text>
+          <v-card-text class="pa-0">
             <keep-alive>
               <v-tabs
                 show-arrows
@@ -29,6 +29,7 @@
               </v-tabs>
             </keep-alive>
           </v-card-text>
+          <v-card-actions />
         </v-card>
       </v-col>
     </v-row>

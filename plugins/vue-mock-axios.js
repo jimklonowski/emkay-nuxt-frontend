@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter'
 /* eslint-disable camelcase */
 export default function ({ $axios, redirect }) {
   // debugger
+  // const mock = new MockAdapter($axios, { delayResponse: 3000 })
   const mock = new MockAdapter($axios)
   mock
     .onPost('/auth/login').reply((config) => {
@@ -255,10 +256,43 @@ export default function ({ $axios, redirect }) {
         client_use_2_label: 'Our New Label 2',
         client_use_3_label: 'A Label 3',
         client_use_4_label: 'The Label 4',
-        client_use_5_label: 'JCK 5'
+        client_use_5_label: 'JCK 5',
+        driver_misc_1_label: 'Driver Misc 1 Label',
+        driver_misc_2_label: 'Driver Misc 2 Label',
+        driver_misc_3_label: 'Driver Misc 3 Label',
+        driver_misc_4_label: 'Driver Misc 4 Label'
       }
       // const custom_labels = ['Client Use 1 Label', 'Client Use 2 Label', 'Client Use 3 Label', 'Client Use 4 Label', 'Client Use 5 Label']
       return [200, { login_messages, center_hierarchy, custom_labels }]
+    })
+    // .onGet('/account/custom-labels').replyOnce(200, { client_use_labels: {}, driver_misc_labels: {} })
+    .onGet('/account/custom-labels')
+    .reply(function (config) {
+      const client_use_labels = {
+        client_use_1_label: 'Client Use 1 Label',
+        client_use_2_label: 'Client Use 2 Label',
+        client_use_3_label: 'Client Use 3 Label',
+        client_use_4_label: 'Client Use 4 Label',
+        client_use_5_label: 'Client Use 5 Label'
+      }
+      const driver_misc_labels = {
+        driver_misc_1_label: 'Driver Misc 1 Label',
+        driver_misc_2_label: 'Driver Misc 2 Label',
+        driver_misc_3_label: 'Driver Misc 3 Label',
+        driver_misc_4_label: 'Driver Misc 4 Label'
+      }
+      return [200, { client_use_labels, driver_misc_labels }]
+    })
+    .onPost('/account/update-custom-labels')
+    .replyOnce(500)
+    .onPost('/account/update-custom-labels')
+    .reply(function (config) {
+      return [200, { data: {}, success: true, message: 'Labels Updated' }]
+    })
+    .onGet('/account/centers')
+    .reply(function (config) {
+      const centers = {}
+      return [200, { centers }]
     })
     .onAny().passThrough()
   // debugger

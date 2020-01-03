@@ -9,6 +9,7 @@
           outlined
           raised
         >
+          <!-- Vee-Validate form wrapper -->
           <ValidationObserver ref="loginForm" v-slot="{ handleSubmit }">
             <v-form @submit.prevent="handleSubmit(login)">
               <v-card-title v-t="'login'" />
@@ -16,7 +17,7 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors, valid }" rules="required" name="account">
+                      <ValidationProvider v-slot="{ errors, valid }" :name="$t('account')" rules="required">
                         <v-text-field
                           v-model="account"
                           :label="$t('account')"
@@ -29,12 +30,28 @@
                   </v-row>
                   <v-row>
                     <v-col cols="12">
-                      <v-text-field v-model="username" :label="$t('username')" autocomplete="username" />
+                      <ValidationProvider v-slot="{ errors, valid }" :name="$t('username')" rules="required">
+                        <v-text-field
+                          v-model="username"
+                          :label="$t('username')"
+                          :error-messages="errors"
+                          :success="valid"
+                          autocomplete="username"
+                        />
+                      </ValidationProvider>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="12">
-                      <v-text-field v-model="password" :label="$t('password')" type="password" autocomplete="current-password" />
+                      <ValidationProvider v-slot="{ errors }" :name="$t('password')" rules="required">
+                        <v-text-field
+                          v-model="password"
+                          :label="$t('password')"
+                          :error-messages="errors"
+                          type="password"
+                          autocomplete="current-password"
+                        />
+                      </ValidationProvider>
                     </v-col>
                   </v-row>
                   <v-row>

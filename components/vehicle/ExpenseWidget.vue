@@ -52,10 +52,10 @@
               <td class="font-weight-bold">
                 {{ $t('total_fixed') }}
               </td>
-              <td class="font-weight-regular font-italic text-right">
+              <td class="font-weight-regular text-right">
                 {{ totalFixedCosts | currency }}
               </td>
-              <td class="font-weight-regular font-italic text-right">
+              <td class="font-weight-regular text-right">
                 {{ totalFixedCPM | currency(3,3) }}
               </td>
             </tr>
@@ -90,10 +90,10 @@
               <td class="font-weight-bold">
                 {{ $t('total_variable') }}
               </td>
-              <td class="font-weight-regular font-italic text-right">
+              <td class="font-weight-regular text-right">
                 {{ totalVariableCosts | currency }}
               </td>
-              <td class="font-weight-regular font-italic text-right">
+              <td class="font-weight-regular text-right">
                 {{ totalVariableCPM | currency(3,3) }}
               </td>
             </tr>
