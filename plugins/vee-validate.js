@@ -1,6 +1,6 @@
 /* eslint-disable import/namespace */
 import Vue from 'vue'
-import { ValidationProvider, ValidationObserver, extend, localize, configure } from 'vee-validate'
+import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate'
 import en from 'vee-validate/dist/locale/en.json'
 import fr from 'vee-validate/dist/locale/fr.json'
 // import moment from 'moment'
@@ -12,10 +12,12 @@ import fr from 'vee-validate/dist/locale/fr.json'
 import * as rules from 'vee-validate/dist/rules'
 
 export default ({ app }) => {
-  configure({
-    defaultMessage: (_, values) =>
-      app.i18n.t(`validations.${values._rule_}`, values)
-  })
+  // configure({
+  //   defaultMessage: (_, values) => {
+  //     console.log('default: ' + values)
+  //     return app.i18n.t(`validations.${values._rule_}`, values)
+  //   }
+  // })
 
   for (const rule in rules) {
     extend(rule, rules[rule])
@@ -31,10 +33,26 @@ export default ({ app }) => {
       // debugger
       return app.i18n.t(`validations.after`, [app.i18n.t(field), app.i18n.t(other)])
     }
-    // message: (field, target) => {
-    //   return app.i18n.t()
-    //   // return app.i18n.t(`validations.after`, [app.i18n.t(field), app.i18n.t(target)])
-    // }
+  })
+
+  extend('before', {
+    params: ['other'],
+    validate (value, { other }) {
+      // debugger
+      return app.$moment(value).isBefore(app.$moment(other))
+    },
+    message: (field, { other }) => {
+      // debugger
+      return app.i18n.t(`validations.before`, [app.i18n.t(field), app.i18n.t(other)])
+    }
+  })
+
+  extend('notPast', {
+    validate (value) {
+      // debugger
+      return app.$moment(value).isAfter(app.$moment())
+    },
+    message: field => app.i18n.t(`validations.notPast`, [app.i18n.t(field)])
   })
 
   Vue.component('ValidationProvider', ValidationProvider)

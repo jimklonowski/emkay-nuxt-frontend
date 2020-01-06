@@ -2,7 +2,8 @@
 // prettier-ignore
 export default {
   validations: {
-    after: "Le champ {0} doit être postérieur à {1}."
+    after: "Le champ {0} doit être postérieur à {1}",
+    before: "Le champ {0} doit être antérieur à {1}"
   },
   about: "À propos",
   about_emkay: "À propos d'EMKAY",
@@ -198,6 +199,7 @@ export default {
   services: "Prestations de service",
   short_term_rental_detail: "Détail de la location à court terme",
   start_date: "Date de début",
+  state_province: "Province",
   store_this_vehicle: "Stocker ce véhicule",
   tank_capacity: "Capacité du réservoir",
   tax_exempt: "Exonéré d'impôt",
