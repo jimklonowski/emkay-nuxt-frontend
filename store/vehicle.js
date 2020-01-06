@@ -6,6 +6,7 @@ const getDefaultState = () => ({
   driver_info: {},
   sale_info: {},
   order_status: {},
+  transport_status: [],
   vehicle_info: {},
 
   accident_error: null,
@@ -126,6 +127,18 @@ export const actions = {
       commit('setTollLoading', false)
     }
   },
+  async fetchTransportStatus ({ commit }, filters) {
+    try {
+      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      const { data: { data, success, message } } = await this.$axios.post(url, filters)
+      if (!success) {
+        throw new Error(message)
+      }
+      commit('setTransportStatus', data)
+    } catch (error) {
+      console.error(error)
+    }
+  },
   async fetchViolationHistory ({ commit }, filters) {
     commit('setViolationError', null)
     commit('setViolationLoading', true)
@@ -176,6 +189,7 @@ export const mutations = {
   setDriverInfo: set('driver_info'),
   setSaleInfo: set('sale_info'),
   setOrderStatus: set('order_status'),
+  setTransportStatus: set('transport_status'),
   setVehicleInfo: set('vehicle_info')
 }
 
@@ -207,6 +221,8 @@ export const getters = {
 
   getSaleInfo: state => state.sale_info,
   getOrderStatus: state => state.order_status,
+
+  getTransportStatus: state => state.transport_status,
 
   getVehicleInfo: state => state.vehicle_info,
   getVehicleNumber: state => state.vehicle_info.vehicle_number

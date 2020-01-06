@@ -55,7 +55,7 @@ export default {
     tab: 0
   }),
   computed: {
-    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
+    client_labels: vm => vm.$store.getters['account/getClientUseLabels'],
     order_status: vm => vm.$store.getters['vehicle/getOrderStatus'],
     sale_info: vm => vm.$store.getters['vehicle/getSaleInfo'],
     vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
@@ -94,27 +94,27 @@ export default {
           ],
           items: [
             {
-              text: this.custom_labels.client_use_1_label,
+              text: this.client_labels.client_use_1_label,
               icon: 'mdi-numeric-1-box',
               value: this.vehicle_info.client_use_1
             },
             {
-              text: this.custom_labels.client_use_2_label,
+              text: this.client_labels.client_use_2_label,
               icon: 'mdi-numeric-2-box',
               value: this.vehicle_info.client_use_2
             },
             {
-              text: this.custom_labels.client_use_3_label,
+              text: this.client_labels.client_use_3_label,
               icon: 'mdi-numeric-3-box',
               value: this.vehicle_info.client_use_3
             },
             {
-              text: this.custom_labels.client_use_4_label,
+              text: this.client_labels.client_use_4_label,
               icon: 'mdi-numeric-4-box',
               value: this.vehicle_info.client_use_4
             },
             {
-              text: this.custom_labels.client_use_5_label,
+              text: this.client_labels.client_use_5_label,
               icon: 'mdi-numeric-5-box',
               value: this.vehicle_info.client_use_5
             }

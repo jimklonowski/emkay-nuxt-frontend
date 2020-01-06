@@ -44,6 +44,11 @@ export default {
     actions () {
       return [
         {
+          key: 'transports_and_storage',
+          icon: '',
+          to: { path: `/vehicle/${this.$route.params.vehicle}/transports-and-storage` }
+        },
+        {
           key: 'edit_custom_labels',
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/edit-custom-labels` }

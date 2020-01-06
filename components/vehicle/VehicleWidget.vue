@@ -151,7 +151,7 @@ export default {
     tab: 0
   }),
   computed: {
-    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
+    client_labels: vm => vm.$store.getters['account/getClientUseLabels'],
     // order_status: vm => vm.$store.getters['vehicle/getOrderStatus'],
     // sale_info: vm => vm.$store.getters['vehicle/getSaleInfo'],
     vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
@@ -165,9 +165,8 @@ export default {
     editVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-vehicle` })
   },
   async created () {
-    if (!this.custom_labels) {
-      debugger
-      await this.$store.dispatch('account/init')
+    if (!this.client_labels) {
+      await this.$store.dispatch('account/fetchCustomLabels')
     }
   },
   methods: {

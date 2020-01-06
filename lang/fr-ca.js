@@ -1,6 +1,9 @@
 /* eslint-disable quotes */
 // prettier-ignore
 export default {
+  validations: {
+    after: "Le champ {0} doit être postérieur à {1}."
+  },
   about: "À propos",
   about_emkay: "À propos d'EMKAY",
   accident_claim_report: "Rapport de réclamation d'accident",
@@ -195,6 +198,7 @@ export default {
   services: "Prestations de service",
   short_term_rental_detail: "Détail de la location à court terme",
   start_date: "Date de début",
+  store_this_vehicle: "Stocker ce véhicule",
   tank_capacity: "Capacité du réservoir",
   tax_exempt: "Exonéré d'impôt",
   tech: "Tech",
@@ -205,6 +209,8 @@ export default {
   to_vehicle_dashboard: "Vers le tableau de bord du véhicule",
   toll_detail: "Détail du péage",
   tools: "Outils",
+  transport_out_of_storage: "Transport hors stockage",
+  transport_this_vehicle: "Transportez ce véhicule",
   unit_price: "Prix unitaire",
   upload_your_odometers: "Téléchargez vos odomètres",
   username: "Nom d'utilisateur",
