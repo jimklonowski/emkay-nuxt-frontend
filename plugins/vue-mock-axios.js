@@ -294,6 +294,18 @@ export default function ({ $axios, redirect }) {
       const centers = {}
       return [200, { centers }]
     })
+    .onPost('/transtor/quote')
+    .reply(function (config) {
+      const request = JSON.parse(config.data)
+      // debugger
+      // return the request object merged with some additional quote fields
+      const quote = {
+        ...request,
+        estimated_distance: '1500 miles',
+        estimated_cost: 1965.97
+      }
+      return [200, quote]
+    })
     .onAny().passThrough()
   // debugger
   // $axios.onRequest((config) => {

@@ -1,5 +1,8 @@
 /* OVERRIDES */
 
+/* prevent chrome autofill background (clashes with darkmode) */
+// input:-webkit-autofill { transition: all 0s 50000s; }
+
 /* no wrapping on datatable columns */
 .report-column {
   min-width: 120px;

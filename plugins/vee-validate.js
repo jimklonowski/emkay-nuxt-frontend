@@ -27,11 +27,23 @@ export default ({ app }) => {
     params: ['other'],
     validate (value, { other }) {
       // debugger
-      return app.$moment(value).isAfter(app.$moment(other))
+      return app.$moment(value).isAfter(app.$moment(other), 'day')
     },
     message: (field, { other }) => {
       // debugger
-      return app.i18n.t(`validations.after`, [app.i18n.t(field), app.i18n.t(other)])
+      return app.i18n.t(`validations.after`, [field, other])
+    }
+  })
+
+  extend('onOrAfter', {
+    params: ['other'],
+    validate (value, { other }) {
+      // debugger
+      return app.$moment(value).isSameOrAfter(app.$moment(other), 'day')
+    },
+    message: (field, { other }) => {
+      // debugger
+      return app.i18n.t(`validations.on_or_after`, [field, other])
     }
   })
 
@@ -39,20 +51,32 @@ export default ({ app }) => {
     params: ['other'],
     validate (value, { other }) {
       // debugger
-      return app.$moment(value).isBefore(app.$moment(other))
+      return app.$moment(value).isBefore(app.$moment(other), 'day')
     },
     message: (field, { other }) => {
       // debugger
-      return app.i18n.t(`validations.before`, [app.i18n.t(field), app.i18n.t(other)])
+      return app.i18n.t(`validations.before`, [field, other])
+    }
+  })
+
+  extend('onOrBefore', {
+    params: ['other'],
+    validate (value, { other }) {
+      // debugger
+      return app.$moment(value).isSameOrBefore(app.$moment(other), 'day')
+    },
+    message: (field, { other }) => {
+      // debugger
+      return app.i18n.t(`validations.on_or_before`, [field, other])
     }
   })
 
   extend('notPast', {
     validate (value) {
       // debugger
-      return app.$moment(value).isAfter(app.$moment())
+      return app.$moment(value).isSameOrAfter(app.$moment(), 'day')
     },
-    message: field => app.i18n.t(`validations.notPast`, [app.i18n.t(field)])
+    message: field => app.i18n.t(`validations.notPast`, [field])
   })
 
   Vue.component('ValidationProvider', ValidationProvider)
