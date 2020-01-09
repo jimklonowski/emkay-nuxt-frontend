@@ -1,7 +1,7 @@
 import { set, assign } from '@/utility/vuex'
 
 const getDefaultState = () => ({
-  quote: {},
+  quote: null,
   error: null,
   loading: false
 })
@@ -18,7 +18,7 @@ export const actions = {
       commit('setQuote', data)
     } catch (error) {
       commit('setError', error.message)
-      commit('setQuote', {})
+      commit('setQuote', null)
     } finally {
       commit('setLoading', false)
     }
@@ -38,5 +38,6 @@ export const mutations = {
 export const getters = {
   getError: state => state.error,
   getQuote: state => state.quote,
-  getLoading: state => state.loading
+  getLoading: state => state.loading,
+  hasQuote: state => !!state.quote
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="5">
+  <v-card v-if="quote" elevation="5">
     <v-card-title v-t="'quote_details'" class="justify-center" />
     <v-divider />
     <v-card-text>
@@ -62,11 +62,19 @@
         </v-list-item>
       </v-list>
     </v-card-text>
+    <v-card-actions>
+      <v-spacer />
+      <v-btn :to="`${vehicleRoute}/transports-and-storage/create-order?quote=true`" nuxt>
+        Create Order using Quote
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import { vehicleRoute } from '@/mixins/routing'
 export default {
+  mixins: [vehicleRoute],
   computed: {
     quote: vm => vm.$store.getters['transtor/getQuote'],
     deliveryLocation () {

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <ValidationObserver v-slot="{ handleSubmit }">
+    <ValidationObserver ref="quoteForm" v-slot="{ handleSubmit }">
       <v-form @submit.prevent="handleSubmit(getQuote)">
         <v-container>
           <v-row>
@@ -24,7 +24,7 @@
                 <v-col cols="12">
                   <v-subheader v-t="'origin'" />
                   <v-row>
-                    <v-col cols="12" lg="12" xl="5">
+                    <v-col cols="12" xl="5">
                       <ValidationProvider v-slot="{ errors, valid }" :name="$t('city')" vid="origin_city" rules="required">
                         <v-text-field
                           v-model="origin_city"
@@ -64,7 +64,7 @@
                 <v-col cols="12">
                   <v-subheader v-t="'destination'" />
                   <v-row>
-                    <v-col cols="12" lg="12" xl="5">
+                    <v-col cols="12" xl="5">
                       <ValidationProvider v-slot="{ errors, valid }" :name="$t('city')" vid="destination_city" rules="required">
                         <v-text-field
                           v-model="destination_city"
@@ -98,30 +98,17 @@
                       </ValidationProvider>
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-btn :loading="loading" v-t="'request_quote'" type="submit" color="success darken-1" />
-                    </v-col>
-                  </v-row>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-btn v-t="'reset'" @click.stop="reset" text />
+                  <v-btn :loading="loading" v-t="'request_quote'" type="submit" color="success darken-1" />
                 </v-col>
               </v-row>
             </v-col>
             <v-col cols="12" lg="6">
-              <template v-show="showQuote">
-                <v-scale-transition>
-                  <TransportStorageQuote id="quote" v-show="showQuote" />
-                </v-scale-transition>
-                <!-- <v-btn
-                  v-t="'create_order'"
-                  v-if="showQuote"
-                  @click.prevent="createOrder"
-                  class="mt-4"
-                  color="primary"
-                  outlined
-                  block
-                /> -->
-              </template>
-              <v-card v-if="!showQuote" height="100%" flat>
+              <v-card v-if="!hasQuote" height="100%" flat>
                 <v-container fill-height>
                   <v-row class="text-center">
                     <v-col>
@@ -130,6 +117,7 @@
                   </v-row>
                 </v-container>
               </v-card>
+              <TransportStorageQuote />
             </v-col>
           </v-row>
         </v-container>
@@ -139,42 +127,35 @@
 </template>
 
 <script>
-// import { SnotifyPosition } from 'vue-snotify'
 import TransportStorageQuote from '@/components/vehicle/transtor/TransportStorageQuote'
 export default {
+  name: 'RequestTranstorQuote',
   components: {
     TransportStorageQuote
   },
   data () {
     return {
-      // model
-      vehicle_info: null,
-      type: 'transport_this_vehicle',
+      showQuote: false,
+      type: null,
       transport_method: null,
       origin_city: null,
       origin_state_province: null,
       origin_postal_code: null,
       destination_city: null,
       destination_state_province: null,
-      destination_postal_code: null,
-      // quote
-      showQuote: false
+      destination_postal_code: null
     }
   },
   computed: {
-    loading: vm => vm.$store.getters['transtor/getLoading'],
-    quote: vm => vm.$store.getters['transtor/getQuote']
+    hasQuote: vm => vm.$store.getters['transtor/hasQuote'],
+    loading: vm => vm.$store.getters['transtor/getLoading']
+  },
+  mounted () {
+    // reset any previous quotes on mounted
+    this.reset()
   },
   methods: {
-    createOrder () {
-      // switch tab to order tab
-      this.$emit('createOrder')
-      // call init to populate the quote into the order form
-      console.log('createOrder')
-    },
     async getQuote () {
-      this.showQuote = false
-      // get the quote
       await this.$store.dispatch('transtor/fetchQuote', {
         type: this.type,
         vehicle_info: this.vehicle_info,
@@ -186,7 +167,21 @@ export default {
         destination_state_province: this.destination_state_province,
         destination_postal_code: this.destination_postal_code
       })
-      this.showQuote = true
+    },
+    init () {
+      this.type = null
+      this.transport_method = null
+      this.origin_city = null
+      this.origin_state_province = null
+      this.origin_postal_code = null
+      this.destination_city = null
+      this.destination_state_province = null
+      this.destination_postal_code = null
+    },
+    reset () {
+      this.$store.dispatch('transtor/reset')
+      this.init()
+      this.$refs.quoteForm.reset()
     }
   }
 }
