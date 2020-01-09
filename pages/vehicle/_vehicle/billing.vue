@@ -23,7 +23,7 @@
               <template #default>
                 <thead>
                   <tr>
-                    <th v-for="column in invoice_columns" v-t="column" :key="column" />
+                    <th v-for="column in invoice_columns" v-text="$t(column)" :key="column" />
                   </tr>
                 </thead>
                 <tbody>

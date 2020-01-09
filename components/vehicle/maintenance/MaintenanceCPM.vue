@@ -17,10 +17,10 @@
         <template #default>
           <thead>
             <tr>
-              <th v-t="headers[0]" width="40%" />
-              <th v-t="headers[1]" class="overline text-right" width="20%" />
-              <th v-t="headers[2]" class="overline text-right" width="20%" />
-              <th v-t="headers[3]" class="overline text-right" width="20%" />
+              <th v-text="$t(headers[0])" width="40%" />
+              <th v-text="$t(headers[1])" class="overline text-right" width="20%" />
+              <th v-text="$t(headers[2])" class="overline text-right" width="20%" />
+              <th v-text="$t(headers[3])" class="overline text-right" width="20%" />
             </tr>
           </thead>
           <tbody>

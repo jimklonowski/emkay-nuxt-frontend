@@ -12,9 +12,9 @@
       <v-col cols="12">
         <v-card outlined>
           <v-tabs v-model="tabs" height="75" grow show-arrows>
-            <v-tab @click="setHash('#status')" v-t="'transport_status'" />
-            <v-tab @click="setHash('#quote')" v-t="'transport_storage_quote'" />
-            <v-tab @click="setHash('#create')" v-t="'create_order'" />
+            <v-tab @click="setHash('#status')" v-text="$t('transport_status')" />
+            <v-tab @click="setHash('#quote')" v-text="$t('transport_storage_quote')" />
+            <v-tab @click="setHash('#create')" v-text="$t('create_order')" />
           </v-tabs>
           <v-divider />
           <v-tabs-items v-model="tabs">

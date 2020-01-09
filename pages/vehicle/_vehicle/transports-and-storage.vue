@@ -13,30 +13,32 @@
         <TransportStorageStatus />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <v-btn :to="`${vehicleRoute}/transports-and-storage/request-quote`" nuxt>
+    <v-toolbar height="72px" elevation="4">
+      <v-tabs
+        optional
+        grow
+        centered
+        icons-and-text
+      >
+        <v-tab :to="`${vehicleRoute}/transports-and-storage/request-quote`" nuxt>
           request quote
-        </v-btn>
-        <v-btn :to="`${vehicleRoute}/transports-and-storage/create-order`" nuxt>
+        </v-tab>
+        <v-tab :to="`${vehicleRoute}/transports-and-storage/create-order`" nuxt>
           create order
-        </v-btn>
-        <!-- <v-btn :to="`${vehicleRoute}/transports-and-storage/transport-order`" nuxt>
-          transport order
-        </v-btn>
-        <v-btn :to="`${vehicleRoute}/transports-and-storage/storage-order`" nuxt>
-          storage order
-        </v-btn>
-        <v-btn :to="`${vehicleRoute}/transports-and-storage/from-storage-order`" nuxt>
-          transport out of storage order
-        </v-btn> -->
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <nuxt-child />
-      </v-col>
-    </v-row>
+        </v-tab>
+      </v-tabs>
+    </v-toolbar>
+    <v-divider />
+    <nuxt-child />
+    <!-- <v-btn :to="`${vehicleRoute}/transports-and-storage/transport-order`" nuxt>
+      transport order
+    </v-btn>
+    <v-btn :to="`${vehicleRoute}/transports-and-storage/storage-order`" nuxt>
+      storage order
+    </v-btn>
+    <v-btn :to="`${vehicleRoute}/transports-and-storage/from-storage-order`" nuxt>
+      transport out of storage order
+    </v-btn> -->
   </v-container>
 </template>
 

@@ -13,7 +13,7 @@
               <v-tabs
                 show-arrows
               >
-                <v-tab v-for="(category, key) in $options.reports.categories" :key="key" v-t="category.key" />
+                <v-tab v-for="(category, key) in $options.reports.categories" :key="key" v-text="$t(category.key)" />
                 <v-tab-item v-for="(category, key) in $options.reports.categories" :key="key">
                   <v-list>
                     <v-list-item v-for="(report, key2) in category.items" :key="key2" :to="localePath(report.to)">
@@ -21,7 +21,7 @@
                         <v-icon v-text="report.icon" />
                       </v-list-item-avatar>
                       <v-list-item-content>
-                        <v-list-item-title v-t="report.key" />
+                        <v-list-item-title v-text="$t(report.key)" />
                       </v-list-item-content>
                     </v-list-item>
                   </v-list>

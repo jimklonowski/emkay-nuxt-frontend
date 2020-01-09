@@ -30,8 +30,8 @@
     </template>
     <template #no-data>
       <v-list-item dense>
-        <v-list-item-title v-if="query && query.length > 2 && !results.length" v-t="{ path: 'no_search_results', args: { query } }" />
-        <v-list-item-title v-else v-t="'search_placeholder'" />
+        <v-list-item-title v-if="query && query.length > 2 && !results.length" v-text="$t('no_search_results', { query })" />
+        <v-list-item-title v-else v-text="$t('search_placeholder')" />
       </v-list-item>
     </template>
     <template #selection="{ item }">

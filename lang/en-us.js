@@ -276,6 +276,7 @@ export default {
   request_an_mvr: "Request an MVR",
   request_quote: "Request Quote",
   requestor_information: "Requestor Information",
+  reset: "Reset",
   residential: "Residential",
   saferoads_fleet_summary: "Saferoads Fleet Summary",
   saferoads_trip_detail: "Saferoads Trip Detail",

@@ -1,6 +1,6 @@
 <template>
   <v-card outlined>
-    <v-card-title v-t="'transport_status'" />
+    <v-card-title v-text="$t('transport_status')" />
     <v-data-table
       :items="items"
       :headers="headers"

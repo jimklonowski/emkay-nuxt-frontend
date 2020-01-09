@@ -9,7 +9,7 @@
             </v-card-title>
             <v-card-text>
               <v-tabs show-arrows>
-                <v-tab v-for="(category, key) in $options.management.categories" :key="key" v-t="category.key" />
+                <v-tab v-for="(category, key) in $options.management.categories" :key="key" v-text="$t(category.key)" />
                 <v-tab-item v-for="(category, key) in $options.management.categories" :key="key">
                   <v-list dense>
                     <v-list-item v-for="(item, key2) in category.items" :key="key2" :to="localePath(item.to)">
@@ -17,7 +17,7 @@
                         <v-icon v-text="item.icon" />
                       </v-list-item-avatar>
                       <v-list-item-content>
-                        <v-list-item-title v-t="item.key" />
+                        <v-list-item-title v-text="$t(item.key)" />
                       </v-list-item-content>
                     </v-list-item>
                   </v-list>

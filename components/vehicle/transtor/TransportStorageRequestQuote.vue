@@ -22,7 +22,7 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-subheader v-t="'origin'" />
+                  <v-subheader v-text="$t('origin')" />
                   <v-row>
                     <v-col cols="12" lg="12" xl="5">
                       <ValidationProvider v-slot="{ errors, valid }" :name="$t('city')" vid="origin_city" rules="required">
@@ -62,7 +62,7 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-subheader v-t="'destination'" />
+                  <v-subheader v-text="$t('destination')" />
                   <v-row>
                     <v-col cols="12" lg="12" xl="5">
                       <ValidationProvider v-slot="{ errors, valid }" :name="$t('city')" vid="destination_city" rules="required">
@@ -100,7 +100,7 @@
                   </v-row>
                   <v-row>
                     <v-col cols="12">
-                      <v-btn :loading="loading" v-t="'request_quote'" type="submit" color="success darken-1" />
+                      <v-btn :loading="loading" v-text="$t('request_quote')" type="submit" color="success darken-1" />
                     </v-col>
                   </v-row>
                 </v-col>
@@ -112,7 +112,7 @@
                   <TransportStorageQuote id="quote" v-show="showQuote" />
                 </v-scale-transition>
                 <!-- <v-btn
-                  v-t="'create_order'"
+                  v-text="$t('create_order')"
                   v-if="showQuote"
                   @click.prevent="createOrder"
                   class="mt-4"
@@ -125,7 +125,7 @@
                 <v-container fill-height>
                   <v-row class="text-center">
                     <v-col>
-                      <h1 v-t="'transport_storage_quote'" class="font-weight-thin" />
+                      <h1 v-text="$t('transport_storage_quote')" class="font-weight-thin" />
                     </v-col>
                   </v-row>
                 </v-container>

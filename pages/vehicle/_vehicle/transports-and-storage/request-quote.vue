@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card tile>
     <ValidationObserver ref="quoteForm" v-slot="{ handleSubmit }">
       <v-form @submit.prevent="handleSubmit(getQuote)">
         <v-container>
@@ -22,7 +22,7 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-subheader v-t="'origin'" />
+                  <v-subheader v-text="$t('origin')" />
                   <v-row>
                     <v-col cols="12" xl="5">
                       <ValidationProvider v-slot="{ errors, valid }" :name="$t('city')" vid="origin_city" rules="required">
@@ -62,7 +62,7 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-subheader v-t="'destination'" />
+                  <v-subheader v-text="$t('destination')" />
                   <v-row>
                     <v-col cols="12" xl="5">
                       <ValidationProvider v-slot="{ errors, valid }" :name="$t('city')" vid="destination_city" rules="required">
@@ -102,22 +102,34 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-btn v-t="'reset'" @click.stop="reset" text />
-                  <v-btn :loading="loading" v-t="'request_quote'" type="submit" color="success darken-1" />
+                  <v-btn @click.stop="reset" tabindex="-1" text>
+                    {{ $t('reset') }}
+                  </v-btn>
+                  <v-btn :loading="loading" type="submit" color="success darken-1">
+                    {{ $t('request_quote') }}
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-col>
             <v-col cols="12" lg="6">
-              <v-card v-if="!hasQuote" height="100%" flat>
-                <v-container fill-height>
-                  <v-row class="text-center">
-                    <v-col>
-                      <h1 v-t="'transport_storage_quote'" class="font-weight-thin" />
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card>
-              <TransportStorageQuote />
+              <v-container fill-height justify-center>
+                <v-row>
+                  <v-col cols="12">
+                    <v-card v-if="!hasQuote" height="100%" flat>
+                      <v-container fill-height>
+                        <v-row class="text-center">
+                          <v-col>
+                            <h1 v-text="$t('transport_storage_quote')" class="font-weight-thin" />
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card>
+                    <v-scale-transition>
+                      <TransportStorageQuote id="quote" />
+                    </v-scale-transition>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-col>
           </v-row>
         </v-container>
@@ -167,6 +179,7 @@ export default {
         destination_state_province: this.destination_state_province,
         destination_postal_code: this.destination_postal_code
       })
+      this.$vuetify.goTo('#quote')
     },
     init () {
       this.type = null

@@ -2,12 +2,12 @@
   <v-card :loading="loading" shaped outlined>
     <ValidationObserver v-slot="{ invalid, handleSubmit }">
       <v-form @submit.prevent="handleSubmit(submit)">
-        <v-card-title v-t="'customize_fleet_labels'" />
+        <v-card-title v-text="$t('customize_fleet_labels')" />
         <v-card-text>
           <v-container class="px-0">
             <v-row>
               <v-col cols="12" md="6">
-                <v-subheader v-t="'client'" />
+                <v-subheader v-text="$t('client')" />
                 <v-container>
                   <v-row>
                     <v-col cols="12">
@@ -69,7 +69,7 @@
                 </v-container>
               </v-col>
               <v-col cols="12" md="6">
-                <v-subheader v-t="'driver'" />
+                <v-subheader v-text="$t('driver')" />
                 <v-container>
                   <v-row>
                     <v-col cols="12">
@@ -125,7 +125,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
-            v-t="'cancel'"
+            v-text="$t('cancel')"
             :ripple="false"
             :to="localePath({ path: `/management/` })"
             color="error"

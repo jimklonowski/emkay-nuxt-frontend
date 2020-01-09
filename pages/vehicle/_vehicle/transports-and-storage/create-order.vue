@@ -1,7 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title>Create Order</v-card-title>
-    <v-stepper v-model="currentStep">
+  <v-card tile>
+    <v-stepper v-model="currentStep" class="elevation-0" tile>
       <v-stepper-header>
         <v-stepper-step :complete="currentStep > 1" :step="1">
           {{ $t('requestor_information') }}
@@ -115,7 +114,9 @@
                 </v-row>
                 <v-row>
                   <v-spacer />
-                  <v-btn v-if="currentStep < 5" v-t="'next'" type="submit" color="primary" />
+                  <v-btn v-if="currentStep < 5" type="submit" color="primary">
+                    {{ $t('next') }}
+                  </v-btn>
                 </v-row>
               </v-container>
             </v-form>
@@ -151,8 +152,8 @@
                           </template>
                           <v-date-picker v-model="pickup_date" scrollable>
                             <v-spacer />
-                            <v-btn @click="pickup_modal = false" v-t="'cancel'" text />
-                            <v-btn @click="$refs.pickup_modal.save(pickup_date)" v-t="'ok'" />
+                            <v-btn @click="pickup_modal = false" v-text="$t('cancel')" text />
+                            <v-btn @click="$refs.pickup_modal.save(pickup_date)" v-text="$t('ok')" />
                           </v-date-picker>
                         </v-dialog>
                       </v-col>
@@ -239,8 +240,12 @@
                 </v-row>
                 <v-row>
                   <v-spacer />
-                  <v-btn @click.prevent="prevStep" text v-t="'back'" />
-                  <v-btn type="submit" color="primary" v-t="'next'" />
+                  <v-btn @click.prevent="prevStep" text>
+                    {{ $t('back') }}
+                  </v-btn>
+                  <v-btn type="submit" color="primary">
+                    {{ $t('next') }}
+                  </v-btn>
                 </v-row>
               </v-container>
             </v-form>
@@ -279,8 +284,12 @@
                 </v-row>
                 <v-row>
                   <v-spacer />
-                  <v-btn @click.prevent="prevStep" text v-t="'back'" />
-                  <v-btn type="submit" color="primary" v-t="'next'" />
+                  <v-btn @click.prevent="prevStep" text>
+                    {{ $t('back') }}
+                  </v-btn>
+                  <v-btn type="submit" color="primary">
+                    {{ $t('next') }}
+                  </v-btn>
                 </v-row>
               </v-container>
             </v-form>
@@ -320,8 +329,8 @@
                           </template>
                           <v-date-picker v-model="delivery_date" scrollable>
                             <v-spacer />
-                            <v-btn @click="delivery_modal = false" v-t="'cancel'" text />
-                            <v-btn @click="$refs.delivery_modal.save(delivery_date)" v-t="'ok'" />
+                            <v-btn @click="delivery_modal = false" v-text="$t('cancel')" text />
+                            <v-btn @click="$refs.delivery_modal.save(delivery_date)" v-text="$t('ok')" />
                           </v-date-picker>
                         </v-dialog>
                       </v-col>
@@ -455,8 +464,12 @@
                 </v-row>
                 <v-row>
                   <v-spacer />
-                  <v-btn @click.prevent="prevStep" text v-t="'back'" />
-                  <v-btn type="submit" color="primary" v-t="'next'" />
+                  <v-btn @click.prevent="prevStep" text>
+                    {{ $t('back') }}
+                  </v-btn>
+                  <v-btn type="submit" color="primary">
+                    {{ $t('next') }}
+                  </v-btn>
                 </v-row>
               </v-container>
             </v-form>
@@ -508,8 +521,12 @@
                 </v-row>
                 <v-row>
                   <v-spacer />
-                  <v-btn @click.prevent="prevStep" text v-t="'back'" />
-                  <v-btn @click="$snotify.info('todo')" type="submit" color="primary" v-t="'submit'" />
+                  <v-btn @click.prevent="prevStep" text>
+                    {{ $t('back') }}
+                  </v-btn>
+                  <v-btn @click="$snotify.info('todo')" type="submit" color="primary">
+                    {{ $t('submit') }}
+                  </v-btn>
                 </v-row>
               </v-container>
             </v-form>
@@ -519,6 +536,9 @@
     </v-stepper>
     <v-card-text>
       {{ quote }}
+    </v-card-text>
+    <v-card-text>
+      {{ vehicle_info }}
     </v-card-text>
   </v-card>
 </template>
@@ -534,6 +554,7 @@ export default {
     }
   },
   computed: {
+    vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
     addressTypes () {
       return [
         { text: this.$i18n.t('residential'), value: 'Residential' },

@@ -12,7 +12,7 @@
           <!-- Vee-Validate form wrapper -->
           <ValidationObserver ref="loginForm" v-slot="{ handleSubmit }">
             <v-form @submit.prevent="handleSubmit(login)">
-              <v-card-title v-t="'login'" />
+              <v-card-title v-text="$t('login')" />
               <v-card-text>
                 <v-container>
                   <v-row>
@@ -63,7 +63,7 @@
               </v-card-text>
               <v-card-actions class="flex-column">
                 <v-btn
-                  v-t="'login'"
+                  v-text="$t('login')"
                   :ripple="false"
                   type="submit"
                   color="primary"
@@ -72,7 +72,7 @@
                   block
                 />
                 <v-btn
-                  v-t="'forgot_password'"
+                  v-text="$t('forgot_password')"
                   tabindex="-1"
                   small
                   text

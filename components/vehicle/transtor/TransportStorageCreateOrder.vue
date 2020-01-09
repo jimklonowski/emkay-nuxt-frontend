@@ -92,8 +92,8 @@
                         </template>
                         <v-date-picker v-model="pickup_date" scrollable>
                           <v-spacer />
-                          <v-btn @click="pickup_modal = false" v-t="'cancel'" text />
-                          <v-btn @click="$refs.pickup_modal.save(pickup_date)" v-t="'ok'" />
+                          <v-btn @click="pickup_modal = false" v-text="$t('cancel')" text />
+                          <v-btn @click="$refs.pickup_modal.save(pickup_date)" v-text="$t('ok')" />
                         </v-date-picker>
                       </v-dialog>
                     </v-col>
@@ -235,8 +235,8 @@
                         </template>
                         <v-date-picker v-model="delivery_date" scrollable>
                           <v-spacer />
-                          <v-btn @click="delivery_modal = false" v-t="'cancel'" text />
-                          <v-btn @click="$refs.delivery_modal.save(delivery_date)" v-t="'ok'" />
+                          <v-btn @click="delivery_modal = false" v-text="$t('cancel')" text />
+                          <v-btn @click="$refs.delivery_modal.save(delivery_date)" v-text="$t('ok')" />
                         </v-date-picker>
                       </v-dialog>
                     </v-col>

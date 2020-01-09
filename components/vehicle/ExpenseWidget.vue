@@ -32,8 +32,8 @@
               <th class="overline" width="50%">
                 {{ $t('fixed_costs') }} / {{ $t('cpm') }}
               </th>
-              <th v-t="headers[1]" class="overline text-right" width="25%" />
-              <th v-t="headers[2]" class="overline text-right" width="25%" />
+              <th v-text="$t(headers[1])" class="overline text-right" width="25%" />
+              <th v-text="$t(headers[2])" class="overline text-right" width="25%" />
             </tr>
           </thead>
           <tbody>
@@ -70,8 +70,8 @@
               <th class="overline" width="50%">
                 {{ $t('variable_costs') }} / {{ $t('cpm') }}
               </th>
-              <th v-t="headers[1]" class="overline text-right" width="25%" />
-              <th v-t="headers[2]" class="overline text-right" width="25%" />
+              <th v-text="$t(headers[1])" class="overline text-right" width="25%" />
+              <th v-text="$t(headers[2])" class="overline text-right" width="25%" />
             </tr>
           </thead>
           <tbody>

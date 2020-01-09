@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card shaped outlined>
           <v-toolbar flat>
-            <v-toolbar-title v-t="'fuel_detail'" class="hidden-sm-and-down" />
+            <v-toolbar-title v-text="$t('fuel_detail')" class="hidden-sm-and-down" />
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -22,7 +22,7 @@
           </v-toolbar>
           <!-- Report Filters -->
           <v-container>
-            <v-subheader v-t="'report_filters'" class="overline" />
+            <v-subheader v-text="$t('report_filters')" class="overline" />
             <v-row>
               <v-col cols="12" sm="6">
                 <v-menu
@@ -50,8 +50,8 @@
                     scrollable
                   >
                     <v-spacer />
-                    <v-btn v-t="'cancel'" @click="start_menu = false" text />
-                    <v-btn v-t="'ok'" @click="$refs.start_menu.save(start_date), updateQuery()" text />
+                    <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -81,8 +81,8 @@
                     scrollable
                   >
                     <v-spacer />
-                    <v-btn v-t="'cancel'" @click="end_menu = false" text />
-                    <v-btn v-t="'ok'" @click="$refs.end_menu.save(end_date), updateQuery()" text />
+                    <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -103,7 +103,7 @@
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
               <client-only>
-                <download-excel v-t="'download'" :fields="downloadFields" :data="items" />
+                <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
               </client-only>
             </v-btn>
           </v-toolbar>

@@ -56,7 +56,7 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" :aria-label="$t('open_the_menu')" />
-      <v-toolbar-title v-t="'emkay'" />
+      <v-toolbar-title v-text="$t('emkay')" />
 
       <v-spacer />
 

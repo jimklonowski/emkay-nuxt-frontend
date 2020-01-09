@@ -133,7 +133,7 @@
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
               <client-only>
-                <download-excel v-t="'download'" :fields="downloadFields" :data="items" />
+                <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
               </client-only>
             </v-btn>
           </v-toolbar>
