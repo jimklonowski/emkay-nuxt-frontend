@@ -10,7 +10,7 @@
           raised
         >
           <!-- Vee-Validate form wrapper -->
-          <ValidationObserver ref="loginForm" v-slot="{ handleSubmit }">
+          <ValidationObserver v-slot="{ handleSubmit }">
             <v-form @submit.prevent="handleSubmit(login)">
               <v-card-title v-text="$t('login')" />
               <v-card-text>
@@ -93,15 +93,11 @@
 export default {
   name: 'Login',
   auth: 'guest',
-  data: () => ({
-    account: '',
-    username: '',
-    password: '',
-
-    error: null,
-    loading: false,
-    remember: false
-  }),
+  data () {
+    let account, username, password
+    let error, loading, remember
+    return { account, username, password, error, loading, remember }
+  },
   head () {
     const title = this.$t('login')
     return {
@@ -113,8 +109,6 @@ export default {
   },
   methods: {
     async login () {
-      // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/demo/pages/login.vue
-      // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/api/auth.js
       this.loading = true
       await this.$auth
         .loginWith('local', {
@@ -129,6 +123,9 @@ export default {
           this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
           console.log('calling account init from login')
           this.$store.dispatch('account/init')
+          if (this.remember) {
+            // configure a cookie policy for re-auth?
+          }
         })
         .catch(e => {
           this.error = e + ''
@@ -141,7 +138,8 @@ export default {
 }
 </script>
 <style>
-input:-webkit-autofill { transition: all 0s 50000s; }
+/* Chrome Autofill background, unfortunately this doesn't work when supporting dark AND light themes */
+/* input:-webkit-autofill { transition: all 0s 50000s; } */
 .login-hero::before {
   content: "";
   display: block;

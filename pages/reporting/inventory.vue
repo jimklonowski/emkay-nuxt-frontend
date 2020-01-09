@@ -1,8 +1,5 @@
 <template>
   <v-container>
-    <v-banner single-line>
-      TODO: INCOMPLETE
-    </v-banner>
     <v-row>
       <v-col cols="12">
         <v-card shaped outlined>
@@ -23,74 +20,6 @@
               solo
             />
           </v-toolbar>
-          <!-- Report Filters -->
-          <v-container>
-            <v-subheader v-text="$t('report_filters')" class="overline" />
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="start_menu"
-                  v-model="start_menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="start_date"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template #activator="{ on }">
-                    <v-text-field
-                      :value="$moment(start_date).format('L')"
-                      :label="$t('start_date')"
-                      v-on="on"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                    />
-                  </template>
-                  <v-date-picker
-                    v-model="start_date"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer />
-                    <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-                    <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="end_menu"
-                  v-model="end_menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="end_date"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template #activator="{ on }">
-                    <v-text-field
-                      :value="$moment(end_date).format('L')"
-                      :label="$t('end_date')"
-                      v-on="on"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                    />
-                  </template>
-                  <v-date-picker
-                    v-model="end_date"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer />
-                    <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-                    <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
-          </v-container>
           <!-- Download as XLS button -->
           <v-toolbar flat>
             <v-spacer />
@@ -111,8 +40,8 @@
                 :items-per-page="10"
                 :loading="loading"
                 :search="search"
-                :sort-by="['toll_date']"
-                :sort-desc="[true]"
+                :sort-by="['vehicle_number']"
+                :sort-desc="[false]"
                 class="striped"
               >
                 <!-- Configure the #no-data message (no data from server) -->
@@ -131,7 +60,71 @@
 
                 <!-- Configure how each #item row is rendered -->
                 <template #item="{ item }">
-                  {{ item }}
+                  <tr>
+                    <td>
+                      <client-only>
+                        <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt small />
+                      </client-only>
+                    </td>
+                    <td>{{ item.client_vehicle_number }}</td>
+                    <td>{{ item.bill_sort }}</td>
+                    <td>{{ item.center_code }}</td>
+                    <td>{{ item.center_name }}</td>
+                    <td>{{ item.client_use_1 }}</td>
+                    <td>{{ item.client_use_2 }}</td>
+                    <td>{{ item.client_use_3 }}</td>
+                    <td>{{ item.client_use_4 }}</td>
+                    <td>{{ item.client_use_5 }}</td>
+                    <td>{{ item.contract_description }}</td>
+                    <td>{{ item.contract_id }}</td>
+                    <td>{{ item.coupon_book_number }}</td>
+                    <td>{{ item.customer_number }}</td>
+                    <td>{{ item.driver_address_1 }}</td>
+                    <td>{{ item.driver_address_2 }}</td>
+                    <td>{{ item.driver_city }}</td>
+                    <td>{{ item.driver_county }}</td>
+                    <td>{{ item.driver_email_address }}</td>
+                    <td>{{ item.driver_employee_id }}</td>
+                    <td>{{ item.driver_fax }}</td>
+                    <td>{{ item.driver_first_name }}</td>
+                    <td>{{ item.driver_last_name }}</td>
+                    <td>{{ item.driver_mobile }}</td>
+                    <td>{{ item.driver_phone }}</td>
+                    <td>{{ item.driver_reference_number }}</td>
+                    <td>{{ item.driver_state_province }}</td>
+                    <td>{{ item.fuel_card_description }}</td>
+                    <td>{{ item.fuel_profile_limits }}</td>
+                    <td>{{ item.in_service_date | date }}</td>
+                    <td>{{ item.irs_fair_market_value | currency }}</td>
+                    <td>{{ item.lease_rate_id }}</td>
+                    <td>{{ item.level_01 }}</td>
+                    <td>{{ item.level_02 }}</td>
+                    <td>{{ item.level_03 }}</td>
+                    <td>{{ item.license_plate_expiration_date | date }}</td>
+                    <td>{{ item.license_plate_number }}</td>
+                    <td>{{ item.license_plate_state_province }}</td>
+                    <td>{{ item.license_plate_type }}</td>
+                    <td>{{ item.life_months_in_service }}</td>
+                    <td>{{ item.model_year }}</td>
+                    <td>{{ item.months_in_service }}</td>
+                    <td>{{ item.odometer }}</td>
+                    <td>{{ item.odometer_date }}</td>
+                    <td>{{ item.original_in_service_date | date }}</td>
+                    <td>{{ item.plb_flag }}</td>
+                    <td>{{ item.sub_contract_id }}</td>
+                    <td>{{ item.telematics_flag }}</td>
+                    <td>{{ item.title_location }}</td>
+                    <td>{{ item.vehicle_cap_cost | currency }}</td>
+                    <td>{{ item.vehicle_category }}</td>
+                    <td>{{ item.vehicle_color }}</td>
+                    <td>{{ item.vehicle_engine }}</td>
+                    <td>{{ item.vehicle_make }}</td>
+                    <td>{{ item.vehicle_model }}</td>
+                    <td>{{ item.vehicle_model_code }}</td>
+                    <td>{{ item.vehicle_policy }}</td>
+                    <td>{{ item.vehicle_tank_capacity }}</td>
+                    <td>{{ item.vin }}</td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-skeleton-loader>
@@ -144,56 +137,91 @@
 
 <script>
 import { downloadFields, headers } from '@/mixins/datatables'
-import { updateQuery } from '@/mixins/routing'
 /**
  * Inventory Report (vehicle audit report)
  */
 export default {
   name: 'Inventory',
-  mixins: [downloadFields, headers, updateQuery],
-  data (context) {
-    return {
-      search: '',
-      end_menu: false,
-      start_menu: false
-    }
-  },
+  mixins: [downloadFields, headers],
   computed: {
     columns () {
       return [
-        'vehicle_number'
+        'vehicle_number',
+        'client_vehicle_number',
+        'bill_sort',
+        'center_code',
+        'center_name',
+        'client_use_1',
+        'client_use_2',
+        'client_use_3',
+        'client_use_4',
+        'client_use_5',
+        'contract_description',
+        'contract_id',
+        'coupon_book_number',
+        'customer_number',
+        'driver_address_1',
+        'driver_address_2',
+        'driver_city',
+        'driver_county',
+        'driver_email_address',
+        'driver_employee_id',
+        'driver_fax',
+        'driver_first_name',
+        'driver_last_name',
+        'driver_mobile',
+        'driver_phone',
+        'driver_reference_number',
+        'driver_state_province',
+        'fuel_card_description',
+        'fuel_profile_limits',
+        'in_service_date',
+        'irs_fair_market_value',
+        'lease_rate_id',
+        'level_01',
+        'level_02',
+        'level_03',
+        'license_plate_expiration_date',
+        'license_plate_number',
+        'license_plate_state_province',
+        'license_plate_type',
+        'life_months_in_service',
+        'model_year',
+        'months_in_service',
+        'odometer',
+        'odometer_date',
+        'original_in_service_date',
+        'plb_flag',
+        'sub_contract_id',
+        'telematics_flag',
+        'title_location',
+        'vehicle_cap_cost',
+        'vehicle_category',
+        'vehicle_color',
+        'vehicle_engine',
+        'vehicle_make',
+        'vehicle_model',
+        'vehicle_model_code',
+        'vehicle_policy',
+        'vehicle_tank_capacity',
+        'vin'
         // ,...
       ]
     },
     items: vm => vm.$store.getters['reports/getData'],
     error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading'],
-    query () {
-      const query = {
-        start_date: this.start_date,
-        end_date: this.end_date
-      }
-      return query
-    }
+    loading: vm => vm.$store.getters['reports/getLoading']
   },
-  async asyncData ({ $moment, query, store, error }) {
-    const report_length = 30
-    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
-    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
-
+  async asyncData ({ store }) {
+    let search
     const filters = {
-      command: 'INVENTORY',
+      command: 'VEHICLEAUDIT',
       customer: 'EM102',
-      start_date,
-      end_date,
       json: 'Y'
     }
-
     // Fetch report data
     await store.dispatch('reports/fetchData', filters)
-
-    // Return report params
-    return { end_date, start_date }
+    return { search }
   },
   head () {
     const title = this.$t('inventory_report')
@@ -207,7 +235,7 @@ export default {
   loading: true,
   validate ({ $moment, query }) {
     return true
-  },
-  watchQuery: ['start_date', 'end_date']
+  }
+  // ,watchQuery: ['start_date', 'end_date']
 }
 </script>
