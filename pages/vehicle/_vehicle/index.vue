@@ -64,32 +64,31 @@ export default {
   computed: {
     ...mapGetters({
       getVehicleInfo: 'vehicle/getVehicleInfo',
-      getDriverInfo: 'vehicle/getDriverInfo',
-      getCustomLabels: 'account/getCustomLabels'
+      getDriverInfo: 'vehicle/getDriverInfo'
     })
   },
   async asyncData ({ store }) {
     // await console.log('asyncData()')
   },
-  async fetch ({ params, store }) {
-    // clear previous vehicle state
-    console.log('clearing vehicle state before fetching new vehicle')
-    await store.dispatch('vehicle/reset')
-    // console.log('fetching the vehicle summary before sending data to individual vehicle dashboard components')
-    if (params.vehicle) {
-      // const filters = { vehicle: params.vehicle }
-      const filters = {
-        command: 'WEBVEHICLE',
-        customer: 'EM102',
-        vehicle_number: params.vehicle
-      }
-      if (!store.getters['account/getCustomLabels']) {
-        console.log('refreshing custom labels')
-        await store.dispatch('account/init')
-      }
-      await store.dispatch('vehicle/fetchVehicleDashboardSummary', filters)
-    }
-  },
+  // async fetch ({ params, store }) {
+  //   // clear previous vehicle state
+  //   console.log('clearing vehicle state before fetching new vehicle')
+  //   await store.dispatch('vehicle/reset')
+  //   // console.log('fetching the vehicle summary before sending data to individual vehicle dashboard components')
+  //   if (params.vehicle) {
+  //     // const filters = { vehicle: params.vehicle }
+  //     const filters = {
+  //       command: 'WEBVEHICLE',
+  //       customer: 'EM102',
+  //       vehicle_number: params.vehicle
+  //     }
+  //     if (!store.getters['account/getCustomLabels']) {
+  //       console.log('refreshing custom labels')
+  //       await store.dispatch('account/init')
+  //     }
+  //     await store.dispatch('vehicle/fetchVehicleDashboardSummary', filters)
+  //   }
+  // },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('vehicle_dashboard')}`
     return {

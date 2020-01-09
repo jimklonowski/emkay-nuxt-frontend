@@ -84,5 +84,6 @@ export const getters = {
   getCenters: state => state.centers,
   getClientUseLabels: state => state.client_use_labels,
   getDriverMiscLabels: state => state.driver_misc_labels,
-  getLoginMessages: state => state.login_messages
+  getLoginMessages: state => state.login_messages,
+  isInitialized: state => !!state.client_use_labels.client_use_1_label
 }

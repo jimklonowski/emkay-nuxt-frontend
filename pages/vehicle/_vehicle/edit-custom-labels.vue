@@ -38,6 +38,7 @@
 
 <script>
 export default {
+  name: 'EditCustomLabels',
   data: () => ({
     model: {
       client_use_1: '',
@@ -49,7 +50,7 @@ export default {
   }),
   computed: {
     vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
-    custom_labels: vm => vm.$store.getters['account/getCustomLabels']
+    custom_labels: vm => vm.$store.getters['account/getClientUseLabels']
   },
   mounted () {
     this.loadLabels()

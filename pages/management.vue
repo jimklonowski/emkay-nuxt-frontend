@@ -46,7 +46,7 @@
 import { management } from '@/static/data/menus'
 export default {
   management,
-  middleware: ['auth'],
+  middleware: ['auth', 'account'],
   name: 'Management'
 }
 </script>

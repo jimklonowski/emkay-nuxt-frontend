@@ -19,7 +19,7 @@ export default {
   name: 'Vehicle',
   components: { VehicleSearch },
   layout: 'vehicle',
-  middleware: ['auth']
+  middleware: ['auth', 'vehicle-dashboard', 'account']
 }
 </script>
 

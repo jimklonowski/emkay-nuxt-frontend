@@ -27,7 +27,9 @@ export default function ({ $axios, redirect }) {
         account: 'EM102',
         username: 'JCK'
       }
-      console.log('Returning mocked user EM102-JCK')
+      if (process.client) {
+        console.log('Returning mocked user EM102-JCK')
+      }
       // return [200, { user: { account, username, token } }]
       return [200, { user }]
     })

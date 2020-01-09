@@ -17,10 +17,12 @@
       />
     </template>
     <v-toolbar-title class="display-1">
-      {{ $t('vehicle_dashboard') }}
-      <span class="caption text--disabled">
-        {{ $route.params.vehicle }}
-      </span>
+      <nuxt-link :to="vehicleRoute" class="text-decoration-none white--text">
+        {{ $t('vehicle_dashboard') }}
+        <span class="caption text--disabled">
+          {{ $route.params.vehicle }}
+        </span>
+      </nuxt-link>
     </v-toolbar-title>
 
     <v-spacer />
@@ -39,7 +41,9 @@
 </template>
 
 <script>
+import { vehicleRoute } from '@/mixins/routing'
 export default {
+  mixins: [vehicleRoute],
   computed: {
     actions () {
       return [

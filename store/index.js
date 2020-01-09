@@ -5,18 +5,19 @@ export const actions = {
    * nuxtServerInit is called on the server on first load or when reloading.
    * We can restore the auth and account vuex states and re-login from here
    * https://nuxtjs.org/guide/vuex-store#the-nuxtserverinit-action
+   * Also: https://zendev.com/2018/06/07/async-data-options-in-vue-nuxt.html
    */
   async nuxtServerInit ({ commit, dispatch }, { req }) {
-    if (process.server) {
-      // console.info('im the server')
-    }
-    const vuex = this.$cookies.get('vuex')
-    // console.log('vuex:')
-    // await console.dir(vuex)
-    if (vuex) {
-      await console.log('found vuex from cookies')
-      debugger
-    }
+    // if (process.server) {
+    //   // console.info('im the server')
+    // }
+    // const vuex = this.$cookies.get('vuex')
+    // // console.log('vuex:')
+    // // await console.dir(vuex)
+    // if (vuex) {
+    //   await console.log('found vuex from cookies')
+    //   debugger
+    // }
   }
 }
 

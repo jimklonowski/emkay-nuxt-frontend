@@ -63,21 +63,23 @@
               </v-card-text>
               <v-card-actions class="flex-column">
                 <v-btn
-                  v-text="$t('login')"
                   :ripple="false"
                   type="submit"
                   color="primary"
                   large
                   depressed
                   block
-                />
+                >
+                  {{ $t('login') }}
+                </v-btn>
                 <v-btn
-                  v-text="$t('forgot_password')"
                   tabindex="-1"
                   small
                   text
                   block
-                />
+                >
+                  {{ $t('forgot_password') }}
+                </v-btn>
               </v-card-actions>
             </v-form>
           </ValidationObserver>
@@ -111,7 +113,6 @@ export default {
   },
   methods: {
     async login () {
-      debugger
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/demo/pages/login.vue
       // https://github.com/nuxt-community/auth-module/blob/feat/refresh/examples/api/auth.js
       this.loading = true
@@ -126,6 +127,7 @@ export default {
         .then(() => {
           // debugger
           this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
+          console.log('calling account init from login')
           this.$store.dispatch('account/init')
         })
         .catch(e => {

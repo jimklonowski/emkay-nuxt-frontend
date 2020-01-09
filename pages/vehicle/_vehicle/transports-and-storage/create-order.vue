@@ -27,6 +27,16 @@
         </v-stepper-step>
       </v-stepper-header>
       <v-divider />
+      <v-expansion-panels accordion multiple>
+        <v-expansion-panel v-show="hasVehicle">
+          <v-expansion-panel-header>Vehicle</v-expansion-panel-header>
+          <v-expansion-panel-content>{{ vehicle_info }}</v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel v-show="hasQuote">
+          <v-expansion-panel-header>Quote</v-expansion-panel-header>
+          <v-expansion-panel-content>{{ quote }}</v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
       <v-stepper-items>
         <v-stepper-content :complete="currentStep > 1" step="1">
           <ValidationObserver ref="step1" v-slot="{ handleSubmit }">
@@ -534,12 +544,6 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-    <v-card-text>
-      {{ quote }}
-    </v-card-text>
-    <v-card-text>
-      {{ vehicle_info }}
-    </v-card-text>
   </v-card>
 </template>
 
@@ -554,6 +558,9 @@ export default {
     }
   },
   computed: {
+    // quote: vm => vm.$store.getters['transtor/getQuote'],
+    hasQuote: vm => vm.$store.getters['transtor/hasQuote'],
+    hasVehicle: vm => Object.keys(vm.vehicle_info).length !== 0,
     vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
     addressTypes () {
       return [

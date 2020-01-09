@@ -64,7 +64,10 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn :to="`${vehicleRoute}/transports-and-storage/create-order?quote=true`" block nuxt>
+      <!-- <v-btn :to="`${vehicleRoute}/transports-and-storage/create-order?quote=true`" block nuxt>
+        Create Order using Quote
+      </v-btn> -->
+      <v-btn :to="{ path: `${vehicleRoute}/transports-and-storage/create-order`, query: { quote: true } }" block nuxt>
         Create Order using Quote
       </v-btn>
     </v-card-actions>
