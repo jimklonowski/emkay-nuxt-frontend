@@ -2,7 +2,7 @@ import { set, assign } from '@/utility/vuex'
 
 const getDefaultState = () => ({
   login_messages: [],
-  centers: {},
+  centers: [],
   client_use_labels: {
     client_use_1_label: '',
     client_use_2_label: '',

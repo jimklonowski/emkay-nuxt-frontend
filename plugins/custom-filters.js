@@ -13,6 +13,11 @@ export default ({ app }) => {
     }
   })
 
+  Vue.filter('number', (value, minDigits = 1, maxDigits = 2) => {
+    const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits })
+    return formatter.format(value)
+  })
+
   // string: capitalize
   Vue.filter('capitalize', (value, options) => {
     const globalOptions = (this && this.capitalize) ? this.capitalize : {}

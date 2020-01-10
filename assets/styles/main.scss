@@ -5,10 +5,11 @@
 
 /* no wrapping on datatable columns */
 .report-column {
-  min-width: 120px;
+  white-space: nowrap;
+  // min-width: auto;
+  // min-width: 120px;
   // max-width: 250px;
   // text-overflow: ellipsis;
-  white-space: nowrap;
   // overflow: hidden;
 }
 

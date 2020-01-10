@@ -34,16 +34,33 @@
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
                 :headers="headers"
                 :items="items"
-                :items-per-page="10"
+                :items-per-page="-1"
                 :loading="loading"
                 :search="search"
                 :sort-by="['vehicle_number']"
                 :sort-desc="[false]"
                 class="striped"
               >
+                <!-- filters template -->
+                <template #top>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-select
+                          v-model="centerCodeFilterValue"
+                          :items="centers"
+                          label="Center Filter"
+                          clearable
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </template>
                 <!-- Configure the #no-data message (no data from server) -->
                 <template #no-data>
                   <div class="text-left">
@@ -62,14 +79,15 @@
                 <template #item="{ item }">
                   <tr>
                     <td>
-                      <client-only>
-                        <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt small />
-                      </client-only>
+                      <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt />
                     </td>
-                    <td>{{ item.client_vehicle_number }}</td>
+                    <!-- <td :style="{ 'border': !item.client_vehicle_number ? '1px solid red' : null }"> -->
+                    <td>
+                      {{ item.client_vehicle_number }}
+                    </td>
                     <td>{{ item.bill_sort }}</td>
                     <td>{{ item.center_code }}</td>
-                    <td>{{ item.center_name }}</td>
+                    <td v-html="item.center_name" />
                     <td>{{ item.client_use_1 }}</td>
                     <td>{{ item.client_use_2 }}</td>
                     <td>{{ item.client_use_3 }}</td>
@@ -108,7 +126,7 @@
                     <td>{{ item.model_year }}</td>
                     <td>{{ item.months_in_service }}</td>
                     <td>{{ item.odometer }}</td>
-                    <td>{{ item.odometer_date }}</td>
+                    <td>{{ item.odometer_date | date }}</td>
                     <td>{{ item.original_in_service_date | date }}</td>
                     <td>{{ item.plb_flag }}</td>
                     <td>{{ item.sub_contract_id }}</td>
@@ -122,7 +140,7 @@
                     <td>{{ item.vehicle_model }}</td>
                     <td>{{ item.vehicle_model_code }}</td>
                     <td>{{ item.vehicle_policy }}</td>
-                    <td>{{ item.vehicle_tank_capacity }}</td>
+                    <td>{{ item.vehicle_tank_capacity | number }}</td>
                     <td>{{ item.vin }}</td>
                   </tr>
                 </template>
@@ -136,13 +154,16 @@
 </template>
 
 <script>
-import { downloadFields, headers } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 /**
  * Inventory Report (vehicle audit report)
  */
 export default {
   name: 'Inventory',
-  mixins: [downloadFields, headers],
+  mixins: [downloadFields],
+  data: () => ({
+    centerCodeFilterValue: null
+  }),
   computed: {
     columns () {
       return [
@@ -208,9 +229,404 @@ export default {
         // ,...
       ]
     },
+    headers () {
+      return [
+        // {
+        //   'text': 'string',
+        //   'value': 'string',
+        //   'align?': 'start' | 'center' | 'end',
+        //   'sortable?': 'Boolean',
+        //   'filterable?': 'Boolean',    // omit specific columns from text search
+        //   'divider?': 'Boolean',
+        //   'class?': 'string | string[]',
+        //   'width?': 'string | number', // currently width defaults to 'auto'
+        //   'filter?': '(value: any, search: string, item: any) => Boolean',
+        //   'sort?': '(a: any, b: any) => Number'
+        // },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_code'),
+          value: 'center_code',
+          class: 'report-column',
+          divider: true,
+          filter: value => {
+            if (!this.centerCodeFilterValue) { return true }
+            return value.toLowerCase().includes(this.centerCodeFilterValue.toLowerCase())
+          }
+        },
+        {
+          text: this.$i18n.t('center_name'),
+          value: 'center_name',
+          class: 'report-column',
+          divider: true,
+          width: 250
+        },
+        {
+          text: this.$i18n.t('client_use_1'),
+          value: 'client_use_1',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_2'),
+          value: 'client_use_2',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_3'),
+          value: 'client_use_3',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_4'),
+          value: 'client_use_4',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_5'),
+          value: 'client_use_5',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('contract_description'),
+          value: 'contract_description',
+          class: 'report-column',
+          width: 250,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('contract_id'),
+          value: 'contract_id',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('coupon_book_number'),
+          value: 'coupon_book_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('customer_number'),
+          value: 'customer_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_address_1'),
+          value: 'driver_address_1',
+          class: 'report-column',
+          width: 250,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_address_2'),
+          value: 'driver_address_2',
+          class: 'report-column',
+          width: 250,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_city'),
+          value: 'driver_city',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_county'),
+          value: 'driver_county',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_email_address'),
+          value: 'driver_email_address',
+          class: 'report-column',
+          width: 225,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_employee_id'),
+          value: 'driver_employee_id',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_fax'),
+          value: 'driver_fax',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_first_name'),
+          value: 'driver_first_name',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_last_name'),
+          value: 'driver_last_name',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_mobile'),
+          value: 'driver_mobile',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_phone'),
+          value: 'driver_phone',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_reference_number'),
+          value: 'driver_reference_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_state_province'),
+          value: 'driver_state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_card_description'),
+          value: 'fuel_card_description',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_profile_limits'),
+          value: 'fuel_profile_limits',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('in_service_date'),
+          value: 'in_service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('irs_fair_market_value'),
+          value: 'irs_fair_market_value',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('lease_rate_id'),
+          value: 'lease_rate_id',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_01'),
+          value: 'level_01',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_02'),
+          value: 'level_02',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_03'),
+          value: 'level_03',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('license_plate_expiration_date'),
+          value: 'license_plate_expiration_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('license_plate_number'),
+          value: 'license_plate_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('license_plate_state_province'),
+          value: 'license_plate_state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('license_plate_type'),
+          value: 'license_plate_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('life_months_in_service'),
+          value: 'life_months_in_service',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('months_in_service'),
+          value: 'months_in_service',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('odometer'),
+          value: 'odometer',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('odometer_date'),
+          value: 'odometer_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('original_in_service_date'),
+          value: 'original_in_service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('plb_flag'),
+          value: 'plb_flag',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('sub_contract_id'),
+          value: 'sub_contract_id',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('telematics_flag'),
+          value: 'telematics_flag',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('title_location'),
+          value: 'title_location',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_cap_cost'),
+          value: 'vehicle_cap_cost',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_category'),
+          value: 'vehicle_category',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_color'),
+          value: 'vehicle_color',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_engine'),
+          value: 'vehicle_engine',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model_code'),
+          value: 'vehicle_model_code',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_policy'),
+          value: 'vehicle_policy',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_tank_capacity'),
+          value: 'vehicle_tank_capacity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vin'),
+          value: 'vin',
+          class: 'report-column',
+          divider: true
+        }
+      ]
+    },
+    // headers (from mixin),
     items: vm => vm.$store.getters['reports/getData'],
     error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading']
+    loading: vm => vm.$store.getters['reports/getLoading'],
+    centers: vm => vm.$store.getters['account/getCenters']
   },
   async asyncData ({ store }) {
     let search

@@ -17,8 +17,7 @@ const options = {
   }
 }
 
-Vue.use(Snotify, options)
-
 export default ({ app }, inject) => {
-  app.$snotify = Snotify
+  Vue.use(Snotify, options)
+  // app.$snotify = Snotify
 }

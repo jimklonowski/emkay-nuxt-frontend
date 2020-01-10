@@ -293,7 +293,12 @@ export default function ({ $axios, redirect }) {
     })
     .onGet('/account/centers')
     .reply(function (config) {
-      const centers = {}
+      const centers = [
+        { text: 'Executive', value: '001' },
+        { text: 'Sales', value: '002' },
+        { text: 'Account Managers', value: '003' },
+        { text: 'Short Term/Unassigned Demos', value: '004' }
+      ]
       return [200, { centers }]
     })
     .onPost('/transtor/quote')
