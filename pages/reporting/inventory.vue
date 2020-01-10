@@ -37,7 +37,7 @@
                 :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
                 :headers="headers"
                 :items="items"
-                :items-per-page="-1"
+                :items-per-page="25"
                 :loading="loading"
                 :search="search"
                 :sort-by="['vehicle_number']"
@@ -79,7 +79,7 @@
                 <template #item="{ item }">
                   <tr>
                     <td>
-                      <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt />
+                      <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
                     </td>
                     <!-- <td :style="{ 'border': !item.client_vehicle_number ? '1px solid red' : null }"> -->
                     <td>
@@ -101,13 +101,28 @@
                     <td>{{ item.driver_address_2 }}</td>
                     <td>{{ item.driver_city }}</td>
                     <td>{{ item.driver_county }}</td>
-                    <td>{{ item.driver_email_address }}</td>
+                    <td>
+                      <v-btn v-if="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
+                        <v-icon v-text="'mdi-email-edit'" class="mr-2" />
+                        {{ item.driver_email_address }}
+                      </v-btn>
+                    </td>
                     <td>{{ item.driver_employee_id }}</td>
                     <td>{{ item.driver_fax }}</td>
                     <td>{{ item.driver_first_name }}</td>
                     <td>{{ item.driver_last_name }}</td>
-                    <td>{{ item.driver_mobile }}</td>
-                    <td>{{ item.driver_phone }}</td>
+                    <td>
+                      <v-btn v-if="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
+                        <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
+                        {{ item.driver_mobile | phone }}
+                      </v-btn>
+                    </td>
+                    <td>
+                      <v-btn v-if="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
+                        <v-icon v-text="'mdi-phone'" class="mr-2" />
+                        {{ item.driver_phone | phone }}
+                      </v-btn>
+                    </td>
                     <td>{{ item.driver_reference_number }}</td>
                     <td>{{ item.driver_state_province }}</td>
                     <td>{{ item.fuel_card_description }}</td>
@@ -154,6 +169,7 @@
 </template>
 
 <script>
+import { dialTo, emailTo } from '@/utility/helpers'
 import { downloadFields } from '@/mixins/datatables'
 /**
  * Inventory Report (vehicle audit report)
@@ -398,12 +414,14 @@ export default {
           text: this.$i18n.t('driver_mobile'),
           value: 'driver_mobile',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
           text: this.$i18n.t('driver_phone'),
           value: 'driver_phone',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
@@ -639,6 +657,10 @@ export default {
     await store.dispatch('reports/fetchData', filters)
     return { search }
   },
+  methods: {
+    dialTo,
+    emailTo
+  },
   head () {
     const title = this.$t('inventory_report')
     return {
@@ -647,11 +669,11 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  },
-  loading: true,
-  validate ({ $moment, query }) {
-    return true
   }
+  // loading: true
+  // ,validate ({ $moment, query }) {
+  //   return true
+  // }
   // ,watchQuery: ['start_date', 'end_date']
 }
 </script>
