@@ -35,7 +35,7 @@ export default ({ app }) => {
     }
   })
 
-  extend('onOrAfter', {
+  extend('on_or_after', {
     params: ['other'],
     validate (value, { other }) {
       // debugger
@@ -59,7 +59,7 @@ export default ({ app }) => {
     }
   })
 
-  extend('onOrBefore', {
+  extend('on_or_before', {
     params: ['other'],
     validate (value, { other }) {
       // debugger
@@ -71,12 +71,12 @@ export default ({ app }) => {
     }
   })
 
-  extend('notPast', {
+  extend('not_past', {
     validate (value) {
       // debugger
       return app.$moment(value).isSameOrAfter(app.$moment(), 'day')
     },
-    message: field => app.i18n.t(`validations.notPast`, [field])
+    message: field => app.i18n.t(`validations.not_past`, [field])
   })
 
   Vue.component('ValidationProvider', ValidationProvider)

@@ -1,44 +1,39 @@
 <template>
   <v-container>
-    <v-sheet class="mx-auto" max-width="1000" color="transparent">
-      <v-row v-if="$route.matched.length === 1">
-        <v-col cols="12">
-          <v-card outlined shaped>
-            <v-card-title>
-              {{ $t('management') }}
-            </v-card-title>
-            <v-card-text>
+    <v-row no-gutters>
+      <h1 class="display-3">
+        {{ $t('management') }}
+      </h1>
+    </v-row>
+    <v-row dense>
+      <v-col cols="12" sm="6">
+        <v-card rounded shaped>
+          <v-card-text class="pa-0">
+            <keep-alive>
               <v-tabs show-arrows>
                 <v-tab v-for="(category, key) in $options.management.categories" :key="key" v-text="$t(category.key)" />
                 <v-tab-item v-for="(category, key) in $options.management.categories" :key="key">
-                  <v-list dense>
-                    <v-list-item v-for="(item, key2) in category.items" :key="key2" :to="localePath(item.to)">
+                  <v-list>
+                    <v-list-item v-for="(report, key2) in category.items" :key="key2" :to="localePath(report.to)">
                       <v-list-item-avatar>
-                        <v-icon v-text="item.icon" />
+                        <v-icon v-text="report.icon" />
                       </v-list-item-avatar>
                       <v-list-item-content>
-                        <v-list-item-title v-text="$t(item.key)" />
+                        <v-list-item-title v-text="$t(report.key)" />
                       </v-list-item-content>
                     </v-list-item>
                   </v-list>
                 </v-tab-item>
               </v-tabs>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row v-else>
-        <v-col cols="12">
-          <v-btn :to="localePath({ path: `/management/` })" class="my-4" nuxt exact text>
-            <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
-            {{ $t('management') }}
-          </v-btn>
-        </v-col>
-        <v-col cols="12">
-          <nuxt-child />
-        </v-col>
-      </v-row>
-    </v-sheet>
+            </keep-alive>
+          </v-card-text>
+          <v-card-actions />
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <nuxt-child />
+    </v-row>
   </v-container>
 </template>
 

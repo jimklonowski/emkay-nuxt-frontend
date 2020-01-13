@@ -10,7 +10,7 @@ const management = {
         { key: 'manage_your_online_users', icon: '', to: { path: '/management/todo' } },
         { key: 'manage_your_fleet_policies', icon: '', to: { path: '/management/todo' } },
         { key: 'customize_fleet_labels', icon: 'mdi-label-variant', to: { path: '/management/fleet-labels' } },
-        { key: 'manage_your_drivers', icon: '', to: { path: '/management/todo' } },
+        { key: 'manage_your_drivers', icon: 'mdi-account-settings', to: { path: '/management/manage-drivers' } },
         { key: 'manage_your_driver_fuel_pins', icon: '', to: { path: '/management/todo' } },
         { key: 'manage_your_enotifications', icon: '', to: { path: '/management/todo' } },
         { key: 'manage_your_cases', icon: '', to: { path: '/management/todo' } },

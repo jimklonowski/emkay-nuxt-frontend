@@ -148,7 +148,7 @@
                           width="290px"
                         >
                           <template #activator="{ on }">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('pickup_date')" vid="pickup_date" rules="required|notPast">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('pickup_date')" vid="pickup_date" rules="required|not_past">
                               <v-text-field
                                 v-model="pickup_date"
                                 v-on="on"
@@ -325,7 +325,7 @@
                           width="290px"
                         >
                           <template #activator="{ on }">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('delivery_date')" vid="delivery_date" rules="required|notPast|onOrAfter:@pickup_date">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('delivery_date')" vid="delivery_date" rules="required|not_past|on_or_after:@pickup_date">
                               <v-text-field
                                 v-model="delivery_date"
                                 v-on="on"
