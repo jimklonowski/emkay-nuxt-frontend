@@ -141,7 +141,7 @@
                     <td>{{ item.active }}</td>
                     <td>{{ item.amount | currency }}</td>
                     <td>{{ item.ata_group }}</td>
-                    <td>{{ item.ata_group_description }}</td>
+                    <td v-html="item.ata_group_description" />
                     <td>{{ item.bill_sort }}</td>
                     <td>{{ item.brake_manufacturer }}</td>
                     <td>{{ item.brake_thickness }}</td>
@@ -155,7 +155,7 @@
                     <td>{{ item.client_use_5 }}</td>
                     <td>{{ item.client_vehicle_number }}</td>
                     <td>{{ item.customer_po }}</td>
-                    <td>{{ item.description }}</td>
+                    <td v-html="item.description" />
                     <td>{{ item.driver_name }}</td>
                     <td>{{ item.engine_hours }}</td>
                     <td>{{ item.expense_category }}</td>
@@ -212,7 +212,7 @@
 </template>
 
 <script>
-import { downloadFields, headers } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
  * Maintenance Detail Report
@@ -221,7 +221,7 @@ import { updateQuery } from '@/mixins/routing'
  */
 export default {
   name: 'MaintenanceDetail',
-  mixins: [downloadFields, headers, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -304,6 +304,371 @@ export default {
         'vendor_name',
         'vendor_number',
         'voucher'
+      ]
+    },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('service_date'),
+          value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('active'),
+          value: 'active',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('ata_group'),
+          value: 'ata_group',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('ata_group_description'),
+          value: 'ata_group_description',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('brake_manufacturer'),
+          value: 'brake_manufacturer',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('brake_thickness'),
+          value: 'brake_thickness',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_code'),
+          value: 'center_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_name'),
+          value: 'center_name',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('charge_code'),
+          value: 'charge_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_1'),
+          value: 'client_use_1',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_2'),
+          value: 'client_use_2',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_3'),
+          value: 'client_use_3',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_4'),
+          value: 'client_use_4',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_5'),
+          value: 'client_use_5',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('customer_po'),
+          value: 'customer_po',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('description'),
+          value: 'description',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('engine_hours'),
+          value: 'engine_hours',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('expense_category'),
+          value: 'expense_category',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_left_brake'),
+          value: 'front_left_brake',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_left_drum'),
+          value: 'front_left_drum',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_left_rotor'),
+          value: 'front_left_rotor',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_left_tire'),
+          value: 'front_left_tire',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_right_brake'),
+          value: 'front_right_brake',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_right_drum'),
+          value: 'front_right_drum',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_right_rotor'),
+          value: 'front_right_rotor',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('front_right_tire'),
+          value: 'front_right_tire',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('gl_code'),
+          value: 'gl_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('invoice_number'),
+          value: 'invoice_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('labor_or_part'),
+          value: 'labor_or_part',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_01'),
+          value: 'level_01',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_02'),
+          value: 'level_02',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_03'),
+          value: 'level_03',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('maintenance_category'),
+          value: 'maintenance_category',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('maintenance_code'),
+          value: 'maintenance_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('odometer'),
+          value: 'odometer',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_left_brake'),
+          value: 'rear_left_brake',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_left_drum'),
+          value: 'rear_left_drum',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_left_rotor'),
+          value: 'rear_left_rotor',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_left_tire'),
+          value: 'rear_left_tire',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_right_brake'),
+          value: 'rear_right_brake',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_right_drum'),
+          value: 'rear_right_drum',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_right_rotor'),
+          value: 'rear_right_rotor',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rear_right_tire'),
+          value: 'rear_right_tire',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tire_manufacturer'),
+          value: 'tire_manufacturer',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tire_model'),
+          value: 'tire_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tire_size'),
+          value: 'tire_size',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vendor_factor'),
+          value: 'vendor_factor',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vendor_name'),
+          value: 'vendor_name',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vendor_number'),
+          value: 'vendor_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('voucher'),
+          value: 'voucher',
+          class: 'report-column',
+          divider: true
+        }
       ]
     },
     error: vm => vm.$store.getters['reports/getError'],

@@ -146,7 +146,7 @@
 
 <script>
 // Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 // Adds a method called updateQuery that depends on the computed 'query' property
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -161,7 +161,7 @@ export default {
    * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -183,9 +183,180 @@ export default {
   computed: {
     columns () {
       return [
-        'date',
-        'description',
-        'amount'
+        'level_01',
+        'level_02',
+        'level_03',
+        'voucher_number',
+        'vehicle_number',
+        'client_vehicle_number',
+        'center_code',
+        'center_name',
+        'model_year',
+        'vehicle_make',
+        'vehicle_model',
+        'vehicle_category',
+        'start_date',
+        'end_date',
+        'days_in_rental',
+        'auth_days',
+        'number_of_days_ext',
+        'number_of_ext',
+        'last_auth_date',
+        'days_past_auth_days',
+        'driver_name',
+        'status',
+        'reason',
+        'rental_cost'
+      ]
+    },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('level_01'),
+          value: 'level_01',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_02'),
+          value: 'level_02',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_03'),
+          value: 'level_03',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('voucher_number'),
+          value: 'voucher_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_code'),
+          value: 'center_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_name'),
+          value: 'center_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_category'),
+          value: 'vehicle_category',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('start_date'),
+          value: 'start_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('end_date'),
+          value: 'end_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('days_in_rental'),
+          value: 'days_in_rental',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('auth_days'),
+          value: 'auth_days',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('number_of_days_ext'),
+          value: 'number_of_days_ext',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('number_of_ext'),
+          value: 'number_of_ext',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('last_auth_date'),
+          value: 'last_auth_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('days_past_auth_days'),
+          value: 'days_past_auth_days',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('status'),
+          value: 'status',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('reason'),
+          value: 'reason',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rental_cost'),
+          value: 'rental_cost',
+          class: 'report-column',
+          divider: true
+        }
       ]
     },
     query () {

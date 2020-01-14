@@ -146,7 +146,7 @@
 
 <script>
 // Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 // Adds a method called updateQuery that depends on the computed 'query' property
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -161,7 +161,7 @@ export default {
    * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -382,6 +382,9 @@ export default {
         }
       ]
     },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
     /**
      * Implement a computed query property that returns an object that corresponds with watchQuery
      * REQUIRED
@@ -429,7 +432,7 @@ export default {
    * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
    * https://nuxtjs.org/api/pages-head */
   head () {
-    const title = this.$t('report')
+    const title = this.$t('sold_vehicle_analysis')
     return {
       title,
       meta: [

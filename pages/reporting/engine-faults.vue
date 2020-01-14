@@ -146,7 +146,7 @@
 
 <script>
 // Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 // Adds a method called updateQuery that depends on the computed 'query' property
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -161,7 +161,7 @@ export default {
    * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -170,7 +170,6 @@ export default {
    */
   data (context) {
     return {
-      search: '',
       end_menu: false,
       start_menu: false
     }
@@ -187,8 +186,79 @@ export default {
     columns () {
       return [
         'date',
-        'description',
-        'amount'
+        'vehicle_number',
+        'model_year',
+        'vehicle_make',
+        'vehicle_model',
+        'vin',
+        'driver_last_name',
+        'driver_first_name',
+        'fault_code',
+        'fault_detail'
+      ]
+    },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vin'),
+          value: 'vin',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_last_name'),
+          value: 'driver_last_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_first_name'),
+          value: 'driver_first_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fault_code'),
+          value: 'fault_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fault_detail'),
+          value: 'fault_detail',
+          class: 'report-column',
+          divider: true
+        }
       ]
     },
     /**
@@ -210,6 +280,7 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store, error }) {
+    let search
     const report_length = 30
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
@@ -222,15 +293,7 @@ export default {
       json: 'Y'
     }
     await store.dispatch('reports/fetchData', filters)
-    return { end_date, start_date }
-  },
-
-  /**
-   * The fetch method is used to fill the store before rendering the page, it's like the asyncData method except it doesn't set the component data.
-   * https://nuxtjs.org/api/pages-fetch
-   */
-  async fetch ({ $moment, query, store }) {
-    // await console.info('fetch()')
+    return { search, end_date, start_date }
   },
 
   /**
@@ -245,52 +308,6 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  },
-
-  /**
-   * Specify a layout defined in the layouts directory. (compared to just a single App.vue)
-   * Every file (first level) in the layouts directory will create a custom layout accessible with the layout property in the page component.
-   * THIS IS SET IN THE PARENT reporting.vue!
-   * https://nuxtjs.org/api/pages-layout
-   * https://nuxtjs.org/guide/views#layouts */
-  // layout: 'report',
-
-  /**
-   * Nuxt.js gives you its own loading progress bar component that's shown between routes. You can customize it, disable it or create your own component.
-   * https://nuxtjs.org/api/pages-loading */
-  loading: true,
-
-  /**
-   * Nuxt.js lets you define a validator method inside your dynamic route component.
-   * https://nuxtjs.org/api/pages-validate */
-  validate ({ $moment, query }) {
-    // validate the report params.  return false or throw error if invalid
-    return true
-  },
-
-  /**
-   * You can create named middleware by creating a file inside the middleware/ directory, the file name will be the middleware name.
-   * If you need to use a middleware only for a specific page, you can directly use a function for it (or an array of functions)
-   * https://nuxtjs.org/api/pages-middleware */
-  // middleware: 'auth',
-  middleware ({ store, redirect }) {
-    // The parent reporting route should already have the 'auth' middleware, so no need for child report route
-  },
-
-  /**
-   * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
-   * https://nuxtjs.org/api/pages-scrolltotop
-   * THIS IS SET IN THE PARENT reporting.vue!
-   */
-  // scrollToTop: false,
-
-  /**
-   * To define a custom transition for a specific route, simply add the transition key to the page component.
-   * @type {String|Object|Function}
-   * https://nuxtjs.org/api/pages-transition */
-  transition (to, from) {
-    // if (!from) { return 'slide-left' }
-    // return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
   },
 
   /**

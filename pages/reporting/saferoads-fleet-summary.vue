@@ -146,7 +146,7 @@
 
 <script>
 // Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 // Adds a method called updateQuery that depends on the computed 'query' property
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -161,7 +161,7 @@ export default {
    * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -170,7 +170,6 @@ export default {
    */
   data (context) {
     return {
-      search: '',
       end_menu: false,
       start_menu: false
     }
@@ -186,9 +185,92 @@ export default {
      */
     columns () {
       return [
-        'date',
-        'description',
-        'amount'
+        'driver_number',
+        'driver_name',
+        'driver_email_address',
+        'number_of_trips',
+        'total_distance_driven',
+        'saferoads_score',
+        'braking',
+        'acceleration',
+        'speeding',
+        'hard_turn',
+        'phone_use',
+        'performance_group',
+        'total_phone_usages',
+        'total_duration_phone_usage',
+        'average_duration_phone_usage'
+        // ...
+      ]
+    },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('driver_number'),
+          value: 'driver_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_email_address'),
+          value: 'driver_email_address',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('number_of_trips'),
+          value: 'number_of_trips',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('total_distance_driven'),
+          value: 'total_distance_driven',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('saferoads_score'),
+          value: 'saferoads_score',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('braking'),
+          value: 'braking',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('acceleration'),
+          value: 'acceleration',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('speeding'),
+          value: 'speeding',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('hard_turn'),
+          value: 'hard_turn',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('phone_use'),
+          value: 'phone_use',
+          class: 'report-column',
+          divider: true
+        }
       ]
     },
     /**
@@ -210,6 +292,7 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store, error }) {
+    let search
     const report_length = 30
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
@@ -222,7 +305,7 @@ export default {
       json: 'Y'
     }
     await store.dispatch('reports/fetchData', filters)
-    return { end_date, start_date }
+    return { search, end_date, start_date }
   },
 
   /**

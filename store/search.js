@@ -38,8 +38,12 @@ export const actions = {
       // get vehicles by vehicle number
       // const { data: { success, message, data } } = await this.$axios.post(url, filters, cancelToken)
     } catch (error) {
-      debugger
-      console.log(error)
+      if (this.$axios.isCancel(error)) {
+        console.log('request cancelled')
+      } else {
+        commit('setError', error.message)
+        console.error(error)
+      }
     } finally {
       commit('setLoading', false)
     }

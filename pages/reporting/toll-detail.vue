@@ -105,10 +105,10 @@
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
                 :headers="headers"
                 :items="items"
-                :items-per-page="10"
+                :items-per-page="25"
                 :loading="loading"
                 :search="search"
                 :sort-by="['toll_date']"
@@ -130,9 +130,9 @@
                 </template>
 
                 <!-- Configure how each #item row is rendered -->
-                <template #item="{ item }">
+                <!-- <template #item="{ item }">
                   {{ item }}
-                </template>
+                </template> -->
               </v-data-table>
             </v-skeleton-loader>
           </v-card-text>
@@ -143,17 +143,16 @@
 </template>
 
 <script>
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
  * Toll Detail Report
  */
 export default {
   name: 'TollDetail',
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
   data (context) {
     return {
-      search: '',
       end_menu: false,
       start_menu: false
     }
@@ -168,6 +167,43 @@ export default {
         'amount'
       ]
     },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('description'),
+          value: 'description',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('location'),
+          value: 'location',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        }
+      ]
+    },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
     query () {
       const query = {
         start_date: this.start_date,
@@ -177,6 +213,7 @@ export default {
     }
   },
   async asyncData ({ $moment, query, store, error }) {
+    let search
     const report_length = 30
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
@@ -193,7 +230,7 @@ export default {
     await store.dispatch('reports/fetchData', filters)
 
     // Return the report parameters so they are merged with the data() object
-    return { end_date, start_date }
+    return { search, end_date, start_date }
   },
   head () {
     const title = this.$t('toll_detail')
@@ -203,11 +240,6 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  },
-  loading: true,
-  validate ({ $moment, query }) {
-    // ... validate params?
-    return true
   },
   watchQuery: ['start_date', 'end_date']
 }

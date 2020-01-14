@@ -146,7 +146,7 @@
 
 <script>
 // Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 // Adds a method called updateQuery that depends on the computed 'query' property
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -162,7 +162,7 @@ export default {
    * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -171,7 +171,6 @@ export default {
    */
   data (context) {
     return {
-      search: '',
       end_menu: false,
       start_menu: false
     }
@@ -187,11 +186,142 @@ export default {
      */
     columns () {
       return [
-        'date',
-        'description',
-        'amount'
+        'level_01',
+        'level_02',
+        'level_03',
+        'center_code',
+        'center_name',
+        'vehicle_number',
+        'client_vehicle_number',
+        'model_year',
+        'vehicle_make',
+        'vehicle_model',
+        'bill_sort',
+        'department',
+        'driver_last_name',
+        'driver_first_name',
+        'fuel',
+        'maintenance',
+        'lube_oil_filter',
+        'tires'
+        // ...
       ]
     },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('level_01'),
+          value: 'level_01',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_02'),
+          value: 'level_02',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_03'),
+          value: 'level_03',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_code'),
+          value: 'center_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_name'),
+          value: 'center_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('department'),
+          value: 'department',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_last_name'),
+          value: 'driver_last_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_first_name'),
+          value: 'driver_first_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel'),
+          value: 'fuel',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('maintenance'),
+          value: 'maintenance',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('lube_oil_filter'),
+          value: 'lube_oil_filter',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tires'),
+          value: 'tires',
+          class: 'report-column',
+          divider: true
+        }
+      ]
+    },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
     /**
      * Implement a computed query property that returns an object that corresponds with watchQuery
      * REQUIRED
@@ -211,6 +341,7 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store, error }) {
+    let search
     const report_length = 30
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
@@ -223,15 +354,7 @@ export default {
       json: 'Y'
     }
     await store.dispatch('reports/fetchData', filters)
-    return { end_date, start_date }
-  },
-
-  /**
-   * The fetch method is used to fill the store before rendering the page, it's like the asyncData method except it doesn't set the component data.
-   * https://nuxtjs.org/api/pages-fetch
-   */
-  async fetch ({ $moment, query, store }) {
-    // await console.info('fetch()')
+    return { search, end_date, start_date }
   },
 
   /**
@@ -239,59 +362,13 @@ export default {
    * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
    * https://nuxtjs.org/api/pages-head */
   head () {
-    const title = this.$t('report')
+    const title = this.$t('expense_detail')
     return {
       meta: [
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
   },
-
-  /**
-   * Specify a layout defined in the layouts directory. (compared to just a single App.vue)
-   * Every file (first level) in the layouts directory will create a custom layout accessible with the layout property in the page component.
-   * THIS IS SET IN THE PARENT reporting.vue!
-   * https://nuxtjs.org/api/pages-layout
-   * https://nuxtjs.org/guide/views#layouts */
-  // layout: 'report',
-
-  /**
-   * Nuxt.js gives you its own loading progress bar component that's shown between routes. You can customize it, disable it or create your own component.
-   * https://nuxtjs.org/api/pages-loading */
-  loading: true,
-
-  /**
-   * Nuxt.js lets you define a validator method inside your dynamic route component.
-   * https://nuxtjs.org/api/pages-validate */
-  validate ({ $moment, query }) {
-    // validate the report params.  return false or throw error if invalid
-    return true
-  },
-
-  /**
-   * You can create named middleware by creating a file inside the middleware/ directory, the file name will be the middleware name.
-   * If you need to use a middleware only for a specific page, you can directly use a function for it (or an array of functions)
-   * https://nuxtjs.org/api/pages-middleware */
-  // middleware: 'auth',
-  middleware ({ store, redirect }) {
-    // The parent reporting route should already have the 'auth' middleware, so no need for child report route
-  },
-
-  /**
-   * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
-   * https://nuxtjs.org/api/pages-scrolltotop
-   */
-  scrollToTop: false,
-
-  /**
-   * To define a custom transition for a specific route, simply add the transition key to the page component.
-   * @type {String|Object|Function}
-   * https://nuxtjs.org/api/pages-transition */
-  transition (to, from) {
-    // if (!from) { return 'slide-left' }
-    // return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
-  },
-
   /**
    * Watch query strings and execute component methods on change (asyncData, fetch, validate, layout, ...)
    * https://nuxtjs.org/api/pages-watchquery
