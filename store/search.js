@@ -17,10 +17,10 @@ export const actions = {
       const searchTypes = [
         'VEHICLE_NUMBER',
         'LAST_NAME',
-        'FIRST_NAME'
-        // 'CLIENT_VEHICLE_NUMBER'
-        // 'VIN',
-        // 'PLATE',
+        'FIRST_NAME',
+        'CLIENT_VEHICLE_NUMBER',
+        'VIN',
+        'PLATE'
       ]
       const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
       await Promise.all(searchTypes.map(async (searchType) => {
