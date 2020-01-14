@@ -550,25 +550,27 @@ export default {
       }
     },
     editDriver (item) {
+      // if editing, set the editIndex to that of the item we clicked
       this.editedIndex = this.items.indexOf(item)
+      // load the selected item's data into the editedItem object before opening dialog
       this.editedItem = Object.assign({}, item)
       this.dialog = true
-    },
-    async submitDriverEdit () {
-      this.editLoading = true
-      try {
-        // get the driver id
-        const id = this.editedItem.driver_id
-        await this.$axios.post('/fleet/drivers/edit', { id, item: this.editedItem })
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.editLoading = false
-      }
-    },
-    deleteDriver (item) {
-      this.$snotify.info('TODO', 'delete')
     }
+    // async submitDriverEdit () {
+    //   this.editLoading = true
+    //   try {
+    //     // get the driver id
+    //     const id = this.editedItem.driver_id
+    //     await this.$axios.post('/fleet/drivers/edit', { id, item: this.editedItem })
+    //   } catch (error) {
+    //     console.error(error)
+    //   } finally {
+    //     this.editLoading = false
+    //   }
+    // },
+    // deleteDriver (item) {
+    //   this.$snotify.info('TODO', 'delete')
+    // }
   },
   head () {
     const title = this.$t('manage_your_drivers')

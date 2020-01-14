@@ -31,6 +31,7 @@ const management = {
       key: 'tools',
       icon: '',
       items: [
+        { key: 'fleet_navigator', icon: 'mdi-compass', to: { path: '/management/fleet-navigator' } },
         { key: 'locate_preferred_shops', icon: '', to: { path: '/management/todo' } },
         { key: 'quote_a_transport', icon: '', to: { path: '/management/todo' } },
         { key: 'lcca', icon: '', to: { path: '/management/todo' } }

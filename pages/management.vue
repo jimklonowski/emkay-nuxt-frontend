@@ -1,11 +1,13 @@
 <template>
   <v-container>
-    <v-row no-gutters>
-      <h1 class="display-3">
-        {{ $t('management') }}
-      </h1>
+    <v-row>
+      <v-col cols="12">
+        <h1 class="display-3">
+          {{ $t('management') }}
+        </h1>
+      </v-col>
     </v-row>
-    <v-row dense>
+    <v-row>
       <v-col cols="12" sm="6">
         <v-card rounded shaped>
           <v-card-text class="pa-0">

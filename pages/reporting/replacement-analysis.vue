@@ -105,7 +105,7 @@
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
                 :headers="headers"
                 :items="items"
                 :items-per-page="10"
@@ -146,7 +146,7 @@
 
 <script>
 // Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 // Adds a method called updateQuery that depends on the computed 'query' property
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -161,7 +161,7 @@ export default {
    * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -170,7 +170,6 @@ export default {
    */
   data (context) {
     return {
-      search: '',
       end_menu: false,
       start_menu: false
     }
@@ -186,11 +185,246 @@ export default {
      */
     columns () {
       return [
-        'date',
-        'description',
-        'amount'
+        'level_01',
+        'level_02',
+        'level_03',
+        'center_code',
+        'center_name',
+        'vehicle_number',
+        'client_vehicle_number',
+        'project',
+        'lease_type',
+        'driver_last_name',
+        'driver_first_name',
+        'year_make_model',
+        'mileage',
+        'as_of_date',
+        'average_per_month',
+        'projected_mileage',
+        'estimate',
+        'months_in_service',
+        'in_service_date',
+        'next_vehicle_number',
+        'driver_state_province',
+        'comments',
+        'policy',
+        'team_t',
+        'team_#',
+        'lease_termination_date',
+        'c_lease',
+        'min_term',
+        'max_term',
+        'term',
+        'rent',
+        'miles_allow',
+        'excess_charge'
       ]
     },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('level_01'),
+          value: 'level_01',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_02'),
+          value: 'level_02',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_03'),
+          value: 'level_03',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_code'),
+          value: 'center_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_name'),
+          value: 'center_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('project'),
+          value: 'project',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('lease_type'),
+          value: 'lease_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_last_name'),
+          value: 'driver_last_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_first_name'),
+          value: 'driver_first_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('year_make_model'),
+          value: 'year_make_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('mileage'),
+          value: 'mileage',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('as_of_date'),
+          value: 'as_of_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('average_per_month'),
+          value: 'average_per_month',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('projected_mileage'),
+          value: 'projected_mileage',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('estimate'),
+          value: 'estimate',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('months_in_service'),
+          value: 'months_in_service',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('in_service_date'),
+          value: 'in_service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('next_vehicle_number'),
+          value: 'next_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_state_province'),
+          value: 'driver_state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('comments'),
+          value: 'comments',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('policy'),
+          value: 'policy',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('team_t'),
+          value: 'team_t',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('team_#'),
+          value: 'team_#',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('lease_termination_date'),
+          value: 'lease_termination_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('c_lease'),
+          value: 'c_lease',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('min_term'),
+          value: 'min_term',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('max_term'),
+          value: 'max_term',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('term'),
+          value: 'term',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rent'),
+          value: 'rent',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('miles_allow'),
+          value: 'miles_allow',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('excess_charge'),
+          value: 'excess_charge',
+          class: 'report-column',
+          divider: true
+        }
+      ]
+    },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
     /**
      * Implement a computed query property that returns an object that corresponds with watchQuery
      * REQUIRED
@@ -210,7 +444,8 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store, error }) {
-    const report_length = 30
+    let search
+    const report_length = 365
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
 
@@ -222,15 +457,7 @@ export default {
       json: 'Y'
     }
     await store.dispatch('reports/fetchData', filters)
-    return { end_date, start_date }
-  },
-
-  /**
-   * The fetch method is used to fill the store before rendering the page, it's like the asyncData method except it doesn't set the component data.
-   * https://nuxtjs.org/api/pages-fetch
-   */
-  async fetch ({ $moment, query, store }) {
-    // await console.info('fetch()')
+    return { search, end_date, start_date }
   },
 
   /**
@@ -245,52 +472,6 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  },
-
-  /**
-   * Specify a layout defined in the layouts directory. (compared to just a single App.vue)
-   * Every file (first level) in the layouts directory will create a custom layout accessible with the layout property in the page component.
-   * THIS IS SET IN THE PARENT reporting.vue!
-   * https://nuxtjs.org/api/pages-layout
-   * https://nuxtjs.org/guide/views#layouts */
-  // layout: 'report',
-
-  /**
-   * Nuxt.js gives you its own loading progress bar component that's shown between routes. You can customize it, disable it or create your own component.
-   * https://nuxtjs.org/api/pages-loading */
-  loading: true,
-
-  /**
-   * Nuxt.js lets you define a validator method inside your dynamic route component.
-   * https://nuxtjs.org/api/pages-validate */
-  validate ({ $moment, query }) {
-    // validate the report params.  return false or throw error if invalid
-    return true
-  },
-
-  /**
-   * You can create named middleware by creating a file inside the middleware/ directory, the file name will be the middleware name.
-   * If you need to use a middleware only for a specific page, you can directly use a function for it (or an array of functions)
-   * https://nuxtjs.org/api/pages-middleware */
-  // middleware: 'auth',
-  middleware ({ store, redirect }) {
-    // The parent reporting route should already have the 'auth' middleware, so no need for child report route
-  },
-
-  /**
-   * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
-   * https://nuxtjs.org/api/pages-scrolltotop
-   * THIS IS SET IN THE PARENT reporting.vue!
-   */
-  // scrollToTop: false,
-
-  /**
-   * To define a custom transition for a specific route, simply add the transition key to the page component.
-   * @type {String|Object|Function}
-   * https://nuxtjs.org/api/pages-transition */
-  transition (to, from) {
-    // if (!from) { return 'slide-left' }
-    // return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
   },
 
   /**

@@ -40,7 +40,7 @@
                 :items-per-page="25"
                 :loading="loading"
                 :search="search"
-                :sort-by="['vehicle_number']"
+                :sort-by="[0]"
                 :sort-desc="[false]"
                 class="striped"
               >
