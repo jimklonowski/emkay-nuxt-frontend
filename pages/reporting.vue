@@ -47,6 +47,15 @@ export default {
   reports,
   middleware: ['auth'],
   name: 'Reporting',
+  head () {
+    const title = this.$t('reporting')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  },
   /**
    * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
    * https://nuxtjs.org/api/pages-scrolltotop

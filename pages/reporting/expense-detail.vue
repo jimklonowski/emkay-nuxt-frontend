@@ -364,6 +364,7 @@ export default {
   head () {
     const title = this.$t('expense_detail')
     return {
+      title,
       meta: [
         { hid: 'og:description', property: 'og:description', content: title }
       ]

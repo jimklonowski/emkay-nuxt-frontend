@@ -58,6 +58,15 @@ export default {
     // reset any old quotes from vuex
     this.$store.dispatch('transtor/reset')
   },
+  head () {
+    const title = this.$t('transports_and_storage')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  },
   methods: {
     setTab (value) {
       this.tabs = value

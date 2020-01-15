@@ -62,11 +62,53 @@
                 </template>
 
                 <!-- Configure how each #item row is rendered -->
-                <!-- <template #item="{ item }">
+                <template #item="{ item }">
                   <tr>
-                    <td>{{ item.date | date }}</td>
+                    <td>
+                      <client-only>
+                        <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt small />
+                      </client-only>
+                    </td>
+                    <td>{{ item.client_vehicle_number }}</td>
+                    <td>{{ item.level_01 }}</td>
+                    <td>{{ item.level_02 }}</td>
+                    <td>{{ item.level_03 }}</td>
+                    <td>{{ item.customer_number }}</td>
+                    <td>{{ item.center_code }}</td>
+                    <td>{{ item.center_name }}</td>
+                    <td>{{ item.model_year }}</td>
+                    <td>{{ item.vehicle_make }}</td>
+                    <td>{{ item.vehicle_model }}</td>
+                    <td>{{ item.driver_name }}</td>
+                    <td>{{ item.driver_city }}</td>
+                    <td>{{ item.driver_state_province }}</td>
+                    <td>{{ item.driver_postal_code }}</td>
+                    <td>{{ item.order_received_date | date }}</td>
+                    <td>{{ item.order_placed_date | date }}</td>
+                    <td>{{ item.factory_order_number }}</td>
+                    <td>{{ item.vin }}</td>
+                    <td>{{ item.factory_acknowledged_date | date }}</td>
+                    <td>{{ item.sent_to_plant_date | date }}</td>
+                    <td>{{ item.production_scheduled_date | date }}</td>
+                    <td>{{ item.built_date | date }}</td>
+                    <td>{{ item.shipped_to_body_company_date | date }}</td>
+                    <td>{{ item.shipped_from_body_company_date | date }}</td>
+                    <td>{{ item.shipped_to_dealer_date | date }}</td>
+                    <td>{{ item.delivered_to_dealer_date | date }}</td>
+                    <td>{{ item.non_emkay_turnin }}</td>
+                    <td>{{ item.turnin_vehicle }}</td>
+                    <td>{{ item.sell_comment }}</td>
+                    <td>{{ item.status_comment }}</td>
+                    <td>{{ item.delivery_comment }}</td>
+                    <td>{{ item.current_status }}</td>
+                    <td>{{ item.vin_date | date }}</td>
+                    <td>{{ item.client_turnin }}</td>
+                    <td>{{ item.bill_sort }}</td>
+                    <td>{{ item.dealer_code }}</td>
+                    <td>{{ item.dealer_name }}</td>
+                    <td>{{ item.in_service_date | date }}</td>
                   </tr>
-                </template> -->
+                </template>
               </v-data-table>
             </v-skeleton-loader>
           </v-card-text>
@@ -103,43 +145,43 @@ export default {
      */
     columns () {
       return [
+        'vehicle_number',
+        'client_vehicle_number',
         'level_01',
         'level_02',
         'level_03',
-        'manager',
-        'team',
         'customer_number',
         'center_code',
         'center_name',
-        'location',
-        'vehicle_number',
-        'client_vehicle_number',
-        'year_make_model',
+        'model_year',
+        'vehicle_make',
+        'vehicle_model',
         'driver_name',
         'driver_city',
         'driver_state_province',
         'driver_postal_code',
         'order_received_date',
         'order_placed_date',
-        'factory_number',
+        'factory_order_number',
         'vin',
-        'factory_acknowledge_date',
-        'preference',
+        'factory_acknowledged_date',
+        'sent_to_plant_date',
         'production_scheduled_date',
         'built_date',
-        'received_body_date',
-        'body_completed_date',
-        'ship_dealer_date',
-        'delivered_date',
-        'turn_in',
-        'special_comments',
-        'status_comments',
-        'delivery_comments',
-        'status',
+        'shipped_to_body_company_date',
+        'shipped_from_body_company_date',
+        'shipped_to_dealer_date',
+        'delivered_to_dealer_date',
+        'non_emkay_turnin',
+        'turnin_vehicle',
+        'sell_comment',
+        'status_comment',
+        'delivery_comment',
+        'current_status',
         'vin_date',
         'client_turnin',
-        'sort',
-        'delivering_dealer',
+        'bill_sort',
+        'dealer_code',
         'dealer_name',
         'in_service_date'
       ]
@@ -147,33 +189,36 @@ export default {
     headers () {
       return [
         {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
           text: this.$i18n.t('level_01'),
           value: 'level_01',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
           text: this.$i18n.t('level_02'),
           value: 'level_02',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
           text: this.$i18n.t('level_03'),
           value: 'level_03',
           class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('manager'),
-          value: 'manager',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('team'),
-          value: 'team',
-          class: 'report-column',
+          width: 150,
           divider: true
         },
         {
@@ -192,42 +237,41 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
+          width: 200,
           divider: true
         },
         {
-          text: this.$i18n.t('location'),
-          value: 'location',
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('vehicle_number'),
-          value: 'vehicle_number',
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
-          text: this.$i18n.t('client_vehicle_number'),
-          value: 'client_vehicle_number',
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
           class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('year_make_model'),
-          value: 'year_make_model',
-          class: 'report-column',
+          width: 200,
           divider: true
         },
         {
           text: this.$i18n.t('driver_name'),
           value: 'driver_name',
           class: 'report-column',
+          width: 250,
           divider: true
         },
         {
           text: this.$i18n.t('driver_city'),
           value: 'driver_city',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
@@ -255,8 +299,8 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('factory_number'),
-          value: 'factory_number',
+          text: this.$i18n.t('factory_order_number'),
+          value: 'factory_order_number',
           class: 'report-column',
           divider: true
         },
@@ -264,17 +308,18 @@ export default {
           text: this.$i18n.t('vin'),
           value: 'vin',
           class: 'report-column',
+          width: 200,
           divider: true
         },
         {
-          text: this.$i18n.t('factory_acknowledge_date'),
-          value: 'factory_acknowledge_date',
+          text: this.$i18n.t('factory_acknowledged_date'),
+          value: 'factory_acknowledged_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('preference'),
-          value: 'preference',
+          text: this.$i18n.t('sent_to_plant_date'),
+          value: 'sent_to_plant_date',
           class: 'report-column',
           divider: true
         },
@@ -291,57 +336,68 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('received_body_date'),
-          value: 'received_body_date',
+          text: this.$i18n.t('shipped_to_body_company_date'),
+          value: 'shipped_to_body_company_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('body_completed_date'),
-          value: 'body_completed_date',
+          text: this.$i18n.t('shipped_from_body_company_date'),
+          value: 'shipped_from_body_company_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('ship_dealer_date'),
-          value: 'ship_dealer_date',
+          text: this.$i18n.t('shipped_to_dealer_date'),
+          value: 'shipped_to_dealer_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('delivered_date'),
-          value: 'delivered_date',
+          text: this.$i18n.t('delivered_to_dealer_date'),
+          value: 'delivered_to_dealer_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('turn_in'),
-          value: 'turn_in',
+          text: this.$i18n.t('non_emkay_turnin'),
+          value: 'non_emkay_turnin',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('special_comments'),
-          value: 'special_comments',
+          text: this.$i18n.t('turnin_vehicle'),
+          value: 'turnin_vehicle',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
-          text: this.$i18n.t('status_comments'),
-          value: 'status_comments',
+          text: this.$i18n.t('sell_comment'),
+          value: 'sell_comment',
           class: 'report-column',
+          width: 300,
           divider: true
         },
         {
-          text: this.$i18n.t('delivery_comments'),
-          value: 'delivery_comments',
+          text: this.$i18n.t('status_comment'),
+          value: 'status_comment',
           class: 'report-column',
+          width: 300,
           divider: true
         },
         {
-          text: this.$i18n.t('status'),
-          value: 'status',
+          text: this.$i18n.t('delivery_comment'),
+          value: 'delivery_comment',
           class: 'report-column',
+          width: 300,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('current_status'),
+          value: 'current_status',
+          class: 'report-column',
+          width: 250,
           divider: true
         },
         {
@@ -357,14 +413,15 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('sort'),
-          value: 'sort',
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
           class: 'report-column',
+          width: 200,
           divider: true
         },
         {
-          text: this.$i18n.t('delivering_dealer'),
-          value: 'delivering_dealer',
+          text: this.$i18n.t('dealer_code'),
+          value: 'dealer_code',
           class: 'report-column',
           divider: true
         },
@@ -372,6 +429,7 @@ export default {
           text: this.$i18n.t('dealer_name'),
           value: 'dealer_name',
           class: 'report-column',
+          width: 300,
           divider: true
         },
         {
@@ -395,8 +453,8 @@ export default {
   async asyncData ({ $moment, query, store, error }) {
     let search
     const filters = {
-      command: '???',
-      subcommand: '???',
+      command: 'ORDERSTATUS',
+      customer: 'EM102',
       json: 'Y'
     }
     await store.dispatch('reports/fetchData', filters)

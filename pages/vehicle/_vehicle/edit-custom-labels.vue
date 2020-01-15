@@ -48,6 +48,15 @@ export default {
       client_use_5: ''
     }
   }),
+  head () {
+    const title = this.$t('edit_custom_labels')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  },
   computed: {
     vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
     custom_labels: vm => vm.$store.getters['account/getClientUseLabels']

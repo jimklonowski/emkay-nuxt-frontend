@@ -402,8 +402,9 @@ export default {
    * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
    * https://nuxtjs.org/api/pages-head */
   head () {
-    const title = this.$t('report')
+    const title = this.$t('short_term_rental_detail')
     return {
+      title,
       meta: [
         { hid: 'og:description', property: 'og:description', content: title }
       ]

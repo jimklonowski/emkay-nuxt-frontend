@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        {{ $t('fleet_navigator') }}
+        {{ $t('reassign_vehicle') }}
       </v-col>
     </v-row>
   </v-container>
@@ -10,9 +10,9 @@
 
 <script>
 export default {
-  name: 'FleetNavigator',
+  name: 'ReassignVehicle',
   head () {
-    const title = this.$t('fleet_navigator')
+    const title = this.$t('reassign_vehicle')
     return {
       title,
       meta: [

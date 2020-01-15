@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        {{ $t('fleet_navigator') }}
+        {{ $t('order_status') }}
       </v-col>
     </v-row>
   </v-container>
@@ -10,9 +10,9 @@
 
 <script>
 export default {
-  name: 'FleetNavigator',
+  name: 'OrderStatus',
   head () {
-    const title = this.$t('fleet_navigator')
+    const title = this.$t('order_status')
     return {
       title,
       meta: [

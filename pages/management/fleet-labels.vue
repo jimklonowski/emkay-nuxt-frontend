@@ -184,6 +184,15 @@ export default {
     // this.client_use_labels = Object.assign({}, this.$store.getters['account/getClientUseLabels'])
     // this.driver_misc_labels = Object.assign({}, this.$store.getters['account/getDriverMiscLabels'])
   },
+  head () {
+    const title = this.$t('customize_fleet_labels')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  },
   methods: {
     async submit () {
       this.loading = true

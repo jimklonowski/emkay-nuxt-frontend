@@ -19,7 +19,16 @@ export default {
   name: 'Vehicle',
   components: { VehicleSearch },
   layout: 'vehicle',
-  middleware: ['auth', 'vehicle-dashboard', 'account']
+  middleware: ['auth', 'vehicle-dashboard', 'account'],
+  head () {
+    const title = this.$t('vehicle_dashboard')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  }
 }
 </script>
 

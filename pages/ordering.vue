@@ -41,9 +41,18 @@
 <script>
 import { ordering } from '@/static/data/menus'
 export default {
+  name: 'Ordering',
   ordering,
   middleware: ['auth'],
-  name: 'Ordering',
+  head () {
+    const title = this.$t('ordering')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  },
   /**
    * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
    * https://nuxtjs.org/api/pages-scrolltotop

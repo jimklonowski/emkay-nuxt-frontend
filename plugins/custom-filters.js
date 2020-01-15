@@ -46,4 +46,11 @@ export default ({ app }) => {
       ? value.toString().toLowerCase()
       : ''
   })
+
+  // string: return nbsp; if null
+  Vue.filter('nbsp', value => {
+    return value
+      ? value.toString()
+      : '&nbsp;'
+  })
 }

@@ -42,8 +42,17 @@
 <script>
 import { management } from '@/static/data/menus'
 export default {
+  name: 'Management',
   management,
   middleware: ['auth', 'account'],
-  name: 'Management'
+  head () {
+    const title = this.$t('management')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  }
 }
 </script>

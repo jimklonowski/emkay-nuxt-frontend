@@ -35,6 +35,15 @@ export default {
   name: 'FleetPolicies',
   data: () => ({
     search: ''
-  })
+  }),
+  head () {
+    const title = this.$t('fleet_policies')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  }
 }
 </script>
