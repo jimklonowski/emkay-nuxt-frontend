@@ -2,6 +2,14 @@
   <v-container>
     <v-row>
       <v-col cols="12">
+        <v-btn :to="vehicleRoute" exact nuxt text>
+          <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
+          {{ $t('to_vehicle_dashboard') }}
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
         <v-card outlined shaped>
           <v-toolbar flat>
             <v-toolbar-title class="hidden-sm-and-down">
@@ -100,15 +108,6 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="12" sm="6">
-                <v-switch
-                  v-model="use_bill_date"
-                  :label="$t('bill_date')"
-                  @change="updateQuery()"
-                  hint="Not Yet Implemented.."
-                  messages="Not Yet Implemented.."
-                />
-              </v-col>
             </v-row>
           </v-container>
           <!-- Download as XLS Button -->
@@ -117,20 +116,20 @@
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
               <client-only>
-                <download-excel v-text="$t('download')" :fields="downloadFields" :data="rows" />
+                <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
               </client-only>
             </v-btn>
           </v-toolbar>
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
                 :headers="headers"
-                :items="rows"
-                :items-per-page="15"
+                :items="items"
+                :items-per-page="25"
                 :loading="loading"
                 :search="search"
-                :sort-by="['service_date']"
+                :sort-by="['date']"
                 :sort-desc="true"
                 class="striped"
               >
@@ -149,7 +148,7 @@
                 </template>
 
                 <!-- Configure each #item row is rendered -->
-                <template #item="{ item }">
+                <!-- <template #item="{ item }">
                   <tr>
                     <td>{{ item.service_date | date }}</td>
                     <td>{{ item.bill_date | date }}</td>
@@ -163,7 +162,7 @@
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.amount | currency }}</td>
                   </tr>
-                </template>
+                </template> -->
               </v-data-table>
             </v-skeleton-loader>
           </v-card-text>
@@ -174,59 +173,86 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { downloadFields } from '@/mixins/datatables'
+import { updateQuery, vehicleRoute } from '@/mixins/routing'
+
 export default {
   name: 'Toll',
-  data () {
-    return {
-      end_menu: false,
-      start_menu: false,
-      search: ''
-    }
-  },
+  mixins: [downloadFields, updateQuery, vehicleRoute],
   computed: {
-    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column })))),
-    error: vm => vm.$store.getters['vehicle/getTollError'],
-    loading: vm => vm.$store.getters['vehicle/getTollLoading'],
-    rows: vm => vm.$store.getters['vehicle/getTollHistory'],
+    ...mapGetters({
+      error: 'vehicle-detail/getError',
+      items: 'vehicle-detail/getData',
+      loading: 'vehicle-detail/getLoading'
+    }),
     columns () {
       return [
-        'service_date',
-        'bill_date',
-        'fuel_company_name',
-        'product_type',
-        'unit_price',
-        'quantity',
+        'date',
+        'description',
+        'location',
         'amount'
       ]
     },
     headers () {
-      return this.columns.map((column, index) => {
-        return {
-          text: this.$i18n.t(column),
-          value: column,
-          class: 'report-column'
+      return [
+        {
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('description'),
+          value: 'description',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('location'),
+          value: 'location',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
         }
-      })
+      ]
+    },
+    query () {
+      const query = {
+        start_date: this.start_date,
+        end_date: this.end_date
+      }
+      return query
     }
   },
   async asyncData ({ $moment, params, query, store }) {
     const report_length = 30
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
-    const use_bill_date = query.use_bill_date || false
 
     const filters = {
       command: 'TOLL',
       customer: 'EM102',
       start_date,
       end_date,
-      use_bill_date,
       vehicle_number: params.vehicle_number,
       json: 'Y'
     }
-    await store.dispatch('vehicle/fetchTollHistory', filters)
+    await store.dispatch('vehicle-detail/fetchData', { filters })
 
-    return { start_date, end_date, use_bill_date, report_length }
+    return {
+      search: '',
+      start_menu: false,
+      start_date,
+      end_menu: false,
+      end_date,
+      report_length
+    }
   },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('toll')}`
@@ -237,16 +263,6 @@ export default {
       ]
     }
   },
-  methods: {
-    updateQuery () {
-      const filters = {
-        start_date: this.start_date,
-        end_date: this.end_date,
-        use_bill_date: this.use_bill_date
-      }
-      this.$router.push({ query: filters })
-    }
-  },
-  watchQuery: ['start_date', 'end_date', 'use_bill_date']
+  watchQuery: ['start_date', 'end_date']
 }
 </script>

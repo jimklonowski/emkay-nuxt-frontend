@@ -24,6 +24,7 @@
         </v-list-item-action>
       </v-list-item>
     </v-card-title>
+    <v-divider />
     <v-card-text class="pa-0">
       <v-simple-table dense>
         <template #default>

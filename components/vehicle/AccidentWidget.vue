@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined shaped>
+  <v-card outlined>
     <v-card-title class="pa-0">
       <v-list-item>
         <v-list-item-avatar>
@@ -21,16 +21,17 @@
     <v-card-text class="pa-0">
       <v-data-table
         :headers="headers"
+        :hide-default-footer="items.length <= 5"
         :items="items"
         :items-per-page="5"
-        :hide-default-footer="items.length <= 5"
+        :mobile-breakpoint="0"
         :sort-by="['date']"
         :sort-desc="[true]"
-        dense
         class="striped"
+        dense
       />
     </v-card-text>
-    <v-card-actions />
+    <!-- <v-card-actions /> -->
   </v-card>
 </template>
 

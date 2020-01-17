@@ -176,7 +176,8 @@
 
 <script>
 // import { SnotifyPosition } from 'vue-snotify'
-import { downloadFields, headers } from '@/mixins/datatables'
+import { mapGetters } from 'vuex'
+import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
 import MaintenanceCPM from '@/components/vehicle/maintenance/MaintenanceCPM'
 export default {
@@ -184,7 +185,7 @@ export default {
   components: {
     MaintenanceCPM
   },
-  mixins: [downloadFields, headers, updateQuery, vehicleRoute],
+  mixins: [downloadFields, updateQuery, vehicleRoute],
   data (context) {
     return {
       end_menu: false,
@@ -193,6 +194,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      error: 'vehicle-detail/getError',
+      items: 'vehicle-detail/getData',
+      loading: 'vehicle-detail/getLoading'
+    }),
     columns () {
       return [
         'service_date',
@@ -203,9 +209,46 @@ export default {
         'amount'
       ]
     },
-    error: vm => vm.$store.getters['vehicle/getMaintenanceError'],
-    items: vm => vm.$store.getters['vehicle/getMaintenanceHistory'],
-    loading: vm => vm.$store.getters['vehicle/getMaintenanceLoading'],
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('service_date'),
+          value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vendor_name'),
+          value: 'vendor_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('description'),
+          value: 'description',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('maintenance_category'),
+          value: 'maintenance_category',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        }
+      ]
+    },
     query () {
       const query = {
         start_date: this.start_date,
@@ -230,7 +273,7 @@ export default {
       vehicle_number: params.vehicle,
       json: 'Y'
     }
-    await store.dispatch('vehicle/fetchMaintenanceHistory', filters)
+    await store.dispatch('vehicle-detail/fetchData', { filters })
 
     return { start_date, end_date, use_bill_date }
   },

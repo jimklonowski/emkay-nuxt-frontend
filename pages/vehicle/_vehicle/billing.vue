@@ -27,7 +27,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in invoice_items" :key="item.voucher_number">
+                  <tr v-for="(item, index) in invoice_items" :key="index">
                     <td>{{ item.voucher_number }}</td>
                     <td>{{ item.voucher_date | date }}</td>
                     <td>{{ item.bill_date | date }}</td>
@@ -79,12 +79,19 @@
 </template>
 
 <script>
-import { headers } from '@/mixins/datatables'
-import { vehicleRoute } from '@/mixins/routing'
+import { mapGetters } from 'vuex'
+import { downloadFields } from '@/mixins/datatables'
+import { updateQuery, vehicleRoute } from '@/mixins/routing'
 
 export default {
-  mixins: [headers, vehicleRoute],
+  name: 'Billing',
+  mixins: [downloadFields, updateQuery, vehicleRoute],
   computed: {
+    ...mapGetters({
+      error: 'vehicle-detail/getError',
+      // items: 'vehicle-detail/getData',
+      loading: 'vehicle-detail/getLoading'
+    }),
     columns () {
       return [
         'invoice_number',
@@ -92,6 +99,40 @@ export default {
         'bill_date',
         'bill_for_date',
         'amount'
+      ]
+    },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('invoice_number'),
+          value: 'invoice_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('description'),
+          value: 'description',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_date'),
+          value: 'bill_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_for_date'),
+          value: 'bill_for_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        }
       ]
     },
     items () {

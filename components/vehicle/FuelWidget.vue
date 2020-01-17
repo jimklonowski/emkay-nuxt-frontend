@@ -1,22 +1,14 @@
 <template>
-  <v-card outlined shaped>
+  <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item>
-        <v-list-item-avatar @click="goToFuel" style="cursor:pointer;">
-          <v-icon>mdi-gas-station</v-icon>
+      <v-list-item :to="fuelRoute" link>
+        <v-list-item-avatar>
+          <v-icon v-text="'mdi-gas-station'" />
         </v-list-item-avatar>
-        <v-list-item-content two-line>
-          <p class="overline text--disabled">
-            {{ $tc('past_days', days) }}
-          </p>
-          <v-list-item-title>
-            {{ $t('fuel') }}
-          </v-list-item-title>
-          <v-list-item-subtitle class="caption">
-            <nuxt-link :to="fuelRoute" class="text-decoration-none">
-              {{ $t('more') }}
-            </nuxt-link>
-          </v-list-item-subtitle>
+        <v-list-item-content>
+          <p v-text="$tc('past_days', days)" class="overline text--disabled" />
+          <v-list-item-title v-text="$t('fuel')" />
+          <!-- <v-list-item-subtitle v-text="$t('more')" class="caption" /> -->
         </v-list-item-content>
       </v-list-item>
     </v-card-title>
@@ -25,13 +17,14 @@
       <v-skeleton-loader :loading="!initialized" type="table">
         <v-data-table
           :headers="headers"
+          :hide-default-footer="items.length <= 5"
           :items="items"
           :items-per-page="5"
-          :hide-default-footer="items.length <= 5"
+          :mobile-breakpoint="0"
           :sort-by="['service_date']"
           :sort-desc="true"
-          dense
           class="striped"
+          dense
         >
           <!-- Configure each #item row is rendered -->
           <template #item="{ item }">
@@ -49,7 +42,7 @@
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
-    <v-card-actions />
+    <!-- <v-card-actions /> -->
   </v-card>
 </template>
 
@@ -91,7 +84,7 @@ export default {
       vehicle_number,
       json: 'Y'
     }
-    await this.$store.dispatch('vehicle/fetchFuelHistory', filters)
+    await this.$store.dispatch('vehicle/fetchFuelHistory', { filters })
     this.initialized = true
   },
   methods: {

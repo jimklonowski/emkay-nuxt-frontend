@@ -11,12 +11,11 @@
       <template v-if="$auth.loggedIn" #prepend>
         <v-list-item class="pa-4">
           <v-list-item-avatar color="primary darken-2 white--text">
-            EM
+            {{ avatarText }}
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>EM102</v-list-item-title>
-            <v-list-item-subtitle>JCK JCK JCK JCK</v-list-item-subtitle>
-            <v-list-item-subtitle>wow</v-list-item-subtitle>
+            <v-list-item-title>{{ $auth.user.account }}</v-list-item-title>
+            <v-list-item-subtitle>{{ $auth.user.username }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
         <v-divider />
@@ -135,6 +134,9 @@ export default {
     title: 'EMKAY Nuxt.js'
   }),
   computed: {
+    avatarText () {
+      return this.$auth.user.account.substr(0, 2)
+    },
     managementMenu () {
       return {
         categories: this.$options.menus.management.categories,

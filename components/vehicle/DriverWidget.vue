@@ -1,21 +1,16 @@
 <template>
-  <v-card shaped outlined>
+  <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item two-line>
-        <v-list-item-avatar @click="goToEditDriver" tile size="25" style="cursor:pointer;">
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-icon v-on="on" v-text="'mdi-account-edit'" />
-            </template>
-            <span v-text="$t('edit')" />
-          </v-tooltip>
+      <v-list-item :to="editDriverRoute" link>
+        <v-list-item-avatar>
+          <v-icon v-text="'mdi-account-edit'" />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title v-text="driverName" class="font-weight-bold" />
-          <v-list-item-subtitle v-text="'todo'" class="caption font-weight-light" />
+          <v-list-item-subtitle v-text="driver.employee_id" class="overline" />
+          <v-list-item-title v-text="driverName" />
         </v-list-item-content>
         <v-list-item-action v-if="driver.reference_number">
-          <v-list-item-action-text v-text="$t('driver_reference_#')" />
+          <v-list-item-action-text v-text="$t('driver_reference_#')" class="caption" />
           <client-only>
             <v-chip v-text="driver.reference_number" :title="$t('driver_number')" x-small />
           </client-only>
@@ -40,8 +35,10 @@
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
-                <v-list-item-icon @click="dialTo(driver.phone)" style="cursor:pointer;">
-                  <v-icon v-text="'mdi-phone-outgoing'" />
+                <v-list-item-icon class="action-icon">
+                  <v-btn @click="dialTo(driver.phone)" icon>
+                    <v-icon v-text="'mdi-phone-outgoing'" />
+                  </v-btn>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>{{ driver.phone | phone }}</v-list-item-title>
@@ -49,8 +46,10 @@
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
-                <v-list-item-icon @click="dialTo(driver.mobile)" style="cursor:pointer;">
-                  <v-icon v-text="'mdi-cellphone-iphone'" />
+                <v-list-item-icon class="action-icon">
+                  <v-btn @click="dialTo(driver.mobile)" icon>
+                    <v-icon v-text="'mdi-cellphone-iphone'" />
+                  </v-btn>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>{{ driver.mobile | phone }}</v-list-item-title>
@@ -58,8 +57,10 @@
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
-                <v-list-item-icon @click="emailTo(driver.email)" style="cursor:pointer;">
-                  <v-icon v-text="'mdi-email-send'" />
+                <v-list-item-icon class="action-icon">
+                  <v-btn @click="emailTo(driver.email)" icon>
+                    <v-icon v-text="'mdi-email-send'" />
+                  </v-btn>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title v-text="driver.email" />
@@ -91,94 +92,100 @@
               </v-list-item>
             </v-list>
           </v-col>
-          <v-col cols="6">
-            <v-list subheader dense>
-              <v-subheader v-text="$t('custom_labels')" class="overline" />
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-label'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ driver.misc_1 || '&nbsp;' }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="font-weight-light">
-                    {{ driver_labels.driver_misc_1_label }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-label'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ driver.misc_2 || '&nbsp;' }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="font-weight-light">
-                    {{ driver_labels.driver_misc_2_label }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-label'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ driver.misc_3 || '&nbsp;' }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="font-weight-light">
-                    {{ driver_labels.driver_misc_3_label }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-label'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ driver.misc_4 || '&nbsp;' }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="font-weight-light">
-                    {{ driver_labels.driver_misc_4_label }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
         </v-row>
       </v-container>
     </v-card-text>
-
-    <v-card-actions>
-      <!-- <v-spacer />
-      <v-btn text small>
-        <v-icon small class="mr-1">
-          mdi-pencil
-        </v-icon>
-        Edit
-      </v-btn> -->
+    <v-card-actions class="pt-0">
+      <v-btn
+        @click="expanded = !expanded"
+        :raised="expanded"
+        :depressed="!expanded"
+        :text="!expanded"
+        color="primary"
+        block
+        small
+      >
+        <v-icon v-text="expanded ? 'mdi-arrow-collapse-vertical' : 'mdi-arrow-expand-vertical'" class="mr-4" />
+        {{ expanded ? $t('less') : $t('more') }}
+      </v-btn>
     </v-card-actions>
+    <v-slide-y-transition>
+      <v-card-text v-show="expanded" class="pa-0">
+        <v-container class="py-0">
+          <v-row>
+            <v-col cols="6">
+              <v-list subheader dense>
+                <v-subheader v-text="$t('custom_labels')" class="overline" />
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon v-text="'mdi-label'" />
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ driver.misc_1 || '--' }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="font-weight-light">
+                      {{ driverLabels.driver_misc_1_label }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon v-text="'mdi-label'" />
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ driver.misc_2 || '--' }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="font-weight-light">
+                      {{ driverLabels.driver_misc_2_label }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon v-text="'mdi-label'" />
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ driver.misc_3 || '--' }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="font-weight-light">
+                      {{ driverLabels.driver_misc_3_label }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon v-text="'mdi-label'" />
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ driver.misc_4 || '&nbsp;' }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="font-weight-light">
+                      {{ driverLabels.driver_misc_4_label }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-slide-y-transition>
   </v-card>
-  <!-- </v-col> -->
 </template>
 
 <script>
 import { dialTo, emailTo } from '@/utility/helpers'
 export default {
-  props: {
-    driver: {
-      type: Object,
-      default: () => ({})
-    }
-  },
   data: () => ({
-
+    expanded: false
   }),
   computed: {
-    driver_labels: vm => vm.$store.getters['account/getDriverMiscLabels'],
+    driver: vm => vm.$store.getters['vehicle/getDriverInfo'],
+    driverLabels: vm => vm.$store.getters['account/getDriverMiscLabels'],
     cityStateZip () {
       const city_state = [this.driver.city, this.driver.state_province].filter(Boolean).join(', ')
       return [city_state, this.driver.postal_code].filter(Boolean).join(' ')
@@ -200,7 +207,10 @@ export default {
   }
 }
 </script>
-
-<style>
-
+<style scoped>
+.action-icon {
+  justify-content: center;
+  align-items: center;
+  max-width:24px;
+}
 </style>

@@ -140,10 +140,10 @@
           <v-card-text class="px-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
                 :headers="headers"
                 :items="items"
-                :items-per-page="15"
+                :items-per-page="25"
                 :loading="loading"
                 :search="search"
                 :sort-by="['service_date']"
@@ -183,7 +183,8 @@
 </template>
 
 <script>
-import { downloadFields, headers } from '@/mixins/datatables'
+import { mapGetters } from 'vuex'
+import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
 import FuelAuthorizationProfiles from '@/components/vehicle/fuel/FuelAuthorizationProfiles'
 import FuelCardList from '@/components/vehicle/fuel/FuelCardList'
@@ -193,15 +194,13 @@ export default {
     FuelAuthorizationProfiles,
     FuelCardList
   },
-  mixins: [downloadFields, headers, updateQuery, vehicleRoute],
-  data () {
-    return {
-      end_menu: false,
-      start_menu: false,
-      search: ''
-    }
-  },
+  mixins: [downloadFields, updateQuery, vehicleRoute],
   computed: {
+    ...mapGetters({
+      error: 'vehicle-detail/getError',
+      items: 'vehicle-detail/getData',
+      loading: 'vehicle-detail/getLoading'
+    }),
     columns () {
       return [
         'service_date',
@@ -213,9 +212,52 @@ export default {
         'amount'
       ]
     },
-    error: vm => vm.$store.getters['vehicle/getFuelError'],
-    items: vm => vm.$store.getters['vehicle/getFuelHistory'],
-    loading: vm => vm.$store.getters['vehicle/getFuelLoading'],
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('service_date'),
+          value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_date'),
+          value: 'bill_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_company_name'),
+          value: 'fuel_company_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('product_type'),
+          value: 'product_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('unit_price'),
+          value: 'unit_price',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        }
+      ]
+    },
     query () {
       const query = {
         start_date: this.start_date,
@@ -240,9 +282,17 @@ export default {
       vehicle_number: params.vehicle,
       json: 'Y'
     }
-    await store.dispatch('vehicle/fetchFuelHistory', filters)
+    await store.dispatch('vehicle-detail/fetchData', { filters })
 
-    return { start_date, end_date, use_bill_date }
+    return {
+      search: '',
+      start_menu: false,
+      start_date,
+      end_menu: false,
+      end_date,
+      use_bill_date,
+      report_length
+    }
   },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('fuel')}`
