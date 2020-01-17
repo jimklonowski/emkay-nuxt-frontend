@@ -6,8 +6,13 @@
           <v-icon v-text="'mdi-account-edit'" />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-subtitle v-text="driver.employee_id" class="overline" />
+          <v-list-item-subtitle class="overline">
+            {{ driver.employee_id || '&nbsp;' }}
+          </v-list-item-subtitle>
           <v-list-item-title v-text="driverName" />
+          <client-only>
+            <nuxt-link :to="editDriverRoute" v-text="$t('edit')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
         <v-list-item-action v-if="driver.reference_number">
           <v-list-item-action-text v-text="$t('driver_reference_#')" class="caption" />
@@ -105,7 +110,7 @@
         block
         small
       >
-        <v-icon v-text="expanded ? 'mdi-arrow-collapse-vertical' : 'mdi-arrow-expand-vertical'" class="mr-4" />
+        <v-icon v-text="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="mr-4" />
         {{ expanded ? $t('less') : $t('more') }}
       </v-btn>
     </v-card-actions>
@@ -207,7 +212,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
 .action-icon {
   justify-content: center;
   align-items: center;

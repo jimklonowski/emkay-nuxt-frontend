@@ -1,22 +1,16 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item>
+      <v-list-item :to="billingRoute" link>
         <v-list-item-avatar>
           <v-icon v-text="'mdi-cash-usd-outline'" />
         </v-list-item-avatar>
-        <v-list-item-content two-line>
-          <p class="overline text--disabled">
-            {{ vehicle_info.billing_status || 'ON BILLING' }}
-          </p>
-          <v-list-item-title>
-            {{ $t('billing_history') }}
-          </v-list-item-title>
-          <v-list-item-subtitle class="caption">
-            <nuxt-link :to="billingRoute" class="text-decoration-none">
-              {{ $t('more') }}
-            </nuxt-link>
-          </v-list-item-subtitle>
+        <v-list-item-content>
+          <v-list-item-subtitle v-text="vehicle_info.status" class="overline" />
+          <v-list-item-title v-text="$t('billing_history')" />
+          <client-only>
+            <nuxt-link :to="billingRoute" v-text="$t('more')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
         <v-list-item-action>
           <v-list-item-action-text>{{ $t('status') }}</v-list-item-action-text>
@@ -42,7 +36,7 @@
         <template #item="{ item }">
           <tr>
             <td>
-              <nuxt-link :to="localePath({ path: `/vehicle/${$route.params.vehicle}/billing`, query: { invoice: item.invoice_number } })">
+              <nuxt-link :to="invoiceRoute(item.invoice_number)">
                 {{ item.invoice_number }}
               </nuxt-link>
             </td>
@@ -132,6 +126,11 @@ export default {
           amount: 53.46
         }
       ]
+    }
+  },
+  methods: {
+    invoiceRoute (invoice) {
+      return this.localePath({ path: `/vehicle/${this.$route.params.vehicle}/billing`, query: { invoice } })
     }
   }
 }

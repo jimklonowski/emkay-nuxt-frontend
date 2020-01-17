@@ -1,23 +1,20 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item>
+      <v-list-item :to="accidentRoute" link>
         <v-list-item-avatar>
           <v-icon v-text="'mdi-car-parking-lights'" />
         </v-list-item-avatar>
-        <v-list-item-content two-line>
-          <p class="overline text--disabled">
-            {{ $tc('past_days', days) }}
-          </p>
-          <v-list-item-title>
-            {{ $t('accidents') }}
-          </v-list-item-title>
-          <v-list-item-subtitle class="caption">
-            {{ $t('more') }}
-          </v-list-item-subtitle>
+        <v-list-item-content>
+          <v-list-item-subtitle v-text="$tc('past_days', days)" class="overline" />
+          <v-list-item-title v-text="$t('accidents')" />
+          <client-only>
+            <nuxt-link :to="accidentRoute" v-text="$t('more')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
       </v-list-item>
     </v-card-title>
+    <v-divider />
     <v-card-text class="pa-0">
       <v-data-table
         :headers="headers"
@@ -47,6 +44,7 @@ export default {
     }
   },
   computed: {
+    accidentRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/accident` }),
     columns () {
       return [
         'date',

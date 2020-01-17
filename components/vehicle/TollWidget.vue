@@ -1,22 +1,16 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item>
+      <v-list-item :to="tollRoute" link>
         <v-list-item-avatar>
           <v-icon v-text="'mdi-highway'" />
         </v-list-item-avatar>
-        <v-list-item-content two-line>
-          <p class="overline text--disabled">
-            {{ $tc('past_days', days) }}
-          </p>
-          <v-list-item-title>
-            {{ $t('tolls') }}
-          </v-list-item-title>
-          <v-list-item-subtitle class="caption">
-            <nuxt-link :to="{ path: `${this.$route.fullPath}/toll` }" class="text-decoration-none">
-              {{ $t('more') }}
-            </nuxt-link>
-          </v-list-item-subtitle>
+        <v-list-item-content>
+          <v-list-item-subtitle v-text="$tc('past_days', days)" class="overline" />
+          <v-list-item-title v-text="$t('tolls')" />
+          <client-only>
+            <nuxt-link :to="tollRoute" v-text="$t('more')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
       </v-list-item>
     </v-card-title>
@@ -41,7 +35,6 @@
 <script>
 import { headers } from '@/mixins/datatables'
 export default {
-  name: 'TollCard',
   mixins: [headers],
   data () {
     return {
@@ -50,6 +43,7 @@ export default {
     }
   },
   computed: {
+    tollRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/toll` }),
     items: vm => vm.$store.getters['vehicle/getTollHistory'],
     vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     columns () {

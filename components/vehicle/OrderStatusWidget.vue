@@ -1,13 +1,16 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item>
+      <v-list-item :to="orderStatusRoute" link>
         <v-list-item-avatar>
           <v-icon v-text="'mdi-timeline-clock'" />
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-subtitle v-text="yearMakeModel()" class="overline" />
           <v-list-item-title v-text="$t('order_status')" />
+          <client-only>
+            <nuxt-link :to="orderStatusRoute" v-text="$t('more')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
         <v-list-item-action v-if="orderStatus.factory_order_number">
           <v-list-item-action-text v-text="$t('factory_order_number')" class="caption" />
@@ -110,6 +113,7 @@ export default {
     hideTimeline: true
   }),
   computed: {
+    orderStatusRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/order-status` }),
     orderStatus: vm => vm.$store.getters['vehicle/getOrderStatus'],
     orderComments: vm => vm.orderStatus.comments,
     orderDetails () {

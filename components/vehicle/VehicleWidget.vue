@@ -3,11 +3,14 @@
     <v-card-title class="pa-0">
       <v-list-item :to="editVehicleRoute" link>
         <v-list-item-avatar>
-          <v-icon v-text="'mdi-square-edit-outline'" />
+          <v-icon v-text="'mdi-car'" />
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-subtitle v-text="colorYearMakeModel" class="overline" />
           <v-list-item-title v-text="vehicle.vehicle_number" />
+          <client-only>
+            <nuxt-link :to="editVehicleRoute" v-text="$t('edit')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
         <v-list-item-action v-if="vehicle.client_vehicle_number">
           <v-list-item-action-text v-text="$t('client_vehicle_#')" class="caption" />

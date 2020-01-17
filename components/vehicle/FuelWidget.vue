@@ -6,9 +6,11 @@
           <v-icon v-text="'mdi-gas-station'" />
         </v-list-item-avatar>
         <v-list-item-content>
-          <p v-text="$tc('past_days', days)" class="overline text--disabled" />
+          <v-list-item-subtitle v-text="$tc('past_days', days)" class="overline" />
           <v-list-item-title v-text="$t('fuel')" />
-          <!-- <v-list-item-subtitle v-text="$t('more')" class="caption" /> -->
+          <client-only>
+            <nuxt-link :to="fuelRoute" v-text="$t('more')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
       </v-list-item>
     </v-card-title>
