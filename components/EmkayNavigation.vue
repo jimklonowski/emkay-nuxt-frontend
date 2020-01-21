@@ -60,9 +60,9 @@
       <v-spacer />
 
       <v-toolbar-items v-if="$auth.loggedIn">
-        <mega-menu :menu="reportingMenu" />
-        <mega-menu :menu="orderingMenu" />
-        <mega-menu :menu="managementMenu" />
+        <mega-menu :menu="reportingMenu" v-if="!isRouteActive('reporting')" />
+        <mega-menu :menu="orderingMenu" v-show="!isRouteActive('ordering')" />
+        <mega-menu :menu="managementMenu" v-show="!isRouteActive('management')" />
       </v-toolbar-items>
       <v-divider class="mx-4" vertical inset />
       <dark-mode-toggle class="mx-1" />
@@ -135,7 +135,7 @@ export default {
   }),
   computed: {
     avatarText () {
-      return this.$auth.user.account.substr(0, 2)
+      return this.$auth.user.account && this.$auth.user.account.substr(0, 2)
     },
     managementMenu () {
       return {
@@ -166,6 +166,12 @@ export default {
     }
   },
   methods: {
+    isRouteActive (routeName) {
+      if (this.$route.matched.some(match => match.name.includes(routeName))) {
+        return true
+      }
+      return false
+    },
     async logout () {
       await this.$store.dispatch('account/logout')
       // // if a french user is logging out, make sure we redirect to /fr-ca/login instead of /login

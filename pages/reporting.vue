@@ -1,39 +1,32 @@
 <template>
   <v-container>
-    <v-row no-gutters>
-      <h1 class="display-3">
-        {{ $t('reports') }}
-      </h1>
-    </v-row>
-    <v-row dense>
-      <v-col cols="12" sm="6">
-        <v-card rounded shaped>
-          <v-card-text class="pa-0">
-            <keep-alive>
-              <v-tabs
-                show-arrows
-              >
-                <v-tab v-for="(category, key) in $options.reports.categories" :key="key" v-text="$t(category.key)" />
-                <v-tab-item v-for="(category, key) in $options.reports.categories" :key="key">
-                  <v-list>
-                    <v-list-item v-for="(report, key2) in category.items" :key="key2" :to="localePath(report.to)">
-                      <v-list-item-avatar>
-                        <v-icon v-text="report.icon" />
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title v-text="$t(report.key)" />
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list>
-                </v-tab-item>
-              </v-tabs>
-            </keep-alive>
-          </v-card-text>
-          <v-card-actions />
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-toolbar elevation="4">
+            <v-toolbar-title style="min-width:100px;">
+              {{ $t('reports') }}
+            </v-toolbar-title>
+            <v-tabs v-model="tab" show-arrows right>
+              <v-tab v-for="(category, key) in $options.reports.categories" :key="key" text>
+                <v-icon v-text="category.icon" />
+                {{ $t(category.key) }}
+              </v-tab>
+            </v-tabs>
+          </v-toolbar>
+          <v-subheader>Select a report</v-subheader>
+          <v-tabs-items v-model="tab">
+            <v-tab-item v-for="(category, key) in $options.reports.categories" :key="key">
+              <v-flex>
+                <v-chip v-for="(item, key2) in category.items" :key="key2" :to="{ path: localePath(item.to), hash: $route.hash }" class="ma-2" outlined>
+                  <v-icon v-text="item.icon" left />
+                  {{ $t(item.key) }}
+                </v-chip>
+              </v-flex>
+            </v-tab-item>
+          </v-tabs-items>
         </v-card>
       </v-col>
-    </v-row>
-    <v-row>
       <nuxt-child />
     </v-row>
   </v-container>
@@ -43,10 +36,11 @@
 import { reports } from '@/static/data/menus'
 
 export default {
+  name: 'Reporting',
+  data: () => ({ tab: 0 }),
   // custom property, reference as this.$options.reports
   reports,
   middleware: ['auth'],
-  name: 'Reporting',
   head () {
     const title = this.$t('reporting')
     return {

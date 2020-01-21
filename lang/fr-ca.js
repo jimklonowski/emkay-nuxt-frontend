@@ -315,6 +315,7 @@ export default {
   safety_and_telematics: "Sécurité et télématique",
   save: "Sauver",
   search: "Chercher",
+  select_a_report: "Sélectionner un rapport",
   selector_level: "Niveau de sélection",
   services: "Prestations de service",
   short_term_rental_detail: "Détail de la location à court terme",

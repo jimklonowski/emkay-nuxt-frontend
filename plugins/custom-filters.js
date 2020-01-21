@@ -14,9 +14,11 @@ export default ({ app }) => {
   })
 
   Vue.filter('phone', (value) => {
-    return value
-      .replace(/[^0-9]/g, '')
-      .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
+    if (value) {
+      return value
+        .replace(/[^0-9]/g, '')
+        .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
+    }
   })
 
   Vue.filter('number', (value, minDigits = 1, maxDigits = 2) => {

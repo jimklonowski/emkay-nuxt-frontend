@@ -359,6 +359,9 @@ export default {
         }
       ]
     },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
     query () {
       const query = {
         start_date: this.start_date,

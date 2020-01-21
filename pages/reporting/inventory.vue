@@ -2,9 +2,9 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card shaped outlined>
-          <v-toolbar flat>
-            <v-toolbar-title v-text="$t('inventory_report')" class="hidden-sm-and-down" />
+        <v-card outlined>
+          <v-card-title class="display-2 grey--text">
+            {{ $t('inventory_report') }}
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -19,7 +19,7 @@
               single-line
               solo
             />
-          </v-toolbar>
+          </v-card-title>
           <!-- Download as XLS button -->
           <v-toolbar flat>
             <v-spacer />
@@ -39,13 +39,14 @@
                 :items="items"
                 :items-per-page="25"
                 :loading="loading"
+                :mobile-breakpoint="0"
                 :search="search"
                 :sort-by="[0]"
                 :sort-desc="[false]"
                 class="striped"
               >
                 <!-- filters template -->
-                <template #top>
+                <!-- <template #top>
                   <v-container>
                     <v-row>
                       <v-col cols="6">
@@ -60,7 +61,7 @@
                       </v-col>
                     </v-row>
                   </v-container>
-                </template>
+                </template> -->
                 <!-- Configure the #no-data message (no data from server) -->
                 <template #no-data>
                   <div class="text-left">
@@ -81,7 +82,6 @@
                     <td>
                       <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
                     </td>
-                    <!-- <td :style="{ 'border': !item.client_vehicle_number ? '1px solid red' : null }"> -->
                     <td>
                       {{ item.client_vehicle_number }}
                     </td>
@@ -102,7 +102,7 @@
                     <td>{{ item.driver_city }}</td>
                     <td>{{ item.driver_county }}</td>
                     <td>
-                      <v-btn v-if="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
+                      <v-btn v-show="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
                         <v-icon v-text="'mdi-email-edit'" class="mr-2" />
                         {{ item.driver_email_address }}
                       </v-btn>
@@ -112,13 +112,13 @@
                     <td>{{ item.driver_first_name }}</td>
                     <td>{{ item.driver_last_name }}</td>
                     <td>
-                      <v-btn v-if="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
+                      <v-btn v-show="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
                         <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
                         {{ item.driver_mobile | phone }}
                       </v-btn>
                     </td>
                     <td>
-                      <v-btn v-if="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
+                      <v-btn v-show="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
                         <v-icon v-text="'mdi-phone'" class="mr-2" />
                         {{ item.driver_phone | phone }}
                       </v-btn>
@@ -169,6 +169,9 @@
 </template>
 
 <script>
+/**
+ * Notes: Hydration errors occur if using v-if in template. Use v-show instead for SSR (since v-if actually removes the element).
+ */
 import { dialTo, emailTo } from '@/utility/helpers'
 import { downloadFields } from '@/mixins/datatables'
 /**

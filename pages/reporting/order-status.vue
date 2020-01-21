@@ -62,7 +62,7 @@
                 </template>
 
                 <!-- Configure how each #item row is rendered -->
-                <template #item="{ item }">
+                <!-- <template #item="{ item }">
                   <tr>
                     <td>
                       <client-only>
@@ -108,7 +108,7 @@
                     <td>{{ item.dealer_name }}</td>
                     <td>{{ item.in_service_date | date }}</td>
                   </tr>
-                </template>
+                </template> -->
               </v-data-table>
             </v-skeleton-loader>
           </v-card-text>

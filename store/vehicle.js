@@ -4,6 +4,8 @@ const getDefaultState = () => ({
   errors: [],
   loading: false,
 
+  vehicle_number: null,
+
   driver_info: {},
   vehicle_info: {},
 
@@ -63,8 +65,9 @@ export const actions = {
       if (!success) { throw new Error(message) }
       commit('setVehicleInfo', data.vehicle_info)
       commit('setDriverInfo', data.driver_info)
+      commit('setVehicleNumber', vehicle_number)
     } catch (error) {
-      debugger
+      // debugger
       commit('pushError', error)
     }
   },
@@ -85,7 +88,7 @@ export const actions = {
       if (!Object.keys(data).length) { throw new Error(message) }
       commit('setOrderStatus', data)
     } catch (error) {
-      debugger
+      // debugger
       commit('pushError', error)
     }
   },
@@ -196,7 +199,9 @@ export const mutations = {
   setMaintenanceLoading: set('maintenance_loading'),
 
   setTollHistory: set('toll_history'),
-  setTollLoading: set('toll_loading')
+  setTollLoading: set('toll_loading'),
+
+  setVehicleNumber: set('vehicle_number')
 }
 
 export const getters = {
@@ -208,8 +213,6 @@ export const getters = {
 
   getOrderStatus: state => state.order_status,
   hasOrderStatus: state => state.order_status !== null,
-
-  getVehicleNumber: state => state.vehicle_info.vehicle_number,
 
   getAccidentHistory: state => state.accident_history,
   getAccidentLoading: state => state.accident_loading,
@@ -224,5 +227,7 @@ export const getters = {
   getMaintenanceLoading: state => state.maintenance_loading,
 
   getTollHistory: state => state.toll_history,
-  getTollLoading: state => state.toll_loading
+  getTollLoading: state => state.toll_loading,
+
+  getVehicleNumber: state => state.vehicle_number
 }

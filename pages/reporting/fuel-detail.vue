@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
+import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
  * Fuel Detail Report
@@ -219,7 +219,7 @@ export default {
    * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
+  mixins: [downloadFields, updateQuery],
 
   /**
    * The data object for the Vue instance.
@@ -290,6 +290,280 @@ export default {
         'voucher'
       ]
     },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('service_date'),
+          value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_date'),
+          value: 'bill_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('card_number'),
+          value: 'card_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_code'),
+          value: 'center_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_name'),
+          value: 'center_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_1'),
+          value: 'client_use_1',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_2'),
+          value: 'client_use_2',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_3'),
+          value: 'client_use_3',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_4'),
+          value: 'client_use_4',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_5'),
+          value: 'client_use_5',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_id'),
+          value: 'driver_id',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('emkay_invoice_date'),
+          value: 'emkay_invoice_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('emkay_invoice_number'),
+          value: 'emkay_invoice_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('engine_fuel_type'),
+          value: 'engine_fuel_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('exception'),
+          value: 'exception',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_card_vendor'),
+          value: 'fuel_card_vendor',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_company_name'),
+          value: 'fuel_company_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_company_number'),
+          value: 'fuel_company_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('invoice_number'),
+          value: 'invoice_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_01'),
+          value: 'level_01',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_02'),
+          value: 'level_02',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('level_03'),
+          value: 'level_03',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_address'),
+          value: 'merchant_address',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_city'),
+          value: 'merchant_city',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_state'),
+          value: 'merchant_state',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_zip'),
+          value: 'merchant_zip',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('odometer'),
+          value: 'odometer',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('premium'),
+          value: 'premium',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('product'),
+          value: 'product',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('product_type'),
+          value: 'product_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('service_time'),
+          value: 'service_time',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tank_capacity'),
+          value: 'tank_capacity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tax_exempt'),
+          value: 'tax_exempt',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('unit_price'),
+          value: 'unit_price',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vin'),
+          value: 'vin',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('voucher'),
+          value: 'voucher',
+          class: 'report-column',
+          divider: true
+        }
+      ]
+    },
     query () {
       const query = {
         start_date: this.start_date,
@@ -297,7 +571,10 @@ export default {
         use_bill_date: this.use_bill_date
       }
       return query
-    }
+    },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading']
   },
 
   /**

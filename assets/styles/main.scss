@@ -6,11 +6,13 @@
 /* no wrapping on datatable columns */
 .report-column {
   white-space: nowrap;
-  // min-width: auto;
-  // min-width: 120px;
-  // max-width: 250px;
-  // text-overflow: ellipsis;
-  // overflow: hidden;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9rem !important;
+  font-weight: normal;
+}
+
+.report-row {
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
 }
 
 /* striped datatable using .striped class */
