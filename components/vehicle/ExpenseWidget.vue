@@ -1,5 +1,5 @@
 <template>
-  <v-card shaped rounded>
+  <v-card outlined>
     <v-card-title class="pa-0">
       <v-list-item>
         <v-list-item-avatar>

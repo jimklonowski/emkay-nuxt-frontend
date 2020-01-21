@@ -695,7 +695,6 @@ export default {
     const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end_date = query.end_date || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
-
     const filters = {
       command: 'MAINTHISTORY',
       customer: 'EM102',
