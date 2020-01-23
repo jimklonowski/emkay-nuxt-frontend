@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item :to="editDriverRoute" link>
+      <v-list-item :to="editDriverRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-account-edit'" />
         </v-list-item-avatar>
@@ -18,6 +18,7 @@
           <v-list-item-action-text v-text="$t('driver_reference_#')" class="caption" />
           <client-only>
             <v-chip v-text="driver.reference_number" :title="$t('driver_number')" x-small />
+            <span />
           </client-only>
         </v-list-item-action>
       </v-list-item>
@@ -27,7 +28,7 @@
       <v-container>
         <v-row no-gutters>
           <v-col cols="6">
-            <v-list subheader dense>
+            <v-list subheader dense class="widget-list">
               <v-subheader v-text="$t('driver_details')" class="overline" />
               <v-list-item>
                 <v-list-item-icon>
@@ -35,8 +36,8 @@
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title v-text="driver.address_1" />
-                  <v-list-item-subtitle v-text="driver.address_2" class="font-weight-light" />
-                  <v-list-item-subtitle v-text="cityStateZip" class="font-weight-light" />
+                  <v-list-item-subtitle v-text="driver.address_2" />
+                  <v-list-item-subtitle v-text="cityStateZip" />
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
@@ -75,7 +76,7 @@
             </v-list>
           </v-col>
           <v-col cols="6">
-            <v-list subheader dense>
+            <v-list subheader dense class="widget-list">
               <v-subheader v-text="$t('additional_information')" class="overline" />
               <v-list-item>
                 <v-list-item-icon>
@@ -103,11 +104,9 @@
     <v-card-actions class="pt-0">
       <v-btn
         @click="expanded = !expanded"
-        :raised="expanded"
-        :depressed="!expanded"
         :text="!expanded"
-        color="primary"
         block
+        depressed
         small
       >
         <v-icon v-text="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="mr-4" />
@@ -119,7 +118,7 @@
         <v-container class="py-0">
           <v-row>
             <v-col cols="6">
-              <v-list subheader dense>
+              <v-list subheader dense class="widget-list">
                 <v-subheader v-text="$t('custom_labels')" class="overline" />
                 <v-list-item>
                   <v-list-item-icon>

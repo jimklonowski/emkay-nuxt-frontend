@@ -460,6 +460,7 @@ export default {
     let search, editLoading
     const dialog = false
     const editedIndex = -1
+    // create an object to use as model for ADD NEW DRIVER form
     const defaultItem = {
       driver_id: '',
       driver_last_name: '',
@@ -480,26 +481,8 @@ export default {
       driver_misc_4: '',
       vehicle_number: ''
     }
-    const editedItem = {
-      driver_id: '',
-      driver_last_name: '',
-      driver_first_name: '',
-      driver_address_1: '',
-      driver_address_2: '',
-      driver_city: '',
-      driver_state_province: '',
-      driver_postal_code: '',
-      driver_county: '',
-      driver_phone: '',
-      driver_mobile: '',
-      driver_email_address: '',
-      driver_employee_id: '',
-      driver_misc_1: '',
-      driver_misc_2: '',
-      driver_misc_3: '',
-      driver_misc_4: '',
-      vehicle_number: ''
-    }
+    // shallow clone this object to use as the model for EDIT form
+    const editedItem = { ...defaultItem }
 
     const filters = {
       command: 'FLEET',

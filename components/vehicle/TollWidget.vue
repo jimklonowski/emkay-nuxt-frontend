@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item :to="tollRoute" link>
+      <v-list-item :to="tollRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-highway'" />
         </v-list-item-avatar>
@@ -16,19 +16,19 @@
     </v-card-title>
     <v-divider />
     <v-card-text class="pa-0">
-      <v-data-table
-        :headers="headers"
-        :hide-default-footer="items.length <= 5"
-        :items="items"
-        :items-per-page="5"
-        :mobile-breakpoint="0"
-        :sort-by="['date']"
-        :sort-desc="[true]"
-        class="striped"
-        dense
-      />
+      <v-skeleton-loader :loading="!initialized" type="table">
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :items-per-page="5"
+          :mobile-breakpoint="0"
+          :sort-by="['date']"
+          :sort-desc="[true]"
+          class="striped"
+          dense
+        />
+      </v-skeleton-loader>
     </v-card-text>
-    <!-- <v-card-actions /> -->
   </v-card>
 </template>
 

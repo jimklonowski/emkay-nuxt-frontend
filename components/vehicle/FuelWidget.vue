@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item :to="fuelRoute" link>
+      <v-list-item :to="fuelRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-gas-station'" />
         </v-list-item-avatar>
@@ -17,9 +17,9 @@
     <v-divider />
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
+        <!-- :hide-default-footer="items.length <= 5" -->
         <v-data-table
           :headers="headers"
-          :hide-default-footer="items.length <= 5"
           :items="items"
           :items-per-page="5"
           :mobile-breakpoint="0"
@@ -30,7 +30,7 @@
         >
           <!-- Configure each #item row is rendered -->
           <template #item="{ item }">
-            <tr>
+            <tr class="report-row">
               <td>{{ item.service_date | date }}</td>
               <td>{{ item.fuel_company_name }}</td>
               <td>
@@ -69,6 +69,40 @@ export default {
         'amount'
       ]
     },
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('service_date'),
+          value: 'service_date',
+          class: 'report-column'
+        },
+        {
+          text: this.$i18n.t('fuel_company_name'),
+          value: 'fuel_company_name',
+          class: 'report-column'
+        },
+        {
+          text: this.$i18n.t('product_type'),
+          value: 'product_type',
+          class: 'report-column'
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          class: 'report-column'
+        },
+        {
+          text: this.$i18n.t('unit_price'),
+          value: 'unit_price',
+          class: 'report-column'
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column'
+        }
+      ]
+    },
     fuelRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/fuel` }),
     items: vm => vm.$store.getters['vehicle/getFuelHistory']
   },
@@ -88,11 +122,6 @@ export default {
     }
     await this.$store.dispatch('vehicle/fetchFuelHistory', { filters })
     this.initialized = true
-  },
-  methods: {
-    goToFuel () {
-      this.$router.push(this.fuelRoute)
-    }
   }
 }
 </script>

@@ -21,8 +21,14 @@ const getDefaultState = () => ({
   maintenance_history: [],
   maintenance_loading: false,
 
+  vehicle_notes: [],
+  vehicle_notes_loading: false,
+
   toll_history: [],
   toll_loading: false,
+
+  violation_history: [],
+  violation_loading: false,
 
   order_status: null,
   transport_status: []
@@ -157,6 +163,22 @@ export const actions = {
     }
   },
   /**
+   * Fetch Vehicle Notes
+   */
+  async fetchVehicleNotes ({ commit }, { filters }) {
+    try {
+      commit('setVehicleNotesLoading', true)
+      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      if (!success) { throw new Error(message) }
+      commit('setVehicleNotes', data)
+    } catch (error) {
+      commit('pushError', error)
+    } finally {
+      commit('setVehicleNotesLoading', false)
+    }
+  },
+  /**
    * Fetch Toll History
    */
   async fetchTollHistory ({ commit }, { filters }) {
@@ -170,6 +192,22 @@ export const actions = {
       commit('pushError', error)
     } finally {
       commit('setTollLoading', false)
+    }
+  },
+  /**
+   * Fetch Violation History
+   */
+  async fetchViolationHistory ({ commit }, { filters }) {
+    try {
+      commit('setViolationLoading', true)
+      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      if (!success) { throw new Error(message) }
+      commit('setViolationHistory', data)
+    } catch (error) {
+      commit('pushError', error)
+    } finally {
+      commit('setViolationLoading', false)
     }
   },
   reset ({ commit }) {
@@ -198,8 +236,14 @@ export const mutations = {
   setMaintenanceHistory: set('maintenance_history'),
   setMaintenanceLoading: set('maintenance_loading'),
 
+  setVehicleNotes: set('vehicle_notes'),
+  setVehicleNotesLoading: set('vehicle_notes_loading'),
+
   setTollHistory: set('toll_history'),
   setTollLoading: set('toll_loading'),
+
+  setViolationHistory: set('violation_history'),
+  setViolationLoading: set('violation_loading'),
 
   setVehicleNumber: set('vehicle_number')
 }
@@ -226,8 +270,14 @@ export const getters = {
   getMaintenanceHistory: state => state.maintenance_history,
   getMaintenanceLoading: state => state.maintenance_loading,
 
+  getVehicleNotes: state => state.vehicle_notes,
+  getVehicleNotesLoading: state => state.vehicle_notes_loading,
+
   getTollHistory: state => state.toll_history,
   getTollLoading: state => state.toll_loading,
+
+  getViolationHistory: state => state.violation_history,
+  getViolationLoading: state => state.violation_loading,
 
   getVehicleNumber: state => state.vehicle_number
 }

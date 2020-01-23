@@ -141,7 +141,7 @@
                     <td>{{ item.active }}</td>
                     <td>{{ item.amount | currency }}</td>
                     <td>{{ item.ata_group }}</td>
-                    <td v-html="item.ata_group_description" />
+                    <td>{{ item.ata_group_description }}</td>
                     <td>{{ item.bill_sort }}</td>
                     <td>{{ item.brake_manufacturer }}</td>
                     <td>{{ item.brake_thickness }}</td>
@@ -155,7 +155,7 @@
                     <td>{{ item.client_use_5 }}</td>
                     <td>{{ item.client_vehicle_number }}</td>
                     <td>{{ item.customer_po }}</td>
-                    <td v-html="item.description" />
+                    <td>{{ item.description }}</td>
                     <td>{{ item.driver_name }}</td>
                     <td>{{ item.engine_hours }}</td>
                     <td>{{ item.expense_category }}</td>

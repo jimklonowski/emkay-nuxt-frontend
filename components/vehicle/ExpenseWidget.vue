@@ -1,45 +1,44 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item>
+      <v-list-item :to="expensesRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-cash-usd'" />
         </v-list-item-avatar>
-        <v-list-item-content two-line>
-          <p :title="inServiceTitle" class="overline text--disabled">
+        <v-list-item-content>
+          <v-list-item-subtitle class="overline">
             {{ $tc('months_in_service', vehicle_info.months_in_service || 0) }}
-          </p>
-          <v-list-item-title>
-            {{ $t('expense_summary') }}
-          </v-list-item-title>
-          <!-- <v-list-item-subtitle :title="mileageTitle" class="subtitle">
-            {{ $tc('miles_per_month', vehicle_info.miles_per_month || 0) }}
-          </v-list-item-subtitle> -->
+          </v-list-item-subtitle>
+          <v-list-item-title v-text="$t('expense_summary')" />
+          <client-only>
+            <nuxt-link :to="expensesRoute" v-text="$t('more')" class="caption text-decoration-none" />
+          </client-only>
         </v-list-item-content>
-        <v-list-item-action>
-          <v-list-item-action-text>{{ $t('mileage') }}</v-list-item-action-text>
-          <v-chip :title="$tc('miles_per_month', vehicle_info.miles_per_month || 0)" pill outlined x-small>
-            {{ $tc('miles_driven', vehicle_info.miles_driven || 0) }}
-          </v-chip>
-        </v-list-item-action>
+        <!-- <v-list-item-action>
+          <v-list-item-action-text v-text="$t('mileage')" class="caption" />
+          <client-only>
+            <v-chip v-text="$tc('miles_driven', vehicle_info.miles_driven || 0)" :title="$tc('miles_per_month', vehicle_info.miles_per_month || 0)" x-small />
+            <span />
+          </client-only>
+        </v-list-item-action> -->
       </v-list-item>
     </v-card-title>
     <v-divider />
     <v-card-text class="pa-0">
-      <v-simple-table dense>
+      <v-simple-table class="striped" dense>
         <template #default>
           <thead>
             <tr>
               <th class="overline" width="50%">
                 {{ $t('fixed_costs') }} / {{ $t('cpm') }}
               </th>
-              <th v-text="$t(headers[1])" class="overline text-right" width="25%" />
-              <th v-text="$t(headers[2])" class="overline text-right" width="25%" />
+              <th v-text="$t(headers[1])" class="report-column text-right" width="25%" />
+              <th v-text="$t(headers[2])" class="report-column text-right" width="25%" />
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in fixed_costs" :key="item.key">
-              <td class="font-weight-regular">
+            <tr v-for="item in fixed_costs" :key="item.key" class="report-row">
+              <td class="font-weight-regular pl-8">
                 {{ $t(item.key) }}
               </td>
               <td class="font-weight-light text-right">
@@ -49,35 +48,35 @@
                 {{ item.cpm | currency(3,3) }}
               </td>
             </tr>
-            <tr class="grey--text">
-              <td class="font-weight-bold">
+            <tr class="report-row">
+              <td>
                 {{ $t('total_fixed') }}
               </td>
-              <td class="font-weight-regular text-right">
+              <td class="font-weight-medium text-right">
                 {{ totalFixedCosts | currency }}
               </td>
-              <td class="font-weight-regular text-right">
+              <td class="font-weight-medium text-right">
                 {{ totalFixedCPM | currency(3,3) }}
               </td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
-      <div class="py-2" />
-      <v-simple-table dense>
+      <v-divider />
+      <v-simple-table class="striped" dense>
         <template #default>
           <thead>
             <tr>
               <th class="overline" width="50%">
                 {{ $t('variable_costs') }} / {{ $t('cpm') }}
               </th>
-              <th v-text="$t(headers[1])" class="overline text-right" width="25%" />
-              <th v-text="$t(headers[2])" class="overline text-right" width="25%" />
+              <th v-text="$t(headers[1])" class="report-column text-right" width="25%" />
+              <th v-text="$t(headers[2])" class="report-column text-right" width="25%" />
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in variable_costs" :key="item.key">
-              <td class="font-weight-regular">
+            <tr v-for="item in variable_costs" :key="item.key" class="report-row">
+              <td class="font-weight-regular pl-8">
                 {{ $t(item.key) }}
               </td>
               <td class="font-weight-light text-right">
@@ -87,34 +86,33 @@
                 {{ item.cpm | currency(3,3) }}
               </td>
             </tr>
-            <tr class="grey--text">
-              <td class="font-weight-bold">
+            <tr class="report-row">
+              <td>
                 {{ $t('total_variable') }}
               </td>
-              <td class="font-weight-regular text-right">
+              <td class="font-weight-medium text-right">
                 {{ totalVariableCosts | currency }}
               </td>
-              <td class="font-weight-regular text-right">
+              <td class="font-weight-medium text-right">
                 {{ totalVariableCPM | currency(3,3) }}
               </td>
             </tr>
           </tbody>
           <tfoot>
-            <tr class="">
-              <td class="font-weight-bold title">
+            <tr class="report-row">
+              <td style="font-size:1.5rem;">
                 {{ $t('grand_total') }}
               </td>
-              <td class="text-right title">
+              <td class="text-right" style="font-size:1.5rem;">
                 {{ grandTotalCosts | currency }}
               </td>
-              <td class="text-right title">
+              <td class="text-right" style="font-size:1.5rem;">
                 {{ grandTotalCPM | currency(3,3) }}
               </td>
             </tr>
           </tfoot>
         </template>
       </v-simple-table>
-      <div class="py-2" />
     </v-card-text>
     <v-card-actions />
   </v-card>
@@ -124,6 +122,7 @@
 import { computeTotalByKey } from '@/utility/helpers'
 export default {
   computed: {
+    expensesRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/expenses` }),
     vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
     totalFixedCosts: vm => vm.computeTotalByKey(vm.fixed_costs, 'amount'),
     totalFixedCPM: vm => vm.computeTotalByKey(vm.fixed_costs, 'cpm'),

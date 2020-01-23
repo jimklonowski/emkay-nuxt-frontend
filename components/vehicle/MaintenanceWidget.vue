@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item :to="maintenanceRoute" link>
+      <v-list-item :to="maintenanceRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-tools'" />
         </v-list-item-avatar>
@@ -17,9 +17,9 @@
     <v-divider />
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
+        <!-- :hide-default-footer="items.length <= 5" -->
         <v-data-table
           :headers="headers"
-          :hide-default-footer="items.length <= 5"
           :items="items"
           :items-per-page="5"
           :mobile-breakpoint="0"
@@ -30,7 +30,7 @@
         >
           <!-- Configure each #item row is rendered -->
           <template #item="{ item }">
-            <tr>
+            <tr class="report-row">
               <td>{{ item.service_date | date }}</td>
               <td>{{ item.odometer }}</td>
               <td>{{ item.vendor_name }}</td>

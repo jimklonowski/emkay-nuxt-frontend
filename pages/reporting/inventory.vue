@@ -87,7 +87,7 @@
                     </td>
                     <td>{{ item.bill_sort }}</td>
                     <td>{{ item.center_code }}</td>
-                    <td v-html="item.center_name" />
+                    <td>{{ item.center_name }}</td>
                     <td>{{ item.client_use_1 }}</td>
                     <td>{{ item.client_use_2 }}</td>
                     <td>{{ item.client_use_3 }}</td>

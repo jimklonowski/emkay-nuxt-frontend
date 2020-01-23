@@ -1,60 +1,73 @@
 <template>
-  <!-- <v-col :cols="12" :md="showMore ? 12 : 6" :lg="showMore ? 6 : 4"> -->
   <v-card outlined>
-    <v-card-subtitle>Monthly Violations</v-card-subtitle>
-    <v-card-title v-text="'1'" class="error--text display-2" />
-    <v-card-text class="font-italic font-weight-light">
-      Received <u>1</u> violation this month, costing <strong>$95.00</strong>
+    <v-card-title class="pa-0">
+      <v-list-item :to="violationsRoute" link style="height:80px;">
+        <v-list-item-avatar>
+          <v-icon v-text="'mdi-shield-car'" />
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-subtitle v-text="$tc('past_days', days)" class="overline" />
+          <v-list-item-title v-text="$t('violations')" />
+          <client-only>
+            <nuxt-link :to="violationsRoute" v-text="$t('more')" class="caption text-decoration-none" />
+          </client-only>
+        </v-list-item-content>
+      </v-list-item>
+    </v-card-title>
+    <v-divider />
+    <v-card-text class="pa-0">
+      <v-skeleton-loader :loading="!initialized" type="table">
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :items-per-page="5"
+          :mobile-breakpoint="0"
+          :sort-by="['date']"
+          :sort-desc="[true]"
+          class="striped"
+          dense
+        />
+      </v-skeleton-loader>
     </v-card-text>
-    <v-expand-transition>
-      <v-card :loading="loading" v-show="showMore" flat>
-        <!-- <v-data-table :headers="headers" :items="items" style="min-width:650px;" /> -->
-      </v-card>
-    </v-expand-transition>
-    <v-card-actions>
-      <v-spacer />
-      <v-btn @click="showMore = !showMore" icon>
-        <v-icon>{{ showMore ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
   </v-card>
-  <!-- </v-col> -->
 </template>
 
 <script>
+import { headers } from '@/mixins/datatables'
 export default {
-  name: 'ViolationCard',
+  mixins: [headers],
   data: () => ({
-    headers: [
-      {
-        text: 'Date',
-        align: 'left',
-        sortable: false,
-        value: 'date'
-      },
-      { text: 'Service Location', value: 'location' },
-      { text: 'Maintenance Details', value: 'details' },
-      { text: 'In Network?', value: 'network' },
-      { text: 'Amount', value: 'amount' }
-    ],
-    items: [
-      { date: '2019-01-01', location: 'Klonowski AUTO', details: 'Tires', network: 'false', amount: '$43.51' }
-    ],
-    loading: false,
-    showMore: false
-  })
-  // async created () {
-  //   try {
-  //     const data = await this.$axios.get('/maintenance')
-  //     this.items = data
-  //   } catch (err) {
-  //     debugger
-  //     console.log(err)
-  //   }
-  // }
+    days: 30,
+    initialized: false
+  }),
+  computed: {
+    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
+    violationsRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/violations` }),
+    items: vm => vm.$store.getters['vehicle/getViolationHistory'],
+    columns () {
+      return [
+        'date',
+        'location',
+        'details',
+        'in_network',
+        'amount'
+      ]
+    }
+  },
+  async mounted () {
+    const vehicle_number = this.vehicleNumber || ''
+    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const end_date = this.$moment().format('YYYY-MM-DD')
+    const filters = {
+      command: 'VIOLATIONS',
+      customer: 'EM102',
+      start_date,
+      end_date,
+      vehicle_number,
+      json: 'Y'
+    }
+    await this.$store.dispatch('vehicle/fetchViolationHistory', filters)
+    this.initialized = true
+  }
 }
 </script>
-
-<style>
-
-</style>

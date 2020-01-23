@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item :to="billingRoute" link>
+      <v-list-item :to="billingRoute" link style="height:80px">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-cash-usd-outline'" />
         </v-list-item-avatar>
@@ -12,12 +12,13 @@
             <nuxt-link :to="billingRoute" v-text="$t('more')" class="caption text-decoration-none" />
           </client-only>
         </v-list-item-content>
-        <v-list-item-action>
-          <v-list-item-action-text>{{ $t('status') }}</v-list-item-action-text>
-          <v-chip :title="$t('lease_type')" pill outlined x-small>
-            {{ vehicle_info.lease_type }}
-          </v-chip>
-        </v-list-item-action>
+        <!-- <v-list-item-action>
+          <v-list-item-action-text v-text="$t('status')" class="caption" />
+          <client-only>
+            <v-chip v-text="vehicle_info.lease_type" :title="$t('lease_type')" x-small />
+            <span />
+          </client-only>
+        </v-list-item-action> -->
       </v-list-item>
     </v-card-title>
     <v-divider />
@@ -34,9 +35,9 @@
         dense
       >
         <template #item="{ item }">
-          <tr>
+          <tr class="report-row">
             <td>
-              <nuxt-link :to="invoiceRoute(item.invoice_number)">
+              <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none">
                 {{ item.invoice_number }}
               </nuxt-link>
             </td>

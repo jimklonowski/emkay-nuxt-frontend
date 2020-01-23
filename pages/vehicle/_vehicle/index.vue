@@ -32,6 +32,9 @@
         <v-col cols="12" xl="6">
           <violation-widget />
         </v-col>
+        <v-col cols="12" xl="6">
+          <notes-widget />
+        </v-col>
       </v-row>
     </v-container>
   </v-flex>
@@ -49,6 +52,7 @@ import AccidentWidget from '@/components/vehicle/AccidentWidget'
 import TollWidget from '@/components/vehicle/TollWidget'
 import ViolationWidget from '@/components/vehicle/ViolationWidget'
 import OrderStatusWidget from '@/components/vehicle/OrderStatusWidget'
+import NotesWidget from '@/components/vehicle/NotesWidget'
 
 export default {
   name: 'VehicleDashboard',
@@ -63,7 +67,7 @@ export default {
     ExpenseWidget,
     BillingWidget,
     ViolationWidget,
-
+    NotesWidget,
     OrderStatusWidget
 
     // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
