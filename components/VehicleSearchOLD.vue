@@ -78,7 +78,6 @@
 // import axios from 'axios'
 // let axiosCancelTokenSource = axios.CancelToken.source()
 export default {
-  name: 'VehicleSearch',
   data: () => ({
     axiosCancelTokenSource: null,
     query: '',

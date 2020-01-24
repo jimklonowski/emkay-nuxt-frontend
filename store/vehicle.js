@@ -30,7 +30,7 @@ const getDefaultState = () => ({
   violation_history: [],
   violation_loading: false,
 
-  order_status: null,
+  order_status: {},
   transport_status: []
 })
 
@@ -256,7 +256,7 @@ export const getters = {
   getVehicleInfo: state => state.vehicle_info,
 
   getOrderStatus: state => state.order_status,
-  hasOrderStatus: state => state.order_status !== null,
+  hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0,
 
   getAccidentHistory: state => state.accident_history,
   getAccidentLoading: state => state.accident_loading,

@@ -1,43 +1,41 @@
 <template>
-  <v-flex>
-    <v-container>
-      <v-row style="top:64px;">
-        <v-col cols="12" lg="6">
-          <vehicle-widget />
-        </v-col>
-        <v-col cols="12" lg="6">
-          <driver-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <fuel-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <maintenance-widget />
-        </v-col>
-        <v-col v-if="showOrderStatusWidget" cols="12" xl="6">
-          <order-status-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <expense-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <billing-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <toll-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <accident-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <violation-widget />
-        </v-col>
-        <v-col cols="12" xl="6">
-          <notes-widget />
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-flex>
+  <v-container>
+    <v-row>
+      <v-col cols="12" lg="6">
+        <vehicle-widget />
+      </v-col>
+      <v-col cols="12" lg="6">
+        <driver-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <fuel-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <maintenance-widget />
+      </v-col>
+      <v-col v-if="showOrderStatusWidget" cols="12" xl="6">
+        <order-status-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <expense-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <billing-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <toll-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <accident-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <violation-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <notes-widget />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -53,7 +51,9 @@ import TollWidget from '@/components/vehicle/TollWidget'
 import ViolationWidget from '@/components/vehicle/ViolationWidget'
 import OrderStatusWidget from '@/components/vehicle/OrderStatusWidget'
 import NotesWidget from '@/components/vehicle/NotesWidget'
-
+/**
+ * Vehicle Dashboard (widgets)
+ */
 export default {
   name: 'VehicleDashboard',
   /* eslint-disable vue/no-unused-components */

@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item :to="orderStatusRoute" link>
+      <v-list-item :to="$route.path.includes('order-status') ? '' : orderStatusRoute" :link="!$route.path.includes('order-status')" style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-timeline-clock'" />
         </v-list-item-avatar>
@@ -117,6 +117,7 @@ export default {
     orderStatus: vm => vm.$store.getters['vehicle/getOrderStatus'],
     orderComments: vm => vm.orderStatus.comments,
     orderDetails () {
+      if (!this.orderStatus) { return [] }
       return [
         {
           text: this.$i18n.t('vehicle_number'),
@@ -223,7 +224,7 @@ export default {
   },
   methods: {
     yearMakeModel () {
-      return [this.orderStatus.model_year, this.orderStatus.vehicle_make, this.orderStatus.vehicle_model].filter(Boolean).join(' ')
+      return this.orderStatus && [this.orderStatus.model_year, this.orderStatus.vehicle_make, this.orderStatus.vehicle_model].filter(Boolean).join(' ')
     },
     getIcon (item) {
       if (this.$moment(item.value).isBefore(this.$moment(), 'day')) {

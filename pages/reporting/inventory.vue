@@ -44,6 +44,7 @@
                 :sort-by="[0]"
                 :sort-desc="[false]"
                 class="striped"
+                dense
               >
                 <!-- filters template -->
                 <!-- <template #top>
@@ -78,7 +79,7 @@
 
                 <!-- Configure how each #item row is rendered -->
                 <template #item="{ item }">
-                  <tr>
+                  <tr class="report-row">
                     <td>
                       <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
                     </td>

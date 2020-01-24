@@ -311,7 +311,7 @@ export default {
   build: {
     profile: true,
     // vendor: ['@babel/polyfill'],
-    transpile: ['vee-validate/dist/rules', 'vuetify'],
+    transpile: ['vee-validate/dist/rules', 'vuetify/lib'],
     // transpile: [/^vuetify/],
     // plugins: [new VuetifyLoaderPlugin()],
     /*

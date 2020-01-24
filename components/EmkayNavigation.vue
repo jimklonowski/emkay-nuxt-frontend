@@ -49,6 +49,7 @@
       </template>
     </v-navigation-drawer>
     <v-app-bar
+      height="64px"
       clipped-left
       clipped-right
       fixed
@@ -104,7 +105,7 @@ export default {
       {
         icon: 'mdi-chart-bubble',
         key: 'vehicle_dashboard',
-        to: { name: 'vehicle' }
+        to: { name: 'vehicle-search' }
       },
       {
         icon: 'mdi-file-chart-outline',
@@ -167,7 +168,7 @@ export default {
   },
   methods: {
     isRouteActive (routeName) {
-      if (this.$route.matched.some(match => match.name.includes(routeName))) {
+      if (this.$route.matched.some(match => match.name && match.name.includes(routeName))) {
         return true
       }
       return false

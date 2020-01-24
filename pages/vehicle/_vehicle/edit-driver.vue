@@ -154,7 +154,7 @@
                           </ValidationProvider>
                         </v-col>
                         <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_email')" rules="required">
+                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('email')" rules="required">
                             <v-text-field
                               v-model="model.driver_email"
                               :label="$t('email')"

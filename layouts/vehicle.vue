@@ -2,8 +2,7 @@
   <v-app>
     <emkay-navigation />
     <v-content>
-      <vehicle-dashboard-navigation v-if="$route.params.vehicle" />
-      <!-- main vehicle dashboard router-view -->
+      <vehicle-dashboard-navigation />
       <nuxt />
     </v-content>
     <emkay-footer />
@@ -17,7 +16,9 @@
 import EmkayFooter from '@/components/EmkayFooter'
 import EmkayNavigation from '@/components/EmkayNavigation'
 import VehicleDashboardNavigation from '@/components/vehicle/VehicleDashboardNavigation'
-
+/**
+ * Vehicle Dashboard Layout page
+ */
 export default {
   components: {
     EmkayFooter,

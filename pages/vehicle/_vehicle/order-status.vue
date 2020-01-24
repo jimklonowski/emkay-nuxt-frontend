@@ -5,12 +5,19 @@
         {{ $t('order_status') }}
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12">
+        <order-status-widget />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
+import OrderStatusWidget from '@/components/vehicle/OrderStatusWidget'
 export default {
   name: 'OrderStatus',
+  components: { OrderStatusWidget },
   head () {
     const title = this.$t('order_status')
     return {

@@ -11,13 +11,13 @@
   >
     <template #activator="{ on }">
       <!-- eslint-disable vue/require-component-is -->
-      <component
-        :is="model.activator"
+      <v-btn
         v-on="on"
         :color="$vuetify.theme.dark ? 'white' : 'rgba(0, 0, 0, 0.54)'"
         :title="$t(model.titleKey)"
         min-width="60px"
         text
+        small
       >
         <span v-show="$vuetify.breakpoint.mdAndDown">
           <v-icon v-text="model.icon" />
@@ -27,7 +27,7 @@
           {{ $t(model.titleKey) }}
           <v-icon v-show="model.showArrow">mdi-chevron-down</v-icon>
         </span>
-      </component>
+      </v-btn>
     </template>
     <v-card>
       <v-list-item :style="model.style" :dark="$vuetify.theme.dark" :to="localePath(model.path)" two-line>

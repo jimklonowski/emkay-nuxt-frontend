@@ -3,16 +3,19 @@
     <v-row>
       <v-col cols="12">
         <v-card>
-          <v-toolbar elevation="4">
-            <v-toolbar-title style="min-width:100px;">
-              {{ $t('reports') }}
+          <v-toolbar elevation="4" extended>
+            <v-toolbar-title>
+              {{ $t('reporting') }}
             </v-toolbar-title>
-            <v-tabs v-model="tab" show-arrows right>
-              <v-tab v-for="(category, key) in $options.reports.categories" :key="key" text>
-                <v-icon v-text="category.icon" />
-                {{ $t(category.key) }}
-              </v-tab>
-            </v-tabs>
+            <v-spacer />
+            <template #extension>
+              <v-tabs v-model="tab" show-arrows left>
+                <v-tab v-for="(category, key) in $options.reports.categories" :key="key" text>
+                  <v-icon v-text="category.icon" />
+                  {{ $t(category.key) }}
+                </v-tab>
+              </v-tabs>
+            </template>
           </v-toolbar>
           <v-subheader>Select a report</v-subheader>
           <v-tabs-items v-model="tab">

@@ -46,6 +46,7 @@
                 :sort-by="[0]"
                 :sort-desc="[true]"
                 class="striped"
+                dense
               >
                 <!-- Configure the #no-data message (no data from server) -->
                 <template #no-data>
