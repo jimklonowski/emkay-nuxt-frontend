@@ -92,48 +92,44 @@ export default {
     LanguagePicker,
     MegaMenu
   },
-  data: () => ({
-    clipped: false,
-    drawer: false,
-    fixed: false,
-    items: [
-      {
-        icon: 'mdi-widgets',
-        key: 'home',
-        to: { name: 'index' }
-      },
-      {
-        icon: 'mdi-chart-bubble',
-        key: 'vehicle_dashboard',
-        to: { name: 'vehicle-search' }
-      },
-      {
-        icon: 'mdi-file-chart-outline',
-        key: 'reporting',
-        to: { name: 'reporting' }
-      },
-      {
-        icon: 'mdi-timetable',
-        key: 'ordering',
-        to: { name: 'ordering' }
-      },
-      {
-        icon: 'mdi-apps',
-        key: 'account_management',
-        to: { name: 'management' }
-      }
-      // {
-      //   icon: 'mdi-login',
-      //   title: 'Login',
-      //   key: 'auth.login',
-      //   to: '/login'
-      // }
-    ],
-    miniVariant: false,
-    right: true,
-    rightDrawer: false,
-    title: 'EMKAY Nuxt.js'
-  }),
+  data () {
+    return {
+      clipped: false,
+      drawer: false,
+      fixed: false,
+      items: [
+        {
+          icon: 'mdi-widgets',
+          key: 'home',
+          to: this.localePath({ path: '/' })
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          key: 'vehicle_dashboard',
+          to: this.localePath({ path: 'vehicle-search' })
+        },
+        {
+          icon: 'mdi-file-chart-outline',
+          key: 'reporting',
+          to: this.localePath({ path: 'reporting' })
+        },
+        {
+          icon: 'mdi-timetable',
+          key: 'ordering',
+          to: this.localePath({ path: 'ordering' })
+        },
+        {
+          icon: 'mdi-apps',
+          key: 'account_management',
+          to: this.localePath({ path: 'management' })
+        }
+      ],
+      miniVariant: false,
+      right: true,
+      rightDrawer: false,
+      title: 'EMKAY Nuxt.js'
+    }
+  },
   computed: {
     avatarText () {
       return this.$auth.user.account && this.$auth.user.account.substr(0, 2)

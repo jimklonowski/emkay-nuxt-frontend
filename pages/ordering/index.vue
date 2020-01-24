@@ -3,12 +3,13 @@
 </template>
 
 <script>
+
 export default {
-  name: 'Reporting',
-  layout: 'reporting',
+  name: 'Ordering',
+  layout: 'ordering',
   middleware: ['auth'],
   head () {
-    const title = this.$t('reporting')
+    const title = this.$t('ordering')
     return {
       title,
       meta: [

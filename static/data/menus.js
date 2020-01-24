@@ -48,7 +48,7 @@ const ordering = {
   categories: [
     {
       key: 'orders',
-      icon: 'mdi-timeline-text',
+      icon: '',
       color: '',
       items: [
         { key: 'place_factory_orders', icon: 'mdi-car-door', to: { path: '/ordering/todo' } },
@@ -58,7 +58,7 @@ const ordering = {
     },
     {
       key: 'driver_ordering',
-      icon: 'mdi-cash-register',
+      icon: '',
       color: '',
       items: [
         { key: 'manage_driver_order_settings', icon: 'mdi-account-settings', to: { path: '/ordering/todo' } },
@@ -68,7 +68,7 @@ const ordering = {
     },
     {
       key: 'selectors',
-      icon: 'mdi-chart-timeline',
+      icon: '',
       color: '',
       items: [
         { key: 'manage_selectors', icon: 'mdi-settings', to: { path: '/ordering/todo' } },
