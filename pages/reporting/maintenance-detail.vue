@@ -1,214 +1,211 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-card shaped outlined>
-          <v-toolbar flat>
-            <v-toolbar-title v-text="$t('maintenance_detail')" class="hidden-sm-and-down" />
-            <v-spacer />
-            <v-text-field
-              v-model="search"
-              :label="$t('search')"
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              dense
-              flat
-              hide-details
-              outlined
-              rounded
-              single-line
-              solo
-            />
-          </v-toolbar>
-          <v-subheader v-text="$t('report_filters')" class="overline" />
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="start_menu"
-                  v-model="start_menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="start_date"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template #activator="{ on }">
-                    <v-text-field
-                      :value="$moment(start_date).format('L')"
-                      :label="$t('start_date')"
-                      v-on="on"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                    />
-                  </template>
-                  <v-date-picker
-                    v-model="start_date"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer />
-                    <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-                    <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="end_menu"
-                  v-model="end_menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="end_date"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template #activator="{ on }">
-                    <v-text-field
-                      :value="$moment(end_date).format('L')"
-                      :label="$t('end_date')"
-                      v-on="on"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                    />
-                  </template>
-                  <v-date-picker
-                    v-model="end_date"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer />
-                    <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-                    <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-switch
-                  v-model="use_bill_date"
-                  :label="$t(`bill_date`)"
-                  @change="updateQuery()"
-                  hint="Not Yet Implemented..."
-                  messages="Not Yet Implemented..."
-                />
-              </v-col>
-            </v-row>
-          </v-container>
-          <!-- Download as XLS button -->
-          <v-toolbar flat>
-            <v-spacer />
-            <v-btn :ripple="false" :title="`${$t('save')} .xls`" small depressed>
-              <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-              <client-only>
-                <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-              </client-only>
-            </v-btn>
-          </v-toolbar>
-          <v-card-text class="px-0">
-            <v-skeleton-loader :loading="loading" type="table">
-              <v-data-table
-                :headers="headers"
-                :hide-default-header="loading"
-                :loading="loading"
-                :items-per-page="10"
-                :items="items"
-                :search="search"
-                :sort-by="['service_date']"
-                :sort-desc="[true]"
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
-                class="striped"
-              >
-                <!-- Configure the #no-data message (no data from server) -->
-                <template #no-data>
-                  <div class="text-left">
-                    {{ $t('no_data_found', { 'message': error }) }}
-                  </div>
-                </template>
+  <v-card outlined class="report">
+    <v-card-title>
+      {{ $t('maintenance_detail') }}
+      <v-spacer />
+      <v-text-field
+        v-model="search"
+        :label="$t('search')"
+        prepend-inner-icon="mdi-magnify"
+        clearable
+        dense
+        flat
+        hide-details
+        outlined
+        rounded
+        single-line
+        solo
+      />
+    </v-card-title>
+    <v-subheader v-text="$t('report_filters')" class="overline" />
+    <v-container>
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-menu
+            ref="start_menu"
+            v-model="start_menu"
+            :close-on-content-click="false"
+            :return-value.sync="start_date"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template #activator="{ on }">
+              <v-text-field
+                :value="$moment(start_date).format('L')"
+                :label="$t('start_date')"
+                v-on="on"
+                prepend-icon="mdi-calendar"
+                readonly
+              />
+            </template>
+            <v-date-picker
+              v-model="start_date"
+              no-title
+              scrollable
+            >
+              <v-spacer />
+              <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
+              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
+            </v-date-picker>
+          </v-menu>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-menu
+            ref="end_menu"
+            v-model="end_menu"
+            :close-on-content-click="false"
+            :return-value.sync="end_date"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template #activator="{ on }">
+              <v-text-field
+                :value="$moment(end_date).format('L')"
+                :label="$t('end_date')"
+                v-on="on"
+                prepend-icon="mdi-calendar"
+                readonly
+              />
+            </template>
+            <v-date-picker
+              v-model="end_date"
+              no-title
+              scrollable
+            >
+              <v-spacer />
+              <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
+              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
+            </v-date-picker>
+          </v-menu>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-switch
+            v-model="use_bill_date"
+            :label="$t(`bill_date`)"
+            @change="updateQuery()"
+            hint="Not Yet Implemented..."
+            messages="Not Yet Implemented..."
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+    <!-- Download as XLS button -->
+    <v-toolbar flat>
+      <v-spacer />
+      <v-btn :ripple="false" :title="`${$t('save')} .xls`" small depressed>
+        <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
+        <client-only>
+          <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
+        </client-only>
+      </v-btn>
+    </v-toolbar>
+    <v-divider />
+    <v-card-text class="pa-0">
+      <v-skeleton-loader :loading="loading" type="table">
+        <v-data-table
+          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+          :headers="headers"
+          :items="items"
+          :items-per-page="25"
+          :hide-default-header="loading"
+          :loading="loading"
+          :mobile-breakpoint="0"
+          :search="search"
+          :sort-by="['service_date']"
+          :sort-desc="[true]"
+          class="striped"
+          dense
+        >
+          <!-- Configure the #no-data message (no data from server) -->
+          <template #no-data>
+            <div class="text-left">
+              {{ $t('no_data_found', { 'message': error }) }}
+            </div>
+          </template>
 
-                <!-- Configure the #no-results message (no rows in filtered search) -->
-                <template #no-results>
-                  <div class="text-left">
-                    {{ $t('no_search_results', { 'query': search }) }}
-                  </div>
-                </template>
+          <!-- Configure the #no-results message (no rows in filtered search) -->
+          <template #no-results>
+            <div class="text-left">
+              {{ $t('no_search_results', { 'query': search }) }}
+            </div>
+          </template>
 
-                <!-- Configure each #item row is rendered -->
-                <template #item="{ item }">
-                  <tr>
-                    <td>{{ item.service_date | date }}</td>
-                    <td>{{ item.active }}</td>
-                    <td>{{ item.amount | currency }}</td>
-                    <td>{{ item.ata_group }}</td>
-                    <td>{{ item.ata_group_description }}</td>
-                    <td>{{ item.bill_sort }}</td>
-                    <td>{{ item.brake_manufacturer }}</td>
-                    <td>{{ item.brake_thickness }}</td>
-                    <td>{{ item.center_code }}</td>
-                    <td>{{ item.center_name }}</td>
-                    <td>{{ item.charge_code }}</td>
-                    <td>{{ item.client_use_1 }}</td>
-                    <td>{{ item.client_use_2 }}</td>
-                    <td>{{ item.client_use_3 }}</td>
-                    <td>{{ item.client_use_4 }}</td>
-                    <td>{{ item.client_use_5 }}</td>
-                    <td>{{ item.client_vehicle_number }}</td>
-                    <td>{{ item.customer_po }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.driver_name }}</td>
-                    <td>{{ item.engine_hours }}</td>
-                    <td>{{ item.expense_category }}</td>
-                    <td>{{ item.front_left_brake }}</td>
-                    <td>{{ item.front_left_drum }}</td>
-                    <td>{{ item.front_left_rotor }}</td>
-                    <td>{{ item.front_left_tire }}</td>
-                    <td>{{ item.front_right_brake }}</td>
-                    <td>{{ item.front_right_drum }}</td>
-                    <td>{{ item.front_right_rotor }}</td>
-                    <td>{{ item.front_right_tire }}</td>
-                    <td>{{ item.gl_code }}</td>
-                    <td>{{ item.invoice_number }}</td>
-                    <td>{{ item.labor_or_part }}</td>
-                    <td>{{ item.level_01 }}</td>
-                    <td>{{ item.level_02 }}</td>
-                    <td>{{ item.level_03 }}</td>
-                    <td>{{ item.maintenance_category }}</td>
-                    <td>{{ item.maintenance_code }}</td>
-                    <td>{{ item.model_year }}</td>
-                    <td>{{ item.odometer }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.rear_left_brake }}</td>
-                    <td>{{ item.rear_left_drum }}</td>
-                    <td>{{ item.rear_left_rotor }}</td>
-                    <td>{{ item.rear_left_tire }}</td>
-                    <td>{{ item.rear_right_brake }}</td>
-                    <td>{{ item.rear_right_drum }}</td>
-                    <td>{{ item.rear_right_rotor }}</td>
-                    <td>{{ item.rear_right_tire }}</td>
-                    <td>{{ item.tire_manufacturer }}</td>
-                    <td>{{ item.tire_model }}</td>
-                    <td>{{ item.tire_size }}</td>
-                    <td>{{ item.vehicle_make }}</td>
-                    <td>{{ item.vehicle_model }}</td>
-                    <td>
-                      <client-only>
-                        <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
-                      </client-only>
-                    </td>
-                    <td>{{ item.vendor_factor }}</td>
-                    <td>{{ item.vendor_name }}</td>
-                    <td>{{ item.vendor_number }}</td>
-                    <td>{{ item.voucher }}</td>
-                  </tr>
-                </template>
-              </v-data-table>
-            </v-skeleton-loader>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          <!-- Configure each #item row is rendered -->
+          <template #item="{ item }">
+            <tr>
+              <td>{{ item.service_date | date }}</td>
+              <td>{{ item.active }}</td>
+              <td>{{ item.amount | currency }}</td>
+              <td>{{ item.ata_group }}</td>
+              <td>{{ item.ata_group_description }}</td>
+              <td>{{ item.bill_sort }}</td>
+              <td>{{ item.brake_manufacturer }}</td>
+              <td>{{ item.brake_thickness }}</td>
+              <td>{{ item.center_code }}</td>
+              <td>{{ item.center_name }}</td>
+              <td>{{ item.charge_code }}</td>
+              <td>{{ item.client_use_1 }}</td>
+              <td>{{ item.client_use_2 }}</td>
+              <td>{{ item.client_use_3 }}</td>
+              <td>{{ item.client_use_4 }}</td>
+              <td>{{ item.client_use_5 }}</td>
+              <td>{{ item.client_vehicle_number }}</td>
+              <td>{{ item.customer_po }}</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.driver_name }}</td>
+              <td>{{ item.engine_hours }}</td>
+              <td>{{ item.expense_category }}</td>
+              <td>{{ item.front_left_brake }}</td>
+              <td>{{ item.front_left_drum }}</td>
+              <td>{{ item.front_left_rotor }}</td>
+              <td>{{ item.front_left_tire }}</td>
+              <td>{{ item.front_right_brake }}</td>
+              <td>{{ item.front_right_drum }}</td>
+              <td>{{ item.front_right_rotor }}</td>
+              <td>{{ item.front_right_tire }}</td>
+              <td>{{ item.gl_code }}</td>
+              <td>{{ item.invoice_number }}</td>
+              <td>{{ item.labor_or_part }}</td>
+              <td>{{ item.level_01 }}</td>
+              <td>{{ item.level_02 }}</td>
+              <td>{{ item.level_03 }}</td>
+              <td>{{ item.maintenance_category }}</td>
+              <td>{{ item.maintenance_code }}</td>
+              <td>{{ item.model_year }}</td>
+              <td>{{ item.odometer }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.rear_left_brake }}</td>
+              <td>{{ item.rear_left_drum }}</td>
+              <td>{{ item.rear_left_rotor }}</td>
+              <td>{{ item.rear_left_tire }}</td>
+              <td>{{ item.rear_right_brake }}</td>
+              <td>{{ item.rear_right_drum }}</td>
+              <td>{{ item.rear_right_rotor }}</td>
+              <td>{{ item.rear_right_tire }}</td>
+              <td>{{ item.tire_manufacturer }}</td>
+              <td>{{ item.tire_model }}</td>
+              <td>{{ item.tire_size }}</td>
+              <td>{{ item.vehicle_make }}</td>
+              <td>{{ item.vehicle_model }}</td>
+              <td>
+                <client-only>
+                  <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
+                </client-only>
+              </td>
+              <td>{{ item.vendor_factor }}</td>
+              <td>{{ item.vendor_name }}</td>
+              <td>{{ item.vendor_number }}</td>
+              <td>{{ item.voucher }}</td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-skeleton-loader>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

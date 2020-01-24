@@ -1,79 +1,73 @@
 <template>
-  <v-container>
-    <v-banner single-line>
-      TODO: INCOMPLETE
-    </v-banner>
-    <v-row>
-      <v-col cols="12">
-        <v-card shaped outlined>
-          <v-toolbar flat>
-            <v-toolbar-title v-text="$t('license_renewal_report')" class="hidden-sm-down" />
-            <v-spacer />
-            <v-text-field
-              v-model="search"
-              :label="$t('search')"
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              dense
-              flat
-              hide-details
-              outlined
-              rounded
-              single-line
-              solo
-            />
-          </v-toolbar>
-          <!-- Download as XLS button -->
-          <v-toolbar flat>
-            <v-spacer />
-            <v-btn :title="`${$t('save')} .xls`" small depressed>
-              <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-              <client-only>
-                <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-              </client-only>
-            </v-btn>
-          </v-toolbar>
-          <!-- Report Content -->
-          <v-card-text class="px-0">
-            <v-skeleton-loader :loading="loading" type="table">
-              <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-                :headers="headers"
-                :items="items"
-                :items-per-page="25"
-                :loading="loading"
-                :search="search"
-                :sort-by="[0]"
-                :sort-desc="[false]"
-                class="striped"
-              >
-                <!-- Configure the #no-data message (no data from server) -->
-                <template #no-data>
-                  <div class="text-left">
-                    {{ $t('no_data_found', { 'message': error }) }}
-                  </div>
-                </template>
+  <v-card outlined class="report">
+    <v-card-title>
+      {{ $t('license_renewal_report') }}
+      <v-spacer />
+      <v-text-field
+        v-model="search"
+        :label="$t('search')"
+        prepend-inner-icon="mdi-magnify"
+        clearable
+        dense
+        flat
+        hide-details
+        outlined
+        rounded
+        single-line
+        solo
+      />
+    </v-card-title>
+    <!-- Download as XLS button -->
+    <v-toolbar flat>
+      <v-spacer />
+      <v-btn :title="`${$t('save')} .xls`" small depressed>
+        <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
+        <client-only>
+          <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
+        </client-only>
+      </v-btn>
+    </v-toolbar>
+    <v-divider />
+    <!-- Report Content -->
+    <v-card-text class="pa-0">
+      <v-skeleton-loader :loading="loading" type="table">
+        <v-data-table
+          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+          :headers="headers"
+          :items="items"
+          :items-per-page="25"
+          :loading="loading"
+          :mobile-breakpoint="0"
+          :search="search"
+          :sort-by="[0]"
+          :sort-desc="[false]"
+          class="striped"
+          dense
+        >
+          <!-- Configure the #no-data message (no data from server) -->
+          <template #no-data>
+            <div class="text-left">
+              {{ $t('no_data_found', { 'message': error }) }}
+            </div>
+          </template>
 
-                <!-- Configure the #no-results message (no rows in filtered search) -->
-                <template #no-results>
-                  <div class="text-left">
-                    {{ $t('no_search_results', { 'query': search }) }}
-                  </div>
-                </template>
+          <!-- Configure the #no-results message (no rows in filtered search) -->
+          <template #no-results>
+            <div class="text-left">
+              {{ $t('no_search_results', { 'query': search }) }}
+            </div>
+          </template>
 
-                <!-- Configure how each #item row is rendered -->
-                <!-- <template #item="{ item }">
-                  <tr>
-                    <td>{{ item.date | date }}</td>
-                  </tr>
-                </template> -->
-              </v-data-table>
-            </v-skeleton-loader>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          <!-- Configure how each #item row is rendered -->
+          <!-- <template #item="{ item }">
+            <tr>
+              <td>{{ item.date | date }}</td>
+            </tr>
+          </template> -->
+        </v-data-table>
+      </v-skeleton-loader>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

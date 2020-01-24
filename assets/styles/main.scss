@@ -13,15 +13,15 @@
 }
 
 .font-lato {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif !important;
 }
 
 .font-roboto-condensed {
-  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif !important;
 }
 
 .font-roboto {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif !important;
 }
 
 .report-row {
@@ -45,11 +45,19 @@
   .v-list-item__content {
     .v-list-item__title {
       font-weight: 400 !important;
-      @extend .font-roboto-condensed
+      @extend .font-roboto-condensed;
     }
     .v-list-item__subtitle {
       font-weight: 400 !important;
-      @extend .font-roboto
+      @extend .font-roboto;
     }
+  }
+}
+
+/* Report config */
+.report {
+  .v-card__title {
+    @extend .font-lato;
+    font-size: 1.5rem;
   }
 }

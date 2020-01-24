@@ -1,172 +1,167 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-card outlined>
-          <v-card-title class="display-2 grey--text">
-            {{ $t('inventory_report') }}
-            <v-spacer />
-            <v-text-field
-              v-model="search"
-              :label="$t('search')"
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              dense
-              flat
-              hide-details
-              outlined
-              rounded
-              single-line
-              solo
-            />
-          </v-card-title>
-          <!-- Download as XLS button -->
-          <v-toolbar flat>
-            <v-spacer />
-            <v-btn :title="`${$t('save')} .xls`" small depressed>
-              <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-              <client-only>
-                <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-              </client-only>
-            </v-btn>
-          </v-toolbar>
-          <!-- Report Content -->
-          <v-card-text class="px-0">
-            <v-skeleton-loader :loading="loading" type="table">
-              <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-                :headers="headers"
-                :items="items"
-                :items-per-page="25"
-                :loading="loading"
-                :mobile-breakpoint="0"
-                :search="search"
-                :sort-by="[0]"
-                :sort-desc="[false]"
-                class="striped"
-                dense
-              >
-                <!-- filters template -->
-                <!-- <template #top>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="6">
-                        <v-select
-                          v-model="centerCodeFilterValue"
-                          :items="centers"
-                          label="Center Filter"
-                          clearable
-                          outlined
-                          dense
-                        />
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </template> -->
-                <!-- Configure the #no-data message (no data from server) -->
-                <template #no-data>
-                  <div class="text-left">
-                    {{ $t('no_data_found', { 'message': error }) }}
-                  </div>
-                </template>
+  <v-card outlined class="report">
+    <v-card-title>
+      {{ $t('inventory_report') }}
+      <v-spacer />
+      <v-text-field
+        v-model="search"
+        :label="$t('search')"
+        prepend-inner-icon="mdi-magnify"
+        clearable
+        dense
+        flat
+        hide-details
+        outlined
+        rounded
+        single-line
+        solo
+      />
+    </v-card-title>
+    <!-- Download as XLS button -->
+    <v-toolbar flat>
+      <v-spacer />
+      <v-btn :title="`${$t('save')} .xls`" small depressed>
+        <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
+        <client-only>
+          <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
+        </client-only>
+      </v-btn>
+    </v-toolbar>
+    <v-divider />
+    <!-- Report Content -->
+    <v-card-text class="pa-0">
+      <v-skeleton-loader :loading="loading" type="table">
+        <v-data-table
+          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+          :headers="headers"
+          :items="items"
+          :items-per-page="25"
+          :loading="loading"
+          :mobile-breakpoint="0"
+          :search="search"
+          :sort-by="[0]"
+          :sort-desc="[false]"
+          class="striped"
+          dense
+        >
+          <!-- filters template -->
+          <!-- <template #top>
+            <v-container>
+              <v-row>
+                <v-col cols="6">
+                  <v-select
+                    v-model="centerCodeFilterValue"
+                    :items="centers"
+                    label="Center Filter"
+                    clearable
+                    outlined
+                    dense
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
+          </template> -->
+          <!-- Configure the #no-data message (no data from server) -->
+          <template #no-data>
+            <div class="text-left">
+              {{ $t('no_data_found', { 'message': error }) }}
+            </div>
+          </template>
 
-                <!-- Configure the #no-results message (no rows in filtered search) -->
-                <template #no-results>
-                  <div class="text-left">
-                    {{ $t('no_search_results', { 'query': search }) }}
-                  </div>
-                </template>
+          <!-- Configure the #no-results message (no rows in filtered search) -->
+          <template #no-results>
+            <div class="text-left">
+              {{ $t('no_search_results', { 'query': search }) }}
+            </div>
+          </template>
 
-                <!-- Configure how each #item row is rendered -->
-                <template #item="{ item }">
-                  <tr class="report-row">
-                    <td>
-                      <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
-                    </td>
-                    <td>
-                      {{ item.client_vehicle_number }}
-                    </td>
-                    <td>{{ item.bill_sort }}</td>
-                    <td>{{ item.center_code }}</td>
-                    <td>{{ item.center_name }}</td>
-                    <td>{{ item.client_use_1 }}</td>
-                    <td>{{ item.client_use_2 }}</td>
-                    <td>{{ item.client_use_3 }}</td>
-                    <td>{{ item.client_use_4 }}</td>
-                    <td>{{ item.client_use_5 }}</td>
-                    <td>{{ item.contract_description }}</td>
-                    <td>{{ item.contract_id }}</td>
-                    <td>{{ item.coupon_book_number }}</td>
-                    <td>{{ item.customer_number }}</td>
-                    <td>{{ item.driver_address_1 }}</td>
-                    <td>{{ item.driver_address_2 }}</td>
-                    <td>{{ item.driver_city }}</td>
-                    <td>{{ item.driver_county }}</td>
-                    <td>
-                      <v-btn v-show="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
-                        <v-icon v-text="'mdi-email-edit'" class="mr-2" />
-                        {{ item.driver_email_address }}
-                      </v-btn>
-                    </td>
-                    <td>{{ item.driver_employee_id }}</td>
-                    <td>{{ item.driver_fax }}</td>
-                    <td>{{ item.driver_first_name }}</td>
-                    <td>{{ item.driver_last_name }}</td>
-                    <td>
-                      <v-btn v-show="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
-                        <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
-                        {{ item.driver_mobile | phone }}
-                      </v-btn>
-                    </td>
-                    <td>
-                      <v-btn v-show="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
-                        <v-icon v-text="'mdi-phone'" class="mr-2" />
-                        {{ item.driver_phone | phone }}
-                      </v-btn>
-                    </td>
-                    <td>{{ item.driver_reference_number }}</td>
-                    <td>{{ item.driver_state_province }}</td>
-                    <td>{{ item.fuel_card_description }}</td>
-                    <td>{{ item.fuel_profile_limits }}</td>
-                    <td>{{ item.in_service_date | date }}</td>
-                    <td>{{ item.irs_fair_market_value | currency }}</td>
-                    <td>{{ item.lease_rate_id }}</td>
-                    <td>{{ item.level_01 }}</td>
-                    <td>{{ item.level_02 }}</td>
-                    <td>{{ item.level_03 }}</td>
-                    <td>{{ item.license_plate_expiration_date | date }}</td>
-                    <td>{{ item.license_plate_number }}</td>
-                    <td>{{ item.license_plate_state_province }}</td>
-                    <td>{{ item.license_plate_type }}</td>
-                    <td>{{ item.life_months_in_service }}</td>
-                    <td>{{ item.model_year }}</td>
-                    <td>{{ item.months_in_service }}</td>
-                    <td>{{ item.odometer }}</td>
-                    <td>{{ item.odometer_date | date }}</td>
-                    <td>{{ item.original_in_service_date | date }}</td>
-                    <td>{{ item.plb_flag }}</td>
-                    <td>{{ item.sub_contract_id }}</td>
-                    <td>{{ item.telematics_flag }}</td>
-                    <td>{{ item.title_location }}</td>
-                    <td>{{ item.vehicle_cap_cost | currency }}</td>
-                    <td>{{ item.vehicle_category }}</td>
-                    <td>{{ item.vehicle_color }}</td>
-                    <td>{{ item.vehicle_engine }}</td>
-                    <td>{{ item.vehicle_make }}</td>
-                    <td>{{ item.vehicle_model }}</td>
-                    <td>{{ item.vehicle_model_code }}</td>
-                    <td>{{ item.vehicle_policy }}</td>
-                    <td>{{ item.vehicle_tank_capacity | number }}</td>
-                    <td>{{ item.vin }}</td>
-                  </tr>
-                </template>
-              </v-data-table>
-            </v-skeleton-loader>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          <!-- Configure how each #item row is rendered -->
+          <template #item="{ item }">
+            <tr class="report-row">
+              <td>
+                <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
+              </td>
+              <td>
+                {{ item.client_vehicle_number }}
+              </td>
+              <td>{{ item.bill_sort }}</td>
+              <td>{{ item.center_code }}</td>
+              <td>{{ item.center_name }}</td>
+              <td>{{ item.client_use_1 }}</td>
+              <td>{{ item.client_use_2 }}</td>
+              <td>{{ item.client_use_3 }}</td>
+              <td>{{ item.client_use_4 }}</td>
+              <td>{{ item.client_use_5 }}</td>
+              <td>{{ item.contract_description }}</td>
+              <td>{{ item.contract_id }}</td>
+              <td>{{ item.coupon_book_number }}</td>
+              <td>{{ item.customer_number }}</td>
+              <td>{{ item.driver_address_1 }}</td>
+              <td>{{ item.driver_address_2 }}</td>
+              <td>{{ item.driver_city }}</td>
+              <td>{{ item.driver_county }}</td>
+              <td>
+                <v-btn v-show="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
+                  <v-icon v-text="'mdi-email-edit'" class="mr-2" />
+                  {{ item.driver_email_address }}
+                </v-btn>
+              </td>
+              <td>{{ item.driver_employee_id }}</td>
+              <td>{{ item.driver_fax }}</td>
+              <td>{{ item.driver_first_name }}</td>
+              <td>{{ item.driver_last_name }}</td>
+              <td>
+                <v-btn v-show="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
+                  <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
+                  {{ item.driver_mobile | phone }}
+                </v-btn>
+              </td>
+              <td>
+                <v-btn v-show="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
+                  <v-icon v-text="'mdi-phone'" class="mr-2" />
+                  {{ item.driver_phone | phone }}
+                </v-btn>
+              </td>
+              <td>{{ item.driver_reference_number }}</td>
+              <td>{{ item.driver_state_province }}</td>
+              <td>{{ item.fuel_card_description }}</td>
+              <td>{{ item.fuel_profile_limits }}</td>
+              <td>{{ item.in_service_date | date }}</td>
+              <td>{{ item.irs_fair_market_value | currency }}</td>
+              <td>{{ item.lease_rate_id }}</td>
+              <td>{{ item.level_01 }}</td>
+              <td>{{ item.level_02 }}</td>
+              <td>{{ item.level_03 }}</td>
+              <td>{{ item.license_plate_expiration_date | date }}</td>
+              <td>{{ item.license_plate_number }}</td>
+              <td>{{ item.license_plate_state_province }}</td>
+              <td>{{ item.license_plate_type }}</td>
+              <td>{{ item.life_months_in_service }}</td>
+              <td>{{ item.model_year }}</td>
+              <td>{{ item.months_in_service }}</td>
+              <td>{{ item.odometer }}</td>
+              <td>{{ item.odometer_date | date }}</td>
+              <td>{{ item.original_in_service_date | date }}</td>
+              <td>{{ item.plb_flag }}</td>
+              <td>{{ item.sub_contract_id }}</td>
+              <td>{{ item.telematics_flag }}</td>
+              <td>{{ item.title_location }}</td>
+              <td>{{ item.vehicle_cap_cost | currency }}</td>
+              <td>{{ item.vehicle_category }}</td>
+              <td>{{ item.vehicle_color }}</td>
+              <td>{{ item.vehicle_engine }}</td>
+              <td>{{ item.vehicle_make }}</td>
+              <td>{{ item.vehicle_model }}</td>
+              <td>{{ item.vehicle_model_code }}</td>
+              <td>{{ item.vehicle_policy }}</td>
+              <td>{{ item.vehicle_tank_capacity | number }}</td>
+              <td>{{ item.vin }}</td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-skeleton-loader>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
