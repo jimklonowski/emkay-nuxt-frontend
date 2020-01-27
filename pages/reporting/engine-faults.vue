@@ -255,6 +255,9 @@ export default {
         }
       ]
     },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
     /**
      * Implement a computed query property that returns an object that corresponds with watchQuery
      * REQUIRED

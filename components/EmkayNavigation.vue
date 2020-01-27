@@ -62,8 +62,8 @@
 
       <v-toolbar-items v-if="$auth.loggedIn">
         <mega-menu :menu="reportingMenu" v-if="!isRouteActive('reporting')" />
-        <mega-menu :menu="orderingMenu" v-show="!isRouteActive('ordering')" />
-        <mega-menu :menu="managementMenu" v-show="!isRouteActive('management')" />
+        <mega-menu :menu="orderingMenu" v-if="!isRouteActive('ordering')" />
+        <mega-menu :menu="managementMenu" v-if="!isRouteActive('management')" />
       </v-toolbar-items>
       <v-divider class="mx-4" vertical inset />
       <dark-mode-toggle class="mx-1" />
@@ -101,27 +101,27 @@ export default {
         {
           icon: 'mdi-widgets',
           key: 'home',
-          to: this.localePath({ path: '/' })
+          to: { path: '/' }
         },
         {
           icon: 'mdi-chart-bubble',
           key: 'vehicle_dashboard',
-          to: this.localePath({ path: 'vehicle-search' })
+          to: { path: '/vehicle-search' }
         },
         {
           icon: 'mdi-file-chart-outline',
           key: 'reporting',
-          to: this.localePath({ path: 'reporting' })
+          to: { path: '/reporting' }
         },
         {
           icon: 'mdi-timetable',
           key: 'ordering',
-          to: this.localePath({ path: 'ordering' })
+          to: { path: '/ordering' }
         },
         {
           icon: 'mdi-apps',
           key: 'account_management',
-          to: this.localePath({ path: 'management' })
+          to: { path: '/management' }
         }
       ],
       miniVariant: false,
@@ -139,7 +139,8 @@ export default {
         categories: this.$options.menus.management.categories,
         icon: 'mdi-apps',
         subtitleKey: 'configure_your_fleet_settings',
-        titleKey: 'management'
+        titleKey: 'management',
+        path: this.$options.menus.management.to
       }
     },
     orderingMenu () {
@@ -147,7 +148,8 @@ export default {
         categories: this.$options.menus.ordering.categories,
         icon: 'mdi-timetable',
         subtitleKey: 'ordering_subtitle',
-        titleKey: 'ordering'
+        titleKey: 'ordering',
+        path: this.$options.menus.ordering.to
       }
     },
     reportingMenu () {

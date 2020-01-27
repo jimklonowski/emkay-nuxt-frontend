@@ -264,9 +264,36 @@ export default {
           value: 'phone_use',
           class: 'report-column',
           divider: true
+        },
+        {
+          text: this.$i18n.t('performance_group'),
+          value: 'performance_group',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('total_phone_usages'),
+          value: 'total_phone_usages',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('total_duration_phone_usage'),
+          value: 'total_duration_phone_usage',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('average_duration_phone_usage'),
+          value: 'average_duration_phone_usage',
+          class: 'report-column',
+          divider: true
         }
       ]
     },
+    items: vm => vm.$store.getters['reports/getData'],
+    error: vm => vm.$store.getters['reports/getError'],
+    loading: vm => vm.$store.getters['reports/getLoading'],
     /**
      * Implement a computed query property that returns an object that corresponds with watchQuery
      * REQUIRED

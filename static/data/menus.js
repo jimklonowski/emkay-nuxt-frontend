@@ -2,6 +2,7 @@
  * Management Mega Menu Config
  */
 const management = {
+  to: { path: '/management' },
   categories: [
     {
       key: 'fleet',

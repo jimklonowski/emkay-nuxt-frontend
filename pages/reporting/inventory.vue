@@ -75,8 +75,66 @@
             </div>
           </template>
 
-          <!-- Configure how each #item row is rendered -->
-          <template #item="{ item }">
+          <!-- configure individual columns -->
+          <template #item.vehicle_number="{ item }">
+            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
+          </template>
+
+          <template #item.driver_email_address="{ item }">
+            <v-btn v-show="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
+              <v-icon v-text="'mdi-email-edit'" class="mr-2" />
+              {{ item.driver_email_address }}
+            </v-btn>
+          </template>
+
+          <template #item.driver_fax="{ item }">
+            {{ item.driver_fax | phone }}
+          </template>
+
+          <template #item.driver_mobile="{ item }">
+            <v-btn v-show="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
+              <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
+              {{ item.driver_mobile | phone }}
+            </v-btn>
+          </template>
+
+          <template #item.driver_phone="{ item }">
+            <v-btn v-show="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
+              <v-icon v-text="'mdi-phone'" class="mr-2" />
+              {{ item.driver_phone | phone }}
+            </v-btn>
+          </template>
+
+          <template #item.in_service_date="{ item }">
+            {{ item.in_service_date | date }}
+          </template>
+
+          <template #item.irs_fair_market_value="{ item }">
+            {{ item.irs_fair_market_value | currency }}
+          </template>
+
+          <template #item.license_plate_expiration_date="{ item }">
+            {{ item.license_plate_expiration_date | date }}
+          </template>
+
+          <template #item.odometer_date="{ item }">
+            {{ item.odometer_date | date }}
+          </template>
+
+          <template #item.original_in_service_date="{ item }">
+            {{ item.original_in_service_date | date }}
+          </template>
+
+          <template #item.vehicle_cap_cost="{ item }">
+            {{ item.vehicle_cap_cost | currency }}
+          </template>
+
+          <template #item.vehicle_tank_capacity="{ item }">
+            {{ item.vehicle_tank_capacity | number }}
+          </template>
+
+          <!-- Configure how each #item ROW is rendered (loses customizations like divider:true) -->
+          <!-- <template #item="{ item }">
             <tr class="report-row">
               <td>
                 <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
@@ -157,7 +215,7 @@
               <td>{{ item.vehicle_tank_capacity | number }}</td>
               <td>{{ item.vin }}</td>
             </tr>
-          </template>
+          </template> -->
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
@@ -393,6 +451,7 @@ export default {
           text: this.$i18n.t('driver_fax'),
           value: 'driver_fax',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {

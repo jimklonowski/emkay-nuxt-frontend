@@ -111,7 +111,6 @@
           :headers="headers"
           :items="items"
           :items-per-page="25"
-          :hide-default-header="loading"
           :loading="loading"
           :mobile-breakpoint="0"
           :search="search"
@@ -134,8 +133,24 @@
             </div>
           </template>
 
+          <!-- configure each column rendering -->
+          <template #item.service_date="{ item }">
+            {{ item.service_date | date }}
+          </template>
+
+          <template #item.vehicle_number="{ item }">
+            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
+          </template>
+
+          <template #item.amount="{ item }">
+            {{ item.amount | currency }}
+          </template>
+
+          <template #item.quantity="{ item }">
+            {{ item.quantity | number }}
+          </template>
           <!-- Configure each #item row is rendered -->
-          <template #item="{ item }">
+          <!-- <template #item="{ item }">
             <tr>
               <td>{{ item.service_date | date }}</td>
               <td>{{ item.active }}</td>
@@ -201,7 +216,7 @@
               <td>{{ item.vendor_number }}</td>
               <td>{{ item.voucher }}</td>
             </tr>
-          </template>
+          </template> -->
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
@@ -241,6 +256,8 @@ export default {
     columns () {
       return [
         'service_date',
+        'vehicle_number',
+        'client_vehicle_number',
         'active',
         'amount',
         'ata_group',
@@ -256,12 +273,11 @@ export default {
         'client_use_3',
         'client_use_4',
         'client_use_5',
-        'client_vehicle_number',
         'customer_po',
         'description',
-        'driver_name',
-        // 'driver_first_name',
-        // 'driver_last_name',
+        // 'driver_name',
+        'driver_first_name',
+        'driver_last_name',
         'engine_hours',
         'expense_category',
         'front_left_brake',
@@ -296,7 +312,6 @@ export default {
         'tire_size',
         'vehicle_make',
         'vehicle_model',
-        'vehicle_number',
         'vendor_factor',
         'vendor_name',
         'vendor_number',
@@ -308,6 +323,18 @@ export default {
         {
           text: this.$i18n.t('service_date'),
           value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
           class: 'report-column',
           divider: true
         },
@@ -405,12 +432,6 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('client_vehicle_number'),
-          value: 'client_vehicle_number',
-          class: 'report-column',
-          divider: true
-        },
-        {
           text: this.$i18n.t('customer_po'),
           value: 'customer_po',
           class: 'report-column',
@@ -423,11 +444,25 @@ export default {
           width: 200,
           divider: true
         },
+        // {
+        //  text: this.$i18n.t('driver_name'),
+        //  value: 'driver_name',
+        //  class: 'report-column',
+        //  width: 200,
+        //  divider: true
+        // },
         {
-          text: this.$i18n.t('driver_name'),
-          value: 'driver_name',
+          text: this.$i18n.t('driver_last_name'),
+          value: 'driver_last_name',
           class: 'report-column',
-          width: 200,
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_first_name'),
+          value: 'driver_first_name',
+          class: 'report-column',
+          width: 150,
           divider: true
         },
         {
@@ -632,12 +667,6 @@ export default {
         {
           text: this.$i18n.t('vehicle_model'),
           value: 'vehicle_model',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vehicle_number'),
-          value: 'vehicle_number',
           class: 'report-column',
           divider: true
         },

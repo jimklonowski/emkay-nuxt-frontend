@@ -58,6 +58,59 @@
             </div>
           </template>
 
+          <!-- configure individual columns -->
+          <template #item.vehicle_number="{ item }">
+            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
+          </template>
+
+          <template #item.order_received_date="{ item }">
+            {{ item.order_received_date | date }}
+          </template>
+
+          <template #item.order_placed_date="{ item }">
+            {{ item.order_placed_date | date }}
+          </template>
+
+          <template #item.factory_acknowledged_date="{ item }">
+            {{ item.factory_acknowledged_date | date }}
+          </template>
+
+          <template #item.sent_to_plant_date="{ item }">
+            {{ item.sent_to_plant_date | date }}
+          </template>
+
+          <template #item.production_scheduled_date="{ item }">
+            {{ item.production_scheduled_date | date }}
+          </template>
+
+          <template #item.built_date="{ item }">
+            {{ item.built_date | date }}
+          </template>
+
+          <template #item.shipped_to_body_company_date="{ item }">
+            {{ item.shipped_to_body_company_date | date }}
+          </template>
+
+          <template #item.shipped_from_body_company_date="{ item }">
+            {{ item.shipped_from_body_company_date | date }}
+          </template>
+
+          <template #item.shipped_to_dealer_date="{ item }">
+            {{ item.shipped_to_dealer_date | date }}
+          </template>
+
+          <template #item.delivered_to_dealer_date="{ item }">
+            {{ item.delivered_to_dealer_date | date }}
+          </template>
+
+          <template #item.vin_date="{ item }">
+            {{ item.vin_date | date }}
+          </template>
+
+          <template #item.in_service_date="{ item }">
+            {{ item.in_service_date | date }}
+          </template>
+
           <!-- Configure how each #item row is rendered -->
           <!-- <template #item="{ item }">
             <tr>

@@ -14,7 +14,7 @@
         </v-tabs>
       </template>
     </v-toolbar>
-    <v-subheader>Select a report</v-subheader>
+    <v-subheader>{{ $t('select_a_report') }}</v-subheader>
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="(category, key) in $options.reports.categories" :key="key">
         <v-flex>

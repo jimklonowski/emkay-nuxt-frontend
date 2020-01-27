@@ -117,7 +117,7 @@
           :mobile-breakpoint="0"
           :search="search"
           :sort-by="['service_date']"
-          :sort-desc="[true, true]"
+          :sort-desc="[true]"
           class="striped"
           dense
         >
@@ -135,8 +135,50 @@
             </div>
           </template>
 
+          <!-- configure individual column rendering -->
+          <template #item.service_date="{ item }">
+            {{ item.service_date | date }}
+          </template>
+
+          <template #item.bill_date="{ item }">
+            {{ item.bill_date | date }}
+          </template>
+
+          <template #item.vehicle_number="{ item }">
+            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
+          </template>
+
+          <template #item.amount="{ item }">
+            {{ item.amount | currency }}
+          </template>
+
+          <template #item.card_number="{ item }">
+            <v-chip :outlined="$vuetify.theme.dark" x-small>
+              {{ item.card_number }}
+            </v-chip>
+          </template>
+
+          <template #item.emkay_invoice_date="{ item }">
+            {{ item.emkay_invoice_date | date }}
+          </template>
+
+          <template #item.quantity="{ item }">
+            {{ item.quantity | number }}
+          </template>
+
+          <template #item.tank_capacity="{ item }">
+            {{ item.tank_capacity | number }}
+          </template>
+
+          <template #item.tax_exempt="{ item }">
+            {{ item.tax_exempt | currency }}
+          </template>
+
+          <template #item.unit_price="{ item }">
+            {{ item.unit_price | currency(3,3) }}
+          </template>
           <!-- Configure how each #item row is rendered -->
-          <template #item="{ item }">
+          <!-- <template #item="{ item }">
             <tr>
               <td>{{ item.service_date | date }}</td>
               <td>{{ item.bill_date | date }}</td>
@@ -192,7 +234,7 @@
               <td>{{ item.vin }}</td>
               <td>{{ item.voucher }}</td>
             </tr>
-          </template>
+          </template> -->
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
@@ -240,8 +282,10 @@ export default {
       // TODO: Additional logic for ordering of columns and which columns should be in report
       // Returns an array of string[]
       return [
+        'vehicle_number',
         'service_date',
         'bill_date',
+        'client_vehicle_number',
         'amount',
         'bill_sort',
         'card_number',
@@ -252,7 +296,6 @@ export default {
         'client_use_3',
         'client_use_4',
         'client_use_5',
-        'client_vehicle_number',
         'driver_id',
         'driver_name',
         'emkay_invoice_date',
@@ -282,13 +325,18 @@ export default {
         'unit_price',
         'vehicle_make',
         'vehicle_model',
-        'vehicle_number',
         'vin',
         'voucher'
       ]
     },
     headers () {
       return [
+        {
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
         {
           text: this.$i18n.t('service_date'),
           value: 'service_date',
@@ -298,6 +346,12 @@ export default {
         {
           text: this.$i18n.t('bill_date'),
           value: 'bill_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
           class: 'report-column',
           divider: true
         },
@@ -359,12 +413,6 @@ export default {
         {
           text: this.$i18n.t('client_use_5'),
           value: 'client_use_5',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_vehicle_number'),
-          value: 'client_vehicle_number',
           class: 'report-column',
           divider: true
         },
@@ -454,7 +502,7 @@ export default {
           text: this.$i18n.t('merchant_address'),
           value: 'merchant_address',
           class: 'report-column',
-          width: 200,
+          width: 225,
           divider: true
         },
         {
@@ -546,12 +594,6 @@ export default {
           value: 'vehicle_model',
           class: 'report-column',
           width: 200,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vehicle_number'),
-          value: 'vehicle_number',
-          class: 'report-column',
           divider: true
         },
         {

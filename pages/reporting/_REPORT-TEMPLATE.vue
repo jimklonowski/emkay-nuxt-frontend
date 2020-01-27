@@ -126,7 +126,12 @@
             </div>
           </template>
 
-          <!-- Configure how each #item row is rendered -->
+          <!-- Configure how specific columns are rendered -->
+          <!-- <template #item.vehicle_number="{ item }">
+            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
+          </template> -->
+
+          <!-- Configure how each #item row is rendered (loses customizations from headers like divider, align, etc.) -->
           <!-- <template #item="{ item }">
             <tr>
               <td>{{ item.date | date }}</td>

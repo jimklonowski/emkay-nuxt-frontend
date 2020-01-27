@@ -257,7 +257,7 @@ export default {
     customVariables: ['~/assets/styles/variables.scss'],
     treeShake: true,
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         light: {
           primary: colors.deepPurple,
@@ -311,7 +311,7 @@ export default {
   build: {
     profile: true,
     // vendor: ['@babel/polyfill'],
-    transpile: ['vee-validate/dist/rules', 'vuetify/lib'],
+    transpile: ['vee-validate/dist/rules', 'vuetify'],
     // transpile: [/^vuetify/],
     // plugins: [new VuetifyLoaderPlugin()],
     /*
