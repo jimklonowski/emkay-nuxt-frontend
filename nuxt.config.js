@@ -122,7 +122,9 @@ export default {
     // Doc: https://github.com/microcipcip/cookie-universal/tree/master/packages/cookie-universal-nuxt#readme
     'cookie-universal-nuxt',
     // Doc: https://github.com/Developmint/nuxt-webfontloader
-    'nuxt-webfontloader'
+    'nuxt-webfontloader',
+    // Doc: https://github.com/bazzite/nuxt-optimized-images
+    '@bazzite/nuxt-optimized-images'
   ],
   /*
   ** Axios module configuration
@@ -196,21 +198,6 @@ export default {
       silentFallbackWarn: true
     }
   },
-  // /**
-  //  * nuxt-validate module configuration
-  //  * See: https://github.com/lewyuburi/nuxt-validate
-  //  */
-  // nuxtValidate: {
-  //   lang: 'en',
-  //   // rules: [],
-  //   nuxti18n: {
-  //     locale: {
-  //       'en': 'en',
-  //       'fr': 'fr',
-  //       'ca': 'en'
-  //     }
-  //   }
-  // },
   /*
    ** google analytics module configuration
    ** See: https://github.com/nuxt-community/analytics-module
@@ -233,6 +220,14 @@ export default {
     google: {
       families: ['Roboto', 'Roboto+Condensed', 'Lato']
     }
+  },
+  /*
+  ** nuxt-optimized-images configuration
+  ** See: https://github.com/bazzite/nuxt-optimized-images
+  ** Also: https://www.bazzite.com/docs/nuxt-optimized-images/#features
+  */
+  optimizedImages: {
+    optimizeImages: true
   },
   /*
   ** moment.js module configuration
@@ -309,6 +304,13 @@ export default {
   ** Build configuration
   */
   build: {
+    html: {
+      // Fix hydration errors? https://github.com/nuxt/nuxt.js/issues/5800#issuecomment-570110683
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true
+      }
+    },
     profile: true,
     // vendor: ['@babel/polyfill'],
     transpile: ['vee-validate/dist/rules', 'vuetify'],

@@ -39,6 +39,12 @@
             </v-list-item>
           </template>
 
+          <!-- <template #no-data>
+            <v-list-item dense>
+              <v-list-item-title v-text="noDataText" />
+            </v-list-item>
+          </template> -->
+
           <template #selection="{ item }">
             {{ item.vehicle_number }}
           </template>
@@ -95,6 +101,12 @@ export default {
       if (!this.results.length) { return [] }
       // remove duplicates
       return this.results.map((result) => { return { ...result } })
+    },
+    noDataText () {
+      if (this.query && this.query.length > 2 && !this.results.length) {
+        return this.$i18n.t('no_search_results', { query: this.query })
+      }
+      return this.$i18n.t('search_placeholder')
     }
   },
   watch: {

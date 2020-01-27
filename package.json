@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs2": "^7.7.4",
+    "@bazzite/nuxt-optimized-images": "^0.3.0",
     "@nuxtjs/auth": "^4.8.5",
     "@nuxtjs/axios": "^5.9.3",
     "@nuxtjs/dotenv": "^1.4.0",
@@ -25,6 +26,7 @@
     "axios-mock-adapter": "^1.17.0",
     "cookie-universal-nuxt": "^2.1.0",
     "core-js": "^2.6.10",
+    "imagemin-mozjpeg": "^8.0.0",
     "jsonwebtoken": "^8.5.1",
     "nuxt": "^2.11.0",
     "nuxt-i18n": "^6.5.0",
