@@ -1,19 +1,19 @@
 <template>
-  <v-card :loading="loading" outlined>
+  <v-card outlined>
     <v-card-title class="font-lato">
-      {{ $t('fleet_navigator') }}
+      {{ $t('place_stock_orders') }}
     </v-card-title>
     <v-card-text class="pa-0">
-      todo
+      todo: stock order form
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 export default {
-  name: 'FleetNavigator',
+  name: 'PlaceStockOrders',
   head () {
-    const title = this.$t('fleet_navigator')
+    const title = this.$t('place_stock_orders')
     return {
       title,
       meta: [

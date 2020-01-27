@@ -1,7 +1,7 @@
 <template>
   <v-card :loading="loading" outlined>
     <v-card-title class="font-lato">
-      {{ $t('manage_your_fleet_policies') }}
+      {{ $t('request_an_mvr') }}
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  name: 'FleetPolicies',
+  name: 'RequestMvr',
   data: () => ({
     loading: false,
     search: ''
@@ -48,7 +48,7 @@ export default {
     headers: vm => []
   },
   head () {
-    const title = this.$t('fleet_policies')
+    const title = this.$t('request_an_mvr')
     return {
       title,
       meta: [

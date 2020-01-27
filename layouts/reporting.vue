@@ -2,12 +2,8 @@
   <v-app>
     <emkay-navigation />
     <v-content>
+      <report-navigation />
       <v-container>
-        <v-row no-gutters>
-          <v-col cols="12">
-            <report-navigation />
-          </v-col>
-        </v-row>
         <v-row>
           <v-col cols="12">
             <nuxt />

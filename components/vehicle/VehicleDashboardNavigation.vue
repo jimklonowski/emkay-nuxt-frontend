@@ -19,7 +19,7 @@
     <v-toolbar-title class="display-1">
       <nuxt-link :to="vehicleRoute" class="text-decoration-none white--text">
         {{ $t('vehicle_dashboard') }}
-        <span class="caption text--disabled">
+        <span class="caption">
           {{ $route.params.vehicle }}
         </span>
       </nuxt-link>

@@ -1,19 +1,19 @@
 <template>
-  <v-card :loading="loading" outlined>
+  <v-card outlined>
     <v-card-title class="font-lato">
-      {{ $t('fleet_navigator') }}
+      {{ $t('manage_selector_groups') }}
     </v-card-title>
     <v-card-text class="pa-0">
-      todo
+      todo: manage selector groups
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 export default {
-  name: 'FleetNavigator',
+  name: 'ManageSelectorGroups',
   head () {
-    const title = this.$t('fleet_navigator')
+    const title = this.$t('manage_selector_groups')
     return {
       title,
       meta: [
