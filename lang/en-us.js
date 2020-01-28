@@ -208,6 +208,7 @@ export default {
   factory_order_number: "Factory Order Number",
   fault_code: "Fault Code",
   fault_detail: "Fault Detail",
+  filters: "Filters",
   fixed_costs: "Fixed Costs",
   fleet_incentives: "Fleet Incentives",
   fleet_360: "Fleet 360",
