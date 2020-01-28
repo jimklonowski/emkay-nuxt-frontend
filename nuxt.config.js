@@ -64,8 +64,8 @@ export default {
   ** Customize the progress-bar color
   */
   loading: {
-    // color: colors.deepPurple.base,
-    color: colors.amber.base,
+    // color: colors.amber.base,
+    color: colors.deepPurple.base,
     continuous: true,
     failedColor: colors.deepOrange.accent4,
     height: '4px'

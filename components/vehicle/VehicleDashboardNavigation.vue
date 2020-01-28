@@ -1,14 +1,15 @@
 <template>
   <v-app-bar
-    :src="require('@/assets/dash1.jpg')"
+    :src="require('@/assets/steeringwheel1.jpg')"
     :elevate-on-scroll="false"
-    style="position:sticky;top:64px;left:0;right:0;z-index:4;"
     dark
     extended
     prominent
     flat
     hide-on-scroll
+    elevation="4"
     scroll-threshold="60"
+    class="emkay-image-nav"
   >
     <template #img="{ props }">
       <v-img
@@ -16,7 +17,7 @@
         gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
       />
     </template>
-    <v-toolbar-title class="display-1">
+    <v-toolbar-title>
       <nuxt-link :to="vehicleRoute" class="text-decoration-none white--text">
         {{ $t('vehicle_dashboard') }}
         <span class="caption">
@@ -27,11 +28,22 @@
 
     <v-spacer />
     <template #extension>
-      <v-toolbar-items>
+      <v-tabs
+        show-arrows
+        left
+        background-color="transparent"
+        color="white"
+      >
+        <v-tab v-for="(item, key) in actions" :key="key" :to="localePath(item.to)" text x-small>
+          <v-icon v-text="item.icon" />
+          {{ $t(item.key) }}
+        </v-tab>
+      </v-tabs>
+      <!-- <v-toolbar-items>
         <v-btn v-for="(item, key) in actions" :key="key" :to="localePath(item.to)" text x-small>
           {{ $t(item.key) }}
         </v-btn>
-      </v-toolbar-items>
+      </v-toolbar-items> -->
       <v-spacer />
       <v-btn icon>
         <v-icon>mdi-dots-vertical</v-icon>
@@ -61,11 +73,6 @@ export default {
           key: 'reassign_vehicle',
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/reassign-vehicle` }
-        },
-        {
-          key: 'order_status',
-          icon: '',
-          to: { path: `/vehicle/${this.$route.params.vehicle}/order-status` }
         }
       ]
     }

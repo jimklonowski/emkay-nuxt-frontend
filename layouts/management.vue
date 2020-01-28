@@ -2,12 +2,8 @@
   <v-app>
     <emkay-navigation />
     <v-content>
+      <management-navigation />
       <v-container>
-        <v-row no-gutters>
-          <v-col cols="12">
-            <management-navigation />
-          </v-col>
-        </v-row>
         <v-row>
           <v-col cols="12">
             <nuxt />
@@ -27,7 +23,7 @@ import EmkayFooter from '@/components/EmkayFooter'
 import EmkayNavigation from '@/components/EmkayNavigation'
 import ManagementNavigation from '@/components/management/ManagementNavigation'
 /**
- * Reporting Layout page
+ * Management Layout page
  */
 export default {
   components: {
