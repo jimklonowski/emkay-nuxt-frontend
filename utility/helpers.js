@@ -42,8 +42,11 @@ export const multiFilter = (item, condition) => {
       }
       // debugger
       // return (condition[eachKey].toString()).toLowerCase().includes((eachObj[eachKey].toString()).toLowerCase())
-      return Array.prototype.includes.call(condition[eachKey], eachObj[eachKey])
-      // return (Array.prototype.includes.call(condition[eachKey].toString(), eachObj[eachKey].toString()))
+
+      // this works, but is not case insensitive
+      // return Array.prototype.includes.call(condition[eachKey], eachObj[eachKey].toString().toLowerCase())
+      const lowercaseArray = condition[eachKey].map(x => x.toString().toLowerCase())
+      return Array.prototype.includes.call(lowercaseArray, eachObj[eachKey].toString().toLowerCase())
     })
   })
 }

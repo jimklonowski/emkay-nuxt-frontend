@@ -5,17 +5,31 @@
         left
         permanent
         floating
+        width="100%"
       >
+        <template #prepend>
+          <v-list-item v-show="filterCount > 0" class="error" link dark>
+            <v-list-item-avatar class="ma-0">
+              <v-avatar v-text="filterCount" size="20" color="white error--text" />
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ $tc('filters_applied', filterCount) }}</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action @click="resetFilters">
+              <v-icon v-text="'mdi-filter-variant-remove'" :title="$t('clear_filters')" />
+            </v-list-item-action>
+          </v-list-item>
+        </template>
         <v-subheader class="overline">
           {{ $t('filters') }}
         </v-subheader>
         <v-list dense rounded>
-          <v-list-item>
+          <v-list-item v-for="(field, index) in filterFields" :key="index">
             <v-list-item-content>
               <v-text-field
-                v-model.trim="center_code"
-                @keydown.enter="addFilter('center_code', center_code)"
-                :label="$t('center_code')"
+                v-model.trim="model[field]"
+                @keydown.enter="addFilter(field, model[field])"
+                :label="$t(field)"
                 prepend-inner-icon="mdi-filter-variant"
                 clearable
                 dense
@@ -23,24 +37,17 @@
               />
             </v-list-item-content>
           </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <v-text-field
-                v-model="vehicle_make"
-                @keydown.enter="addFilter('vehicle_make', vehicle_make)"
-                :label="$t('vehicle_make')"
-                prepend-inner-icon="mdi-filter-variant"
-                dense
-                outlined
-              />
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <v-text-field label="Model Year" dense outlined />
-            </v-list-item-content>
-          </v-list-item>
         </v-list>
+        <template #append>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="caption text-right grey--text">
+                <span>{{ filteredItems.length }}</span>
+                {{ $tc('vehicles', filteredItems.length) }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-navigation-drawer>
     </v-card>
     <v-container fluid>
@@ -80,7 +87,7 @@
                   <v-card-title>
                     {{ [selectedItem.driver_first_name, selectedItem.driver_last_name].filter(Boolean).join(' ') }}
                     <v-spacer />
-                    <v-btn @click="selectedItem = {}" color="primary" icon>
+                    <v-btn @click="clearSelection" color="primary" icon>
                       <v-icon v-text="'mdi-close'" />
                     </v-btn>
                   </v-card-title>
@@ -137,49 +144,77 @@
 import { multiFilter } from '@/utility/helpers'
 export default {
   name: 'FleetNavigator',
+  data () {
+    return {
+      // to start off, return a default object with no filters in each filterType array
+      currentFilters: this.defaultFilter(),
+      displayFields: ['center_code', 'center_name', 'model_year', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'in_service_date', 'vin', 'contract_description'],
+      filterFields: ['center_code', 'model_year', 'vehicle_make', 'vehicle_model']
+    }
+  },
   computed: {
     items: vm => vm.$store.getters['fleet/getVehicles'],
     filteredItems () {
       // console.log(this.currentFilters)
       return multiFilter(this.items, this.currentFilters)
     },
+    filterCount () {
+      return [].concat(...Object.values(this.currentFilters)).length
+    },
     hasFilters: vm => Object.values(vm.currentFilters).map(x => x.filter(Boolean).length).reduce((a, b) => a + b, 0),
     hasSelection: vm => Object.keys(vm.selectedItem).length > 0
   },
   async asyncData ({ store }) {
-    let center_code, vehicle_make
+    const model = {
+      center_code: '',
+      vehicle_make: ''
+    }
     let loading, search
     const filters = {
       command: 'VEHICLEAUDIT',
       customer: 'EM102',
       json: 'Y'
     }
+
     // Fetch fleet
     await store.dispatch('fleet/fetchVehicles', filters)
     return {
-      // currentFilters: [{ name: 'center_code', value: '001' }],
-      center_code,
-      // object that contains arrays of filters we will support
-      currentFilters: {
-        center_code: [], // ['001', '002']
-        vehicle_make: [] // ['FORD','GMC','TOYOTA']
-      },
-      displayFields: ['center_code', 'center_name', 'model_year', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'in_service_date', 'vin', 'contract_description'],
+      model,
       loading,
       search,
-      selectedItem: {},
-      vehicle_make
+      // TODO: It might be better to use selectedIndex to track which vehicle is currently selected, instead of storing a copy of the selection Object.
+      selectedItem: {}
     }
   },
   methods: {
     addFilter (name, value) {
+      if (!value) { return }
       if (!this.currentFilters[name].includes(value)) {
-        this.currentFilters[name].push(value)
-        this[name] = null // clear the textfield since we successfully added a filter
+        this.currentFilters[name].push(value.toUpperCase())
+        this.model[name] = null // clear the textfield since we successfully added a filter
+        this.clearSelection()
+      }
+      console.dir(this.currentFilters)
+    },
+    clearSelection () {
+      this.selectedItem = {}
+    },
+    defaultFilter () {
+      return {
+        center_code: [],
+        vehicle_make: [],
+        vehicle_model: [],
+        vehicle_category: [],
+        driver_state_province: [],
+        model_year: []
       }
     },
     removeFilter (name, value) {
       this.currentFilters[name].splice(this.currentFilters[name].findIndex(item => item === value), 1)
+      this.selectedItem = {}
+    },
+    resetFilters () {
+      this.currentFilters = this.defaultFilter()
     },
     selectItem (item) {
       this.selectedItem = {}
