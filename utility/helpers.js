@@ -28,3 +28,37 @@ export const computeTotalByKey = (items, key) => {
   })
   return total[key]
 }
+
+/**
+ * Multifilter
+ * https://gist.github.com/jherax/f11d669ba286f21b7a2dcff69621eb72
+ */
+export const multiFilter = (item, condition) => {
+  const filterKeys = Object.keys(condition)
+  return item.filter((eachObj) => {
+    return filterKeys.every(eachKey => {
+      if (!condition[eachKey].length) {
+        return true // passing an empty filter means that filter is ignored
+      }
+      // debugger
+      // return (condition[eachKey].toString()).toLowerCase().includes((eachObj[eachKey].toString()).toLowerCase())
+      return Array.prototype.includes.call(condition[eachKey], eachObj[eachKey])
+      // return (Array.prototype.includes.call(condition[eachKey].toString(), eachObj[eachKey].toString()))
+    })
+  })
+}
+// export const multiFilter = (items, filters) => {
+//   return items.filter((item) => {
+//     return Object.entries(filters).every(([filterProperty, filterValues]) => {
+//       switch (Object.prototype.toString.call(item[filterProperty])) {
+//         case '[object Object]': return Object.entries(filterValues).every(([extFilterProperty, extFilterValue]) => {
+//           return new Map(Object.entries(item[filterProperty])).get(extFilterProperty) === extFilterValue
+//         })
+//         case '[object Array]': return item[filterProperty].some((itemValue) => {
+//           return filterValues.includes(itemValue)
+//         })
+//         default: return filterValues.includes(item[filterProperty])
+//       }
+//     })
+//   })
+// }

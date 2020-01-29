@@ -105,6 +105,7 @@ export default {
   coupon_book_number: "Coupon Book Number",
   cpm: "Cost Per Mile",
   create_order: "Create Order",
+  current_filters: "Current Filters",
   current_status: "Current Status",
   custom: "Custom",
   custom_labels: "Custom Labels",

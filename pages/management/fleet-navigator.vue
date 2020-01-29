@@ -1,195 +1,150 @@
 <template>
-  <v-card :loading="loading" outlined>
-    <v-card-title class="font-lato">
-      {{ $t('fleet_navigator') }}
-    </v-card-title>
-    <v-card-actions>
-      <v-container>
-        <v-subheader>{{ $t('filters') }}</v-subheader>
-        <v-row>
-          <v-flex>
-            <template v-for="(value, name, index) in currentFilters">
-              <v-chip
-                v-for="(filter, key) in currentFilters[name]"
-                :key="`${key}.${index}`"
-                @click:close="removeFilter(filter)"
-                close-icon="mdi-filter-remove"
-                class="caption mx-2"
-                close
-              >
-                <!-- <v-avatar color="primary white--text" left>
-                  {{ filter.value }}
-                </v-avatar> -->
-                <!-- <v-avatar left>
-                  <v-icon v-text="'mdi-filter'" />
-                </v-avatar> -->
-                <strong>{{ $t(filter.name) }}</strong>&nbsp;
-                <span>({{ filter.value }})</span>
-              </v-chip>
-            </template>
-          </v-flex>
-        </v-row>
-        <v-row>
-          <v-col v-show="currentFilters.center_code.length < 1" cols="6" md="3">
-            <v-text-field
-              v-model="center_code"
-              @keydown.enter="addFilter('center_code', center_code)"
-              prepend-inner-icon="mdi-filter"
-              label="Filter by Center Code"
-              hint="Press Enter"
-              outlined
-              dense
-            />
-          </v-col>
-          <v-col v-show="currentFilters.vehicle_make.length < 1" cols="6" md="3">
-            <v-text-field
-              v-model="vehicle_make"
-              @keydown.enter="addFilter('vehicle_make', vehicle_make)"
-              prepend-inner-icon="mdi-filter"
-              label="Filter by Vehicle Make"
-              hint="Press Enter"
-              outlined
-              dense
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-actions>
-    <v-card-text class="pa-0">
-      <v-container>
-        <v-row>
-          <v-scroll-y-transition>
-            <v-col v-if="!!selectedItem" :cols="!!selectedItem ? 3 : undefined">
-              <v-card elevation="4" shaped>
-                <v-card-title>
-                  {{ [selectedItem.driver_first_name, selectedItem.driver_last_name].filter(Boolean).join(' ') }}
-                  <v-spacer />
-                  <v-btn @click="selectedItem = null" color="primary" icon>
-                    <v-icon v-text="'mdi-close'" />
-                  </v-btn>
-                </v-card-title>
-                <v-divider />
-                <v-card-text class="pa-0">
-                  <v-simple-table dense>
-                    <template #default>
-                      <tbody>
-                        <tr>
-                          <th>{{ $t('center_code') }}</th>
-                          <td>{{ selectedItem.center_code }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('center_name') }}</th>
-                          <td>{{ selectedItem.center_name }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('model_year') }}</th>
-                          <td>{{ selectedItem.model_year }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('vehicle_make') }}</th>
-                          <td>{{ selectedItem.vehicle_make }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('vehicle_model') }}</th>
-                          <td>{{ selectedItem.vehicle_model }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('vehicle_color') }}</th>
-                          <td>{{ selectedItem.vehicle_color }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('in_service_date') }}</th>
-                          <td>{{ selectedItem.in_service_date | date }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('vin') }}</th>
-                          <td>{{ selectedItem.vin }}</td>
-                        </tr>
-                        <tr>
-                          <th>{{ $t('contract_description') }}</th>
-                          <td>{{ selectedItem.contract_description }}</td>
-                        </tr>
-                      </tbody>
-                    </template>
-                  </v-simple-table>
-                </v-card-text>
-                <v-card-actions />
-              </v-card>
-            </v-col>
-          </v-scroll-y-transition>
-          <v-col :cols="!!selectedItem ? 9 : 12">
-            <v-slide-y-transition class="d-flex flex-wrap" group>
-              <client-only>
-                <v-card
-                  v-for="(item, key) in filteredItems"
-                  :key="key"
-                  max-width="350"
-                  class="ma-2"
-                  outlined
-                  tile
-                >
-                  <v-card-title @click="selectItem(item)">
-                    {{ item.vehicle_number }}
+  <v-flex class="d-flex">
+    <v-card class="ma-6" width="300" outlined>
+      <v-navigation-drawer
+        left
+        permanent
+        floating
+      >
+        <v-subheader class="overline">
+          {{ $t('filters') }}
+        </v-subheader>
+        <v-list dense rounded>
+          <v-list-item>
+            <v-list-item-content>
+              <v-text-field
+                v-model.trim="center_code"
+                @keydown.enter="addFilter('center_code', center_code)"
+                :label="$t('center_code')"
+                prepend-inner-icon="mdi-filter-variant"
+                clearable
+                dense
+                outlined
+              />
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-text-field
+                v-model="vehicle_make"
+                @keydown.enter="addFilter('vehicle_make', vehicle_make)"
+                :label="$t('vehicle_make')"
+                prepend-inner-icon="mdi-filter-variant"
+                dense
+                outlined
+              />
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-text-field label="Model Year" dense outlined />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </v-card>
+    <v-container fluid>
+      <v-row>
+        <v-col cols="12">
+          <v-card :loading="loading" outlined>
+            <v-card-title class="font-lato">
+              {{ $t('fleet_navigator') }}
+            </v-card-title>
+            <v-subheader v-show="hasFilters" class="overline px-4">
+              {{ $t('current_filters') }}
+            </v-subheader>
+            <v-card-actions class="px-4">
+              <!-- Applied Filters -->
+              <v-flex>
+                <!-- iterate each category -->
+                <template v-for="(value, name, index) in currentFilters">
+                  <!-- iterate each filter within that category -->
+                  <v-chip
+                    v-for="(filter, key) in currentFilters[name]"
+                    :key="`${key}.${index}`"
+                    @click:close="removeFilter(name, filter)"
+                    close-icon="mdi-filter-variant-remove"
+                    class="caption mx-2"
+                    close
+                  >
+                    <strong>{{ $t(name) }}</strong>&nbsp;
+                    <span>({{ filter }})</span>
+                  </v-chip>
+                </template>
+              </v-flex>
+            </v-card-actions>
+            <v-card-text class="d-flex">
+              <v-scale-transition>
+                <!-- Selected Item Card -->
+                <v-card v-if="hasSelection" outlined min-width="400" height="400" class="ma-2">
+                  <v-card-title>
+                    {{ [selectedItem.driver_first_name, selectedItem.driver_last_name].filter(Boolean).join(' ') }}
+                    <v-spacer />
+                    <v-btn @click="selectedItem = {}" color="primary" icon>
+                      <v-icon v-text="'mdi-close'" />
+                    </v-btn>
                   </v-card-title>
-                  <v-card-subtitle>{{ item.center_code }} - {{ item.center_name }}</v-card-subtitle>
-                  <!-- <v-card-text>{{ item.center_name }}</v-card-text> -->
+                  <v-card-subtitle>
+                    <nuxt-link :title="$t('to_vehicle_dashboard')" :to="localePath({ path: `/vehicle/${selectedItem.vehicle_number}` })" v-text="selectedItem.vehicle_number" class="text-decoration-none" nuxt />
+                  </v-card-subtitle>
+                  <v-divider />
                   <v-card-text class="pa-0">
                     <v-simple-table dense>
                       <template #default>
                         <tbody>
-                          <tr>
-                            <td>{{ $t('model_year') }}</td>
-                            <td>{{ item.model_year }}</td>
-                          </tr>
-                          <tr>
-                            <td>{{ $t('vehicle_make') }}</td>
-                            <td>{{ item.vehicle_make }}</td>
-                          </tr>
-                          <tr>
-                            <td>{{ $t('vehicle_model') }}</td>
-                            <td>{{ item.vehicle_model }}</td>
-                          </tr>
-                          <tr>
-                            <td>{{ $t('vehicle_category') }}</td>
-                            <td>{{ item.vehicle_category }}</td>
-                          </tr>
-                          <tr>
-                            <td>{{ $t('vehicle_color') }}</td>
-                            <td>{{ item.vehicle_color }}</td>
+                          <tr v-for="(field, key) in displayFields" :key="key">
+                            <th v-text="$t(field)" class="overflow-ellipsis" />
+                            <td v-html="selectedItem[field]" class="overflow-ellipsis" />
                           </tr>
                         </tbody>
                       </template>
                     </v-simple-table>
                   </v-card-text>
+                  <v-card-actions />
                 </v-card>
-              </client-only>
-            </v-slide-y-transition>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-text>
-  </v-card>
+              </v-scale-transition>
+              <v-slide-y-transition class="d-flex flex-wrap" group>
+                <v-card
+                  v-for="(item, key) in filteredItems"
+                  :key="key"
+                  :color="item.vehicle_number === selectedItem.vehicle_number ? 'primary' : undefined"
+                  :dark="item.vehicle_number === selectedItem.vehicle_number"
+                  @click="selectItem(item)"
+                  height="100"
+                  width="150"
+                  class="ma-2"
+                  outlined
+                  shaped
+                  tile
+                >
+                  <v-card-title>
+                    {{ item.vehicle_number }}
+                  </v-card-title>
+                  <v-card-subtitle class="overflow-ellipsis">
+                    {{ item.center_code }} - {{ item.center_name }}
+                  </v-card-subtitle>
+                </v-card>
+              </v-slide-y-transition>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-flex>
 </template>
 
 <script>
+import { multiFilter } from '@/utility/helpers'
 export default {
   name: 'FleetNavigator',
   computed: {
     items: vm => vm.$store.getters['fleet/getVehicles'],
     filteredItems () {
-      // this needs to handle arrays of filters with AND
-      // TODO: should be able to filter 001 and 002 and see BOTH sets of vehicles ([001 OR 002]), not an empty set of vehicles with center_code===[001 and 002]
-      let filtered = this.items
-
-      this.currentFilters.center_code.forEach(filter => {
-        filtered = filtered.filter(record => {
-          return filter.name === 'center_code'
-            ? new RegExp(filter.value, 'i').test(record[filter.name])
-            : record[filter.name] === filter.value
-        })
-      })
-      return filtered
-    }
+      // console.log(this.currentFilters)
+      return multiFilter(this.items, this.currentFilters)
+    },
+    hasFilters: vm => Object.values(vm.currentFilters).map(x => x.filter(Boolean).length).reduce((a, b) => a + b, 0),
+    hasSelection: vm => Object.keys(vm.selectedItem).length > 0
   },
   async asyncData ({ store }) {
     let center_code, vehicle_make
@@ -206,29 +161,32 @@ export default {
       center_code,
       // object that contains arrays of filters we will support
       currentFilters: {
-        center_code: [],
-        vehicle_make: []
+        center_code: [], // ['001', '002']
+        vehicle_make: [] // ['FORD','GMC','TOYOTA']
       },
+      displayFields: ['center_code', 'center_name', 'model_year', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'in_service_date', 'vin', 'contract_description'],
       loading,
       search,
-      selectedItem: null,
+      selectedItem: {},
       vehicle_make
     }
   },
   methods: {
     addFilter (name, value) {
-      this.currentFilters[name].push({
-        name,
-        value
-      })
-      this.center_code = null
-      this.vehicle_make = null
+      if (!this.currentFilters[name].includes(value)) {
+        this.currentFilters[name].push(value)
+        this[name] = null // clear the textfield since we successfully added a filter
+      }
     },
-    removeFilter (x) {
-      this.currentFilters[x.name].splice(this.currentFilters[x.name].findIndex(item => item === x), 1)
+    removeFilter (name, value) {
+      this.currentFilters[name].splice(this.currentFilters[name].findIndex(item => item === value), 1)
     },
     selectItem (item) {
-      this.selectedItem = { ...item }
+      this.selectedItem = {}
+      // adding 100ms between clearing the old selection and selecting a new item lets us see the animation
+      setTimeout(() => {
+        this.selectedItem = { ...item }
+      }, 100)
     }
   },
   head () {

@@ -44,7 +44,7 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-subheader>{{ $t('select_an_action') }}</v-subheader>
+            <v-subheader class="overline">{{ $t('select_an_action') }}</v-subheader>
             <v-tabs-items v-model="tab">
               <v-tab-item v-for="(category, key) in $options.management.categories" :key="key">
                 <v-flex>

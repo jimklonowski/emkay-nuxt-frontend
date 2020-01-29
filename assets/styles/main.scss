@@ -76,3 +76,14 @@
     text-shadow: 2px 2px 4px rgba(0,0,0,0.25);
   }
 }
+
+/* Prevent text-wrapping and use ellipsis for overflow text */
+.overflow-ellipsis {
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+
+.v-card--link:focus:before {
+  opacity: 0 !important;
+}

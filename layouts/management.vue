@@ -3,13 +3,7 @@
     <emkay-navigation />
     <v-content>
       <management-navigation />
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <nuxt />
-          </v-col>
-        </v-row>
-      </v-container>
+      <nuxt />
     </v-content>
     <emkay-footer />
     <client-only>
