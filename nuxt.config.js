@@ -131,9 +131,9 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.BASE_URL
+    baseURL: process.env.BASE_URL,
+    credentials: true
     // ,timeout: 5
-    // ,credentials: true
   },
   /*
   ** Auth module configuration
@@ -141,39 +141,73 @@ export default {
   */
   auth: {
     plugins: [
-      {
-        // In production, we shouldn't be using mock-axios...
-        src: '~/plugins/vue-mock-axios'
-      },
+      { src: '~/plugins/vue-mock-axios' },
       { src: '~/plugins/auth-lang-redirects', ssr: false }
     ],
-    // cookie: false,
-    // localStorage: false,
-    token: {
-      prefix: 'token.'
-    },
-    redirect: {
-      login: '/login',
-      logout: '/login',
-      home: '/',
-      callback: false
-    },
     strategies: {
       local: {
         endpoints: {
-          // the backend accepts a POST of login credentials at /auth/login and returns an object { accessToken, refreshToken, expiresIn, clientId }.  see plugins/vue-mock-axios.js
-          login: { url: '/auth/login', method: 'post', propertyName: 'accessToken' },
-          // the backend accepts a GET at /auth/logout that logs out the current session
-          logout: { url: '/auth/logout', method: 'get' },
-          // the backend accepts a GET at /auth/user that returns an object { account, username, ... }
-          user: { url: '/auth/user', method: 'get', propertyName: 'user' }
-          // logout: false,
-        }
-        // tokenRequired: true,
-        // tokenType: 'Bearer'
+          login: {
+            url: '/login',
+            method: 'post'
+          },
+          logout: {
+            url: '/logout',
+            method: 'post'
+          }
+          // user: {
+          //   url: '/user',
+          //   method: 'get',
+          //   propertyName: 'user'
+          //   // propertyName: false // use the entire response as the user object
+          // }
+        },
+        // used for cookie-only flows
+        tokenRequired: false,
+        tokenType: false
       }
+    },
+    redirect: {
+      login: '/login', // User will be redirected to this path if login is required.
+      logout: '/login', // User will be redirected to this path if after logout, current route is protected.
+      home: '/' // User will be redirected to this path after login. (rewriteRedirects will rewrite this path)
     }
   },
+  // auth: {
+  //   plugins: [
+  //     {
+  //       // In production, we shouldn't be using mock-axios...
+  //       src: '~/plugins/vue-mock-axios'
+  //     },
+  //     { src: '~/plugins/auth-lang-redirects', ssr: false }
+  //   ],
+  //   // cookie: false,
+  //   // localStorage: false,
+  //   token: {
+  //     prefix: 'token.'
+  //   },
+  //   redirect: {
+  //     login: '/login',
+  //     logout: '/login',
+  //     home: '/',
+  //     callback: false
+  //   },
+  //   strategies: {
+  //     local: {
+  //       endpoints: {
+  //         // the backend accepts a POST of login credentials at /login
+  //         login: { url: '/login', method: 'post', propertyName: false },
+  //         // the backend accepts a GET at /logout that logs out the current session
+  //         logout: { url: '/logout', method: 'post' },
+  //         // the backend accepts a GET at /user that returns an object { account, username, ... }
+  //         user: { url: '/user', method: 'get', propertyName: 'user' }
+  //         // logout: false,
+  //       }
+  //       // tokenRequired: true,
+  //       // tokenType: 'Bearer'
+  //     }
+  //   }
+  // },
   /*
   ** i18n module configuration
   ** See https://nuxt-community.github.io/nuxt-i18n/

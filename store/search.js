@@ -22,7 +22,7 @@ export const actions = {
         'VIN',
         'PLATE'
       ]
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
+      const url = `/webcom-generic-json`
       await Promise.all(searchTypes.map(async (searchType) => {
         const f = { ...filters, ...{ search_type: searchType } }
         // get vehicles and push them to the results when ready
