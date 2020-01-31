@@ -42,8 +42,8 @@
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title class="caption text-right grey--text">
-                <span>{{ filteredItems.length }}</span>
-                {{ $tc('vehicles', filteredItems.length) }}
+                <span>{{ items.length }}</span>
+                {{ $tc('vehicles', items.length) }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -80,6 +80,34 @@
                 </template>
               </v-flex>
             </v-card-actions>
+            <v-card-actions>
+              <v-col cols="auto">
+                <v-select
+                  v-model="sortBy"
+                  :label="$t('sort')"
+                  :items="displayFields.map(x => { return { text: $t(x), value: x }})"
+                  @change="sortBy = $event"
+                />
+                <v-btn
+                  :outlined="sortDesc"
+                  :text="!sortDesc"
+                  :color="sortDesc ? 'primary' : undefined"
+                  @click="sortDesc = true"
+                  icon
+                >
+                  <v-icon v-text="'mdi-sort-descending'" />
+                </v-btn>
+                <v-btn
+                  :outlined="!sortDesc"
+                  :text="sortDesc"
+                  :color="!sortDesc ? 'primary' : undefined"
+                  @click="sortDesc = false"
+                  icon
+                >
+                  <v-icon v-text="'mdi-sort-ascending'" />
+                </v-btn>
+              </v-col>
+            </v-card-actions>
             <v-card-text class="d-flex">
               <v-scale-transition>
                 <!-- Selected Item Card -->
@@ -112,7 +140,7 @@
               </v-scale-transition>
               <v-slide-y-transition class="d-flex flex-wrap" group>
                 <v-card
-                  v-for="(item, key) in filteredItems"
+                  v-for="(item, key) in items"
                   :key="key"
                   :color="item.vehicle_number === selectedItem.vehicle_number ? 'primary' : undefined"
                   :dark="item.vehicle_number === selectedItem.vehicle_number"
@@ -141,7 +169,7 @@
 </template>
 
 <script>
-import { multiFilter } from '@/utility/helpers'
+// import { multiFilter, compareObjectByKey } from '@/utility/helpers'
 export default {
   name: 'FleetNavigator',
   data () {
@@ -149,15 +177,26 @@ export default {
       // to start off, return a default object with no filters in each filterType array
       currentFilters: this.defaultFilter(),
       displayFields: ['center_code', 'center_name', 'model_year', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'in_service_date', 'vin', 'contract_description'],
-      filterFields: ['center_code', 'model_year', 'vehicle_make', 'vehicle_model']
+      filterFields: ['center_code', 'model_year', 'vehicle_make', 'vehicle_model'],
+      sortBy: 'center_code',
+      sortDesc: false
     }
   },
   computed: {
-    items: vm => vm.$store.getters['fleet/getVehicles'],
-    filteredItems () {
-      // console.log(this.currentFilters)
-      return multiFilter(this.items, this.currentFilters)
+    // rawItems: vm => vm.$store.getters['fleet/getVehicles'],
+    items () {
+      const order = this.sortDesc ? 'desc' : 'asc'
+      const sortBy = this.sortBy || 'center_code'
+      return this.$store.getters['fleet/filteredVehicles'](this.currentFilters, sortBy, order)
     },
+    // items2 () {
+    //   const filteredItems = multiFilter(this.rawItems, this.currentFilters)
+    //   return filteredItems.sort(compareObjectByKey(sortBy, order))
+    // },
+    // filteredItems2 () {
+    //   // console.log(this.currentFilters)
+    //   return multiFilter(this.items, this.currentFilters)
+    // },
     filterCount () {
       return [].concat(...Object.values(this.currentFilters)).length
     },

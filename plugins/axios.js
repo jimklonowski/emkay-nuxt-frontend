@@ -12,4 +12,9 @@ export default function ({ $axios, redirect }) {
   //   //   redirect('/400')
   //   // }
   // })
+
+  // $axios.onRequest(config => {
+  //   config.withCredentials = true
+  //   return config
+  // })
 }

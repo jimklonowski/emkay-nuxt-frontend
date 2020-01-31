@@ -1,4 +1,6 @@
 // import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+// import path from 'path'
+// import fs from 'fs'
 import { en, fr, en as ca } from 'vuetify/lib/locale'
 import colors from 'vuetify/es5/util/colors'
 import locales from './plugins/i18n/locales'
@@ -6,6 +8,17 @@ require('dotenv').config()
 
 export default {
   mode: 'universal',
+  // server: {
+  //   port: 3000,
+  //   host: '127.0.0.1',
+  //   https: {
+  //     key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
+  //     cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
+  //   }
+  //   // timing: {
+  //   //   total: true
+  //   // }
+  // },
   /*
   ** vue.config: https://nuxtjs.org/api/configuration-vue-config
   */
@@ -154,13 +167,14 @@ export default {
           logout: {
             url: '/logout',
             method: 'post'
+          },
+          // user: false
+          user: {
+            url: '/user',
+            method: 'get',
+            propertyName: false // use the entire response as the user object
+            // propertyName: 'user'
           }
-          // user: {
-          //   url: '/user',
-          //   method: 'get',
-          //   propertyName: 'user'
-          //   // propertyName: false // use the entire response as the user object
-          // }
         },
         // used for cookie-only flows
         tokenRequired: false,

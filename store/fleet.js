@@ -1,4 +1,5 @@
 import { assign, set } from '@/utility/vuex'
+import { multiFilter, compareObjectByKey } from '@/utility/helpers'
 
 const getDefaultState = () => ({
   error: null,
@@ -37,5 +38,9 @@ export const mutations = {
 export const getters = {
   getError: state => state.error,
   getLoading: state => state.loading,
-  getVehicles: state => state.vehicles
+  getVehicles: state => state.vehicles,
+  filteredVehicles: state => (filters, sortBy, order) => {
+    const filtered = multiFilter(state.vehicles, filters)
+    return filtered.sort(compareObjectByKey(sortBy, order))
+  }
 }

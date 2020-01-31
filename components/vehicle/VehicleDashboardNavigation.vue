@@ -29,6 +29,7 @@
     <v-spacer />
     <template #extension>
       <v-tabs
+        hide-slider
         show-arrows
         left
         background-color="transparent"
