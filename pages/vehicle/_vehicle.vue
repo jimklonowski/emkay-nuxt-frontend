@@ -8,7 +8,6 @@
  */
 export default {
   name: 'VehicleDashboard',
-  layout: 'vehicle',
-  middleware: ['auth', 'vehicle-dashboard', 'account']
+  layout: 'vehicle'
 }
 </script>

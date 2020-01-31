@@ -96,7 +96,6 @@ export default {
       alert('expand in vehicle dashboard')
     }
   },
-  middleware: ['auth'],
   /**
    * If validator doesn't return true (or a promise reolving to true), or throws an error, nuxt will load the 404 or 500 error pages
    * https://nuxtjs.org/guide/routing/#validate-route-params

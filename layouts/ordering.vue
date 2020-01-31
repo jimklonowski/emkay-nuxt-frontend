@@ -31,6 +31,7 @@ export default {
     EmkayNavigation,
     OrderingNavigation
   },
+  middleware: ['check-auth'],
   head () {
     return {
       htmlAttrs: {

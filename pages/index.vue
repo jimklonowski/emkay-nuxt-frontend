@@ -12,7 +12,7 @@
 
 export default {
   name: 'Home',
-  middleware: ['auth'],
+  middleware: ['check-auth'],
   head () {
     const title = this.$t('home')
     return {

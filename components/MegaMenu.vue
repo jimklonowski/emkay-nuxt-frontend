@@ -114,7 +114,7 @@ export default {
     tab: 0,
     model: {}
   }),
-  created () {
+  mounted () {
     // merge props, overwrite any defaults
     if (this.$props && this.$props.menu) {
       this.model = { ...defaultProps, ...this.$props.menu }

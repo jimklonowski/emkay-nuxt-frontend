@@ -8,6 +8,9 @@ export const actions = {
    * Also: https://zendev.com/2018/06/07/async-data-options-in-vue-nuxt.html
    */
   async nuxtServerInit ({ commit, dispatch }, { req }) {
+    // const vuex = this.$cookies.get('vuex')
+    // await console.dir(vuex)
+    // await console.log(req)
     // if (process.server) {
     //   // console.info('im the server')
     // }

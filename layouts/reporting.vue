@@ -31,6 +31,7 @@ export default {
     EmkayNavigation,
     ReportNavigation
   },
+  middleware: ['check-auth'],
   head () {
     return {
       htmlAttrs: {

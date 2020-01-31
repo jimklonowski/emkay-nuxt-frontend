@@ -7,7 +7,7 @@
 export default {
   name: 'Reporting',
   layout: 'reporting',
-  middleware: ['auth'],
+  // middleware: ['check-auth'],
   head () {
     const title = this.$t('reporting')
     return {

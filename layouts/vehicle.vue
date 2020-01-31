@@ -25,6 +25,7 @@ export default {
     EmkayNavigation,
     VehicleDashboardNavigation
   },
+  middleware: ['check-auth', 'account', 'vehicle-dashboard'],
   head () {
     return {
       htmlAttrs: {

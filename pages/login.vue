@@ -120,7 +120,7 @@ export default {
         })
         .then(() => {
           // debugger
-          this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
+          // this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
           console.log('calling account init from login')
           this.$store.dispatch('account/init')
           if (this.remember) {

@@ -25,6 +25,8 @@ export default {
     EmkayNavigation,
     ManagementNavigation
   },
+  // All pages with the management layout will require auth
+  middleware: ['check-auth'],
   head () {
     return {
       htmlAttrs: {

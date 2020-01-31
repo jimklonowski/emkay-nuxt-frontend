@@ -87,7 +87,7 @@
 
 export default {
   name: 'VehicleSearch',
-  // components: { VehicleSearch },
+  middleware: ['check-auth'],
   data: () => ({
     axiosCancelTokenSource: null,
     query: '',

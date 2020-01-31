@@ -7,7 +7,6 @@
 export default {
   name: 'Management',
   layout: 'management',
-  middleware: ['auth'],
   head () {
     const title = this.$t('management')
     return {

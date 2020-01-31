@@ -1,6 +1,6 @@
 // import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
-// import path from 'path'
-// import fs from 'fs'
+import path from 'path'
+import fs from 'fs'
 import { en, fr, en as ca } from 'vuetify/lib/locale'
 import colors from 'vuetify/es5/util/colors'
 import locales from './plugins/i18n/locales'
@@ -8,17 +8,17 @@ require('dotenv').config()
 
 export default {
   mode: 'universal',
-  // server: {
-  //   port: 3000,
-  //   host: '127.0.0.1',
-  //   https: {
-  //     key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
-  //     cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
-  //   }
-  //   // timing: {
-  //   //   total: true
-  //   // }
-  // },
+  server: {
+    port: 3000,
+    host: '127.0.0.1',
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
+    }
+    // timing: {
+    //   total: true
+    // }
+  },
   /*
   ** vue.config: https://nuxtjs.org/api/configuration-vue-config
   */
@@ -93,6 +93,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    { src: '~/plugins/vuex-persist', ssr: false },
     '~/plugins/axios',
     '~/plugins/custom-filters',
     '~/plugins/vue-mock-axios',
@@ -100,8 +101,7 @@ export default {
     '~/plugins/i18n/vue-i18n',
     { src: '~/plugins/polyfills', ssr: false },
     { src: '~/plugins/vue-json-excel', ssr: false },
-    { src: '~/plugins/vue-snotify', ssr: false },
-    { src: '~/plugins/vuex-persist', ssr: false }
+    { src: '~/plugins/vue-snotify', ssr: false }
   ],
   /*
   ** Nuxt.js dev-modules
@@ -145,6 +145,7 @@ export default {
   */
   axios: {
     baseURL: process.env.BASE_URL,
+    browserBaseURL: process.env.BASE_URL,
     credentials: true
     // ,timeout: 5
   },
@@ -157,6 +158,7 @@ export default {
       { src: '~/plugins/vue-mock-axios' },
       { src: '~/plugins/auth-lang-redirects', ssr: false }
     ],
+    token: false,
     strategies: {
       local: {
         endpoints: {
@@ -184,7 +186,8 @@ export default {
     redirect: {
       login: '/login', // User will be redirected to this path if login is required.
       logout: '/login', // User will be redirected to this path if after logout, current route is protected.
-      home: '/' // User will be redirected to this path after login. (rewriteRedirects will rewrite this path)
+      home: '/', // User will be redirected to this path after login. (rewriteRedirects will rewrite this path)
+      callback: false
     }
   },
   // auth: {

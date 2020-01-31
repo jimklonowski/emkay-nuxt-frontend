@@ -85,8 +85,10 @@
                 <v-select
                   v-model="sortBy"
                   :label="$t('sort')"
-                  :items="displayFields.map(x => { return { text: $t(x), value: x }})"
+                  :items="sortFields.map(x => { return { text: $t(x), value: x }})"
                   @change="sortBy = $event"
+                  outlined
+                  dense
                 />
                 <v-btn
                   :outlined="sortDesc"
@@ -156,7 +158,7 @@
                     {{ item.vehicle_number }}
                   </v-card-title>
                   <v-card-subtitle class="overflow-ellipsis">
-                    {{ item.center_code }} - {{ item.center_name }}
+                    {{ item[sortBy] }}
                   </v-card-subtitle>
                 </v-card>
               </v-slide-y-transition>
@@ -178,6 +180,7 @@ export default {
       currentFilters: this.defaultFilter(),
       displayFields: ['center_code', 'center_name', 'model_year', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'in_service_date', 'vin', 'contract_description'],
       filterFields: ['center_code', 'model_year', 'vehicle_make', 'vehicle_model'],
+      sortFields: ['center_code', 'center_name', 'driver_last_name', 'model_year', 'vehicle_make', 'vehicle_model', 'vehicle_color', 'in_service_date', 'vin', 'contract_description'],
       sortBy: 'center_code',
       sortDesc: false
     }
