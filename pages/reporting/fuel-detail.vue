@@ -88,8 +88,6 @@
             v-model="use_bill_date"
             :label="$t(`bill_date`)"
             @change="updateQuery()"
-            hint="Not Yet Implemented..."
-            messages="Not Yet Implemented..."
           />
         </v-col>
       </v-row>

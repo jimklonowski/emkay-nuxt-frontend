@@ -706,13 +706,15 @@ export default {
   },
   async asyncData ({ store }) {
     let search
-    const filters = {
-      command: 'VEHICLEAUDIT',
-      customer: 'EM102',
-      json: 'Y'
-    }
+    // const filters = {
+    //   command: 'VEHICLEAUDIT',
+    //   customer: 'EM102',
+    //   json: 'Y'
+    // }
+    // await store.dispatch('reports/fetchData', filters)
+
     // Fetch report data
-    await store.dispatch('reports/fetchData', filters)
+    await store.dispatch('reports/fetchInventoryReport')
     return { search }
   },
   methods: {

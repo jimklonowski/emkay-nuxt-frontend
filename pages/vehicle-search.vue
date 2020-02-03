@@ -16,8 +16,8 @@
           autocomplete="off"
           clearable
           solo
-          hide-details
           no-filter
+          hide-details
           return-object
           full-width
         >
@@ -50,7 +50,7 @@
           </template>
 
           <template #item="{ item }">
-            <v-list-item-avatar :size="64" color="grey darken-2 white--text">
+            <v-list-item-avatar :size="64" :title="$t('vehicle_#')" color="grey darken-2 white--text">
               <span class="caption">{{ item.vehicle_number }}</span>
             </v-list-item-avatar>
             <v-list-item-content>
@@ -84,12 +84,11 @@
 
 <script>
 // import VehicleSearch from '@/components/VehicleSearch'
-
+import { mapActions } from 'vuex'
 export default {
   name: 'VehicleSearch',
   middleware: ['check-auth'],
   data: () => ({
-    axiosCancelTokenSource: null,
     query: '',
     selection: null
   }),
@@ -114,34 +113,21 @@ export default {
       if (!this.query) {
         this.$store.commit('search/reset')
       } else if (this.query.length >= 3) {
-        await this.search()
+        // call the mappedAction method from vuex 'search' store
+        await this.search(this.query)
       }
     }
   },
   mounted () {
-    this.axiosCancelTokenSource = this.$axios.CancelToken.source()
     // clear existing results before rendering search box (back button perhaps, stale results)
     if (this.results && this.results.length !== 0) {
       this.$store.dispatch('search/reset')
     }
   },
   methods: {
-    filters () {
-      return {
-        command: 'WEBVEHICLE',
-        subcommand: 'VEHICLE_SEARCH',
-        search_type: 'VEHICLE_NUMBER',
-        search_data: this.query || '',
-        customer: 'EM102'
-      }
-    },
-    async search () {
-      if (this.loading) {
-        this.axiosCancelTokenSource.cancel()
-        this.axiosCancelTokenSource = this.$axios.CancelToken.source()
-      }
-      await this.$store.dispatch('search/fetchVehicles', { filters: this.filters(), cancelToken: this.axiosCancelTokenSource.token })
-    },
+    ...mapActions({
+      search: 'search/fetchVehicles'
+    }),
     selectVehicle () {
       if (this.selection && this.selection.vehicle_number) {
         this.$router.push(this.localePath({ path: `/vehicle/${this.selection.vehicle_number}` }))

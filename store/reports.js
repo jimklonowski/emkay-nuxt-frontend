@@ -1,5 +1,8 @@
 import { set, assign } from '@/utility/vuex'
 
+/**
+ * All report data can share the same vuex store, since we can't be on two different reports at the same time in this Vue app.
+ */
 const getDefaultState = () => ({
   data: [],
   error: null,
@@ -9,6 +12,26 @@ const getDefaultState = () => ({
 export const state = () => getDefaultState()
 
 export const actions = {
+  /**
+   * Fetch inventory report data.  No parameters are supplied.
+   */
+  async fetchInventoryReport ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/inventory')
+      if (success) {
+        commit('setData', data)
+      } else {
+        console.info(message)
+      }
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
   /**
    * Get the data using the generic webcom url (dev)
    * @param {*} filters The dbc command, subcommand, and other params

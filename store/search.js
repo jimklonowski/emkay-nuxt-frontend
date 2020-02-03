@@ -10,9 +10,9 @@ const getDefaultState = () => ({
 export const state = () => getDefaultState()
 
 export const actions = {
-  async fetchVehicles ({ commit, dispatch }, { filters, cancelToken }) {
-    // commit('reset')
-    commit('setResults', [])
+  async fetchVehicles ({ commit }, query) {
+    commit('setLoading', true)
+    commit('setResults', []) // clear previous search results
     try {
       const searchTypes = [
         'VEHICLE_NUMBER',
@@ -22,50 +22,20 @@ export const actions = {
         'VIN',
         'PLATE'
       ]
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      await Promise.all(searchTypes.map(async (searchType) => {
-        const f = { ...filters, ...{ search_type: searchType } }
-        // get vehicles and push them to the results when ready
-        const { data: { success, message, data } } = await this.$axios.post(url, f, cancelToken)
-        // debugger
-        if (!success) { console.error('error: ' + message) }
-        if (data && data.length !== 0) {
+      // fire off all searches at once, pushing data to the results array as soon as they return
+      await Promise.all(searchTypes.map(async (type) => {
+        const params = { type, query }
+        const { data: { success, message, data } } = await this.$axios.get('/vehicle-search', { params })
+        if (success) {
           data.forEach(item => {
             commit('pushResults', item)
           })
+        } else {
+          console.info(message)
         }
       }))
-      // get vehicles by vehicle number
-      // const { data: { success, message, data } } = await this.$axios.post(url, filters, cancelToken)
-    } catch (error) {
-      if (this.$axios.isCancel(error)) {
-        console.log('request cancelled')
-      } else {
-        commit('setError', error.message)
-        console.error(error)
-      }
-    } finally {
-      commit('setLoading', false)
-    }
-  },
-  async fetchVehicles2 ({ commit, dispatch }, { filters, cancelToken }) {
-    commit('setError', null)
-    commit('setLoading', true)
-    try {
-      // right now this only searched by vehicle_number, but will later expand to multiple search types
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters, cancelToken)
-      commit('setResults', data)
-      if (!success) {
-        throw new Error(message)
-      }
     } catch (error) {
       debugger
-      if (this.$axios.isCancel(error)) {
-        console.log('REQUEST CANCELLED!')
-      } else {
-        commit('setError', error.message)
-      }
     } finally {
       commit('setLoading', false)
     }
