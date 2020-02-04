@@ -3,209 +3,254 @@ import { push, set, assign } from '@/utility/vuex'
 const getDefaultState = () => ({
   errors: [],
   loading: false,
-
+  initialized: false,
   vehicle_number: null,
-
-  driver_info: {},
-  vehicle_info: {},
+  vehicle_details: {},
+  driver_details: {},
+  order_status: {},
+  sale_info: {},
+  transport_status: [],
 
   accident_history: [],
   accident_loading: false,
-
   billing_history: [],
   billing_loading: false,
-
   fuel_history: [],
   fuel_loading: false,
-
   maintenance_history: [],
   maintenance_loading: false,
-
-  vehicle_notes: [],
-  vehicle_notes_loading: false,
-
   toll_history: [],
   toll_loading: false,
-
+  vehicle_notes: [],
+  vehicle_notes_loading: false,
   violation_history: [],
-  violation_loading: false,
-
-  order_status: {},
-  transport_status: []
+  violation_loading: false
 })
 
 export const state = () => getDefaultState()
 
 export const actions = {
   /**
-   * Called before entering a vehicle's dashboard. Populates vehicle/driver, order status
-   * @param {*} vehicle_number
+   * Called before entering a vehicle's dashboard. Populates vehicle, driver, order status, sale info
+   * @param {*} vehicle Vehicle Number
    */
-  async init ({ commit, dispatch }, vehicle_number) {
+  async init ({ commit, dispatch }, { vehicle }) {
     try {
       commit('reset')
       commit('setLoading', true)
       await Promise.all([
-        dispatch('fetchVehicleAndDriver', vehicle_number),
-        dispatch('fetchOrderStatus', vehicle_number)
-      ])
+        dispatch('fetchVehicleDetails', { vehicle }),
+        dispatch('fetchDriverDetails', { vehicle }),
+        dispatch('fetchOrderStatus', { vehicle }),
+        dispatch('fetchSaleInfo', { vehicle })
+      ]).finally(() => {
+        commit('setInitialized', true)
+      })
     } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+    } finally {
+      commit('setLoading', false)
+      commit('setVehicleNumber', vehicle)
+    }
+  },
+  /**
+   * Fetch Driver Details by Vehicle Number
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchDriverDetails ({ commit }, { vehicle }) {
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/driver-details', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setDriverDetails', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setDriverDetails', {})
     } finally {
       commit('setLoading', false)
     }
   },
   /**
-   * Fetch Vehicle and Driver details
+   * Fetch Order Status by Vehicle Number
+   * @param {*} vehicle Vehicle Number
    */
-  async fetchVehicleAndDriver ({ commit }, vehicle_number) {
+  async fetchOrderStatus ({ commit }, { vehicle }) {
+    commit('setLoading', true)
     try {
-      const filters = {
-        command: 'WEBVEHICLE',
-        customer: 'EM102',
-        vehicle_number,
-        json: 'Y'
-      }
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/order-status', { params: { vehicle } })
       if (!success) { throw new Error(message) }
-      commit('setVehicleInfo', data.vehicle_info)
-      commit('setDriverInfo', data.driver_info)
-      commit('setVehicleNumber', vehicle_number)
-    } catch (error) {
-      // debugger
-      commit('pushError', error)
-    }
-  },
-  /**
-   * Fetch Order Status
-   */
-  async fetchOrderStatus ({ commit }, vehicle_number) {
-    try {
-      const filters = {
-        command: 'VEHICLEORDERSTATUS',
-        customer: 'EM102',
-        vehicle_number,
-        json: 'Y'
-      }
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      // eslint-disable-next-line
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
-      if (!Object.keys(data).length) { throw new Error(message) }
       commit('setOrderStatus', data)
     } catch (error) {
-      // debugger
-      commit('pushError', error)
-    }
-  },
-  /**
-   * Fetch Accident History
-   */
-  async fetchAccidentHistory ({ commit }, { filters }) {
-    try {
-      commit('setAccidentLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
-      if (!success) { throw new Error(message) }
-      commit('setAccidentHistory', data)
-    } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+      commit('setOrderStatus', {})
     } finally {
-      commit('setAccidentLoading', false)
+
     }
   },
   /**
-   * Fetch Billing History
+   * Fetch Sale Info by Vehicle Number
+   * @param {*} vehicle Vehicle Number
    */
-  async fetchBillingHistory ({ commit }, { filters }) {
+  async fetchSaleInfo ({ commit }, { vehicle }) {
+    commit('setLoading', true)
     try {
-      commit('setBillingLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/sale-info', { params: { vehicle } })
       if (!success) { throw new Error(message) }
-      commit('setBillingHistory', data)
+      commit('setSaleInfo', data)
     } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+      commit('setSaleInfo', {})
     } finally {
-      commit('setBillingLoading', false)
+      commit('setLoading', false)
     }
   },
   /**
-   * Fetch Fuel History
+   * Fetch Vehicle Details by Vehicle Number
+   * @param {*} vehicle Vehicle Number
    */
-  async fetchFuelHistory ({ commit }, { filters }) {
+  async fetchVehicleDetails ({ commit }, { vehicle }) {
+    commit('setLoading', true)
     try {
-      commit('setFuelLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/vehicle-details', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setVehicleDetails', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setVehicleDetails', {})
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch Fuel History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} use_bill_date Use Bill Date?
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchFuelHistory ({ commit }, { start, end, use_bill_date, vehicle }) {
+    commit('setFuelLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/fuel-history', { params: { start, end, use_bill_date, vehicle } })
       if (!success) { throw new Error(message) }
       commit('setFuelHistory', data)
     } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+      commit('setFuelHistory', [])
     } finally {
       commit('setFuelLoading', false)
     }
   },
   /**
-   * Fetch Maintenance History
+   * Fetch Maintenance History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} use_bill_date Use Bill Date?
+   * @param {*} vehicle Vehicle Number
    */
-  async fetchMaintenanceHistory ({ commit }, { filters }) {
+  async fetchMaintenanceHistory ({ commit }, { start, end, use_bill_date, vehicle }) {
+    commit('setMaintenanceLoading', true)
     try {
-      commit('setMaintenanceLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/maintenance-history', { params: { start, end, use_bill_date, vehicle } })
       if (!success) { throw new Error(message) }
       commit('setMaintenanceHistory', data)
     } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+      commit('setMaintenanceHistory', [])
     } finally {
       commit('setMaintenanceLoading', false)
     }
   },
+  /* TODO: */
   /**
-   * Fetch Vehicle Notes
+   * Fetch Accident History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
    */
-  async fetchVehicleNotes ({ commit }, { filters }) {
+  async fetchAccidentHistory ({ commit }, { start, end, vehicle }) {
+    commit('setAccidentLoading', true)
     try {
-      commit('setVehicleNotesLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/accident-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setAccidentHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setAccidentHistory', [])
+    } finally {
+      commit('setAccidentLoading', false)
+    }
+  },
+  /**
+   * Fetch Billing History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchBillingHistory ({ commit }, { start, end, vehicle }) {
+    commit('setBillingLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/billing-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setBillingHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setBillingHistory', [])
+    } finally {
+      commit('setBillingLoading', false)
+    }
+  },
+  /**
+   * Fetch Vehicle Notes by Vehicle Number
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchVehicleNotes ({ commit }, { vehicle }) {
+    commit('setVehicleNotesLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/notes', { params: { vehicle } })
       if (!success) { throw new Error(message) }
       commit('setVehicleNotes', data)
     } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+      commit('setVehicleNotes', [])
     } finally {
       commit('setVehicleNotesLoading', false)
     }
   },
   /**
-   * Fetch Toll History
+   * Fetch Toll History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
    */
-  async fetchTollHistory ({ commit }, { filters }) {
+  async fetchTollHistory ({ commit }, { start, end, vehicle }) {
+    commit('setTollLoading', true)
     try {
-      commit('setTollLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/toll-history', { params: { start, end, vehicle } })
       if (!success) { throw new Error(message) }
       commit('setTollHistory', data)
     } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+      commit('setTollHistory', [])
     } finally {
       commit('setTollLoading', false)
     }
   },
   /**
-   * Fetch Violation History
+   * Fetch Violation History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
    */
-  async fetchViolationHistory ({ commit }, { filters }) {
+  async fetchViolationHistory ({ commit }, { start, end, vehicle }) {
+    commit('setViolationLoading', true)
     try {
-      commit('setViolationLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/violation-history', { params: { start, end, vehicle } })
       if (!success) { throw new Error(message) }
       commit('setViolationHistory', data)
     } catch (error) {
-      commit('pushError', error)
+      commit('pushError', error.message)
+      commit('setViolationHistory', [])
     } finally {
       commit('setViolationLoading', false)
     }
@@ -218,11 +263,14 @@ export const actions = {
 export const mutations = {
   reset: assign(getDefaultState()),
   pushError: push('errors'),
+  setInitialized: set('initialized'),
   setLoading: set('loading'),
 
-  setDriverInfo: set('driver_info'),
-  setVehicleInfo: set('vehicle_info'),
+  setDriverDetails: set('driver_details'),
+  setVehicleDetails: set('vehicle_details'),
+
   setOrderStatus: set('order_status'),
+  setSaleInfo: set('sale_info'),
 
   setAccidentHistory: set('accident_history'),
   setAccidentLoading: set('accident_loading'),
@@ -250,10 +298,14 @@ export const mutations = {
 
 export const getters = {
   getErrors: state => state.errors,
+  getInitialized: state => state.initialized,
   getLoading: state => state.loading,
 
-  getDriverInfo: state => state.driver_info,
-  getVehicleInfo: state => state.vehicle_info,
+  getDriverDetails: state => state.driver_details,
+  getVehicleDetails: state => state.vehicle_details,
+
+  // getDriverInfo: state => state.driver_info,
+  // getVehicleInfo: state => state.vehicle_info,
 
   getOrderStatus: state => state.order_status,
   hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0,

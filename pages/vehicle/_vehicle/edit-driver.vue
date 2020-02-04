@@ -173,7 +173,7 @@
                           <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_1')">
                             <v-text-field
                               v-model="model.driver_misc_1"
-                              :label="driver_labels.driver_misc_1_label"
+                              :label="custom_labels.driver_use_label_1"
                               :error-messages="errors"
                               :success="valid"
                               outlined
@@ -185,7 +185,7 @@
                           <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_2')">
                             <v-text-field
                               v-model="model.driver_misc_2"
-                              :label="driver_labels.driver_misc_2_label"
+                              :label="custom_labels.driver_use_label_2"
                               :error-messages="errors"
                               :success="valid"
                               outlined
@@ -197,7 +197,7 @@
                           <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_3')">
                             <v-text-field
                               v-model="model.driver_misc_3"
-                              :label="driver_labels.driver_misc_3_label"
+                              :label="custom_labels.driver_use_label_3"
                               :error-messages="errors"
                               :success="valid"
                               outlined
@@ -209,7 +209,7 @@
                           <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_4')">
                             <v-text-field
                               v-model="model.driver_misc_4"
-                              :label="driver_labels.driver_misc_4_label"
+                              :label="custom_labels.driver_use_label_4"
                               :error-messages="errors"
                               :success="valid"
                               outlined
@@ -290,7 +290,7 @@ export default {
     }
   },
   computed: {
-    driver_labels: vm => vm.$store.getters['account/getDriverMiscLabels'],
+    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
     vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber']
   },
   async asyncData ({ store }) {

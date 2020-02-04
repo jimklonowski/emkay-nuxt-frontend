@@ -66,29 +66,16 @@ export default {
       ]
     },
     items: vm => vm.$store.getters['vehicle/getMaintenanceHistory'],
-    maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/maintenance` })
+    maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance` }),
+    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber']
   },
   async mounted () {
-    const vehicle_number = this.$route.params.vehicle
-    const end_date = this.$moment().format('YYYY-MM-DD')
-    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const vehicle = this.vehicle_number
+    const end = this.$moment().format('YYYY-MM-DD')
+    const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
     const use_bill_date = false
-    const filters = {
-      command: 'MAINTHISTORY',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      use_bill_date,
-      vehicle_number,
-      json: 'Y'
-    }
-    await this.$store.dispatch('vehicle/fetchMaintenanceHistory', { filters })
+    await this.$store.dispatch('vehicle/fetchMaintenanceHistory', { start, end, use_bill_date, vehicle })
     this.initialized = true
-  },
-  methods: {
-    goToMaintenance () {
-      this.$router.push(this.maintenanceRoute)
-    }
   }
 }
 </script>

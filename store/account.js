@@ -1,20 +1,19 @@
 import { set, assign } from '@/utility/vuex'
 
 const getDefaultState = () => ({
+  initialized: false,
   login_messages: [],
   centers: [],
-  client_use_labels: {
-    client_use_1_label: '',
-    client_use_2_label: '',
-    client_use_3_label: '',
-    client_use_4_label: '',
-    client_use_5_label: ''
-  },
-  driver_misc_labels: {
-    driver_misc_1_label: '',
-    driver_misc_2_label: '',
-    driver_misc_3_label: '',
-    driver_misc_4_label: ''
+  custom_labels: {
+    client_use_label_1: '',
+    client_use_label_2: '',
+    client_use_label_3: '',
+    client_use_label_4: '',
+    client_use_label_5: '',
+    driver_use_label_1: '',
+    driver_use_label_2: '',
+    driver_use_label_3: '',
+    driver_use_label_4: ''
   }
 })
 
@@ -26,31 +25,24 @@ export const actions = {
    * Set custom labels, user preferences, save off the center hierarchy(?) for superfast widgets, etc.
    */
   async init ({ dispatch, commit }) {
-    try {
-      // const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      // get custom labels
-      // const url = '/account/account-info'
-      await dispatch('fetchCustomLabels')
-      await dispatch('fetchCenterHierarchy')
-      // const { data: { login_messages, center_hierarchy, custom_labels } } = await this.$axios.get(url)
-      // commit('setLoginMessages', login_messages)
-      // commit('setCenterHierarchy', center_hierarchy)
-      // commit('setCustomLabels', custom_labels)
-      // ...
-    } catch (error) {
-      console.error(error)
-    }
+    await Promise.all([
+      dispatch('fetchCustomLabels'),
+      dispatch('fetchCenterHierarchy')
+    ]).finally(() => {
+      commit('setInitialized', true)
+    })
   },
-  // Fetch Custom Labels
+  /**
+   * Fetch Custom Client Use and Driver Labels
+   */
   async fetchCustomLabels ({ commit }) {
     try {
-      const url = '/account/custom-labels'
-      const { data: { client_use_labels, driver_misc_labels } } = await this.$axios.get(url)
-      commit('setClientUseLabels', client_use_labels)
-      commit('setDriverMiscLabels', driver_misc_labels)
-    } catch (error) {
-      console.log(error)
       debugger
+      const { data: { success, message, data } } = await this.$axios.get('/account/custom-labels')
+      if (!success) { throw new Error(message) }
+      commit('setCustomLabels', data)
+    } catch (error) {
+      console.error(error)
     }
   },
   async fetchCenterHierarchy ({ commit }) {
@@ -75,15 +67,17 @@ export const actions = {
 export const mutations = {
   reset: assign(getDefaultState()),
   setCenters: set('centers'),
-  setClientUseLabels: set('client_use_labels'),
-  setDriverMiscLabels: set('driver_misc_labels'),
+  setCustomLabels (state, data) {
+    state.custom_labels = { ...state.custom_labels, ...data }
+  },
+  // setCustomLabels: assign('custom_labels'),
+  setInitialized: set('initialized'),
   setLoginMessages: set('login_messages')
 }
 
 export const getters = {
   getCenters: state => state.centers,
-  getClientUseLabels: state => state.client_use_labels,
-  getDriverMiscLabels: state => state.driver_misc_labels,
+  getCustomLabels: state => state.custom_labels,
   getLoginMessages: state => state.login_messages,
-  isInitialized: state => !!state.client_use_labels.client_use_1_label
+  isInitialized: state => state.initialized
 }

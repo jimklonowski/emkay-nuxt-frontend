@@ -111,7 +111,7 @@
                               v-model="model.client_use_1"
                               :error-messages="errors"
                               :success="valid"
-                              :label="client_labels.client_use_1_label"
+                              :label="custom_labels.client_use_label_1"
                               outlined
                               dense
                             />
@@ -123,7 +123,7 @@
                               v-model="model.client_use_2"
                               :error-messages="errors"
                               :success="valid"
-                              :label="client_labels.client_use_2_label"
+                              :label="custom_labels.client_use_label_2"
                               outlined
                               dense
                             />
@@ -135,7 +135,7 @@
                               v-model="model.client_use_3"
                               :error-messages="errors"
                               :success="valid"
-                              :label="client_labels.client_use_3_label"
+                              :label="custom_labels.client_use_label_3"
                               outlined
                               dense
                             />
@@ -147,7 +147,7 @@
                               v-model="model.client_use_4"
                               :error-messages="errors"
                               :success="valid"
-                              :label="client_labels.client_use_4_label"
+                              :label="custom_labels.client_use_label_4"
                               outlined
                               dense
                             />
@@ -159,7 +159,7 @@
                               v-model="model.client_use_5"
                               :error-messages="errors"
                               :success="valid"
-                              :label="client_labels.client_use_5_label"
+                              :label="custom_labels.client_use_label_5"
                               outlined
                               dense
                             />
@@ -204,7 +204,7 @@ export default {
     }
   },
   computed: {
-    client_labels: vm => vm.$store.getters['account/getClientUseLabels'],
+    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
     vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     editDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-driver` })
   },

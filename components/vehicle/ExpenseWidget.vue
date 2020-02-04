@@ -7,7 +7,7 @@
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-subtitle class="overline">
-            {{ $tc('months_in_service', vehicle_info.months_in_service || 0) }}
+            {{ $tc('months_in_service', vehicle_details.months_in_service || 0) }}
           </v-list-item-subtitle>
           <v-list-item-title v-text="$t('expense_summary')" />
           <client-only>
@@ -17,7 +17,7 @@
         <!-- <v-list-item-action>
           <v-list-item-action-text v-text="$t('mileage')" class="caption" />
           <client-only>
-            <v-chip v-text="$tc('miles_driven', vehicle_info.miles_driven || 0)" :title="$tc('miles_per_month', vehicle_info.miles_per_month || 0)" x-small />
+            <v-chip v-text="$tc('miles_driven', vehicle_details.miles_driven || 0)" :title="$tc('miles_per_month', vehicle_details.miles_per_month || 0)" x-small />
             <span />
           </client-only>
         </v-list-item-action> -->
@@ -123,7 +123,7 @@ import { computeTotalByKey } from '@/utility/helpers'
 export default {
   computed: {
     expensesRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/expenses` }),
-    vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
+    vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
     totalFixedCosts: vm => vm.computeTotalByKey(vm.fixed_costs, 'amount'),
     totalFixedCPM: vm => vm.computeTotalByKey(vm.fixed_costs, 'cpm'),
     totalVariableCosts: vm => vm.computeTotalByKey(vm.variable_costs, 'amount'),
@@ -131,10 +131,10 @@ export default {
     grandTotalCosts: vm => { return vm.totalFixedCosts + vm.totalVariableCosts },
     grandTotalCPM: vm => { return vm.totalFixedCPM + vm.totalVariableCPM },
     inServiceTitle () {
-      return `${this.$i18n.t('in_service_date')}: ${this.$options.filters.date(this.vehicle_info.in_service_date)}`
+      return `${this.$i18n.t('in_service_date')}: ${this.$options.filters.date(this.vehicle_details.in_service_date)}`
     },
     mileageTitle () {
-      return `${this.$i18n.t('total')}: ${this.vehicle_info.miles_driven || 0}`
+      return `${this.$i18n.t('total')}: ${this.vehicle_details.miles_driven || 0}`
     },
     headers () {
       return [

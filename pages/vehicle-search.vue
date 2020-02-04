@@ -114,7 +114,7 @@ export default {
         this.$store.commit('search/reset')
       } else if (this.query.length >= 3) {
         // call the mappedAction method from vuex 'search' store
-        await this.search(this.query)
+        await this.search(this.query.toUpperCase())
       }
     }
   },
@@ -130,7 +130,7 @@ export default {
     }),
     selectVehicle () {
       if (this.selection && this.selection.vehicle_number) {
-        this.$router.push(this.localePath({ path: `/vehicle/${this.selection.vehicle_number}` }))
+        this.$router.push(this.localePath({ path: `/vehicle/${this.selection.vehicle_number.toUpperCase()}` }))
       }
     },
     colorYearMakeModel (item) {

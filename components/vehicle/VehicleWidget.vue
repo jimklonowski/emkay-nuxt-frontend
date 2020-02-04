@@ -7,15 +7,15 @@
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-subtitle v-text="colorYearMakeModel" class="overline" />
-          <v-list-item-title v-text="vehicle.vehicle_number" />
+          <v-list-item-title v-text="vehicle_details.vehicle_number" />
           <client-only>
             <nuxt-link :to="editVehicleRoute" v-text="$t('edit')" class="caption text-decoration-none" />
           </client-only>
         </v-list-item-content>
-        <v-list-item-action v-if="vehicle.client_vehicle_number">
+        <v-list-item-action v-if="vehicle_details.client_vehicle_number">
           <v-list-item-action-text v-text="$t('client_vehicle_#')" class="caption" />
           <client-only>
-            <v-chip v-text="vehicle.client_vehicle_number" :title="$t('client_vehicle_number')" x-small />
+            <v-chip v-text="vehicle_details.client_vehicle_number" :title="$t('client_vehicle_number')" x-small />
             <span />
           </client-only>
         </v-list-item-action>
@@ -33,7 +33,7 @@
                   <v-icon v-text="'mdi-car-key'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title v-text="vehicle.vehicle_number" />
+                  <v-list-item-title v-text="vehicle_details.vehicle_number" />
                   <v-list-item-subtitle v-text="$t('vehicle_number')" />
                 </v-list-item-content>
               </v-list-item>
@@ -42,7 +42,7 @@
                   <v-icon v-text="'mdi-car-key'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle.client_vehicle_number || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ vehicle_details.client_vehicle_number || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('client_vehicle_number')" />
                 </v-list-item-content>
               </v-list-item>
@@ -51,7 +51,7 @@
                   <v-icon v-text="'mdi-bus-multiple'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle.category || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ vehicle_details.category || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('vehicle_category')" />
                 </v-list-item-content>
               </v-list-item>
@@ -60,7 +60,7 @@
                   <v-icon v-text="'mdi-shape'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle.status || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ vehicle_details.status || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('status')" />
                 </v-list-item-content>
               </v-list-item>
@@ -69,7 +69,7 @@
                   <v-icon v-text="'mdi-subtitles'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle.lease_type || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ vehicle_details.lease_type || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('lease_type')" />
                 </v-list-item-content>
               </v-list-item>
@@ -83,7 +83,7 @@
                   <v-icon v-text="'mdi-calendar-arrow-left'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ $options.filters.date(vehicle.in_service_date) || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ $options.filters.date(vehicle_details.in_service_date) || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('in_service_date')" />
                 </v-list-item-content>
               </v-list-item>
@@ -92,7 +92,7 @@
                   <v-icon v-text="'mdi-calendar-arrow-right'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ $options.filters.date(vehicle.out_of_service_date) || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ $options.filters.date(vehicle_details.out_of_service_date) || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('out_of_service_date')" />
                 </v-list-item-content>
               </v-list-item>
@@ -101,7 +101,7 @@
                   <v-icon v-text="'mdi-calendar-month-outline'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle.months_in_service || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ vehicle_details.months_in_service || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('months_in_service')" />
                 </v-list-item-content>
               </v-list-item>
@@ -110,7 +110,7 @@
                   <v-icon v-text="'mdi-counter'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle.reported_odometer || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ vehicle_details.reported_odometer || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('reported_odometer')" />
                 </v-list-item-content>
               </v-list-item>
@@ -119,7 +119,7 @@
                   <v-icon v-text="'mdi-label-variant'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle.license_plate_number || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ vehicle_details.license_plate_number || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('license_plate_number')" />
                 </v-list-item-content>
               </v-list-item>
@@ -152,8 +152,8 @@
                     <v-icon v-text="'mdi-label'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.client_use_1 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle v-text="client_labels.client_use_1_label" />
+                    <v-list-item-title>{{ vehicle_details.client_use_1 || '--' }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ custom_labels.client_use_label_1 || $t('client_use_label_1') }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
@@ -161,8 +161,8 @@
                     <v-icon v-text="'mdi-label'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.client_use_2 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle v-text="client_labels.client_use_2_label" />
+                    <v-list-item-title>{{ vehicle_details.client_use_2 || '--' }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ custom_labels.client_use_label_2 || $t('client_use_label_2') }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
@@ -170,8 +170,8 @@
                     <v-icon v-text="'mdi-label'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.client_use_3 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle v-text="client_labels.client_use_3_label" />
+                    <v-list-item-title>{{ vehicle_details.client_use_3 || '--' }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ custom_labels.client_use_label_3 || $t('client_use_label_3') }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
@@ -179,8 +179,8 @@
                     <v-icon v-text="'mdi-label'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.client_use_4 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle v-text="client_labels.client_use_4_label" />
+                    <v-list-item-title>{{ vehicle_details.client_use_4 || '--' }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ custom_labels.client_use_label_4 || $t('client_use_label_4') }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
@@ -188,8 +188,8 @@
                     <v-icon v-text="'mdi-label'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.client_use_5 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle v-text="client_labels.client_use_5_label" />
+                    <v-list-item-title>{{ vehicle_details.client_use_5 || '--' }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ custom_labels.client_use_label_5 || $t('client_use_label_5') }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -202,7 +202,7 @@
                     <v-icon v-text="'mdi-label-outline'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.level_01 || '--' }}</v-list-item-title>
+                    <v-list-item-title>{{ vehicle_details.level_01 || '--' }}</v-list-item-title>
                     <v-list-item-subtitle v-text="$t('level_01')" />
                   </v-list-item-content>
                 </v-list-item>
@@ -211,7 +211,7 @@
                     <v-icon v-text="'mdi-label-outline'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.level_02 || '--' }}</v-list-item-title>
+                    <v-list-item-title>{{ vehicle_details.level_02 || '--' }}</v-list-item-title>
                     <v-list-item-subtitle v-text="$t('level_02')" />
                   </v-list-item-content>
                 </v-list-item>
@@ -220,7 +220,7 @@
                     <v-icon v-text="'mdi-label-outline'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.level_03 || '--' }}</v-list-item-title>
+                    <v-list-item-title>{{ vehicle_details.level_03 || '--' }}</v-list-item-title>
                     <v-list-item-subtitle v-text="$t('level_03')" />
                   </v-list-item-content>
                 </v-list-item>
@@ -229,7 +229,7 @@
                     <v-icon v-text="'mdi-label-outline'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.level_04 || '--' }}</v-list-item-title>
+                    <v-list-item-title>{{ vehicle_details.level_04 || '--' }}</v-list-item-title>
                     <v-list-item-subtitle v-text="$t('level_04')" />
                   </v-list-item-content>
                 </v-list-item>
@@ -238,7 +238,7 @@
                     <v-icon v-text="'mdi-label-outline'" />
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>{{ vehicle.level_05 || '--' }}</v-list-item-title>
+                    <v-list-item-title>{{ vehicle_details.level_05 || '--' }}</v-list-item-title>
                     <v-list-item-subtitle v-text="$t('level_05')" />
                   </v-list-item-content>
                 </v-list-item>
@@ -262,16 +262,17 @@ export default {
     expanded: false
   }),
   computed: {
-    client_labels: vm => vm.$store.getters['account/getClientUseLabels'],
-    vehicle: vm => vm.$store.getters['vehicle/getVehicleInfo'],
+    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
+    vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
+    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     vehicleCenter () {
       // Concatenate those that exist https://stackoverflow.com/a/19903063
-      return [this.vehicle.center_name, this.vehicle.center_code].filter(Boolean).join(' - ')
+      return [this.vehicle_details.center_name, this.vehicle_details.center_code].filter(Boolean).join(' - ')
     },
     colorYearMakeModel () {
-      return [this.vehicle.exterior_color, this.vehicle.year, this.vehicle.make, this.vehicle.model].filter(Boolean).join(' ')
+      return [this.vehicle_details.exterior_color, this.vehicle_details.year, this.vehicle_details.make, this.vehicle_details.model].filter(Boolean).join(' ')
     },
-    editVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-vehicle` })
+    editVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/edit-vehicle` })
   },
   methods: {
     goToEditVehicle () {

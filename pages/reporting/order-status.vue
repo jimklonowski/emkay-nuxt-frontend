@@ -499,12 +499,7 @@ export default {
    */
   async asyncData ({ $moment, query, store, error }) {
     let search
-    const filters = {
-      command: 'ORDERSTATUS',
-      customer: 'EM102',
-      json: 'Y'
-    }
-    await store.dispatch('reports/fetchData', filters)
+    await store.dispatch('reports/fetchOrderStatusReport')
     return { search }
   },
 

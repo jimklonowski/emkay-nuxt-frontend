@@ -6,7 +6,7 @@
           <v-icon v-text="'mdi-cash-usd-outline'" />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-subtitle v-text="vehicle_info.status" class="overline" />
+          <v-list-item-subtitle v-text="vehicle_details.status" class="overline" />
           <v-list-item-title v-text="$t('billing_history')" />
           <client-only>
             <nuxt-link :to="billingRoute" v-text="$t('more')" class="caption text-decoration-none" />
@@ -15,7 +15,7 @@
         <!-- <v-list-item-action>
           <v-list-item-action-text v-text="$t('status')" class="caption" />
           <client-only>
-            <v-chip v-text="vehicle_info.lease_type" :title="$t('lease_type')" x-small />
+            <v-chip v-text="vehicle_details.lease_type" :title="$t('lease_type')" x-small />
             <span />
           </client-only>
         </v-list-item-action> -->
@@ -71,8 +71,9 @@ export default {
     }
   },
   computed: {
-    billingRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/billing` }),
-    vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
+    billingRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/billing` }),
+    vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
+    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     columns () {
       return [
         'invoice_number',
@@ -131,7 +132,7 @@ export default {
   },
   methods: {
     invoiceRoute (invoice) {
-      return this.localePath({ path: `/vehicle/${this.$route.params.vehicle}/billing`, query: { invoice } })
+      return this.localePath({ path: `/vehicle/${this.vehicle_number}/billing`, query: { invoice } })
     }
   }
 }

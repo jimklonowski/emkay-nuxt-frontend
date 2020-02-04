@@ -1,4 +1,3 @@
-
 /**
  * Click-to-Dial a phone number
  */

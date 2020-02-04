@@ -33,6 +33,7 @@
     "nuxt-i18n": "^6.5.0",
     "nuxt-webfontloader": "^1.1.0",
     "vee-validate": "^3.2.2",
+    "velocity-animate": "^2.0.5",
     "vue-json-excel": "^0.2.98",
     "vue-snotify": "^3.2.1",
     "vuetify-loader": "^1.4.3",

@@ -26,7 +26,7 @@
             ref="start_menu"
             v-model="start_menu"
             :close-on-content-click="false"
-            :return-value.sync="start_date"
+            :return-value.sync="start"
             transition="scale-transition"
             offset-y
             max-width="290px"
@@ -34,7 +34,7 @@
           >
             <template #activator="{ on }">
               <v-text-field
-                :value="$moment(start_date).format('L')"
+                :value="$moment(start).format('L')"
                 :label="$t('start_date')"
                 v-on="on"
                 prepend-icon="mdi-calendar"
@@ -42,13 +42,13 @@
               />
             </template>
             <v-date-picker
-              v-model="start_date"
+              v-model="start"
               no-title
               scrollable
             >
               <v-spacer />
               <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
+              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start), updateQuery()" text />
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -57,7 +57,7 @@
             ref="end_menu"
             v-model="end_menu"
             :close-on-content-click="false"
-            :return-value.sync="end_date"
+            :return-value.sync="end"
             transition="scale-transition"
             offset-y
             max-width="290px"
@@ -65,7 +65,7 @@
           >
             <template #activator="{ on }">
               <v-text-field
-                :value="$moment(end_date).format('L')"
+                :value="$moment(end).format('L')"
                 :label="$t('end_date')"
                 v-on="on"
                 prepend-icon="mdi-calendar"
@@ -73,13 +73,13 @@
               />
             </template>
             <v-date-picker
-              v-model="end_date"
+              v-model="end"
               no-title
               scrollable
             >
               <v-spacer />
               <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
+              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end), updateQuery()" text />
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -175,64 +175,6 @@
           <template #item.unit_price="{ item }">
             {{ item.unit_price | currency(3,3) }}
           </template>
-          <!-- Configure how each #item row is rendered -->
-          <!-- <template #item="{ item }">
-            <tr>
-              <td>{{ item.service_date | date }}</td>
-              <td>{{ item.bill_date | date }}</td>
-              <td>{{ item.amount | currency }}</td>
-              <td>{{ item.bill_sort }}</td>
-              <td>
-                <client-only>
-                  <v-chip :outlined="$vuetify.theme.dark" v-text="item.card_number" small />
-                </client-only>
-              </td>
-              <td>{{ item.center_code }}</td>
-              <td>{{ item.center_name }}</td>
-              <td>{{ item.client_use_1 }}</td>
-              <td>{{ item.client_use_2 }}</td>
-              <td>{{ item.client_use_3 }}</td>
-              <td>{{ item.client_use_4 }}</td>
-              <td>{{ item.client_use_5 }}</td>
-              <td>{{ item.client_vehicle_number }}</td>
-              <td>{{ item.driver_id }}</td>
-              <td>{{ item.driver_name }}</td>
-              <td>{{ item.emkay_invoice_date | date }}</td>
-              <td>{{ item.emkay_invoice_number }}</td>
-              <td>{{ item.engine_fuel_type }}</td>
-              <td>{{ item.exception }}</td>
-              <td>{{ item.fuel_card_vendor }}</td>
-              <td>{{ item.fuel_company_name }}</td>
-              <td>{{ item.fuel_company_number }}</td>
-              <td>{{ item.invoice_number }}</td>
-              <td>{{ item.level_01 }}</td>
-              <td>{{ item.level_02 }}</td>
-              <td>{{ item.level_03 }}</td>
-              <td>{{ item.merchant_address }}</td>
-              <td>{{ item.merchant_city }}</td>
-              <td>{{ item.merchant_state }}</td>
-              <td>{{ item.merchant_zip }}</td>
-              <td>{{ item.model_year }}</td>
-              <td>{{ item.odometer }}</td>
-              <td>{{ item.premium }}</td>
-              <td>{{ item.product }}</td>
-              <td>{{ item.product_type }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.service_time }}</td>
-              <td>{{ item.tank_capacity }}</td>
-              <td>{{ item.tax_exempt }}</td>
-              <td>{{ item.unit_price | currency(3,3) }}</td>
-              <td>{{ item.vehicle_make }}</td>
-              <td>{{ item.vehicle_model }}</td>
-              <td>
-                <client-only>
-                  <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt small />
-                </client-only>
-              </td>
-              <td>{{ item.vin }}</td>
-              <td>{{ item.voucher }}</td>
-            </tr>
-          </template> -->
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
@@ -276,14 +218,13 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    // Downloaded csv contains these columns.
     columns () {
-      // TODO: Additional logic for ordering of columns and which columns should be in report
-      // Returns an array of string[]
       return [
         'vehicle_number',
+        'client_vehicle_number',
         'service_date',
         'bill_date',
-        'client_vehicle_number',
         'amount',
         'bill_sort',
         'card_number',
@@ -307,6 +248,10 @@ export default {
         'level_01',
         'level_02',
         'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
         'merchant_address',
         'merchant_city',
         'merchant_state',
@@ -327,11 +272,18 @@ export default {
         'voucher'
       ]
     },
+    // Datatable contains these headers
     headers () {
       return [
         {
           text: this.$i18n.t('vehicle_number'),
           value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
           class: 'report-column',
           divider: true
         },
@@ -344,12 +296,6 @@ export default {
         {
           text: this.$i18n.t('bill_date'),
           value: 'bill_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_vehicle_number'),
-          value: 'client_vehicle_number',
           class: 'report-column',
           divider: true
         },
@@ -475,27 +421,27 @@ export default {
           class: 'report-column',
           divider: true
         },
-        {
-          text: this.$i18n.t('level_01'),
-          value: 'level_01',
-          class: 'report-column',
-          width: 250,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_02'),
-          value: 'level_02',
-          class: 'report-column',
-          width: 250,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_03'),
-          value: 'level_03',
-          class: 'report-column',
-          width: 250,
-          divider: true
-        },
+        // {
+        //   text: this.$i18n.t('level_01'),
+        //   value: 'level_01',
+        //   class: 'report-column',
+        //   width: 250,
+        //   divider: true
+        // },
+        // {
+        //   text: this.$i18n.t('level_02'),
+        //   value: 'level_02',
+        //   class: 'report-column',
+        //   width: 250,
+        //   divider: true
+        // },
+        // {
+        //   text: this.$i18n.t('level_03'),
+        //   value: 'level_03',
+        //   class: 'report-column',
+        //   width: 250,
+        //   divider: true
+        // },
         {
           text: this.$i18n.t('merchant_address'),
           value: 'merchant_address',
@@ -610,8 +556,8 @@ export default {
     },
     query () {
       const query = {
-        start_date: this.start_date,
-        end_date: this.end_date,
+        start: this.start,
+        end: this.end,
         use_bill_date: this.use_bill_date
       }
       return query
@@ -629,24 +575,15 @@ export default {
   async asyncData ({ $moment, query, store, error }) {
     // if no date params in query, then use 30day period ending with today
     const report_length = 30
-    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
-    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
+    const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
+    const end = query.end || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
-    const filters = {
-      command: 'FUEL',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      use_bill_date,
-      json: 'Y'
-    }
-
     // Fetch the report data using the above filters
-    await store.dispatch('reports/fetchData', filters)
+    await store.dispatch('reports/fetchFuelDetailReport', { start, end, use_bill_date })
 
     // Return the report parameters so they are merged with the data() object
-    return { end_date, start_date, use_bill_date }
+    return { end, start, use_bill_date }
   },
 
   /**
@@ -728,6 +665,6 @@ export default {
    * Watch query strings and execute component methods on change (asyncData, fetch, validate, layout, ...)
    * https://nuxtjs.org/api/pages-watchquery
    */
-  watchQuery: ['start_date', 'end_date', 'use_bill_date']
+  watchQuery: ['start', 'end', 'use_bill_date']
 }
 </script>

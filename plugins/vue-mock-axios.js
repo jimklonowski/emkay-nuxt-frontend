@@ -114,9 +114,9 @@ export default function ({ $axios, redirect }) {
         'fuel_company_name',
         'fuel_company_number',
         'invoice_number',
-        'level_01',
-        'level_02',
-        'level_03',
+        // 'level_01',
+        // 'level_02',
+        // 'level_03',
         'merchant_address',
         'merchant_city',
         'merchant_state',
@@ -268,23 +268,6 @@ export default function ({ $axios, redirect }) {
       return [200, { login_messages, center_hierarchy, custom_labels }]
     })
     // .onGet('/account/custom-labels').replyOnce(200, { client_use_labels: {}, driver_misc_labels: {} })
-    .onGet('/account/custom-labels')
-    .reply(function (config) {
-      const client_use_labels = {
-        client_use_1_label: 'custom label 1',
-        client_use_2_label: 'custom label 2',
-        client_use_3_label: 'custom label 3',
-        client_use_4_label: 'custom label 4',
-        client_use_5_label: 'custom label 5'
-      }
-      const driver_misc_labels = {
-        driver_misc_1_label: 'driver label 1',
-        driver_misc_2_label: 'driver label 2',
-        driver_misc_3_label: 'driver label 3',
-        driver_misc_4_label: 'driver label 4'
-      }
-      return [200, { client_use_labels, driver_misc_labels }]
-    })
     .onPost('/account/update-custom-labels')
     .replyOnce(500)
     .onPost('/account/update-custom-labels')

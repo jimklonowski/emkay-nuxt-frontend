@@ -1,5 +1,5 @@
 import { assign, set } from '@/utility/vuex'
-import { multiFilter, compareObjectByKey } from '@/utility/helpers'
+import { compareObjectByKey, multiFilter } from '@/utility/helpers'
 
 const getDefaultState = () => ({
   error: null,
@@ -10,15 +10,16 @@ const getDefaultState = () => ({
 export const state = () => getDefaultState()
 
 export const actions = {
-  async fetchVehicles ({ commit }, filters) {
+  async fetchVehicles ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
     try {
-      commit('setLoading', true)
-      const url = `${process.env.EMKAY_API}/rest-test/webcom-generic-json`
-      const { data: { success, message, data } } = await this.$axios.post(url, filters)
+      const { data: { success, message, data } } = await this.$axios.get('/reports/inventory')
       if (!success) { throw new Error(message) }
       commit('setVehicles', data)
     } catch (error) {
       commit('setError', error)
+      commit('setVehicles', [])
     } finally {
       commit('setLoading', false)
     }

@@ -13,18 +13,74 @@ export const state = () => getDefaultState()
 
 export const actions = {
   /**
-   * Fetch inventory report data.  No parameters are supplied.
+   * Fetch INVENTORY REPORT data.
+   * No parameters are supplied.
    */
   async fetchInventoryReport ({ commit }) {
     commit('setError', null)
     commit('setLoading', true)
     try {
       const { data: { success, message, data } } = await this.$axios.get('/reports/inventory')
-      if (success) {
-        commit('setData', data)
-      } else {
-        console.info(message)
-      }
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch FUEL DETAIL REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   * @param use_bill_date (Boolean)
+   */
+  async fetchFuelDetailReport ({ commit }, { start, end, use_bill_date }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/fuel-detail', { params: { start, end, use_bill_date } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch MAINTENANCE DETAIL REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   * @param use_bill_date (Boolean)
+   */
+  async fetchMaintenanceDetailReport ({ commit }, { start, end, use_bill_date }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/maintenance-detail', { params: { start, end, use_bill_date } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch ORDER STATUS REPORT data.
+   * No parameters are supplied.
+   */
+  async fetchOrderStatusReport ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/order-status-report')
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
     } catch (error) {
       commit('setError', error.message)
       commit('setData', [])

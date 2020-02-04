@@ -103,24 +103,16 @@ export default {
         }
       ]
     },
-    fuelRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/fuel` }),
-    items: vm => vm.$store.getters['vehicle/getFuelHistory']
+    fuelRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/fuel` }),
+    items: vm => vm.$store.getters['vehicle/getFuelHistory'],
+    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber']
   },
   async mounted () {
-    const vehicle_number = this.$route.params.vehicle
-    const end_date = this.$moment().format('YYYY-MM-DD')
-    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const vehicle = this.vehicle_number
+    const end = this.$moment().format('YYYY-MM-DD')
+    const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
     const use_bill_date = false
-    const filters = {
-      command: 'FUEL',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      use_bill_date,
-      vehicle_number,
-      json: 'Y'
-    }
-    await this.$store.dispatch('vehicle/fetchFuelHistory', { filters })
+    await this.$store.dispatch('vehicle/fetchFuelHistory', { start, end, use_bill_date, vehicle })
     this.initialized = true
   }
 }

@@ -18,7 +18,7 @@
                   <v-col v-for="(item, name, key) in model" :key="key" cols="12">
                     <v-text-field
                       v-model="model[name]"
-                      :label="custom_labels[`${name}_label`]"
+                      :label="custom_labels[`client_use_label_${key+1}`]"
                       outlined
                     />
                   </v-col>
@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
-    custom_labels: vm => vm.$store.getters['account/getClientUseLabels']
+    custom_labels: vm => vm.$store.getters['account/getCustomLabels']
   },
   mounted () {
     this.loadLabels()

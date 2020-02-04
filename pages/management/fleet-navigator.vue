@@ -186,20 +186,11 @@ export default {
     }
   },
   computed: {
-    // rawItems: vm => vm.$store.getters['fleet/getVehicles'],
     items () {
       const order = this.sortDesc ? 'desc' : 'asc'
       const sortBy = this.sortBy || 'center_code'
       return this.$store.getters['fleet/filteredVehicles'](this.currentFilters, sortBy, order)
     },
-    // items2 () {
-    //   const filteredItems = multiFilter(this.rawItems, this.currentFilters)
-    //   return filteredItems.sort(compareObjectByKey(sortBy, order))
-    // },
-    // filteredItems2 () {
-    //   // console.log(this.currentFilters)
-    //   return multiFilter(this.items, this.currentFilters)
-    // },
     filterCount () {
       return [].concat(...Object.values(this.currentFilters)).length
     },
@@ -207,19 +198,14 @@ export default {
     hasSelection: vm => Object.keys(vm.selectedItem).length > 0
   },
   async asyncData ({ store }) {
+    let loading, search
     const model = {
       center_code: '',
       vehicle_make: ''
     }
-    let loading, search
-    const filters = {
-      command: 'VEHICLEAUDIT',
-      customer: 'EM102',
-      json: 'Y'
-    }
 
     // Fetch fleet
-    await store.dispatch('fleet/fetchVehicles', filters)
+    await store.dispatch('fleet/fetchVehicles')
     return {
       model,
       loading,

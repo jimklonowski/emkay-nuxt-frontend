@@ -25,7 +25,7 @@
             ref="start_menu"
             v-model="start_menu"
             :close-on-content-click="false"
-            :return-value.sync="start_date"
+            :return-value.sync="start"
             transition="scale-transition"
             offset-y
             max-width="290px"
@@ -33,7 +33,7 @@
           >
             <template #activator="{ on }">
               <v-text-field
-                :value="$moment(start_date).format('L')"
+                :value="$moment(start).format('L')"
                 :label="$t('start_date')"
                 v-on="on"
                 prepend-icon="mdi-calendar"
@@ -41,13 +41,13 @@
               />
             </template>
             <v-date-picker
-              v-model="start_date"
+              v-model="start"
               no-title
               scrollable
             >
               <v-spacer />
               <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
+              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start), updateQuery()" text />
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -56,7 +56,7 @@
             ref="end_menu"
             v-model="end_menu"
             :close-on-content-click="false"
-            :return-value.sync="end_date"
+            :return-value.sync="end"
             transition="scale-transition"
             offset-y
             max-width="290px"
@@ -64,7 +64,7 @@
           >
             <template #activator="{ on }">
               <v-text-field
-                :value="$moment(end_date).format('L')"
+                :value="$moment(end).format('L')"
                 :label="$t('end_date')"
                 v-on="on"
                 prepend-icon="mdi-calendar"
@@ -72,13 +72,13 @@
               />
             </template>
             <v-date-picker
-              v-model="end_date"
+              v-model="end"
               no-title
               scrollable
             >
               <v-spacer />
               <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
+              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end), updateQuery()" text />
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -87,8 +87,6 @@
             v-model="use_bill_date"
             :label="$t(`bill_date`)"
             @change="updateQuery()"
-            hint="Not Yet Implemented..."
-            messages="Not Yet Implemented..."
           />
         </v-col>
       </v-row>
@@ -149,74 +147,6 @@
           <template #item.quantity="{ item }">
             {{ item.quantity | number }}
           </template>
-          <!-- Configure each #item row is rendered -->
-          <!-- <template #item="{ item }">
-            <tr>
-              <td>{{ item.service_date | date }}</td>
-              <td>{{ item.active }}</td>
-              <td>{{ item.amount | currency }}</td>
-              <td>{{ item.ata_group }}</td>
-              <td>{{ item.ata_group_description }}</td>
-              <td>{{ item.bill_sort }}</td>
-              <td>{{ item.brake_manufacturer }}</td>
-              <td>{{ item.brake_thickness }}</td>
-              <td>{{ item.center_code }}</td>
-              <td>{{ item.center_name }}</td>
-              <td>{{ item.charge_code }}</td>
-              <td>{{ item.client_use_1 }}</td>
-              <td>{{ item.client_use_2 }}</td>
-              <td>{{ item.client_use_3 }}</td>
-              <td>{{ item.client_use_4 }}</td>
-              <td>{{ item.client_use_5 }}</td>
-              <td>{{ item.client_vehicle_number }}</td>
-              <td>{{ item.customer_po }}</td>
-              <td>{{ item.description }}</td>
-              <td>{{ item.driver_name }}</td>
-              <td>{{ item.engine_hours }}</td>
-              <td>{{ item.expense_category }}</td>
-              <td>{{ item.front_left_brake }}</td>
-              <td>{{ item.front_left_drum }}</td>
-              <td>{{ item.front_left_rotor }}</td>
-              <td>{{ item.front_left_tire }}</td>
-              <td>{{ item.front_right_brake }}</td>
-              <td>{{ item.front_right_drum }}</td>
-              <td>{{ item.front_right_rotor }}</td>
-              <td>{{ item.front_right_tire }}</td>
-              <td>{{ item.gl_code }}</td>
-              <td>{{ item.invoice_number }}</td>
-              <td>{{ item.labor_or_part }}</td>
-              <td>{{ item.level_01 }}</td>
-              <td>{{ item.level_02 }}</td>
-              <td>{{ item.level_03 }}</td>
-              <td>{{ item.maintenance_category }}</td>
-              <td>{{ item.maintenance_code }}</td>
-              <td>{{ item.model_year }}</td>
-              <td>{{ item.odometer }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.rear_left_brake }}</td>
-              <td>{{ item.rear_left_drum }}</td>
-              <td>{{ item.rear_left_rotor }}</td>
-              <td>{{ item.rear_left_tire }}</td>
-              <td>{{ item.rear_right_brake }}</td>
-              <td>{{ item.rear_right_drum }}</td>
-              <td>{{ item.rear_right_rotor }}</td>
-              <td>{{ item.rear_right_tire }}</td>
-              <td>{{ item.tire_manufacturer }}</td>
-              <td>{{ item.tire_model }}</td>
-              <td>{{ item.tire_size }}</td>
-              <td>{{ item.vehicle_make }}</td>
-              <td>{{ item.vehicle_model }}</td>
-              <td>
-                <client-only>
-                  <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" small />
-                </client-only>
-              </td>
-              <td>{{ item.vendor_factor }}</td>
-              <td>{{ item.vendor_name }}</td>
-              <td>{{ item.vendor_number }}</td>
-              <td>{{ item.voucher }}</td>
-            </tr>
-          </template> -->
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
@@ -253,6 +183,7 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    // Downloaded csv contains these columns.
     columns () {
       return [
         'service_date',
@@ -275,7 +206,6 @@ export default {
         'client_use_5',
         'customer_po',
         'description',
-        // 'driver_name',
         'driver_first_name',
         'driver_last_name',
         'engine_hours',
@@ -294,6 +224,10 @@ export default {
         'level_01',
         'level_02',
         'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
         'maintenance_category',
         'maintenance_code',
         'model_year',
@@ -321,12 +255,6 @@ export default {
     headers () {
       return [
         {
-          text: this.$i18n.t('service_date'),
-          value: 'service_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
           text: this.$i18n.t('vehicle_number'),
           value: 'vehicle_number',
           class: 'report-column',
@@ -335,6 +263,12 @@ export default {
         {
           text: this.$i18n.t('client_vehicle_number'),
           value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('service_date'),
+          value: 'service_date',
           class: 'report-column',
           divider: true
         },
@@ -544,24 +478,24 @@ export default {
           class: 'report-column',
           divider: true
         },
-        {
-          text: this.$i18n.t('level_01'),
-          value: 'level_01',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_02'),
-          value: 'level_02',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_03'),
-          value: 'level_03',
-          class: 'report-column',
-          divider: true
-        },
+        // {
+        //   text: this.$i18n.t('level_01'),
+        //   value: 'level_01',
+        //   class: 'report-column',
+        //   divider: true
+        // },
+        // {
+        //   text: this.$i18n.t('level_02'),
+        //   value: 'level_02',
+        //   class: 'report-column',
+        //   divider: true
+        // },
+        // {
+        //   text: this.$i18n.t('level_03'),
+        //   value: 'level_03',
+        //   class: 'report-column',
+        //   divider: true
+        // },
         {
           text: this.$i18n.t('maintenance_category'),
           value: 'maintenance_category',
@@ -702,9 +636,9 @@ export default {
     loading: vm => vm.$store.getters['reports/getLoading'],
     query () {
       const query = {
-        start_date: this.start_date,
-        end_date: this.end_date,
-        use_bill_date: this.use_bill_date
+        start: this.start,
+        end: this.end,
+        use: this.use_bill_date
       }
       return query
     }
@@ -718,22 +652,22 @@ export default {
   async asyncData ({ $moment, query, store }) {
     // if no date params in query, then use 30day period ending with today
     const report_length = 30
-    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
-    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
+    const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
+    const end = query.end || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
-    const filters = {
-      command: 'MAINTHISTORY',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      use_bill_date,
-      json: 'Y'
-    }
+    // const filters = {
+    //   command: 'MAINTHISTORY',
+    //   customer: 'EM102',
+    //   start,
+    //   end,
+    //   use_bill_date,
+    //   json: 'Y'
+    // }
 
     // Fetch the report data using the above filters
-    await store.dispatch('reports/fetchData', filters)
+    await store.dispatch('reports/fetchMaintenanceDetailReport', { start, end, use_bill_date })
 
-    return { end_date, start_date, use_bill_date }
+    return { end, start, use_bill_date }
   },
 
   /**
@@ -804,6 +738,6 @@ export default {
    * Watch query strings and execute component methods on change (asyncData, fetch, validate, layout, ...)
    * https://nuxtjs.org/api/pages-watchquery
    */
-  watchQuery: ['start_date', 'end_date', 'use_bill_date']
+  watchQuery: ['start', 'end', 'use_bill_date']
 }
 </script>
