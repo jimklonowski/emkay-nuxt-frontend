@@ -45,7 +45,7 @@ export default {
   computed: {
     tollRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/toll` }),
     items: vm => vm.$store.getters['vehicle/getTollHistory'],
-    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
+    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     columns () {
       return [
         'date',
@@ -57,19 +57,10 @@ export default {
     }
   },
   async mounted () {
-    const vehicle_number = this.vehicleNumber || ''
-    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-    const end_date = this.$moment().format('YYYY-MM-DD')
-
-    const filters = {
-      command: 'TOLL',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      vehicle_number,
-      json: 'Y'
-    }
-    await this.$store.dispatch('vehicle/fetchTollHistory', filters)
+    const vehicle = this.vehicle_number
+    const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const end = this.$moment().format('YYYY-MM-DD')
+    await this.$store.dispatch('vehicle/fetchTollHistory', { start, end, vehicle })
     this.initialized = true
   }
 }

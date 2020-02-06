@@ -131,6 +131,10 @@ export default {
     selectVehicle () {
       if (this.selection && this.selection.vehicle_number) {
         this.$router.push(this.localePath({ path: `/vehicle/${this.selection.vehicle_number.toUpperCase()}` }))
+        // await this.$store.dispatch('vehicle/fetchVehicleDetails', { vehicle: this.selection.vehicle_number.toUpperCase() })
+        // await this.$store.dispatch('vehicle/init', { vehicle: this.selection.vehicle_number.toUpperCase() })
+        // debugger
+        // this.$router.push(this.localePath({ path: `/vehicle/dashboard` }))
       }
     },
     colorYearMakeModel (item) {

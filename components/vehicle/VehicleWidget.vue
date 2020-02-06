@@ -6,8 +6,8 @@
           <v-icon v-text="'mdi-car'" />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-subtitle v-text="colorYearMakeModel" class="overline" />
-          <v-list-item-title v-text="vehicle_details.vehicle_number" />
+          <v-list-item-subtitle v-text="vehicle_details.vehicle_number" class="overline" />
+          <v-list-item-title v-text="yearMakeModel" />
           <client-only>
             <nuxt-link :to="editVehicleRoute" v-text="$t('edit')" class="caption text-decoration-none" />
           </client-only>
@@ -53,6 +53,15 @@
                 <v-list-item-content>
                   <v-list-item-title>{{ vehicle_details.category || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('vehicle_category')" />
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-palette'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ vehicle_details.exterior_color || '--' }}</v-list-item-title>
+                  <v-list-item-subtitle v-text="$t('vehicle_color')" />
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
@@ -121,6 +130,15 @@
                 <v-list-item-content>
                   <v-list-item-title>{{ vehicle_details.license_plate_number || '--' }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('license_plate_number')" />
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-remote'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ tollTransponder || '--' }}</v-list-item-title>
+                  <v-list-item-subtitle v-text="$t('transponder')" />
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -252,12 +270,7 @@
 </template>
 
 <script>
-// import VehicleWidgetDetails from '@/components/vehicle/VehicleWidgetDetails'
-
 export default {
-  components: {
-    // VehicleWidgetDetails
-  },
   data: () => ({
     expanded: false
   }),
@@ -271,6 +284,12 @@ export default {
     },
     colorYearMakeModel () {
       return [this.vehicle_details.exterior_color, this.vehicle_details.year, this.vehicle_details.make, this.vehicle_details.model].filter(Boolean).join(' ')
+    },
+    tollTransponder () {
+      return [this.vehicle_details.toll_type, this.vehicle_details.transponder_number].filter(Boolean).join(' - ')
+    },
+    yearMakeModel () {
+      return [this.vehicle_details.year, this.vehicle_details.make, this.vehicle_details.model].filter(Boolean).join(' ')
     },
     editVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/edit-vehicle` })
   },

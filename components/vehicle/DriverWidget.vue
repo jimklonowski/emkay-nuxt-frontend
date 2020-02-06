@@ -73,11 +73,6 @@
                   <v-list-item-subtitle v-text="$t('email')" class="font-weight-light" />
                 </v-list-item-content>
               </v-list-item>
-            </v-list>
-          </v-col>
-          <v-col cols="6">
-            <v-list subheader dense class="widget-list">
-              <v-subheader v-text="$t('additional_information')" class="overline" />
               <v-list-item>
                 <v-list-item-icon>
                   <v-icon v-text="'mdi-account-card-details'" />
@@ -98,79 +93,57 @@
               </v-list-item>
             </v-list>
           </v-col>
+          <v-col cols="6">
+            <v-list subheader dense class="widget-list">
+              <v-subheader v-text="$t('custom_labels')" class="overline" />
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-label'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ driver_details.misc_1 || '--' }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ custom_labels.driver_use_label_1 || $t('driver_use_label_1') }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-label'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ driver_details.misc_2 || '--' }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ custom_labels.driver_use_label_2 || $t('driver_use_label_2') }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-label'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ driver_details.misc_3 || '--' }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ custom_labels.driver_use_label_3 || $t('driver_use_label_3') }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-label'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ driver_details.misc_4 || '--' }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ custom_labels.driver_use_label_4 || $t('driver_use_label_4') }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-col>
         </v-row>
       </v-container>
     </v-card-text>
-    <v-card-actions class="pt-0">
-      <v-btn
-        @click="expanded = !expanded"
-        :text="!expanded"
-        block
-        depressed
-        small
-      >
-        <v-icon v-text="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="mr-4" />
-        {{ expanded ? $t('less') : $t('more') }}
-      </v-btn>
-    </v-card-actions>
-    <v-slide-y-transition>
-      <v-card-text v-show="expanded" class="pa-0">
-        <v-container class="py-0">
-          <v-row>
-            <v-col cols="6">
-              <v-list subheader dense class="widget-list">
-                <v-subheader v-text="$t('custom_labels')" class="overline" />
-                <v-list-item>
-                  <v-list-item-icon>
-                    <v-icon v-text="'mdi-label'" />
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ driver_details.misc_1 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ custom_labels.driver_use_label_1 || $t('driver_use_label_1') }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item>
-                  <v-list-item-icon>
-                    <v-icon v-text="'mdi-label'" />
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ driver_details.misc_2 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ custom_labels.driver_use_label_2 || $t('driver_use_label_2') }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item>
-                  <v-list-item-icon>
-                    <v-icon v-text="'mdi-label'" />
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ driver_details.misc_3 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ custom_labels.driver_use_label_3 || $t('driver_use_label_3') }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item>
-                  <v-list-item-icon>
-                    <v-icon v-text="'mdi-label'" />
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ driver_details.misc_4 || '--' }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ custom_labels.driver_use_label_4 || $t('driver_use_label_4') }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-    </v-slide-y-transition>
+    <v-card-actions class="pt-0" />
   </v-card>
 </template>
 
 <script>
 import { dialTo, emailTo } from '@/utility/helpers'
 export default {
-  data: () => ({
-    expanded: false
-  }),
   computed: {
     custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
     driver_details: vm => vm.$store.getters['vehicle/getDriverDetails'],

@@ -1,8 +1,8 @@
 export default function ({ $axios, store, redirect }) {
   $axios.onError(error => {
     if (error.response.status === 401) {
-      // console.log('401 ERROR -> LOGIN')
-      // redirect('/login')
+      console.log('401 ERROR -> LOGIN')
+      redirect('/login')
       // store.dispatch('account/logout')
     }
   })

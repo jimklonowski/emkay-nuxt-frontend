@@ -309,7 +309,7 @@ export default {
   mobile: "Téléphone portable",
   model_year: "Année modèle",
   months: "Mois",
-  months_in_service: "Mois en service",
+  months_in_service: "{n} Mois en service",
   more: "Plus",
   net_depreciation_percent: "Pourcentage d'amortissement net",
   next: "Suivant",

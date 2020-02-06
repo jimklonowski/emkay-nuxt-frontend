@@ -23,6 +23,46 @@ export const actions = {
       commit('setLoading', false)
     }
   },
+  /**
+   * Fetch Billing History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   * @see vehicle.js fetchBillingHistory
+   */
+  async fetchBillingHistory ({ commit }, { start, end, vehicle }) {
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/billing-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch Toll History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   * @see vehicle.js fetchTollHistory
+   */
+  async fetchTollHistory ({ commit }, { start, end, vehicle }) {
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/toll-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
   reset ({ commit }) {
     commit('reset')
   }

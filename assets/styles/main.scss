@@ -29,10 +29,10 @@
 }
 
 /* striped datatable using .striped class */
-.theme--light.striped.v-data-table tbody tr:nth-of-type(odd) {
+.theme--light.striped.v-data-table tbody tr:nth-of-type(even) {
   background-color: rgba(0, 0, 0, 0.03);
 }
-.theme--dark.striped.v-data-table tbody tr:nth-of-type(odd) {
+.theme--dark.striped.v-data-table tbody tr:nth-of-type(even) {
   background-color: rgba(255, 255, 255, 0.03);
 }
 

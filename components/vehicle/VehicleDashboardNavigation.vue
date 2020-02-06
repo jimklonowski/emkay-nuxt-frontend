@@ -74,6 +74,11 @@ export default {
           key: 'reassign_vehicle',
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/reassign-vehicle` }
+        },
+        {
+          key: 'saferoads',
+          icon: '',
+          to: { path: `/vehicle/${this.$route.params.vehicle}/saferoads` }
         }
       ]
     }

@@ -164,6 +164,25 @@ export const actions = {
     }
   },
   /**
+   * Fetch Billing History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchBillingHistory ({ commit }, { start, end, vehicle }) {
+    commit('setBillingLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/billing-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setBillingHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setBillingHistory', [])
+    } finally {
+      commit('setBillingLoading', false)
+    }
+  },
+  /**
    * Fetch Expense Summary by Vehicle Number
    * @param {*} vehicle Vehicle Number
    */
@@ -198,25 +217,6 @@ export const actions = {
       commit('setAccidentHistory', [])
     } finally {
       commit('setAccidentLoading', false)
-    }
-  },
-  /**
-   * Fetch Billing History by Vehicle Number
-   * @param {*} start Start Date
-   * @param {*} end End Date
-   * @param {*} vehicle Vehicle Number
-   */
-  async fetchBillingHistory ({ commit }, { start, end, vehicle }) {
-    commit('setBillingLoading', true)
-    try {
-      const { data: { success, message, data } } = await this.$axios.get('/vehicle/billing-history', { params: { start, end, vehicle } })
-      if (!success) { throw new Error(message) }
-      commit('setBillingHistory', data)
-    } catch (error) {
-      commit('pushError', error.message)
-      commit('setBillingHistory', [])
-    } finally {
-      commit('setBillingLoading', false)
     }
   },
   /**

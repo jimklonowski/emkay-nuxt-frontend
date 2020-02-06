@@ -12,52 +12,46 @@
             <nuxt-link :to="billingRoute" v-text="$t('more')" class="caption text-decoration-none" />
           </client-only>
         </v-list-item-content>
-        <!-- <v-list-item-action>
-          <v-list-item-action-text v-text="$t('status')" class="caption" />
-          <client-only>
-            <v-chip v-text="vehicle_details.lease_type" :title="$t('lease_type')" x-small />
-            <span />
-          </client-only>
-        </v-list-item-action> -->
       </v-list-item>
     </v-card-title>
     <v-divider />
     <v-card-text class="pa-0">
-      <v-data-table
-        :headers="headers"
-        :hide-default-footer="items.length <= 5"
-        :items="items"
-        :items-per-page="5"
-        :mobile-breakpoint="0"
-        :sort-by="['invoice_number']"
-        :sort-desc="[true]"
-        class="striped"
-        dense
-      >
-        <template #item="{ item }">
-          <tr class="report-row">
-            <td>
-              <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none">
-                {{ item.invoice_number }}
-              </nuxt-link>
-            </td>
-            <td>
-              {{ item.description }}
-            </td>
-            <td>
-              {{ item.bill_date | date }}
-            </td>
-            <td>
-              {{ item.bill_for_date | date }}
-            </td>
-            <td>
-              {{ item.amount | currency }}
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
+      <v-skeleton-loader :loading="!initialized" type="table">
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :items-per-page="5"
+          :mobile-breakpoint="0"
+          :sort-by="['invoice_number']"
+          :sort-desc="[true]"
+          class="striped"
+          dense
+        >
+          <template #item="{ item }">
+            <tr class="report-row">
+              <td>
+                <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none">
+                  {{ item.invoice_number }}
+                </nuxt-link>
+              </td>
+              <td>
+                {{ item.description }}
+              </td>
+              <td>
+                {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
+              </td>
+              <td>
+                {{ item.bill_for_date | date('YYYY-MM', 'MM/YYYY') }}
+              </td>
+              <td>
+                {{ item.amount | currency }}
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-skeleton-loader>
     </v-card-text>
-    <!-- <v-card-actions /> -->
+    <v-card-actions />
   </v-card>
 </template>
 
@@ -67,6 +61,7 @@ export default {
   mixins: [headers],
   data () {
     return {
+      days: 180,
       initialized: false
     }
   },
@@ -74,6 +69,7 @@ export default {
     billingRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/billing` }),
     vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
     vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber'],
+    items: vm => vm.$store.getters['vehicle/getBillingHistory'],
     columns () {
       return [
         'invoice_number',
@@ -82,53 +78,14 @@ export default {
         'bill_for_date',
         'amount'
       ]
-    },
-    items () {
-      return [
-        {
-          invoice_number: 'BH7004',
-          description: 'FMS BILLING',
-          bill_date: '2019-12',
-          bill_for_date: '2019-12',
-          amount: 431.73
-        },
-        {
-          invoice_number: 'BH6150',
-          description: 'RENTAL BILLING',
-          bill_date: '2019-12',
-          bill_for_date: '2019-12',
-          amount: 53.46
-        },
-        {
-          invoice_number: 'BH2857',
-          description: 'FMS BILLING',
-          bill_date: '2019-11',
-          bill_for_date: '2019-11',
-          amount: 261.37
-        },
-        {
-          invoice_number: 'BH0900',
-          description: 'RENTAL BILLING',
-          bill_date: '2019-11',
-          bill_for_date: '2019-11',
-          amount: 53.46
-        },
-        {
-          invoice_number: 'BH0900',
-          description: 'RENTAL BILLING',
-          bill_date: '2019-11',
-          bill_for_date: '2019-10',
-          amount: 53.46
-        },
-        {
-          invoice_number: 'BH0900',
-          description: 'RENTAL BILLING',
-          bill_date: '2019-11',
-          bill_for_date: '2019-09',
-          amount: 53.46
-        }
-      ]
     }
+  },
+  async mounted () {
+    const vehicle = this.vehicle_number
+    const end = this.$moment().format('YYYY-MM-DD')
+    const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    await this.$store.dispatch('vehicle/fetchBillingHistory', { start, end, vehicle })
+    this.initialized = true
   },
   methods: {
     invoiceRoute (invoice) {
