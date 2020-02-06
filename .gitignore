@@ -91,3 +91,7 @@ sw.*
 
 # vscode settings
 .vscode/settings.json
+
+# localhost ssl crt/key
+localhost.crt
+localhost.key
