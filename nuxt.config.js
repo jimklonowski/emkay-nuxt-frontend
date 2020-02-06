@@ -154,11 +154,17 @@ export default {
   ** See https://auth.nuxtjs.org/api/options.html#redirect
   */
   auth: {
+    // localStorage: false,
+    // cookie: {
+    //   options: {
+    //     expires: 7
+    //   }
+    // },
     plugins: [
       { src: '~/plugins/vue-mock-axios' },
       { src: '~/plugins/auth-lang-redirects', ssr: false }
     ],
-    token: false,
+    // token: false,
     strategies: {
       local: {
         endpoints: {
@@ -175,7 +181,6 @@ export default {
             url: '/user',
             method: 'get',
             propertyName: false // use the entire response as the user object
-            // propertyName: 'user'
           }
         },
         // used for cookie-only flows

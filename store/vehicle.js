@@ -15,6 +15,8 @@ const getDefaultState = () => ({
   accident_loading: false,
   billing_history: [],
   billing_loading: false,
+  expense_summary: {},
+  expense_summary_loading: false,
   fuel_history: [],
   fuel_loading: false,
   maintenance_history: [],
@@ -161,6 +163,23 @@ export const actions = {
       commit('setMaintenanceLoading', false)
     }
   },
+  /**
+   * Fetch Expense Summary by Vehicle Number
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchExpenseSummary ({ commit }, { vehicle }) {
+    commit('setExpenseSummaryLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/expense-summary', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setExpenseSummary', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setExpenseSummary', {})
+    } finally {
+      commit('setExpenseSummaryLoading', false)
+    }
+  },
   /* TODO: */
   /**
    * Fetch Accident History by Vehicle Number
@@ -284,6 +303,9 @@ export const mutations = {
   setMaintenanceHistory: set('maintenance_history'),
   setMaintenanceLoading: set('maintenance_loading'),
 
+  setExpenseSummary: set('expense_summary'),
+  setExpenseSummaryLoading: set('expense_summary_loading'),
+
   setVehicleNotes: set('vehicle_notes'),
   setVehicleNotesLoading: set('vehicle_notes_loading'),
 
@@ -321,6 +343,9 @@ export const getters = {
 
   getMaintenanceHistory: state => state.maintenance_history,
   getMaintenanceLoading: state => state.maintenance_loading,
+
+  getExpenseSummary: state => state.expense_summary,
+  getExpenseSummaryLoading: state => state.expense_summary_loading,
 
   getVehicleNotes: state => state.vehicle_notes,
   getVehicleNotesLoading: state => state.vehicle_notes_loading,

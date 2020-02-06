@@ -107,8 +107,36 @@ export default {
       ]
     }
   },
+  // mounted () {
+  //   debugger
+  //   this.$axios.get('/user').then(res => {
+  //     console.log(res)
+  //   })
+  // },
   methods: {
     async login () {
+      this.loading = true
+      try {
+        await this.$auth.loginWith('local', {
+          data: {
+            account: this.account,
+            username: this.username,
+            password: this.password
+          }
+        })
+      } catch (error) {
+        // error
+        console.error(error.message)
+      }
+      // debugger
+      if (this.$auth.loggedIn && this.$auth.user.token) {
+        // save the session cookie
+        this.$cookies.set('SESSIONID', this.$auth.user.token)
+        // debugger
+        console.log('logged in')
+      }
+    },
+    async login2 () {
       this.loading = true
       await this.$auth
         .loginWith('local', {

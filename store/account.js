@@ -37,11 +37,11 @@ export const actions = {
    */
   async fetchCustomLabels ({ commit }) {
     try {
-      debugger
       const { data: { success, message, data } } = await this.$axios.get('/account/custom-labels')
       if (!success) { throw new Error(message) }
       commit('setCustomLabels', data)
     } catch (error) {
+      debugger
       console.error(error)
     }
   },

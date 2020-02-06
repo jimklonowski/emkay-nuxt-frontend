@@ -58,7 +58,7 @@ export default {
     }
   },
   computed: {
-    vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
+    vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
     custom_labels: vm => vm.$store.getters['account/getCustomLabels']
   },
   mounted () {
@@ -66,13 +66,14 @@ export default {
   },
   methods: {
     loadLabels () {
+      debugger
       this.model = {
         ...this.model,
-        client_use_1: this.vehicle_info.client_use_1,
-        client_use_2: this.vehicle_info.client_use_2,
-        client_use_3: this.vehicle_info.client_use_3,
-        client_use_4: this.vehicle_info.client_use_4,
-        client_use_5: this.vehicle_info.client_use_5
+        client_use_1: this.vehicle_details.client_use_1,
+        client_use_2: this.vehicle_details.client_use_2,
+        client_use_3: this.vehicle_details.client_use_3,
+        client_use_4: this.vehicle_details.client_use_4,
+        client_use_5: this.vehicle_details.client_use_5
       }
     }
   }

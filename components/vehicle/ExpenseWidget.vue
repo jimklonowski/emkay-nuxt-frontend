@@ -14,13 +14,6 @@
             <nuxt-link :to="expensesRoute" v-text="$t('more')" class="caption text-decoration-none" />
           </client-only>
         </v-list-item-content>
-        <!-- <v-list-item-action>
-          <v-list-item-action-text v-text="$t('mileage')" class="caption" />
-          <client-only>
-            <v-chip v-text="$tc('miles_driven', vehicle_details.miles_driven || 0)" :title="$tc('miles_per_month', vehicle_details.miles_per_month || 0)" x-small />
-            <span />
-          </client-only>
-        </v-list-item-action> -->
       </v-list-item>
     </v-card-title>
     <v-divider />
@@ -32,22 +25,57 @@
               <th class="overline" width="50%">
                 {{ $t('fixed_costs') }} / {{ $t('cpm') }}
               </th>
-              <th v-text="$t(headers[1])" class="report-column text-right" width="25%" />
-              <th v-text="$t(headers[2])" class="report-column text-right" width="25%" />
+              <th v-text="$t('amount')" class="report-column text-right" width="25%" />
+              <th v-text="$t('cpm')" class="report-column text-right" width="25%" />
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in fixed_costs" :key="item.key" class="report-row">
+            <!-- Fixed Costs/CPM -->
+            <tr class="report-row">
               <td class="font-weight-regular pl-8">
-                {{ $t(item.key) }}
+                {{ $t('depreciation') }}
               </td>
               <td class="font-weight-light text-right">
-                {{ item.amount | currency }}
+                {{ expense_summary.depreciation | currency }}
               </td>
               <td class="font-weight-light text-right">
-                {{ item.cpm | currency(3,3) }}
+                {{ expense_summary.depreciation_cpm | currency(3, 3) }}
               </td>
             </tr>
+            <tr class="report-row">
+              <td class="font-weight-regular pl-8">
+                {{ $t('interest') }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.interest | currency }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.interest_cpm | currency(3, 3) }}
+              </td>
+            </tr>
+            <tr class="report-row">
+              <td class="font-weight-regular pl-8">
+                {{ $t('licensing') }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.licensing | currency }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.licensing_cpm | currency(3, 3) }}
+              </td>
+            </tr>
+            <tr class="report-row">
+              <td class="font-weight-regular pl-8">
+                {{ $t('tax') }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.tax | currency }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.tax_cpm | currency(3, 3) }}
+              </td>
+            </tr>
+            <!-- Total Fixed -->
             <tr class="report-row">
               <td>
                 {{ $t('total_fixed') }}
@@ -70,22 +98,46 @@
               <th class="overline" width="50%">
                 {{ $t('variable_costs') }} / {{ $t('cpm') }}
               </th>
-              <th v-text="$t(headers[1])" class="report-column text-right" width="25%" />
-              <th v-text="$t(headers[2])" class="report-column text-right" width="25%" />
+              <th v-text="$t('amount')" class="report-column text-right" width="25%" />
+              <th v-text="$t('cpm')" class="report-column text-right" width="25%" />
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in variable_costs" :key="item.key" class="report-row">
+            <!-- Variable Costs/CPM -->
+            <tr class="report-row">
               <td class="font-weight-regular pl-8">
-                {{ $t(item.key) }}
+                {{ $t('maintenance') }}
               </td>
               <td class="font-weight-light text-right">
-                {{ item.amount | currency }}
+                {{ expense_summary.maintenance | currency }}
               </td>
               <td class="font-weight-light text-right">
-                {{ item.cpm | currency(3,3) }}
+                {{ expense_summary.maintenance_cpm | currency(3, 3) }}
               </td>
             </tr>
+            <tr class="report-row">
+              <td class="font-weight-regular pl-8">
+                {{ $t('accident') }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.accident | currency }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.accident_cpm | currency(3, 3) }}
+              </td>
+            </tr>
+            <tr class="report-row">
+              <td class="font-weight-regular pl-8">
+                {{ $t('fuel') }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.fuel | currency }}
+              </td>
+              <td class="font-weight-light text-right">
+                {{ expense_summary.fuel_cpm | currency(3, 3) }}
+              </td>
+            </tr>
+            <!-- Total Fixed -->
             <tr class="report-row">
               <td>
                 {{ $t('total_variable') }}
@@ -121,78 +173,114 @@
 <script>
 import { computeTotalByKey } from '@/utility/helpers'
 export default {
+  data () {
+    return {
+      initialized: false
+    }
+  },
   computed: {
     expensesRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/expenses` }),
     vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
-    totalFixedCosts: vm => vm.computeTotalByKey(vm.fixed_costs, 'amount'),
-    totalFixedCPM: vm => vm.computeTotalByKey(vm.fixed_costs, 'cpm'),
-    totalVariableCosts: vm => vm.computeTotalByKey(vm.variable_costs, 'amount'),
-    totalVariableCPM: vm => vm.computeTotalByKey(vm.variable_costs, 'cpm'),
-    grandTotalCosts: vm => { return vm.totalFixedCosts + vm.totalVariableCosts },
-    grandTotalCPM: vm => { return vm.totalFixedCPM + vm.totalVariableCPM },
-    inServiceTitle () {
-      return `${this.$i18n.t('in_service_date')}: ${this.$options.filters.date(this.vehicle_details.in_service_date)}`
+    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber'],
+    expense_summary: vm => vm.$store.getters['vehicle/getExpenseSummary'],
+    totalFixedCosts () {
+      return this.expense_summary.depreciation +
+             this.expense_summary.interest +
+             this.expense_summary.licensing +
+             this.expense_summary.tax
     },
-    mileageTitle () {
-      return `${this.$i18n.t('total')}: ${this.vehicle_details.miles_driven || 0}`
+    totalFixedCPM () {
+      return this.expense_summary.depreciation_cpm +
+             this.expense_summary.interest_cpm +
+             this.expense_summary.licensing_cpm +
+             this.expense_summary.tax_cpm
     },
-    headers () {
-      return [
-        '',
-        'amount',
-        'cpm'
-      ]
+    totalVariableCosts () {
+      return this.expense_summary.maintenance +
+             this.expense_summary.accident +
+             this.expense_summary.fuel
     },
-    fixed_costs () {
-      return [
-        {
-          key: 'depreciation',
-          amount: 0.00,
-          cpm: 0.000
-        },
-        {
-          key: 'interest',
-          amount: 53.38,
-          cpm: 0.0141
-        },
-        {
-          key: 'licensing',
-          amount: 346.95,
-          cpm: 0.0022
-        },
-        {
-          key: 'tax',
-          amount: 0.00,
-          cpm: 0.000
-        }
-      ]
+    totalVariableCPM () {
+      return this.expense_summary.maintenance_cpm +
+             this.expense_summary.accident_cpm +
+             this.expense_summary.fuel_cpm
     },
-    variable_costs () {
-      return [
-        {
-          key: 'maintenance',
-          amount: 368.00,
-          cpm: 0.015
-        },
-        {
-          key: 'accident',
-          amount: 505.38,
-          cpm: 0.0205
-        },
-        {
-          key: 'fuel',
-          amount: 3534.59,
-          cpm: 0.1437
-        }
-      ]
+    grandTotalCosts () {
+      return this.totalFixedCosts + this.totalVariableCosts
+    },
+    grandTotalCPM () {
+      return this.totalFixedCPM + this.totalVariableCPM
     }
+    // totalFixedCosts: vm => vm.computeTotalByKey(vm.fixed_costs, 'amount'),
+    // totalFixedCPM: vm => vm.computeTotalByKey(vm.fixed_costs, 'cpm'),
+    // totalVariableCosts: vm => vm.computeTotalByKey(vm.variable_costs, 'amount'),
+    // totalVariableCPM: vm => vm.computeTotalByKey(vm.variable_costs, 'cpm'),
+    // grandTotalCosts: vm => { return vm.totalFixedCosts + vm.totalVariableCosts },
+    // grandTotalCPM: vm => { return vm.totalFixedCPM + vm.totalVariableCPM },
+    // inServiceTitle () {
+    //   return `${this.$i18n.t('in_service_date')}: ${this.$options.filters.date(this.vehicle_details.in_service_date)}`
+    // },
+    // mileageTitle () {
+    //   return `${this.$i18n.t('total')}: ${this.vehicle_details.miles_driven || 0}`
+    // },
+    // headers () {
+    //   return [
+    //     '',
+    //     'amount',
+    //     'cpm'
+    //   ]
+    // },
+    // fixed_costs () {
+    //   return [
+    //     {
+    //       key: 'depreciation',
+    //       amount: 0.00,
+    //       cpm: 0.000
+    //     },
+    //     {
+    //       key: 'interest',
+    //       amount: 53.38,
+    //       cpm: 0.0141
+    //     },
+    //     {
+    //       key: 'licensing',
+    //       amount: 346.95,
+    //       cpm: 0.0022
+    //     },
+    //     {
+    //       key: 'tax',
+    //       amount: 0.00,
+    //       cpm: 0.000
+    //     }
+    //   ]
+    // },
+    // variable_costs () {
+    //   return [
+    //     {
+    //       key: 'maintenance',
+    //       amount: 368.00,
+    //       cpm: 0.015
+    //     },
+    //     {
+    //       key: 'accident',
+    //       amount: 505.38,
+    //       cpm: 0.0205
+    //     },
+    //     {
+    //       key: 'fuel',
+    //       amount: 3534.59,
+    //       cpm: 0.1437
+    //     }
+    //   ]
+    // }
+  },
+  async mounted () {
+    const vehicle = this.vehicle_number
+    await this.$store.dispatch('vehicle/fetchExpenseSummary', { vehicle })
+    this.initialized = true
   },
   methods: {
     computeTotalByKey
   }
 }
 </script>
-
-<style>
-
-</style>

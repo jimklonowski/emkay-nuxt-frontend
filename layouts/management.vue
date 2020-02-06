@@ -3,7 +3,13 @@
     <emkay-navigation />
     <v-content>
       <management-navigation />
-      <nuxt />
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <nuxt />
+          </v-col>
+        </v-row>
+      </v-container>
     </v-content>
     <emkay-footer />
     <client-only>
@@ -26,7 +32,7 @@ export default {
     ManagementNavigation
   },
   // All pages with the management layout will require auth
-  middleware: ['check-auth'],
+  middleware: ['check-auth', 'account'],
   head () {
     return {
       htmlAttrs: {

@@ -275,6 +275,10 @@ export default {
         'level_01',
         'level_02',
         'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
         'license_plate_expiration_date',
         'license_plate_number',
         'license_plate_state_province',
@@ -526,27 +530,27 @@ export default {
           class: 'report-column',
           divider: true
         },
-        {
-          text: this.$i18n.t('level_01'),
-          value: 'level_01',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_02'),
-          value: 'level_02',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_03'),
-          value: 'level_03',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
+        // {
+        //   text: this.$i18n.t('level_01'),
+        //   value: 'level_01',
+        //   class: 'report-column',
+        //   width: 150,
+        //   divider: true
+        // },
+        // {
+        //   text: this.$i18n.t('level_02'),
+        //   value: 'level_02',
+        //   class: 'report-column',
+        //   width: 150,
+        //   divider: true
+        // },
+        // {
+        //   text: this.$i18n.t('level_03'),
+        //   value: 'level_03',
+        //   class: 'report-column',
+        //   width: 150,
+        //   divider: true
+        // },
         {
           text: this.$i18n.t('license_plate_expiration_date'),
           value: 'license_plate_expiration_date',
