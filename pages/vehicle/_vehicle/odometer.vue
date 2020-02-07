@@ -12,7 +12,7 @@
       <v-col cols="12">
         <v-card outlined class="report">
           <v-card-title>
-            {{ $t('violations') }}
+            {{ $t('odometer_history') }}
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -51,14 +51,13 @@
     </v-row>
   </v-container>
 </template>
-
 <script>
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
 
 export default {
-  name: 'Violation',
+  name: 'Odometer',
   mixins: [downloadFields, updateQuery, vehicleRoute],
   data () {
     return {
@@ -69,8 +68,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      items: 'vehicle/getViolationHistory',
-      loading: 'vehicle/getViolationLoading',
+      items: 'vehicle/getOdometerHistory',
+      loading: 'vehicle/getOdometerLoading',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
     columns () {
@@ -88,11 +87,12 @@ export default {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('vehicle/fetchViolationHistory', { start, end, vehicle })
+    // Fetch odometer data
+    await store.dispatch('vehicle/fetchOdometerHistory', { start, end, vehicle })
     return { start, end }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('violations')}`
+    const title = `${this.vehicle_number} - ${this.$t('odometer')}`
     return {
       title,
       meta: [

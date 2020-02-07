@@ -12,7 +12,7 @@
       <v-col cols="12">
         <v-card outlined class="report">
           <v-card-title>
-            {{ $t('violations') }}
+            {{ $t('rental_history') }}
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -28,7 +28,6 @@
               solo
             />
           </v-card-title>
-          <v-divider />
           <v-card-text class="pa-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
@@ -51,15 +50,13 @@
     </v-row>
   </v-container>
 </template>
-
 <script>
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
-
 export default {
-  name: 'Violation',
-  mixins: [downloadFields, updateQuery, vehicleRoute],
+  name: 'Rentals',
+  mixins: [downloadFields, vehicleRoute, updateQuery],
   data () {
     return {
       end_menu: false,
@@ -69,8 +66,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      items: 'vehicle/getViolationHistory',
-      loading: 'vehicle/getViolationLoading',
+      items: 'vehicle/getRentalHistory',
+      loading: 'vehicle/getRentalLoading',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
     columns () {
@@ -88,11 +85,11 @@ export default {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('vehicle/fetchViolationHistory', { start, end, vehicle })
+    await store.dispatch('vehicle/fetchRentalHistory', { start, end, vehicle })
     return { start, end }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('violations')}`
+    const title = `${this.vehicle_number} - ${this.$t('rental_history')}`
     return {
       title,
       meta: [

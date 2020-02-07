@@ -36,7 +36,8 @@ export default {
   props: {
     invoiceNumber: {
       type: String,
-      default: () => null
+      default: () => null,
+      required: true
     },
     vehicleNumber: {
       type: String,
@@ -93,8 +94,17 @@ export default {
     }
   },
   watch: {
-    // when invoiceNumber prop changes, fetch the new invoice then scrollToTop
     async invoiceNumber () {
+      // When invoiceNumber prop changes, fetch the new invoice then scrollToTop
+      await this.fetchInvoice()
+    }
+  },
+  async mounted () {
+    // Fetch data before mount
+    await this.fetchInvoice()
+  },
+  methods: {
+    async fetchInvoice () {
       try {
         const invoice = this.invoiceNumber
         const vehicle = this.vehicleNumber
@@ -104,7 +114,6 @@ export default {
       } catch (error) {
         this.$snotify.error(error.message, this.$i18n.t('error'))
       } finally {
-        // scroll to top
         this.$vuetify.goTo(0)
       }
     }

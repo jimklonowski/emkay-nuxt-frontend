@@ -46,6 +46,8 @@ export default {
   },
   computed: {
     accidentRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/accident` }),
+    items: vm => vm.$store.getters['vehicle/getAccidentHistory'],
+    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
     columns () {
       return [
         'date',
@@ -54,27 +56,14 @@ export default {
         'in_network',
         'amount'
       ]
-    },
-    items: vm => vm.$store.getters['vehicle/getAccidentHistory'],
-    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber']
+    }
   },
   async mounted () {
-    const vehicle_number = this.vehicleNumber || ''
-    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-    const end_date = this.$moment().format('YYYY-MM-DD')
-
-    const filters = {
-      command: 'ACCIDENT',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      vehicle_number,
-      json: 'Y'
-    }
-    await this.$store.dispatch('vehicle/fetchAccidentHistory', filters)
+    const vehicle = this.vehicleNumber
+    const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const end = this.$moment().format('YYYY-MM-DD')
+    await this.$store.dispatch('vehicle/fetchAccidentHistory', { start, end, vehicle })
     this.initialized = true
   }
 }
 </script>
-
-<style></style>

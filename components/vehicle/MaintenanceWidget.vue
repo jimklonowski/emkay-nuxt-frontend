@@ -12,6 +12,14 @@
             <nuxt-link :to="maintenanceRoute" v-text="$t('more')" class="caption text-decoration-none" />
           </client-only>
         </v-list-item-content>
+        <client-only>
+          <v-list-item-action class="my-0 justify-center">
+            <v-list-item-action-text v-text="$t('evoucher')" class="caption" />
+            <v-btn :to="evoucherRoute" icon depressed class="mx-2">
+              <v-icon v-text="'mdi-ticket-confirmation'" color="grey" />
+            </v-btn>
+          </v-list-item-action>
+        </client-only>
       </v-list-item>
     </v-card-title>
     <v-divider />
@@ -66,6 +74,7 @@ export default {
       ]
     },
     items: vm => vm.$store.getters['vehicle/getMaintenanceHistory'],
+    evoucherRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/evoucher` }),
     maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance` }),
     vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber']
   },

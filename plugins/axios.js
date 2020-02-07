@@ -1,11 +1,21 @@
 export default function ({ $axios, store, redirect }) {
-  $axios.onError(error => {
+  $axios.interceptors.response.use(res => res, async error => {
     if (error.response.status === 401) {
-      console.log('401 ERROR -> LOGIN')
-      redirect('/login')
-      // store.dispatch('account/logout')
+      await store.dispatch('account/logout')
+      return error
     }
   })
+  // $axios.onError(async error => {
+  //   if (error.response.status === 401) {
+  //     console.log('dispatching logout...')
+  //     await store.dispatch('account/logout').then(() => {
+  //       console.log('401 ERROR -> LOGIN')
+  //       // redirect('/login')
+  //     })
+  //   } else {
+  //     Promise.reject(error)
+  //   }
+  // })
   // configure axios timeout
   // $axios.defaults.timeout = 1000
 

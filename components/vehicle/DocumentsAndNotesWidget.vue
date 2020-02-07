@@ -1,31 +1,45 @@
 <template>
   <v-card outlined>
     <v-card-title class="pa-0">
-      <v-list-item :to="notesRoute" link style="height:80px;">
-        <v-list-item-avatar>
-          <v-icon v-text="'mdi-message-bulleted'" />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-subtitle v-text="''" class="overline" />
-          <v-list-item-title v-text="$t('notes')" />
-        </v-list-item-content>
-      </v-list-item>
+      <v-tabs v-model="tab" grow>
+        <v-tabs-slider />
+        <v-tab>Documents</v-tab>
+        <v-tab>Notes</v-tab>
+        <v-tabs-items v-model="tab">
+          <v-tab-item>
+            <v-card flat tile>
+              <v-carousel
+                :continuous="false"
+                :cycle="false"
+                height="150"
+              >
+                asdf
+              </v-carousel>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item>
+            <v-card flat tile>
+              <v-data-table
+                :headers="headers"
+                :items="items"
+                :items-per-page="5"
+                :mobile-breakpoint="0"
+                :sort-by="['date']"
+                :sort-desc="[true]"
+                class="striped"
+                dense
+              />
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-tabs>
     </v-card-title>
-    <v-divider />
+    <!-- <v-divider />
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
-        <v-data-table
-          :headers="headers"
-          :items="items"
-          :items-per-page="5"
-          :mobile-breakpoint="0"
-          :sort-by="['date']"
-          :sort-desc="[true]"
-          class="striped"
-          dense
-        />
+
       </v-skeleton-loader>
-    </v-card-text>
+    </v-card-text> -->
   </v-card>
 </template>
 
@@ -35,7 +49,8 @@ export default {
   mixins: [headers],
   data () {
     return {
-      initialized: false
+      initialized: false,
+      tab: null
     }
   },
   computed: {

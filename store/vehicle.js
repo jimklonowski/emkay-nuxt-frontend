@@ -21,6 +21,10 @@ const getDefaultState = () => ({
   fuel_loading: false,
   maintenance_history: [],
   maintenance_loading: false,
+  odometer_history: [],
+  odometer_loading: false,
+  rental_history: [],
+  rental_loading: false,
   toll_history: [],
   toll_loading: false,
   vehicle_notes: [],
@@ -199,7 +203,64 @@ export const actions = {
       commit('setExpenseSummaryLoading', false)
     }
   },
+  /**
+   * Fetch Toll History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchTollHistory ({ commit }, { start, end, vehicle }) {
+    commit('setTollLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/toll-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setTollHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setTollHistory', [])
+    } finally {
+      commit('setTollLoading', false)
+    }
+  },
   /* TODO: */
+  /**
+   * Fetch Rental History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchRentalHistory ({ commit }, { start, end, vehicle }) {
+    commit('setRentalLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/rental-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setRentalHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setRentalHistory', [])
+    } finally {
+      commit('setRentalLoading', false)
+    }
+  },
+  /**
+   * Fetch Odometer History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle
+   */
+  async fetchOdometerHistory ({ commit }, { start, end, vehicle }) {
+    commit('setOdometerLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/odometer-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setOdometerHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setOdometerHistory', [])
+    } finally {
+      commit('setOdometerLoading', false)
+    }
+  },
   /**
    * Fetch Accident History by Vehicle Number
    * @param {*} start Start Date
@@ -234,25 +295,6 @@ export const actions = {
       commit('setVehicleNotes', [])
     } finally {
       commit('setVehicleNotesLoading', false)
-    }
-  },
-  /**
-   * Fetch Toll History by Vehicle Number
-   * @param {*} start Start Date
-   * @param {*} end End Date
-   * @param {*} vehicle Vehicle Number
-   */
-  async fetchTollHistory ({ commit }, { start, end, vehicle }) {
-    commit('setTollLoading', true)
-    try {
-      const { data: { success, message, data } } = await this.$axios.get('/vehicle/toll-history', { params: { start, end, vehicle } })
-      if (!success) { throw new Error(message) }
-      commit('setTollHistory', data)
-    } catch (error) {
-      commit('pushError', error.message)
-      commit('setTollHistory', [])
-    } finally {
-      commit('setTollLoading', false)
     }
   },
   /**
@@ -303,8 +345,14 @@ export const mutations = {
   setMaintenanceHistory: set('maintenance_history'),
   setMaintenanceLoading: set('maintenance_loading'),
 
+  setOdometerHistory: set('odometer_history'),
+  setOdometerLoading: set('odometer_loading'),
+
   setExpenseSummary: set('expense_summary'),
   setExpenseSummaryLoading: set('expense_summary_loading'),
+
+  setRentalHistory: set('rental_history'),
+  setRentalLoading: set('rental_loading'),
 
   setVehicleNotes: set('vehicle_notes'),
   setVehicleNotesLoading: set('vehicle_notes_loading'),
@@ -344,8 +392,14 @@ export const getters = {
   getMaintenanceHistory: state => state.maintenance_history,
   getMaintenanceLoading: state => state.maintenance_loading,
 
+  getOdometerHistory: state => state.odometer_history,
+  getOdometerLoading: state => state.odometer_loading,
+
   getExpenseSummary: state => state.expense_summary,
   getExpenseSummaryLoading: state => state.expense_summary_loading,
+
+  getRentalHistory: state => state.rental_history,
+  getRentalLoading: state => state.rental_loading,
 
   getVehicleNotes: state => state.vehicle_notes,
   getVehicleNotesLoading: state => state.vehicle_notes_loading,

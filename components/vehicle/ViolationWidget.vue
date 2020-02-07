@@ -55,18 +55,10 @@ export default {
     }
   },
   async mounted () {
-    const vehicle_number = this.vehicleNumber || ''
-    const start_date = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-    const end_date = this.$moment().format('YYYY-MM-DD')
-    const filters = {
-      command: 'VIOLATIONS',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      vehicle_number,
-      json: 'Y'
-    }
-    await this.$store.dispatch('vehicle/fetchViolationHistory', filters)
+    const vehicle = this.vehicleNumber
+    const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+    const end = this.$moment().format('YYYY-MM-DD')
+    await this.$store.dispatch('vehicle/fetchViolationHistory', { start, end, vehicle })
     this.initialized = true
   }
 }

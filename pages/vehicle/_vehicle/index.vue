@@ -23,7 +23,13 @@
         <billing-widget />
       </v-col>
       <v-col cols="12" xl="6">
+        <odometer-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
         <toll-widget />
+      </v-col>
+      <v-col cols="12" xl="6">
+        <rental-widget />
       </v-col>
       <v-col cols="12" xl="6">
         <accident-widget />
@@ -32,7 +38,7 @@
         <violation-widget />
       </v-col>
       <v-col cols="12" xl="6">
-        <notes-widget />
+        <documents-and-notes-widget />
       </v-col>
     </v-row>
   </v-container>
@@ -45,12 +51,14 @@ import VehicleWidget from '@/components/vehicle/VehicleWidget'
 import FuelWidget from '@/components/vehicle/FuelWidget'
 import MaintenanceWidget from '@/components/vehicle/MaintenanceWidget'
 import ExpenseWidget from '@/components/vehicle/ExpenseWidget'
+import OdometerWidget from '@/components/vehicle/OdometerWidget'
 import BillingWidget from '@/components/vehicle/BillingWidget'
 import AccidentWidget from '@/components/vehicle/AccidentWidget'
 import TollWidget from '@/components/vehicle/TollWidget'
 import ViolationWidget from '@/components/vehicle/ViolationWidget'
 import OrderStatusWidget from '@/components/vehicle/OrderStatusWidget'
-import NotesWidget from '@/components/vehicle/NotesWidget'
+import RentalWidget from '@/components/vehicle/RentalWidget'
+import DocumentsAndNotesWidget from '@/components/vehicle/DocumentsAndNotesWidget'
 /**
  * Vehicle Dashboard (widgets)
  */
@@ -63,11 +71,13 @@ export default {
     FuelWidget,
     MaintenanceWidget,
     AccidentWidget,
+    OdometerWidget,
     TollWidget,
     ExpenseWidget,
     BillingWidget,
     ViolationWidget,
-    NotesWidget,
+    DocumentsAndNotesWidget,
+    RentalWidget,
     OrderStatusWidget
 
     // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
