@@ -1,26 +1,17 @@
 <template>
-  <v-card shaped rounded>
-    <v-card-title class="pa-0">
-      <v-list-item>
-        <v-list-item-avatar>
-          <v-icon v-text="'mdi-cash-register'" />
-        </v-list-item-avatar>
-        <v-list-item-content two-line>
-          <v-list-item-title>
-            {{ $t('cpm') }}
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-card-title>
+  <v-card shaped outlined>
+    <v-card-subtitle>
+      {{ $t('cpm') }}
+    </v-card-subtitle>
     <v-card-text>
       <v-simple-table dense>
         <template #default>
           <thead>
             <tr>
-              <th v-text="$t(headers[0])" width="40%" />
-              <th v-text="$t(headers[1])" class="overline text-right" width="20%" />
-              <th v-text="$t(headers[2])" class="overline text-right" width="20%" />
-              <th v-text="$t(headers[3])" class="overline text-right" width="20%" />
+              <th width="40%" />
+              <th v-text="$t('quantity')" class="overline text-right" width="20%" />
+              <th v-text="$t('amount')" class="overline text-right" width="20%" />
+              <th v-text="$t('cpm')" class="overline text-right" width="20%" />
             </tr>
           </thead>
           <tbody>
@@ -59,6 +50,7 @@
       </v-simple-table>
     </v-card-text>
     <v-card-actions />
+    </v-card-subtitle>
   </v-card>
 </template>
 

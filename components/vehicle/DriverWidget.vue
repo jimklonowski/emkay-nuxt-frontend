@@ -1,6 +1,40 @@
 <template>
   <v-card outlined>
-    <v-card-title class="pa-0">
+    <v-toolbar flat>
+      <v-avatar class="mr-2">
+        <v-icon v-text="'mdi-account'" />
+      </v-avatar>
+      <v-toolbar-title class="font-lato">
+        {{ driverName }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        origin="top right"
+        transition="scale-transition"
+        left
+      >
+        <template #activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon v-text="'mdi-dots-vertical'" />
+          </v-btn>
+        </template>
+        <v-card>
+          <v-list nav dense>
+            <v-list-item :to="editDriverRoute" link>
+              <v-list-item-avatar>
+                <v-icon v-text="'mdi-account-edit'" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('edit_driver') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+    </v-toolbar>
+    <!-- <v-card-title class="pa-0">
       <v-list-item :to="editDriverRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-account-edit'" />
@@ -22,7 +56,7 @@
           </client-only>
         </v-list-item-action>
       </v-list-item>
-    </v-card-title>
+    </v-card-title> -->
     <v-divider />
     <v-card-text class="pa-0">
       <v-container>
@@ -75,15 +109,6 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-icon>
-                  <v-icon v-text="'mdi-account-card-details'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title v-text="driver_details.employee_id" />
-                  <v-list-item-subtitle v-text="$t('employee_id')" class="font-weight-light" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
                   <v-icon v-text="'mdi-smart-card'" />
                 </v-list-item-icon>
                 <v-list-item-content>
@@ -91,9 +116,30 @@
                   <v-list-item-subtitle v-text="$t('selector_level')" class="font-weight-light" />
                 </v-list-item-content>
               </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-account-key'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ driver_details.reference_number || '--' }}</v-list-item-title>
+                  <v-list-item-subtitle v-text="$t('driver_reference_number')" class="font-weight-light" />
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
           </v-col>
           <v-col cols="6">
+            <v-list subheader dense class="widget-list">
+              <v-subheader v-text="$t('additional_information')" class="overline" />
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon v-text="'mdi-account-card-details'" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title v-text="driver_details.employee_id" />
+                  <v-list-item-subtitle v-text="$t('employee_id')" class="font-weight-light" />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
             <v-list subheader dense class="widget-list">
               <v-subheader v-text="$t('custom_labels')" class="overline" />
               <v-list-item>
@@ -144,6 +190,11 @@
 <script>
 import { dialTo, emailTo } from '@/utility/helpers'
 export default {
+  data () {
+    return {
+      menu: false
+    }
+  },
   computed: {
     custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
     driver_details: vm => vm.$store.getters['vehicle/getDriverDetails'],

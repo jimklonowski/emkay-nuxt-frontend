@@ -44,6 +44,48 @@ export const actions = {
     }
   },
   /**
+   * Fetch Fuel History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} use_bill_date Use Bill Date?
+   * @param {*} vehicle Vehicle Number
+   * @see vehicle.js fetchFuelHistory
+   */
+  async fetchFuelHistory ({ commit }, { start, end, use_bill_date, vehicle }) {
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/fuel-history', { params: { start, end, use_bill_date, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch Maintenance History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} use_bill_date Use Bill Date?
+   * @param {*} vehicle Vehicle Number
+   * @see vehicle.js fetchMaintenanceHistory
+   */
+  async fetchMaintenanceHistory ({ commit }, { start, end, use_bill_date, vehicle }) {
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/maintenance-history', { params: { start, end, use_bill_date, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
    * Fetch Toll History by Vehicle Number
    * @param {*} start Start Date
    * @param {*} end End Date

@@ -111,6 +111,7 @@
                 </v-col>
               </v-row>
             </v-col>
+            <!-- Show Quote -->
             <v-col cols="12" lg="6">
               <v-container fill-height justify-center>
                 <v-row>

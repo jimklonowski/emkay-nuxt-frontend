@@ -482,8 +482,7 @@ export default {
         {
           text: this.$i18n.t('in_service_date'),
           value: 'in_service_date',
-          class: 'report-column',
-          divider: true
+          class: 'report-column'
         }
       ]
     },

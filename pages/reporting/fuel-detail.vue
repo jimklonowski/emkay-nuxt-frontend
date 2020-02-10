@@ -554,12 +554,11 @@ export default {
       ]
     },
     query () {
-      const query = {
+      return {
         start: this.start,
         end: this.end,
         use_bill_date: this.use_bill_date
       }
-      return query
     },
     items: vm => vm.$store.getters['reports/getData'],
     error: vm => vm.$store.getters['reports/getError'],

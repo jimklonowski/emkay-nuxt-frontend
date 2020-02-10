@@ -15,12 +15,9 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-card outlined shaped>
-          <v-toolbar flat>
-            <v-toolbar-title class="hidden-sm-and-down">
-              {{ $t('maintenance') }}
-              <span class="overline text--disabled">{{ $route.params.vehicle }}</span>
-            </v-toolbar-title>
+        <v-card outlined class="report">
+          <v-card-title>
+            {{ $t('maintenance') }}
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -35,18 +32,17 @@
               single-line
               solo
             />
-          </v-toolbar>
+          </v-card-title>
+          <!-- Report Filters -->
           <v-container>
-            <v-subheader class="overline">
-              {{ $t('report_filters') }}
-            </v-subheader>
+            <v-subheader v-text="$t('report_filters')" class="overline" />
             <v-row>
               <v-col cols="12" sm="6">
                 <v-menu
                   ref="start_menu"
                   v-model="start_menu"
                   :close-on-content-click="false"
-                  :return-value.sync="start_date"
+                  :return-value.sync="start"
                   transition="scale-transition"
                   offset-y
                   max-width="290px"
@@ -54,7 +50,7 @@
                 >
                   <template #activator="{ on }">
                     <v-text-field
-                      v-model="start_date"
+                      v-model="start"
                       :label="$t('start_date')"
                       v-on="on"
                       prepend-icon="mdi-calendar"
@@ -62,7 +58,7 @@
                     />
                   </template>
                   <v-date-picker
-                    v-model="start_date"
+                    v-model="start"
                     :locale="$i18n.locale"
                     no-title
                     scrollable
@@ -71,7 +67,7 @@
                     <v-btn @click="start_menu = false" text>
                       {{ $t('cancel') }}
                     </v-btn>
-                    <v-btn @click="$refs.start_menu.save(start_date), updateQuery()" text>
+                    <v-btn @click="$refs.start_menu.save(start), updateQuery()" text>
                       {{ $t('ok') }}
                     </v-btn>
                   </v-date-picker>
@@ -82,7 +78,7 @@
                   ref="end_menu"
                   v-model="end_menu"
                   :close-on-content-click="false"
-                  :return-value.sync="end_date"
+                  :return-value.sync="end"
                   transition="scale-transition"
                   offset-y
                   max-width="290px"
@@ -90,7 +86,7 @@
                 >
                   <template #activator="{ on }">
                     <v-text-field
-                      v-model="end_date"
+                      v-model="end"
                       :label="$t('end_date')"
                       v-on="on"
                       prepend-icon="mdi-calendar"
@@ -98,7 +94,7 @@
                     />
                   </template>
                   <v-date-picker
-                    v-model="end_date"
+                    v-model="end"
                     :locale="$i18n.locale"
                     no-title
                     scrollable
@@ -107,7 +103,7 @@
                     <v-btn @click="end_menu = false" text>
                       {{ $t('cancel') }}
                     </v-btn>
-                    <v-btn @click="$refs.end_menu.save(end_date), updateQuery()" text>
+                    <v-btn @click="$refs.end_menu.save(end), updateQuery()" text>
                       {{ $t('ok') }}
                     </v-btn>
                   </v-date-picker>
@@ -118,8 +114,6 @@
                   v-model="use_bill_date"
                   :label="$t('bill_date')"
                   @change="updateQuery()"
-                  hint="Not Yet Implemented.."
-                  messages="Not Yet Implemented.."
                 />
               </v-col>
             </v-row>
@@ -134,14 +128,17 @@
               </client-only>
             </v-btn>
           </v-toolbar>
-          <v-card-text class="px-0">
+          <v-divider />
+          <v-card-text class="pa-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100] }"
+                :dense="items && items.length !== 0"
+                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
                 :headers="headers"
                 :items="items"
                 :items-per-page="15"
                 :loading="loading"
+                :mobile-breakpoint="0"
                 :search="search"
                 :sort-by="['service_date']"
                 :sort-desc="true"
@@ -154,16 +151,13 @@
                   </div>
                 </template>
 
-                <!-- Configure each #item row is rendered -->
-                <template #item="{ item }">
-                  <tr>
-                    <td>{{ item.service_date | date }}</td>
-                    <td>{{ item.vendor_name }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.maintenance_category }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.amount | currency }}</td>
-                  </tr>
+                <!-- Configure individual column rendering -->
+                <template #item.service_date="{ item }">
+                  {{ item.service_date | date }}
+                </template>
+
+                <template #item.amount="{ item }">
+                  {{ item.amount | currency }}
                 </template>
               </v-data-table>
             </v-skeleton-loader>
@@ -244,38 +238,28 @@ export default {
         {
           text: this.$i18n.t('amount'),
           value: 'amount',
-          class: 'report-column',
-          divider: true
+          class: 'report-column'
         }
       ]
     },
     query () {
-      const query = {
-        start_date: this.start_date,
-        end_date: this.end_date,
+      return {
+        start: this.start,
+        end: this.end,
         use_bill_date: this.use_bill_date
       }
-      return query
     }
   },
   async asyncData ({ $moment, params, query, store, error }) {
+    const vehicle = store.getters['vehicle/getVehicleNumber']
     const report_length = 30
-    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
-    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
+    const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
+    const end = query.end || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
-    const filters = {
-      command: 'MAINTHISTORY',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      use_bill_date,
-      vehicle_number: params.vehicle,
-      json: 'Y'
-    }
-    await store.dispatch('vehicle-detail/fetchData', { filters })
+    await store.dispatch('vehicle-detail/fetchMaintenanceHistory', { start, end, use_bill_date, vehicle })
 
-    return { start_date, end_date, use_bill_date }
+    return { start, end, use_bill_date }
   },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('maintenance')}`
@@ -286,7 +270,7 @@ export default {
       ]
     }
   },
-  watchQuery: ['start_date', 'end_date', 'use_bill_date']
+  watchQuery: ['start', 'end', 'use_bill_date']
   // watch: {
   //   error () {
   //     if (this.error) {

@@ -626,8 +626,7 @@ export default {
         {
           text: this.$i18n.t('voucher'),
           value: 'voucher',
-          class: 'report-column',
-          divider: true
+          class: 'report-column'
         }
       ]
     },

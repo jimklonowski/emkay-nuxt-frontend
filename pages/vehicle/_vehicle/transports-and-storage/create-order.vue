@@ -27,13 +27,23 @@
         </v-stepper-step>
       </v-stepper-header>
       <v-divider />
-      <v-expansion-panels accordion multiple>
+      <v-expansion-panels accordion hover multiple>
         <v-expansion-panel v-show="hasVehicle">
-          <v-expansion-panel-header>Vehicle</v-expansion-panel-header>
-          <v-expansion-panel-content>{{ vehicle_info }}</v-expansion-panel-content>
+          <v-expansion-panel-header disable-icon-rotate>
+            {{ $t('vehicle_details') }}
+            <template #actions>
+              <v-icon v-text="'mdi-car'" color="primary" />
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>{{ vehicle_details }}</v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel v-show="hasQuote">
-          <v-expansion-panel-header>Quote</v-expansion-panel-header>
+          <v-expansion-panel-header>
+            {{ $t('quote') }}
+            <template #actions>
+              <v-icon v-text="'mdi-receipt'" color="primary" />
+            </template>
+          </v-expansion-panel-header>
           <v-expansion-panel-content>{{ quote }}</v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -560,8 +570,8 @@ export default {
   computed: {
     // quote: vm => vm.$store.getters['transtor/getQuote'],
     hasQuote: vm => vm.$store.getters['transtor/hasQuote'],
-    hasVehicle: vm => Object.keys(vm.vehicle_info).length !== 0,
-    vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo'],
+    hasVehicle: vm => vm.$store.getters['vehicle/hasVehicle'],
+    vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
     addressTypes () {
       return [
         { text: this.$i18n.t('residential'), value: 'Residential' },
@@ -590,7 +600,7 @@ export default {
     let approve_auto_detail, approve_oil_change, other_services, special_instructions
 
     // populate requestor information (step 1) from current driver (?)
-    const driver_info = store.getters['vehicle/getDriverInfo']
+    const driver_info = store.getters['vehicle/getDriverDetails']
     if (driver_info) {
       requestor_contact_name = driver_info.last_name
       requestor_phone = driver_info.phone

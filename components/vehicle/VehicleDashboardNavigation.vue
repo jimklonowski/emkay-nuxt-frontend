@@ -79,6 +79,11 @@ export default {
           key: 'saferoads',
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/saferoads` }
+        },
+        {
+          key: 'documents_and_notes',
+          icon: '',
+          to: { path: `/vehicle/${this.$route.params.vehicle}/documents-and-notes` }
         }
       ]
     }

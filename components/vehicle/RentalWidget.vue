@@ -18,6 +18,7 @@
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
         <v-data-table
+          :dense="items && items.length !== 0"
           :headers="headers"
           :items="items"
           :items-per-page="5"
@@ -25,7 +26,6 @@
           :sort-by="['date']"
           :sort-desc="[true]"
           class="striped"
-          dense
         />
       </v-skeleton-loader>
     </v-card-text>

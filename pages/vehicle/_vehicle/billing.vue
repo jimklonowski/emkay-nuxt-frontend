@@ -8,7 +8,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-show="$route.query.invoice">
+    <v-row v-if="$route.query.invoice">
       <v-col cols="9">
         <invoice :invoice-number="$route.query.invoice" :vehicle-number="vehicle_number" />
       </v-col>

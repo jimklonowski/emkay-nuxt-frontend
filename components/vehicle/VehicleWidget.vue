@@ -1,6 +1,44 @@
 <template>
   <v-card outlined>
-    <v-card-title class="pa-0">
+    <v-toolbar flat>
+      <v-avatar class="mr-2">
+        <v-icon v-text="'mdi-car'" />
+      </v-avatar>
+      <v-toolbar-title class="font-lato">
+        {{ yearMakeModel | uppercase }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        origin="top right"
+        transition="scale-transition"
+        left
+      >
+        <template #activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon v-text="'mdi-dots-vertical'" />
+          </v-btn>
+        </template>
+        <v-card>
+          <v-list nav dense>
+            <v-list-item :to="editVehicleRoute" link>
+              <v-list-item-action>
+                <v-icon v-text="'mdi-car-info'" />
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('edit_vehicle') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item :to="assignDriverRoute" link>
+              <v-list-item-action>
+                <v-icon v-text="'mdi-smart-card'" />
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('assign_new_driver') }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+    </v-toolbar>
+    <!-- <v-card-title class="pa-0">
       <v-list-item :to="editVehicleRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-car'" />
@@ -20,7 +58,7 @@
           </client-only>
         </v-list-item-action>
       </v-list-item>
-    </v-card-title>
+    </v-card-title> -->
     <v-divider />
     <v-card-text class="pa-0">
       <v-container>
@@ -272,7 +310,8 @@
 <script>
 export default {
   data: () => ({
-    expanded: false
+    expanded: false,
+    menu: false
   }),
   computed: {
     custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
@@ -291,6 +330,7 @@ export default {
     yearMakeModel () {
       return [this.vehicle_details.year, this.vehicle_details.make, this.vehicle_details.model].filter(Boolean).join(' ')
     },
+    assignDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/reassign-vehicle` }),
     editVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/edit-vehicle` })
   },
   methods: {

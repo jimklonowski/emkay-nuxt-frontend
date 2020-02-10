@@ -9,26 +9,33 @@ const getDefaultState = () => ({
   driver_details: {},
   order_status: {},
   sale_info: {},
-  transport_status: [],
 
   accident_history: [],
   accident_loading: false,
   billing_history: [],
   billing_loading: false,
+  documents: [],
+  documents_loading: false,
   expense_summary: {},
   expense_summary_loading: false,
+  fuel_cards: [],
+  fuel_cards_loading: false,
   fuel_history: [],
   fuel_loading: false,
+  fuel_profiles: [],
+  fuel_profiles_loading: false,
   maintenance_history: [],
   maintenance_loading: false,
+  notes: [],
+  notes_loading: false,
   odometer_history: [],
   odometer_loading: false,
   rental_history: [],
   rental_loading: false,
   toll_history: [],
   toll_loading: false,
-  vehicle_notes: [],
-  vehicle_notes_loading: false,
+  transport_status: [],
+  transport_status_loading: false,
   violation_history: [],
   violation_loading: false
 })
@@ -224,6 +231,52 @@ export const actions = {
   },
   /* TODO: */
   /**
+   * Fetch Fuel Cards by Vehicle Number
+   */
+  async fetchFuelCards ({ commit }, { vehicle }) {
+    commit('setFuelCardsLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/fuel-cards', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setFuelCards', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setFuelCards', [])
+    } finally {
+      commit('setFuelCardsLoading', false)
+    }
+  },
+  async fetchFuelProfiles ({ commit }, { vehicle }) {
+    commit('setFuelProfilesLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/fuel-profiles', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setFuelProfiles', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setFuelProfiles', [])
+    } finally {
+      commit('setFuelProfilesLoading', false)
+    }
+  },
+  /**
+   * Fetch Transport Status by Vehicle Number
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchTransportStatus ({ commit }, { vehicle }) {
+    commit('setTransportStatusLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/transport-status', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setTransportStatus', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setTransportStatus', [])
+    } finally {
+      commit('setTransportStatusLoading', false)
+    }
+  },
+  /**
    * Fetch Rental History by Vehicle Number
    * @param {*} start Start Date
    * @param {*} end End Date
@@ -281,20 +334,37 @@ export const actions = {
     }
   },
   /**
+   * Fetch Vehicle Documents by Vehicle Number
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchDocuments ({ commit }, { vehicle }) {
+    commit('setDocumentsLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/documents', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setDocuments', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setDocuments', [])
+    } finally {
+      commit('setDocumentsLoading', false)
+    }
+  },
+  /**
    * Fetch Vehicle Notes by Vehicle Number
    * @param {*} vehicle Vehicle Number
    */
-  async fetchVehicleNotes ({ commit }, { vehicle }) {
-    commit('setVehicleNotesLoading', true)
+  async fetchNotes ({ commit }, { vehicle }) {
+    commit('setNotesLoading', true)
     try {
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/notes', { params: { vehicle } })
       if (!success) { throw new Error(message) }
-      commit('setVehicleNotes', data)
+      commit('setNotes', data)
     } catch (error) {
       commit('pushError', error.message)
-      commit('setVehicleNotes', [])
+      commit('setNotes', [])
     } finally {
-      commit('setVehicleNotesLoading', false)
+      commit('setNotesLoading', false)
     }
   },
   /**
@@ -339,8 +409,17 @@ export const mutations = {
   setBillingHistory: set('billing_history'),
   setBillingLoading: set('billing_loading'),
 
+  setDocuments: set('documents'),
+  setDocumentsLoading: set('documents_loading'),
+
+  setFuelCards: set('fuel_cards'),
+  setFuelCardsLoading: set('fuel_cards_loading'),
+
   setFuelHistory: set('fuel_history'),
   setFuelLoading: set('fuel_loading'),
+
+  setFuelProfiles: set('fuel_profiles'),
+  setFuelProfilesLoading: set('fuel_profiles_loading'),
 
   setMaintenanceHistory: set('maintenance_history'),
   setMaintenanceLoading: set('maintenance_loading'),
@@ -354,11 +433,14 @@ export const mutations = {
   setRentalHistory: set('rental_history'),
   setRentalLoading: set('rental_loading'),
 
-  setVehicleNotes: set('vehicle_notes'),
-  setVehicleNotesLoading: set('vehicle_notes_loading'),
+  setNotes: set('notes'),
+  setNotesLoading: set('notes_loading'),
 
   setTollHistory: set('toll_history'),
   setTollLoading: set('toll_loading'),
+
+  setTransportStatus: set('transport_status'),
+  setTransportStatusLoading: set('transport_status_loading'),
 
   setViolationHistory: set('violation_history'),
   setViolationLoading: set('violation_loading'),
@@ -389,6 +471,12 @@ export const getters = {
   getFuelHistory: state => state.fuel_history,
   getFuelLoading: state => state.fuel_loading,
 
+  getFuelCards: state => state.fuel_cards,
+  getFuelCardsLoading: state => state.fuel_cards_loading,
+
+  getFuelProfiles: state => state.fuel_profiles,
+  getFuelProfilesLoading: state => state.fuel_profiles_loading,
+
   getMaintenanceHistory: state => state.maintenance_history,
   getMaintenanceLoading: state => state.maintenance_loading,
 
@@ -401,8 +489,11 @@ export const getters = {
   getRentalHistory: state => state.rental_history,
   getRentalLoading: state => state.rental_loading,
 
-  getVehicleNotes: state => state.vehicle_notes,
-  getVehicleNotesLoading: state => state.vehicle_notes_loading,
+  getTransportStatus: state => state.transport_status,
+  getTransportStatusLoading: state => state.transport_status_loading,
+
+  getNotes: state => state.notes,
+  getNotesLoading: state => state.notes_loading,
 
   getTollHistory: state => state.toll_history,
   getTollLoading: state => state.toll_loading,
@@ -410,5 +501,6 @@ export const getters = {
   getViolationHistory: state => state.violation_history,
   getViolationLoading: state => state.violation_loading,
 
-  getVehicleNumber: state => state.vehicle_number
+  getVehicleNumber: state => state.vehicle_number,
+  hasVehicle: state => !!state.vehicle_number
 }

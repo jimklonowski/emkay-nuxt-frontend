@@ -37,9 +37,9 @@
       <v-col cols="12" xl="6">
         <violation-widget />
       </v-col>
-      <v-col cols="12" xl="6">
+      <!-- <v-col cols="12" xl="6">
         <documents-and-notes-widget />
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-container>
 </template>
@@ -58,7 +58,7 @@ import TollWidget from '@/components/vehicle/TollWidget'
 import ViolationWidget from '@/components/vehicle/ViolationWidget'
 import OrderStatusWidget from '@/components/vehicle/OrderStatusWidget'
 import RentalWidget from '@/components/vehicle/RentalWidget'
-import DocumentsAndNotesWidget from '@/components/vehicle/DocumentsAndNotesWidget'
+// import DocumentsAndNotesWidget from '@/components/vehicle/DocumentsAndNotesWidget'
 /**
  * Vehicle Dashboard (widgets)
  */
@@ -76,7 +76,7 @@ export default {
     ExpenseWidget,
     BillingWidget,
     ViolationWidget,
-    DocumentsAndNotesWidget,
+    // DocumentsAndNotesWidget,
     RentalWidget,
     OrderStatusWidget
 

@@ -8,20 +8,18 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12">
-        <TransportStorageStatus />
-      </v-col>
-    </v-row>
     <v-row no-gutters>
       <v-col cols="12">
-        <v-toolbar height="72px" elevation="4">
+        <v-toolbar height="72" elevation="1" tile>
           <v-tabs
             optional
             grow
             centered
             icons-and-text
           >
+            <v-tab :to="`${vehicleRoute}/transports-and-storage/`" exact nuxt>
+              {{ $t('transport_status') }}
+            </v-tab>
             <v-tab :to="`${vehicleRoute}/transports-and-storage/request-quote`" nuxt>
               {{ $t('request_quote') }}
             </v-tab>
@@ -30,8 +28,8 @@
             </v-tab>
           </v-tabs>
         </v-toolbar>
+        <v-divider />
       </v-col>
-      <v-divider />
       <v-col cols="12">
         <!-- the child views (quote/create) -->
         <nuxt-child />
@@ -41,13 +39,9 @@
 </template>
 
 <script>
-import TransportStorageStatus from '@/components/vehicle/transtor/TransportStorageStatus'
 import { vehicleRoute } from '@/mixins/routing'
 export default {
   name: 'TransportsAndStorage',
-  components: {
-    TransportStorageStatus
-  },
   mixins: [vehicleRoute],
   data: () => ({}),
   computed: {

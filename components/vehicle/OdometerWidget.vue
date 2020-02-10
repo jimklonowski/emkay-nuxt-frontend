@@ -19,6 +19,7 @@
       <v-skeleton-loader :loading="!initialized" type="table">
         <!-- :hide-default-footer="items.length <= 5" -->
         <v-data-table
+          :dense="items && items.length !== 0"
           :headers="headers"
           :items="items"
           :items-per-page="5"
@@ -26,7 +27,6 @@
           :sort-by="['odometer_date']"
           :sort-desc="true"
           class="striped"
-          dense
         />
       </v-skeleton-loader>
     </v-card-text>

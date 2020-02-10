@@ -63,8 +63,8 @@ export default {
       ]
     },
     notesRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/notes` }),
-    items: vm => vm.$store.getters['vehicle/getVehicleNotes'],
-    loading: vm => vm.$store.getters['vehicle/getVehicleNotesLoading']
+    items: vm => vm.$store.getters['vehicle/getNotes'],
+    loading: vm => vm.$store.getters['vehicle/getNotesLoading']
   },
   async mounted () {
     const vehicle_number = this.$route.params.vehicle
@@ -74,7 +74,7 @@ export default {
       vehicle_number,
       json: 'Y'
     }
-    await this.$store.dispatch('vehicle/fetchVehicleNotes', { filters })
+    await this.$store.dispatch('vehicle/fetchNotes', { filters })
     this.initialized = true
   }
 }

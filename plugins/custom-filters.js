@@ -49,6 +49,12 @@ export default ({ app }) => {
       : ''
   })
 
+  Vue.filter('uppercase', value => {
+    return (value || value === 0)
+      ? value.toString().toUpperCase()
+      : ''
+  })
+
   // string: return nbsp; if null
   Vue.filter('nbsp', value => {
     return value
