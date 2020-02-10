@@ -182,6 +182,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -205,7 +206,7 @@ export default {
    * https://vuejs.org/v2/api/#data
    * Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain!
    */
-  data (context) {
+  data () {
     return {
       end_menu: false,
       start_menu: false,
@@ -218,6 +219,12 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    // Mapped Vuex Getters
+    ...mapGetters({
+      items: 'reports/getData',
+      error: 'reports/getError',
+      loading: 'reports/getLoading'
+    }),
     // Downloaded csv contains these columns.
     columns () {
       return [
@@ -272,7 +279,7 @@ export default {
         'voucher'
       ]
     },
-    // Datatable contains these headers
+    // Datatable contains these headers.
     headers () {
       return [
         {
@@ -553,16 +560,14 @@ export default {
         }
       ]
     },
+    // Query parameters
     query () {
       return {
         start: this.start,
         end: this.end,
         use_bill_date: this.use_bill_date
       }
-    },
-    items: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading']
+    }
   },
 
   /**
@@ -570,7 +575,7 @@ export default {
    * The result from asyncData will be merged with data.
    * https://nuxtjs.org/guide/async-data
    */
-  async asyncData ({ $moment, query, store, error }) {
+  async asyncData ({ $moment, query, store }) {
     // if no date params in query, then use 30day period ending with today
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
@@ -581,7 +586,7 @@ export default {
     await store.dispatch('reports/fetchFuelDetailReport', { start, end, use_bill_date })
 
     // Return the report parameters so they are merged with the data() object
-    return { end, start, use_bill_date }
+    return { start, end, use_bill_date }
   },
 
   /**

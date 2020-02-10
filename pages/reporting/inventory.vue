@@ -132,90 +132,6 @@
           <template #item.vehicle_tank_capacity="{ item }">
             {{ item.vehicle_tank_capacity | number }}
           </template>
-
-          <!-- Configure how each #item ROW is rendered (loses customizations like divider:true) -->
-          <!-- <template #item="{ item }">
-            <tr class="report-row">
-              <td>
-                <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
-              </td>
-              <td>
-                {{ item.client_vehicle_number }}
-              </td>
-              <td>{{ item.bill_sort }}</td>
-              <td>{{ item.center_code }}</td>
-              <td>{{ item.center_name }}</td>
-              <td>{{ item.client_use_1 }}</td>
-              <td>{{ item.client_use_2 }}</td>
-              <td>{{ item.client_use_3 }}</td>
-              <td>{{ item.client_use_4 }}</td>
-              <td>{{ item.client_use_5 }}</td>
-              <td>{{ item.contract_description }}</td>
-              <td>{{ item.contract_id }}</td>
-              <td>{{ item.coupon_book_number }}</td>
-              <td>{{ item.customer_number }}</td>
-              <td>{{ item.driver_address_1 }}</td>
-              <td>{{ item.driver_address_2 }}</td>
-              <td>{{ item.driver_city }}</td>
-              <td>{{ item.driver_county }}</td>
-              <td>
-                <v-btn v-show="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
-                  <v-icon v-text="'mdi-email-edit'" class="mr-2" />
-                  {{ item.driver_email_address }}
-                </v-btn>
-              </td>
-              <td>{{ item.driver_employee_id }}</td>
-              <td>{{ item.driver_fax }}</td>
-              <td>{{ item.driver_first_name }}</td>
-              <td>{{ item.driver_last_name }}</td>
-              <td>
-                <v-btn v-show="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
-                  <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
-                  {{ item.driver_mobile | phone }}
-                </v-btn>
-              </td>
-              <td>
-                <v-btn v-show="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
-                  <v-icon v-text="'mdi-phone'" class="mr-2" />
-                  {{ item.driver_phone | phone }}
-                </v-btn>
-              </td>
-              <td>{{ item.driver_reference_number }}</td>
-              <td>{{ item.driver_state_province }}</td>
-              <td>{{ item.fuel_card_description }}</td>
-              <td>{{ item.fuel_profile_limits }}</td>
-              <td>{{ item.in_service_date | date }}</td>
-              <td>{{ item.irs_fair_market_value | currency }}</td>
-              <td>{{ item.lease_rate_id }}</td>
-              <td>{{ item.level_01 }}</td>
-              <td>{{ item.level_02 }}</td>
-              <td>{{ item.level_03 }}</td>
-              <td>{{ item.license_plate_expiration_date | date }}</td>
-              <td>{{ item.license_plate_number }}</td>
-              <td>{{ item.license_plate_state_province }}</td>
-              <td>{{ item.license_plate_type }}</td>
-              <td>{{ item.life_months_in_service }}</td>
-              <td>{{ item.model_year }}</td>
-              <td>{{ item.months_in_service }}</td>
-              <td>{{ item.odometer }}</td>
-              <td>{{ item.odometer_date | date }}</td>
-              <td>{{ item.original_in_service_date | date }}</td>
-              <td>{{ item.plb_flag }}</td>
-              <td>{{ item.sub_contract_id }}</td>
-              <td>{{ item.telematics_flag }}</td>
-              <td>{{ item.title_location }}</td>
-              <td>{{ item.vehicle_cap_cost | currency }}</td>
-              <td>{{ item.vehicle_category }}</td>
-              <td>{{ item.vehicle_color }}</td>
-              <td>{{ item.vehicle_engine }}</td>
-              <td>{{ item.vehicle_make }}</td>
-              <td>{{ item.vehicle_model }}</td>
-              <td>{{ item.vehicle_model_code }}</td>
-              <td>{{ item.vehicle_policy }}</td>
-              <td>{{ item.vehicle_tank_capacity | number }}</td>
-              <td>{{ item.vin }}</td>
-            </tr>
-          </template> -->
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
@@ -226,6 +142,7 @@
 /**
  * Notes: Hydration errors occur if using v-if in template. Use v-show instead for SSR (since v-if actually removes the element).
  */
+import { mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
 import { downloadFields } from '@/mixins/datatables'
 /**
@@ -235,9 +152,18 @@ export default {
   name: 'Inventory',
   mixins: [downloadFields],
   data: () => ({
-    centerCodeFilterValue: null
+    // centerCodeFilterValue: null,
+    search: ''
   }),
   computed: {
+    // Mapped Vuex Getters
+    ...mapGetters({
+      centers: 'account/getCenters',
+      items: 'reports/getData',
+      error: 'reports/getError',
+      loading: 'reports/getLoading'
+    }),
+    // Downloaded csv contains these columns.
     columns () {
       return [
         'vehicle_number',
@@ -306,20 +232,9 @@ export default {
         // ,...
       ]
     },
+    // Datatable contains these headers.
     headers () {
       return [
-        // {
-        //   'text': 'string',
-        //   'value': 'string',
-        //   'align?': 'start' | 'center' | 'end',
-        //   'sortable?': 'Boolean',
-        //   'filterable?': 'Boolean',    // omit specific columns from text search
-        //   'divider?': 'Boolean',
-        //   'class?': 'string | string[]',
-        //   'width?': 'string | number', // currently width defaults to 'auto'
-        //   'filter?': '(value: any, search: string, item: any) => Boolean',
-        //   'sort?': '(a: any, b: any) => Number'
-        // },
         {
           text: this.$i18n.t('vehicle_number'),
           value: 'vehicle_number',
@@ -697,29 +612,15 @@ export default {
         {
           text: this.$i18n.t('vin'),
           value: 'vin',
-          class: 'report-column',
-          divider: true
+          class: 'report-column'
         }
       ]
-    },
-    // headers (from mixin),
-    items: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading'],
-    centers: vm => vm.$store.getters['account/getCenters']
+    }
   },
   async asyncData ({ store }) {
-    let search
-    // const filters = {
-    //   command: 'VEHICLEAUDIT',
-    //   customer: 'EM102',
-    //   json: 'Y'
-    // }
-    // await store.dispatch('reports/fetchData', filters)
-
     // Fetch report data
     await store.dispatch('reports/fetchInventoryReport')
-    return { search }
+    return {}
   },
   methods: {
     dialTo,
@@ -734,10 +635,5 @@ export default {
       ]
     }
   }
-  // loading: true
-  // ,validate ({ $moment, query }) {
-  //   return true
-  // }
-  // ,watchQuery: ['start_date', 'end_date']
 }
 </script>

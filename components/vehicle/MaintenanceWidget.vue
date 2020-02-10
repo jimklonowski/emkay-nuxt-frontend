@@ -102,22 +102,26 @@ export default {
         {
           text: this.$i18n.t('service_date'),
           value: 'service_date',
-          class: 'report-column'
+          class: 'report-column',
+          divider: true
         },
         {
           text: this.$i18n.t('odometer'),
           value: 'odometer',
-          class: 'report-column'
+          class: 'report-column',
+          divider: true
         },
         {
           text: this.$i18n.t('vendor_name'),
           value: 'vendor_name',
-          class: 'report-column'
+          class: 'report-column',
+          divider: true
         },
         {
           text: this.$i18n.t('description'),
           value: 'description',
-          class: 'report-column'
+          class: 'report-column',
+          divider: true
         },
         {
           text: this.$i18n.t('amount'),
@@ -129,6 +133,17 @@ export default {
     evoucherRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/evoucher` }),
     maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance` })
   },
+  watch: {
+    /**
+     * When the 'days' variable changes, re-fetch data.
+     */
+    async days () {
+      await this.populateWidget()
+    }
+  },
+  /**
+   * Fetch Maintenance Data when widget is mounted
+   */
   async mounted () {
     await this.populateWidget()
   },

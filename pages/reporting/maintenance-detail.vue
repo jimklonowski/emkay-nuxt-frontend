@@ -154,6 +154,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -183,6 +184,11 @@ export default {
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    ...mapGetters({
+      items: 'reports/getData',
+      error: 'reports/getError',
+      loading: 'reports/getLoading'
+    }),
     // Downloaded csv contains these columns.
     columns () {
       return [
@@ -252,6 +258,7 @@ export default {
         'voucher'
       ]
     },
+    // Datatable contains these columns
     headers () {
       return [
         {
@@ -630,16 +637,13 @@ export default {
         }
       ]
     },
-    error: vm => vm.$store.getters['reports/getError'],
-    items: vm => vm.$store.getters['reports/getData'],
-    loading: vm => vm.$store.getters['reports/getLoading'],
+    // Query parameters
     query () {
-      const query = {
+      return {
         start: this.start,
         end: this.end,
-        use: this.use_bill_date
+        use_bill_date: this.use_bill_date
       }
-      return query
     }
   },
 
@@ -654,19 +658,11 @@ export default {
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
-    // const filters = {
-    //   command: 'MAINTHISTORY',
-    //   customer: 'EM102',
-    //   start,
-    //   end,
-    //   use_bill_date,
-    //   json: 'Y'
-    // }
 
     // Fetch the report data using the above filters
     await store.dispatch('reports/fetchMaintenanceDetailReport', { start, end, use_bill_date })
 
-    return { end, start, use_bill_date }
+    return { start, end, use_bill_date }
   },
 
   /**

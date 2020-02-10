@@ -26,7 +26,7 @@
             ref="start_menu"
             v-model="start_menu"
             :close-on-content-click="false"
-            :return-value.sync="start_date"
+            :return-value.sync="start"
             transition="scale-transition"
             offset-y
             max-width="290px"
@@ -34,7 +34,7 @@
           >
             <template #activator="{ on }">
               <v-text-field
-                :value="$moment(start_date).format('L')"
+                :value="$moment(start).format('L')"
                 :label="$t('start_date')"
                 v-on="on"
                 prepend-icon="mdi-calendar"
@@ -42,13 +42,13 @@
               />
             </template>
             <v-date-picker
-              v-model="start_date"
+              v-model="start"
               no-title
               scrollable
             >
               <v-spacer />
               <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
+              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start), updateQuery()" text />
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -57,7 +57,7 @@
             ref="end_menu"
             v-model="end_menu"
             :close-on-content-click="false"
-            :return-value.sync="end_date"
+            :return-value.sync="end"
             transition="scale-transition"
             offset-y
             max-width="290px"
@@ -65,7 +65,7 @@
           >
             <template #activator="{ on }">
               <v-text-field
-                :value="$moment(end_date).format('L')"
+                :value="$moment(end).format('L')"
                 :label="$t('end_date')"
                 v-on="on"
                 prepend-icon="mdi-calendar"
@@ -73,13 +73,13 @@
               />
             </template>
             <v-date-picker
-              v-model="end_date"
+              v-model="end"
               no-title
               scrollable
             >
               <v-spacer />
               <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
+              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end), updateQuery()" text />
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -137,6 +137,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
@@ -148,10 +149,18 @@ export default {
   data (context) {
     return {
       end_menu: false,
-      start_menu: false
+      start_menu: false,
+      search: ''
     }
   },
   computed: {
+    // Mapped Vuex Getters
+    ...mapGetters({
+      items: 'reports/getData',
+      error: 'reports/getError',
+      loading: 'reports/getLoading'
+    }),
+    // Downloaded csv contains these columns.
     columns () {
       return [
         'date',
@@ -161,6 +170,7 @@ export default {
         'amount'
       ]
     },
+    // Datatable contains these headers.
     headers () {
       return [
         {
@@ -190,41 +200,28 @@ export default {
         {
           text: this.$i18n.t('amount'),
           value: 'amount',
-          class: 'report-column',
-          divider: true
+          class: 'report-column'
         }
       ]
     },
-    items: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading'],
+    // Query parameters
     query () {
-      const query = {
-        start_date: this.start_date,
-        end_date: this.end_date
+      return {
+        start: this.start_date,
+        end: this.end_date
       }
-      return query
     }
   },
-  async asyncData ({ $moment, query, store, error }) {
-    let search
+  async asyncData ({ $moment, query, store }) {
     const report_length = 30
-    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
-    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
-
-    const filters = {
-      command: 'TOLL',
-      customer: 'EM102',
-      start_date,
-      end_date,
-      json: 'Y'
-    }
+    const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
+    const end = query.end || $moment().format('YYYY-MM-DD')
 
     // Fetch report data
-    await store.dispatch('reports/fetchData', filters)
+    await store.dispatch('reports/fetchTollDetail', { start, end })
 
     // Return the report parameters so they are merged with the data() object
-    return { search, end_date, start_date }
+    return { start, end }
   },
   head () {
     const title = this.$t('toll_detail')
@@ -235,6 +232,6 @@ export default {
       ]
     }
   },
-  watchQuery: ['start_date', 'end_date']
+  watchQuery: ['start', 'end']
 }
 </script>

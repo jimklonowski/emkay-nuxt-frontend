@@ -166,7 +166,7 @@
 </template>
 
 <script>
-// Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
+import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 /**
  * Order Status Report
@@ -181,15 +181,21 @@ export default {
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
   mixins: [downloadFields],
-
+  data: () => ({
+    search: ''
+  }),
   /**
    * Computed Properties
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
-    /**
-     * Implement a computed columns property that returns an array of strings that represent the datatable columns
-     */
+    // Mapped Vuex Getters
+    ...mapGetters({
+      items: 'reports/getData',
+      error: 'reports/getError',
+      loading: 'reports/getLoading'
+    }),
+    // Downloaded CSV contains these columns.
     columns () {
       return [
         'vehicle_number',
@@ -233,6 +239,7 @@ export default {
         'in_service_date'
       ]
     },
+    // Datatable contains these headers.
     headers () {
       return [
         {
@@ -485,10 +492,7 @@ export default {
           class: 'report-column'
         }
       ]
-    },
-    items: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading']
+    }
   },
 
   /**
@@ -496,10 +500,9 @@ export default {
    * The result from asyncData will be merged with data.
    * https://nuxtjs.org/guide/async-data
    */
-  async asyncData ({ $moment, query, store, error }) {
-    let search
+  async asyncData ({ store }) {
     await store.dispatch('reports/fetchOrderStatusReport')
-    return { search }
+    return {}
   },
 
   /**

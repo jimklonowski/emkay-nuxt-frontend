@@ -89,6 +89,25 @@ export const actions = {
     }
   },
   /**
+   * Fetch TOLL DETAIL REPORT data.
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   */
+  async fetchTollDetailReport ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/toll-detail-report', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
    * Get the data using the generic webcom url (dev)
    * @param {*} filters The dbc command, subcommand, and other params
    */
