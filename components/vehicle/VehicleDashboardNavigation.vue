@@ -70,11 +70,11 @@ export default {
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/edit-custom-labels` }
         },
-        {
-          key: 'reassign_vehicle',
-          icon: '',
-          to: { path: `/vehicle/${this.$route.params.vehicle}/reassign-vehicle` }
-        },
+        // {
+        //   key: 'reassign_vehicle',
+        //   icon: '',
+        //   to: { path: `/vehicle/${this.$route.params.vehicle}/reassign-vehicle` }
+        // },
         {
           key: 'saferoads',
           icon: '',

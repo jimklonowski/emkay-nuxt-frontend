@@ -75,6 +75,7 @@ export default {
   change_plate: "Changer la plaque",
   charge_code: "Code de charge",
   city: "Ville",
+  city_state_zip: "Ville / Province / Code Postal",
   claim_number: "Numéro de réclamation",
   client: "Client",
   client_use_1: "Paramètre d'utilisation client 1",

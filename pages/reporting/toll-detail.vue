@@ -218,7 +218,7 @@ export default {
     const end = query.end || $moment().format('YYYY-MM-DD')
 
     // Fetch report data
-    await store.dispatch('reports/fetchTollDetail', { start, end })
+    await store.dispatch('reports/fetchTollDetailReport', { start, end })
 
     // Return the report parameters so they are merged with the data() object
     return { start, end }

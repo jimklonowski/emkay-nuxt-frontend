@@ -10,170 +10,210 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-card :loading="loading" outlined>
-          <v-card-text>
-            Vehicle summary goes here
-          </v-card-text>
-          <v-card-actions class="d-flex justify-space-around">
-            <v-btn :to="editDriverRoute">
-              {{ $t('edit_driver') }}
-            </v-btn>
-            <v-btn>
-              {{ $t('assign_new_driver') }}
-            </v-btn>
-            <change-plate :vehicle="vehicleNumber" />
-          </v-card-actions>
-          <v-divider class="mx-4" />
+        <v-card :loading="loading" outlined tile>
+          <v-expansion-panels v-model="panel" value="0" accordion hover>
+            <v-expansion-panel v-show="hasVehicle" tile>
+              <v-expansion-panel-header disable-icon-rotate>
+                {{ $t('vehicle_details') }}
+                <template #actions>
+                  <v-icon v-text="'mdi-car'" color="primary" />
+                </template>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-container>
+                  <v-row class="flex-column-reverse flex-sm-row">
+                    <v-col cols="12" sm="8">
+                      <vehicle-detail-table />
+                    </v-col>
+                    <v-col cols="12" sm="4" class="d-flex flex-row justify-sm-start justify-space-around flex-sm-column align-end">
+                      <nuxt-link v-text="$t('edit_driver')" :to="editDriverRoute" nuxt class="text-decoration-none" />
+                      <nuxt-link v-text="$t('assign_new_driver')" :to="reassignVehicleRoute" nuxt class="text-decoration-none" />
+                      <v-dialog
+                        v-model="change_plate_dialog"
+                        max-width="400px"
+                      >
+                        <template #activator="{ on }">
+                          <a v-on="on" v-text="$t('change_plate')" />
+                        </template>
+                        <change-plate :vehicle="vehicle_details.vehicle_number" />
+                      </v-dialog>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           <ValidationObserver ref="vehicleForm" v-slot="{ handleSubmit }">
-            <v-form @submit.prevent="handleSubmit(submitVehicleEdit)">
-              <v-card-title>
+            <v-form @submit.prevent="handleSubmit(submitEditVehicle)">
+              <v-card-title class="display-1">
                 {{ $t('edit_vehicle') }}
               </v-card-title>
               <v-card-text>
                 <v-container>
-                  <v-row>
-                    <v-col cols="12" md="6">
-                      <v-subheader>{{ $t('vehicle_details') }}</v-subheader>
-                      <v-row>
-                        <v-col cols="12">
-                          <v-dialog
-                            ref="driver_effective_date_modal"
-                            v-model="driver_effective_date_modal"
-                            :return-value.sync="model.driver_effective_date"
-                            persistent
-                            width="290px"
-                          >
-                            <template #activator="{ on }">
-                              <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_effective_date')" rules="required">
-                                <v-text-field
-                                  v-model="model.driver_effective_date"
-                                  v-on="on"
-                                  :prepend-inner-icon="'mdi-calendar'"
-                                  :error-messages="errors"
-                                  :success="valid"
-                                  :label="$t('driver_effective_date')"
-                                  outlined
-                                  dense
-                                />
-                              </ValidationProvider>
-                            </template>
-                            <v-date-picker v-model="model.driver_effective_date" scrollable>
-                              <v-spacer />
-                              <v-btn @click="driver_effective_date_modal = false" v-text="$t('cancel')" text />
-                              <v-btn @click="$refs.driver_effective_date_modal.save(model.driver_effective_date)" v-text="$t('ok')" />
-                            </v-date-picker>
-                          </v-dialog>
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('center_code')">
-                            <v-select
-                              v-model="model.center_code"
-                              :label="$t('center_code')"
-                              :error-messages="errors"
-                              :success="valid"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('bill_sort')">
-                            <v-select
-                              v-model="model.bill_sort"
-                              :label="$t('bill_sort')"
-                              :error-messages="errors"
-                              :success="valid"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_vehicle_number')">
-                            <v-text-field
-                              v-model="model.client_vehicle_number"
-                              :label="$t('client_vehicle_number')"
-                              :error-messages="errors"
-                              :success="valid"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                      </v-row>
+                  <v-row justify="center">
+                    <v-col cols="12" sm="6" style="max-width:650px;">
+                      <v-subheader v-text="$t('vehicle_details')" />
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12">
+                            <v-dialog
+                              ref="driver_effective_date_modal"
+                              v-model="driver_effective_date_modal"
+                              :return-value.sync="driver_effective_date"
+                              persistent
+                              width="290px"
+                            >
+                              <template #activator="{ on }">
+                                <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_effective_date')" rules="required">
+                                  <v-text-field
+                                    v-model="driver_effective_date"
+                                    v-on="on"
+                                    :prepend-inner-icon="'mdi-calendar'"
+                                    :error-messages="errors"
+                                    :success="valid"
+                                    :label="$t('driver_effective_date')"
+                                    outlined
+                                    dense
+                                  />
+                                </ValidationProvider>
+                              </template>
+                              <v-date-picker v-model="driver_effective_date" scrollable>
+                                <v-spacer />
+                                <v-btn @click="driver_effective_date_modal = false" v-text="$t('cancel')" text />
+                                <v-btn @click="$refs.driver_effective_date_modal.save(driver_effective_date)" v-text="$t('ok')" />
+                              </v-date-picker>
+                            </v-dialog>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" style="max-width:650px;">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('center_code')" rules="required">
+                              <v-combobox
+                                v-model="center_code"
+                                :label="$t('center_code')"
+                                :error-messages="errors"
+                                :success="valid"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('bill_sort')" rules="required">
+                              <v-combobox
+                                v-model="bill_sort"
+                                :label="$t('bill_sort')"
+                                :error-messages="errors"
+                                :success="valid"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_vehicle_number')" rules="required">
+                              <v-text-field
+                                v-model="client_vehicle_number"
+                                :label="$t('client_vehicle_number')"
+                                :error-messages="errors"
+                                :success="valid"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                      </v-container>
                     </v-col>
-                    <v-col cols="12" md="6">
-                      <v-subheader>{{ $t('client_use_fields') }}</v-subheader>
-                      <v-row>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_1')">
-                            <v-text-field
-                              v-model="model.client_use_1"
-                              :error-messages="errors"
-                              :success="valid"
-                              :label="custom_labels.client_use_label_1"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_2')">
-                            <v-text-field
-                              v-model="model.client_use_2"
-                              :error-messages="errors"
-                              :success="valid"
-                              :label="custom_labels.client_use_label_2"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_3')">
-                            <v-text-field
-                              v-model="model.client_use_3"
-                              :error-messages="errors"
-                              :success="valid"
-                              :label="custom_labels.client_use_label_3"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_4')">
-                            <v-text-field
-                              v-model="model.client_use_4"
-                              :error-messages="errors"
-                              :success="valid"
-                              :label="custom_labels.client_use_label_4"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_5')">
-                            <v-text-field
-                              v-model="model.client_use_5"
-                              :error-messages="errors"
-                              :success="valid"
-                              :label="custom_labels.client_use_label_5"
-                              outlined
-                              dense
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                      </v-row>
+                    <v-col cols="12" sm="6" style="max-width:600px;">
+                      <v-subheader v-text="$t('client_use_fields')" />
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_1')" rules="required">
+                              <v-text-field
+                                v-model="client_use_1"
+                                :error-messages="errors"
+                                :success="valid"
+                                :label="custom_labels.client_use_label_1"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_2')" rules="required">
+                              <v-text-field
+                                v-model="client_use_2"
+                                :error-messages="errors"
+                                :success="valid"
+                                :label="custom_labels.client_use_label_2"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_3')" rules="required">
+                              <v-text-field
+                                v-model="client_use_3"
+                                :error-messages="errors"
+                                :success="valid"
+                                :label="custom_labels.client_use_label_3"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_4')" rules="required">
+                              <v-text-field
+                                v-model="client_use_4"
+                                :error-messages="errors"
+                                :success="valid"
+                                :label="custom_labels.client_use_label_4"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_5')" rules="required">
+                              <v-text-field
+                                v-model="client_use_5"
+                                :error-messages="errors"
+                                :success="valid"
+                                :label="custom_labels.client_use_label_5"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
+                      </v-container>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
+                <v-btn @click="init" text>
+                  {{ $t('reset') }}
+                </v-btn>
                 <v-btn :loading="loading" type="submit" color="primary">
-                  {{ $t('submit') }}
+                  {{ $t('save_changes') }}
                 </v-btn>
               </v-card-actions>
             </v-form>
@@ -183,77 +223,84 @@
     </v-row>
   </v-container>
 </template>
-
 <script>
-import { SnotifyPosition } from 'vue-snotify'
+import { mapGetters } from 'vuex'
 import { vehicleRoute } from '@/mixins/routing'
 import ChangePlate from '@/components/vehicle/ChangePlate'
+import VehicleDetailTable from '@/components/vehicle/VehicleDetailTable'
 export default {
-  name: 'edit-vehicle',
-  components: {
-    ChangePlate
-  },
+  name: 'EditVehicle',
+  components: { ChangePlate, VehicleDetailTable },
   mixins: [vehicleRoute],
-  head () {
-    const title = this.$t('edit_vehicle')
+  data () {
     return {
-      title,
-      meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
-      ]
+      change_plate_dialog: false,
+      driver_effective_date_modal: false,
+      loading: false,
+      panel: 0,
+      // Model
+      bill_sort: null,
+      center_code: null,
+      center_name: null,
+      client_vehicle_number: null,
+      client_use_1: null,
+      client_use_2: null,
+      client_use_3: null,
+      client_use_4: null,
+      client_use_5: null,
+      driver_effective_date: null
     }
   },
   computed: {
-    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
-    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
-    editDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-driver` })
+    ...mapGetters({
+      custom_labels: 'account/getCustomLabels',
+      driver_details: 'vehicle/getDriverDetails',
+      hasVehicle: 'vehicle/hasVehicle',
+      vehicle_details: 'vehicle/getVehicleDetails'
+    }),
+    editDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-driver` }),
+    reassignVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/reassign-vehicle` })
   },
   async asyncData ({ store }) {
-    let loading, driver_effective_date_modal
-    // create an object to store the form model
-    const model = {
-      bill_sort: '',
-      center_code: '',
-      center_name: '',
-      client_vehicle_number: '',
-      client_use_1: '',
-      client_use_2: '',
-      client_use_3: '',
-      client_use_4: '',
-      client_use_5: '',
-      driver_effective_date: ''
-    }
-    // get the vehicle info from current vehicle vuex and populate the model
-    const vehicle_info = await store.getters['vehicle/getVehicleInfo']
-    if (vehicle_info) {
-      model.bill_sort = vehicle_info.bill_sort
-      model.center_code = vehicle_info.center_code
-      model.center_name = vehicle_info.center_name
-      model.client_vehicle_number = vehicle_info.client_vehicle_number
-      model.client_use_1 = vehicle_info.client_use_1
-      model.client_use_2 = vehicle_info.client_use_2
-      model.client_use_3 = vehicle_info.client_use_3
-      model.client_use_4 = vehicle_info.client_use_4
-      model.client_use_5 = vehicle_info.client_use_5
-    }
 
-    return {
-      loading,
-      model,
-      driver_effective_date_modal
-    }
+  },
+  mounted () {
+    // reset
+    this.init()
   },
   methods: {
-    async submitVehicleEdit () {
-      this.loading = true
-      try {
-        await this.$axios.post(`${process.env.EMKAY_API}/vehicle/edit`, this.model)
-      } catch (error) {
-        console.error(error)
-        this.$snotify.error(error.message, this.$i18n.t('error'), { position: SnotifyPosition.centerTop })
-      } finally {
-        this.loading = false
+    init () {
+      // clear inputs
+      this.bill_sort = null
+      this.center_code = null
+      this.center_name = null
+      this.client_vehicle_number = null
+      this.client_use_1 = null
+      this.client_use_2 = null
+      this.client_use_3 = null
+      this.client_use_4 = null
+      this.client_use_5 = null
+      this.driver_effective_date = null
+      // load vehicle from vuex
+      if (this.hasVehicle) {
+        this.loadCurrentVehicle()
       }
+      this.reset()
+    },
+    loadCurrentVehicle () {
+      this.bill_sort = this.vehicle_details.bill_sort
+      this.center_code = this.vehicle_details.center_code
+      this.center_name = this.vehicle_details.center_name
+      this.client_vehicle_number = this.vehicle_details.client_vehicle_number
+      this.client_use_1 = this.vehicle_details.client_use_1
+      this.client_use_2 = this.vehicle_details.client_use_2
+      this.client_use_3 = this.vehicle_details.client_use_3
+      this.client_use_4 = this.vehicle_details.client_use_4
+      this.client_use_5 = this.vehicle_details.client_use_5
+      this.driver_effective_date = this.vehicle_details.driver_effective_date
+    },
+    reset () {
+      this.$refs.vehicleForm.reset()
     }
   }
 }
