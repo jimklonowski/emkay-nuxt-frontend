@@ -524,6 +524,7 @@ export default {
   vehicle_description: "Vehicle Description",
   vehicle_details: "Vehicle Details",
   vehicle_engine: "Vehicle Engine",
+  vehicle_history: "Vehicle History",
   vehicle_make: "Vehicle Make",
   vehicle_model: "Vehicle Model",
   vehicle_model_code: "Vehicle Model Code",

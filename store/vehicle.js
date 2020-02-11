@@ -502,5 +502,6 @@ export const getters = {
   getViolationLoading: state => state.violation_loading,
 
   getVehicleNumber: state => state.vehicle_number,
-  hasVehicle: state => !!state.vehicle_number
+  hasVehicle: state => !!state.vehicle_number,
+  hasDriver: state => !!state.driver_details.reference_number
 }

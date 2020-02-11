@@ -1,9 +1,14 @@
 export default function ({ $axios, store, redirect }) {
   $axios.interceptors.response.use(res => res, async error => {
-    if (error.response.status === 401) {
+    const status = error.response ? error.response.status : null
+    if (status === 401) {
+      // TODO: handle refreshing of session here
+      // if cannot get a new session, then logout
       await store.dispatch('account/logout')
       return error
     }
+    // handle error normally for other status errors
+    return Promise.reject(error)
   })
   // $axios.onError(async error => {
   //   if (error.response.status === 401) {

@@ -11,7 +11,7 @@
     <v-row>
       <v-col cols="12">
         <v-card :loading="loading" outlined tile>
-          <v-expansion-panels v-model="panel" value="0" accordion hover>
+          <v-expansion-panels v-model="panel" value="0" accordion hover tile>
             <v-expansion-panel v-show="hasVehicle" tile>
               <v-expansion-panel-header disable-icon-rotate>
                 {{ $t('vehicle_details') }}
@@ -35,7 +35,7 @@
                         <template #activator="{ on }">
                           <a v-on="on" v-text="$t('change_plate')" />
                         </template>
-                        <change-plate :vehicle="vehicle_details.vehicle_number" />
+                        <change-plate :vehicle="vehicle_number" />
                       </v-dialog>
                     </v-col>
                   </v-row>
@@ -51,9 +51,22 @@
               <v-card-text>
                 <v-container>
                   <v-row justify="center">
-                    <v-col cols="12" sm="6" style="max-width:650px;">
+                    <v-col cols="12" sm="6">
                       <v-subheader v-text="$t('vehicle_details')" />
                       <v-container>
+                        <v-row>
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('client_vehicle_number')">
+                              <v-text-field
+                                v-model="client_vehicle_number"
+                                :label="$t('client_vehicle_number')"
+                                :error-messages="errors"
+                                outlined
+                                dense
+                              />
+                            </ValidationProvider>
+                          </v-col>
+                        </v-row>
                         <v-row>
                           <v-col cols="12">
                             <v-dialog
@@ -64,14 +77,15 @@
                               width="290px"
                             >
                               <template #activator="{ on }">
-                                <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_effective_date')" rules="required">
+                                <ValidationProvider v-slot="{ errors }" :name="$t('driver_effective_date')" rules="required">
                                   <v-text-field
-                                    v-model="driver_effective_date"
+                                    :value="$moment(driver_effective_date).format('L')"
                                     v-on="on"
-                                    :prepend-inner-icon="'mdi-calendar'"
                                     :error-messages="errors"
-                                    :success="valid"
                                     :label="$t('driver_effective_date')"
+                                    :prepend-inner-icon="'mdi-calendar'"
+                                    clearable
+                                    readonly
                                     outlined
                                     dense
                                   />
@@ -86,13 +100,12 @@
                           </v-col>
                         </v-row>
                         <v-row>
-                          <v-col cols="12" style="max-width:650px;">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('center_code')" rules="required">
+                          <v-col cols="12">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('center_code')" rules="required">
                               <v-combobox
                                 v-model="center_code"
                                 :label="$t('center_code')"
                                 :error-messages="errors"
-                                :success="valid"
                                 outlined
                                 dense
                               />
@@ -101,26 +114,11 @@
                         </v-row>
                         <v-row>
                           <v-col cols="12">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('bill_sort')" rules="required">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('bill_sort')">
                               <v-combobox
                                 v-model="bill_sort"
                                 :label="$t('bill_sort')"
                                 :error-messages="errors"
-                                :success="valid"
-                                outlined
-                                dense
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="12">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_vehicle_number')" rules="required">
-                              <v-text-field
-                                v-model="client_vehicle_number"
-                                :label="$t('client_vehicle_number')"
-                                :error-messages="errors"
-                                :success="valid"
                                 outlined
                                 dense
                               />
@@ -129,17 +127,16 @@
                         </v-row>
                       </v-container>
                     </v-col>
-                    <v-col cols="12" sm="6" style="max-width:600px;">
+                    <v-col cols="12" sm="6">
                       <v-subheader v-text="$t('client_use_fields')" />
                       <v-container>
                         <v-row>
                           <v-col cols="12">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_1')" rules="required">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('client_use_1')" rules="max:40">
                               <v-text-field
                                 v-model="client_use_1"
                                 :error-messages="errors"
-                                :success="valid"
-                                :label="custom_labels.client_use_label_1"
+                                :label="custom_labels.client_use_label_1 || $t('client_use_label_1')"
                                 outlined
                                 dense
                               />
@@ -148,12 +145,11 @@
                         </v-row>
                         <v-row>
                           <v-col cols="12">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_2')" rules="required">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('client_use_2')" rules="max:40">
                               <v-text-field
                                 v-model="client_use_2"
                                 :error-messages="errors"
-                                :success="valid"
-                                :label="custom_labels.client_use_label_2"
+                                :label="custom_labels.client_use_label_2 || $t('client_use_label_2')"
                                 outlined
                                 dense
                               />
@@ -162,12 +158,11 @@
                         </v-row>
                         <v-row>
                           <v-col cols="12">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_3')" rules="required">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('client_use_3')" rules="max:40">
                               <v-text-field
                                 v-model="client_use_3"
                                 :error-messages="errors"
-                                :success="valid"
-                                :label="custom_labels.client_use_label_3"
+                                :label="custom_labels.client_use_label_3 || $t('client_use_label_3')"
                                 outlined
                                 dense
                               />
@@ -176,12 +171,11 @@
                         </v-row>
                         <v-row>
                           <v-col cols="12">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_4')" rules="required">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('client_use_4')" rules="max:40">
                               <v-text-field
                                 v-model="client_use_4"
                                 :error-messages="errors"
-                                :success="valid"
-                                :label="custom_labels.client_use_label_4"
+                                :label="custom_labels.client_use_label_4 || $t('client_use_label_4')"
                                 outlined
                                 dense
                               />
@@ -190,12 +184,11 @@
                         </v-row>
                         <v-row>
                           <v-col cols="12">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('client_use_5')" rules="required">
+                            <ValidationProvider v-slot="{ errors }" :name="$t('client_use_5')" rules="max:40">
                               <v-text-field
                                 v-model="client_use_5"
                                 :error-messages="errors"
-                                :success="valid"
-                                :label="custom_labels.client_use_label_5"
+                                :label="custom_labels.client_use_label_5 || $t('client_use_label_5')"
                                 outlined
                                 dense
                               />
@@ -225,6 +218,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { SnotifyPosition } from 'vue-snotify'
 import { vehicleRoute } from '@/mixins/routing'
 import ChangePlate from '@/components/vehicle/ChangePlate'
 import VehicleDetailTable from '@/components/vehicle/VehicleDetailTable'
@@ -232,41 +226,53 @@ export default {
   name: 'EditVehicle',
   components: { ChangePlate, VehicleDetailTable },
   mixins: [vehicleRoute],
-  data () {
-    return {
-      change_plate_dialog: false,
-      driver_effective_date_modal: false,
-      loading: false,
-      panel: 0,
-      // Model
-      bill_sort: null,
-      center_code: null,
-      center_name: null,
-      client_vehicle_number: null,
-      client_use_1: null,
-      client_use_2: null,
-      client_use_3: null,
-      client_use_4: null,
-      client_use_5: null,
-      driver_effective_date: null
-    }
-  },
+  data: () => ({
+    change_plate_dialog: false,
+    driver_effective_date_modal: false,
+    loading: false,
+    panel: 0,
+    // Model
+    bill_sort: null,
+    center_code: null,
+    center_name: null,
+    client_vehicle_number: null,
+    client_use_1: null,
+    client_use_2: null,
+    client_use_3: null,
+    client_use_4: null,
+    client_use_5: null,
+    driver_effective_date: null
+  }),
   computed: {
     ...mapGetters({
       custom_labels: 'account/getCustomLabels',
       driver_details: 'vehicle/getDriverDetails',
       hasVehicle: 'vehicle/hasVehicle',
-      vehicle_details: 'vehicle/getVehicleDetails'
+      vehicle_details: 'vehicle/getVehicleDetails',
+      vehicle_number: 'vehicle/getVehicleNumber'
     }),
     editDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-driver` }),
-    reassignVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/reassign-vehicle` })
-  },
-  async asyncData ({ store }) {
-
+    reassignVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/reassign-vehicle` }),
+    model () {
+      return {
+        vehicle_number: this.vehicle_number,
+        bill_sort: this.bill_sort,
+        center_code: this.center_code,
+        center_name: this.center_name,
+        client_vehicle_number: this.client_vehicle_number,
+        client_use_1: this.client_use_1,
+        client_use_2: this.client_use_2,
+        client_use_3: this.client_use_3,
+        client_use_4: this.client_use_4,
+        client_use_5: this.client_use_5,
+        driver_effective_date: this.driver_effective_date
+      }
+    }
   },
   mounted () {
-    // reset
+    // reset form and load model
     this.init()
+    console.log('ded: ' + this.driver_effective_date)
   },
   methods: {
     init () {
@@ -301,6 +307,17 @@ export default {
     },
     reset () {
       this.$refs.vehicleForm.reset()
+    },
+    async submitEditVehicle () {
+      this.loading = true
+      try {
+        await this.$axios.post('/vehicle/edit', this.model)
+      } catch (error) {
+        console.error(error)
+        this.$snotify.error(error.message, this.$i18n.t('error'), { position: SnotifyPosition.centerTop })
+      } finally {
+        this.loading = false
+      }
     }
   }
 }

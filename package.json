@@ -36,8 +36,7 @@
     "vue-json-excel": "^0.2.98",
     "vue-snotify": "^3.2.1",
     "vuetify-loader": "^1.4.3",
-    "vuex-persist": "^2.2.0",
-    "vuex-persistedstate": "^2.7.1"
+    "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
     "@nuxt/babel-preset-app": "^2.11.0",

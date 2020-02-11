@@ -19,6 +19,10 @@ export default ({ app }) => {
   //   }
   // })
 
+  // Default to passive mode - validates on submit.
+  // https://logaretm.github.io/vee-validate/guide/interaction-and-ux.html#interaction-modes
+  // configure({ mode: 'passive' })
+
   for (const rule in rules) {
     extend(rule, rules[rule])
   }
