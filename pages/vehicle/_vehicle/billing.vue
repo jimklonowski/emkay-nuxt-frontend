@@ -1,13 +1,5 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-btn :to="vehicleRoute" exact nuxt text>
-          <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
-          {{ $t('to_vehicle_dashboard') }}
-        </v-btn>
-      </v-col>
-    </v-row>
     <v-row v-if="$route.query.invoice">
       <v-col cols="9">
         <invoice :invoice-number="$route.query.invoice" :vehicle-number="vehicle_number" />

@@ -65,11 +65,11 @@ export default {
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/transports-and-storage` }
         },
-        {
-          key: 'edit_custom_labels',
-          icon: '',
-          to: { path: `/vehicle/${this.$route.params.vehicle}/edit-custom-labels` }
-        },
+        // {
+        //   key: 'edit_custom_labels',
+        //   icon: '',
+        //   to: { path: `/vehicle/${this.$route.params.vehicle}/edit-custom-labels` }
+        // },
         // {
         //   key: 'reassign_vehicle',
         //   icon: '',

@@ -1,13 +1,5 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-btn :to="vehicleRoute" exact nuxt text>
-          <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
-          {{ $t('to_vehicle_dashboard') }}
-        </v-btn>
-      </v-col>
-    </v-row>
     <v-row no-gutters>
       <v-col cols="12">
         <v-toolbar height="72" elevation="1" tile>
@@ -17,7 +9,7 @@
             centered
             icons-and-text
           >
-            <v-tab :to="`${vehicleRoute}/transports-and-storage/`" exact nuxt>
+            <v-tab :to="`${vehicleRoute}/transports-and-storage`" exact nuxt>
               {{ $t('transport_status') }}
             </v-tab>
             <v-tab :to="`${vehicleRoute}/transports-and-storage/request-quote`" nuxt>

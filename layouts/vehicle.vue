@@ -3,6 +3,7 @@
     <emkay-navigation />
     <v-content>
       <vehicle-dashboard-navigation />
+      <vehicle-dashboard-breadcrumbs />
       <nuxt />
     </v-content>
     <emkay-footer />
@@ -16,11 +17,13 @@
 import EmkayFooter from '@/components/EmkayFooter'
 import EmkayNavigation from '@/components/EmkayNavigation'
 import VehicleDashboardNavigation from '@/components/vehicle/VehicleDashboardNavigation'
+import VehicleDashboardBreadcrumbs from '@/components/vehicle/VehicleDashboardBreadcrumbs'
 /**
  * Vehicle Dashboard Layout page
  */
 export default {
   components: {
+    VehicleDashboardBreadcrumbs,
     EmkayFooter,
     EmkayNavigation,
     VehicleDashboardNavigation

@@ -2,22 +2,11 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-btn :to="vehicleRoute" exact nuxt text>
-          <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
-          {{ $t('to_vehicle_dashboard') }}
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
         <v-card :loading="loading" outlined tile>
           <v-expansion-panels v-model="panel" value="0" accordion hover tile>
             <v-expansion-panel v-show="hasVehicle" tile>
-              <v-expansion-panel-header disable-icon-rotate>
+              <v-expansion-panel-header>
                 {{ $t('vehicle_details') }}
-                <template #actions>
-                  <v-icon v-text="'mdi-car'" color="primary" />
-                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>

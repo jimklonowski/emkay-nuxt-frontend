@@ -4,7 +4,7 @@
       <v-avatar class="mr-2">
         <v-icon v-text="'mdi-car'" />
       </v-avatar>
-      <v-toolbar-title class="font-lato">
+      <v-toolbar-title class="font-roboto">
         {{ yearMakeModel | uppercase }}
       </v-toolbar-title>
       <v-spacer />

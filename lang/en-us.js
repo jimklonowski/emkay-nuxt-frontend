@@ -50,6 +50,7 @@ export default {
   bill_date: "Bill Date",
   bill_for_date: "Bill For Date",
   bill_sort: "Bill Sort",
+  billing: "Billing",
   billing_history: "Billing History",
   black_book_percent: "Black Book Percent",
   blog: "Blog",

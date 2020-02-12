@@ -1,13 +1,5 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-btn :to="vehicleRoute" exact nuxt text>
-          <v-icon v-text="'mdi-chevron-left'" class="mr-2" />
-          {{ $t('to_vehicle_dashboard') }}
-        </v-btn>
-      </v-col>
-    </v-row>
     <v-row no-gutters>
       <v-col cols="12">
         <v-toolbar height="72" tile>
@@ -17,13 +9,13 @@
             centered
             icons-and-text
           >
-            <v-tab :to="`${vehicleRoute}/fuel/`" exact nuxt>
+            <v-tab :to="`${vehicleRoute}/fuel`" exact nuxt>
               {{ $t('fuel_history') }}
             </v-tab>
             <v-tab :to="`${vehicleRoute}/fuel/fuel-cards`" nuxt>
               {{ $t('fuel_cards') }}
             </v-tab>
-            <v-tab :to="`${vehicleRoute}/fuel/fuel-profiles`" nuxt>
+            <v-tab :to="`${vehicleRoute}/fuel/fuel-authorization-profiles`" nuxt>
               {{ $t('fuel_authorization_profiles') }}
             </v-tab>
           </v-tabs>
