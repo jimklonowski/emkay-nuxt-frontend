@@ -142,6 +142,10 @@
             {{ item.service_date | date }}
           </template>
 
+          <template #item.bill_date="{ item }">
+            {{ item.bill_date | date }}
+          </template>
+
           <template #item.amount="{ item }">
             {{ item.amount | currency }}
           </template>
@@ -176,6 +180,7 @@ export default {
     columns () {
       return [
         'service_date',
+        'bill_date',
         'vendor_name',
         'description',
         'maintenance_category',
@@ -188,6 +193,12 @@ export default {
         {
           text: this.$i18n.t('service_date'),
           value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_date'),
+          value: 'bill_date',
           class: 'report-column',
           divider: true
         },

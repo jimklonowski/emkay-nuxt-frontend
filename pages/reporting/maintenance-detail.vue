@@ -136,6 +136,10 @@
             {{ item.service_date | date }}
           </template>
 
+          <template #item.bill_date="{ item }">
+            {{ item.bill_date | date }}
+          </template>
+
           <template #item.vehicle_number="{ item }">
             <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
           </template>
@@ -193,6 +197,7 @@ export default {
     columns () {
       return [
         'service_date',
+        'bill_date',
         'vehicle_number',
         'client_vehicle_number',
         'active',
@@ -276,6 +281,12 @@ export default {
         {
           text: this.$i18n.t('service_date'),
           value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_date'),
+          value: 'bill_date',
           class: 'report-column',
           divider: true
         },

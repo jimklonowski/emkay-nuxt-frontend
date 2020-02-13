@@ -7,12 +7,19 @@
             <v-toolbar height="72" tile elevation="1">
               <v-tabs
                 v-model="tab"
+                grow
                 centered
                 icons-and-text
               >
                 <v-tabs-slider />
-                <v-tab>{{ $t('documents') }}</v-tab>
-                <v-tab>{{ $t('notes') }}</v-tab>
+                <v-tab>
+                  {{ $t('documents') }}
+                  <v-icon v-text="'mdi-file-document-box-multiple'" />
+                </v-tab>
+                <v-tab>
+                  {{ $t('notes') }}
+                  <v-icon v-text="'mdi-note-multiple'" />
+                </v-tab>
               </v-tabs>
             </v-toolbar>
           </v-card-title>
@@ -34,11 +41,14 @@
                   >
                     <template #top>
                       <v-toolbar flat>
+                        <v-toolbar-title>
+                          {{ $t('documents') }}
+                        </v-toolbar-title>
                         <v-spacer />
                         <v-dialog v-model="document_dialog" max-width="800px">
                           <template #activator="{ on }">
                             <v-btn v-show="tab === 0" v-on="on" color="primary">
-                              <v-icon v-text="'mdi-file-plus'" class="mr-2" />
+                              <v-icon v-text="'mdi-file-document-box-plus'" class="mr-2" />
                               {{ $t('upload_document') }}
                             </v-btn>
                           </template>
@@ -122,11 +132,14 @@
                   >
                     <template #top>
                       <v-toolbar flat>
+                        <v-toolbar-title>
+                          {{ $t('notes') }}
+                        </v-toolbar-title>
                         <v-spacer />
                         <v-dialog v-model="note_dialog" max-width="800px">
                           <template #activator="{ on }">
                             <v-btn v-show="tab === 1" v-on="on" color="primary">
-                              <v-icon v-text="'mdi-file-document-box-plus'" class="mr-2" />
+                              <v-icon v-text="'mdi-note-plus'" class="mr-2" />
                               {{ $t('add_note') }}
                             </v-btn>
                           </template>
