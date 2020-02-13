@@ -120,6 +120,7 @@ export default {
   dark_mode: "Mode Sombre",
   date: "Date",
   date_sold: "Date de vente",
+  days: "Jours",
   days_in_rental: "Jours en location",
   days_past_auth_days: "Jours passés les jours d'authentification",
   dealer_contact: "Contact revendeur",

@@ -1,65 +1,48 @@
 <template>
-  <v-card outlined>
-    <v-toolbar flat>
-      <v-avatar class="mr-2">
-        <v-icon v-text="'mdi-car'" />
-      </v-avatar>
-      <v-toolbar-title class="font-roboto">
-        {{ yearMakeModel | uppercase }}
-      </v-toolbar-title>
-      <v-spacer />
-      <v-menu
-        v-model="menu"
-        :close-on-content-click="false"
-        origin="top right"
-        transition="scale-transition"
-        left
-      >
-        <template #activator="{ on }">
-          <v-btn v-on="on" icon>
-            <v-icon v-text="'mdi-dots-vertical'" />
-          </v-btn>
-        </template>
-        <v-card>
-          <v-list nav dense>
-            <v-list-item :to="editVehicleRoute" link>
-              <v-list-item-action>
-                <v-icon v-text="'mdi-car-info'" />
-              </v-list-item-action>
-              <v-list-item-title>{{ $t('edit_vehicle') }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item :to="assignDriverRoute" link>
-              <v-list-item-action>
-                <v-icon v-text="'mdi-smart-card'" />
-              </v-list-item-action>
-              <v-list-item-title>{{ $t('assign_new_driver') }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-menu>
-    </v-toolbar>
-    <!-- <v-card-title class="pa-0">
-      <v-list-item :to="editVehicleRoute" link style="height:80px;">
-        <v-list-item-avatar>
-          <v-icon v-text="'mdi-car'" />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-subtitle v-text="vehicle_details.vehicle_number" class="overline" />
-          <v-list-item-title v-text="yearMakeModel" />
-          <client-only>
-            <nuxt-link :to="editVehicleRoute" v-text="$t('edit')" class="caption text-decoration-none" />
-          </client-only>
-        </v-list-item-content>
-        <v-list-item-action v-if="vehicle_details.client_vehicle_number">
-          <v-list-item-action-text v-text="$t('client_vehicle_#')" class="caption" />
-          <client-only>
-            <v-chip v-text="vehicle_details.client_vehicle_number" :title="$t('client_vehicle_number')" x-small />
-            <span />
-          </client-only>
-        </v-list-item-action>
-      </v-list-item>
-    </v-card-title> -->
+  <v-card outlined class="vehicle-widget">
+    <!-- Title Toolbar and Dropdown Menu -->
+    <v-card-title class="pa-0">
+      <v-toolbar flat>
+        <v-avatar class="mr-2" size="36">
+          <v-icon v-text="'mdi-car'" color="grey" />
+        </v-avatar>
+        <v-toolbar-title>
+          {{ yearMakeModel | uppercase }}
+        </v-toolbar-title>
+        <v-spacer />
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          origin="top right"
+          transition="scale-transition"
+          left
+        >
+          <template #activator="{ on }">
+            <v-btn v-on="on" icon>
+              <v-icon v-text="'mdi-dots-vertical'" />
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list nav dense>
+              <v-list-item :to="editVehicleRoute" link>
+                <v-list-item-action>
+                  <v-icon v-text="'mdi-car-info'" />
+                </v-list-item-action>
+                <v-list-item-title>{{ $t('edit_vehicle') }}</v-list-item-title>
+              </v-list-item>
+              <v-list-item :to="assignDriverRoute" link>
+                <v-list-item-action>
+                  <v-icon v-text="'mdi-smart-card'" />
+                </v-list-item-action>
+                <v-list-item-title>{{ $t('assign_new_driver') }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu>
+      </v-toolbar>
+    </v-card-title>
     <v-divider />
+    <!-- The Data -->
     <v-card-text class="pa-0">
       <v-container>
         <v-row no-gutters>
@@ -166,7 +149,7 @@
                   <v-icon v-text="'mdi-label-variant'" />
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.license_plate_number || '--' }}</v-list-item-title>
+                  <v-list-item-title>{{ licensePlate }}</v-list-item-title>
                   <v-list-item-subtitle v-text="$t('license_plate_number')" />
                 </v-list-item-content>
               </v-list-item>
@@ -184,6 +167,7 @@
         </v-row>
       </v-container>
     </v-card-text>
+    <!-- Show More/Less button -->
     <v-card-actions class="pt-0">
       <v-btn
         @click="expanded = !expanded"
@@ -196,6 +180,7 @@
         {{ expanded ? $t('less') : $t('more') }}
       </v-btn>
     </v-card-actions>
+    <!-- Expansion Panel -->
     <v-slide-y-transition>
       <v-card-text v-show="expanded" class="pa-0">
         <v-container class="py-0">
@@ -308,21 +293,34 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  data: () => ({
-    expanded: false,
-    menu: false
-  }),
+  data () {
+    return {
+      expanded: false,
+      menu: false
+    }
+  },
   computed: {
-    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
-    vehicle_details: vm => vm.$store.getters['vehicle/getVehicleDetails'],
-    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber'],
+    /**
+     * Vuex Getters
+     */
+    ...mapGetters({
+      custom_labels: 'account/getCustomLabels',
+      vehicle_details: 'vehicle/getVehicleDetails',
+      vehicle_number: 'vehicle/getVehicleNumber'
+    }),
     vehicleCenter () {
       // Concatenate those that exist https://stackoverflow.com/a/19903063
       return [this.vehicle_details.center_name, this.vehicle_details.center_code].filter(Boolean).join(' - ')
     },
     colorYearMakeModel () {
       return [this.vehicle_details.exterior_color, this.vehicle_details.year, this.vehicle_details.make, this.vehicle_details.model].filter(Boolean).join(' ')
+    },
+    licensePlate () {
+      const license_plate = this.vehicle_details.license_plate_number || '--'
+      const license_state = `(${this.vehicle_details.license_plate_state_province || '--'})`
+      return [license_plate, license_state].join(' ')
     },
     tollTransponder () {
       return [this.vehicle_details.toll_type, this.vehicle_details.transponder_number].filter(Boolean).join(' - ')
@@ -332,11 +330,6 @@ export default {
     },
     assignDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/reassign-vehicle` }),
     editVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/edit-vehicle` })
-  },
-  methods: {
-    goToEditVehicle () {
-      this.$router.push(this.editVehicleRoute)
-    }
   }
 }
 </script>

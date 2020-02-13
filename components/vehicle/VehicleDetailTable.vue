@@ -4,10 +4,18 @@
       <tbody>
         <tr>
           <th class="text-right">
-            {{ $t('vehicle_number') }} / {{ $t('client_vehicle_number') }}
+            {{ $t('vehicle_number') }}
           </th>
           <td class="text-left">
-            {{ vehicle_details.vehicle_number || '--' }} / {{ vehicle_details.client_vehicle_number || '--' }}
+            {{ vehicle_details.vehicle_number || '--' }}
+          </td>
+        </tr>
+        <tr>
+          <th class="text-right">
+            {{ $t('client_vehicle_number') }}
+          </th>
+          <td class="text-left">
+            {{ vehicle_details.client_vehicle_number || '--' }}
           </td>
         </tr>
         <tr>

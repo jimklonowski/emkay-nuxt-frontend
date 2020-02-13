@@ -1,5 +1,6 @@
 <template>
-  <v-card outlined tile class="report">
+  <v-card flat tile class="report">
+    <v-divider />
     <v-card-title>
       {{ $t('fuel_history') }}
       <v-spacer />

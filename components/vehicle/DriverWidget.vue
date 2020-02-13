@@ -1,63 +1,44 @@
 <template>
-  <v-card outlined>
-    <v-toolbar flat>
-      <v-avatar class="mr-2">
-        <v-icon v-text="'mdi-account'" />
-      </v-avatar>
-      <v-toolbar-title class="font-lato">
-        {{ driverName }}
-      </v-toolbar-title>
-      <v-spacer />
-      <v-menu
-        v-model="menu"
-        :close-on-content-click="false"
-        origin="top right"
-        transition="scale-transition"
-        left
-      >
-        <template #activator="{ on }">
-          <v-btn v-on="on" icon>
-            <v-icon v-text="'mdi-dots-vertical'" />
-          </v-btn>
-        </template>
-        <v-card>
-          <v-list nav dense>
-            <v-list-item :to="editDriverRoute" link>
-              <v-list-item-avatar>
-                <v-icon v-text="'mdi-account-edit'" />
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>{{ $t('edit_driver') }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-menu>
-    </v-toolbar>
-    <!-- <v-card-title class="pa-0">
-      <v-list-item :to="editDriverRoute" link style="height:80px;">
-        <v-list-item-avatar>
-          <v-icon v-text="'mdi-account-edit'" />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-subtitle class="overline">
-            {{ driver_details.employee_id || '&nbsp;' }}
-          </v-list-item-subtitle>
-          <v-list-item-title v-text="driverName" />
-          <client-only>
-            <nuxt-link :to="editDriverRoute" v-text="$t('edit')" class="caption text-decoration-none" />
-          </client-only>
-        </v-list-item-content>
-        <v-list-item-action v-if="driver_details.reference_number">
-          <v-list-item-action-text v-text="$t('driver_reference_#')" class="caption" />
-          <client-only>
-            <v-chip v-text="driver_details.reference_number" :title="$t('driver_number')" x-small />
-            <span />
-          </client-only>
-        </v-list-item-action>
-      </v-list-item>
-    </v-card-title> -->
+  <v-card outlined class="vehicle-widget">
+    <!-- Title Toolbar and Dropdown Menu -->
+    <v-card-title class="pa-0">
+      <v-toolbar flat>
+        <v-avatar class="mr-2" size="36">
+          <v-icon v-text="'mdi-account'" color="grey" />
+        </v-avatar>
+        <v-toolbar-title>
+          {{ driverName }}
+        </v-toolbar-title>
+        <v-spacer />
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          origin="top right"
+          transition="scale-transition"
+          left
+        >
+          <template #activator="{ on }">
+            <v-btn v-on="on" icon>
+              <v-icon v-text="'mdi-dots-vertical'" />
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list nav dense>
+              <v-list-item :to="editDriverRoute" link>
+                <v-list-item-avatar>
+                  <v-icon v-text="'mdi-account-edit'" />
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{ $t('edit_driver') }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu>
+      </v-toolbar>
+    </v-card-title>
     <v-divider />
+    <!-- The Data -->
     <v-card-text class="pa-0">
       <v-container>
         <v-row no-gutters>
@@ -183,11 +164,13 @@
         </v-row>
       </v-container>
     </v-card-text>
+    <!-- Footer -->
     <v-card-actions class="pt-0" />
   </v-card>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
 export default {
   data () {
@@ -196,9 +179,14 @@ export default {
     }
   },
   computed: {
-    custom_labels: vm => vm.$store.getters['account/getCustomLabels'],
-    driver_details: vm => vm.$store.getters['vehicle/getDriverDetails'],
-    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber'],
+    /**
+     * Vuex Getters
+     */
+    ...mapGetters({
+      custom_labels: 'account/getCustomLabels',
+      driver_details: 'vehicle/getDriverDetails',
+      vehicle_number: 'vehicle/getVehicleNumber'
+    }),
     cityStateZip () {
       const city_state = [this.driver_details.city, this.driver_details.state_province].filter(Boolean).join(', ')
       return [city_state, this.driver_details.postal_code].filter(Boolean).join(' ')
@@ -213,10 +201,7 @@ export default {
   },
   methods: {
     dialTo,
-    emailTo,
-    goToEditDriver () {
-      this.$router.push(this.editDriverRoute)
-    }
+    emailTo
   }
 }
 </script>

@@ -1,6 +1,14 @@
 <template>
-  <v-card outlined>
-    <v-card-title class="pa-0">
+  <v-card outlined class="vehicle-widget">
+    <v-toolbar flat>
+      <v-avatar class="mr-2" size="36">
+        <v-icon v-text="'mdi-cash-usd'" color="grey" />
+      </v-avatar>
+      <v-toolbar-title>
+        {{ $t('expense_summary') }}
+      </v-toolbar-title>
+    </v-toolbar>
+    <!-- <v-card-title class="pa-0">
       <v-list-item :to="expensesRoute" link style="height:80px;">
         <v-list-item-avatar>
           <v-icon v-text="'mdi-cash-usd'" />
@@ -15,7 +23,7 @@
           </client-only>
         </v-list-item-content>
       </v-list-item>
-    </v-card-title>
+    </v-card-title> -->
     <v-divider />
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">

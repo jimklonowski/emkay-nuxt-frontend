@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card :loading="loading" outlined tile>
+        <v-card :loading="loading" outlined tile class="form">
           <v-expansion-panels v-model="panel" value="0" accordion hover tile>
             <v-expansion-panel v-show="hasVehicle" tile>
               <v-expansion-panel-header>
@@ -10,7 +10,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
-                  <v-row class="flex-column-reverse flex-sm-row">
+                  <v-row class="flex-column-reverse flex-sm-row justify-space-between">
                     <v-col cols="12" sm="8">
                       <vehicle-detail-table />
                     </v-col>
@@ -34,7 +34,7 @@
           </v-expansion-panels>
           <ValidationObserver ref="vehicleForm" v-slot="{ handleSubmit }">
             <v-form @submit.prevent="handleSubmit(submitEditVehicle)">
-              <v-card-title class="display-1">
+              <v-card-title>
                 {{ $t('edit_vehicle') }}
               </v-card-title>
               <v-card-text>
@@ -215,6 +215,15 @@ export default {
   name: 'EditVehicle',
   components: { ChangePlate, VehicleDetailTable },
   mixins: [vehicleRoute],
+  head () {
+    const title = this.$t('edit_vehicle')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
+    }
+  },
   data: () => ({
     change_plate_dialog: false,
     driver_effective_date_modal: false,
@@ -261,7 +270,6 @@ export default {
   mounted () {
     // reset form and load model
     this.init()
-    console.log('ded: ' + this.driver_effective_date)
   },
   methods: {
     init () {

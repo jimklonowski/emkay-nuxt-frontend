@@ -13,6 +13,12 @@ export default ({ app }) => {
     }
   })
 
+  Vue.filter('datetime', (value, outFormat = 'LLL') => {
+    if (value) {
+      return app.$moment(value).format(outFormat)
+    }
+  })
+
   Vue.filter('phone', (value) => {
     if (value) {
       return value

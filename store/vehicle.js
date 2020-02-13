@@ -11,7 +11,7 @@ const getDefaultState = () => ({
   sale_info: {},
 
   accident_history: [],
-  accident_loading: false,
+  accidents_loading: false,
   billing_history: [],
   billing_loading: false,
   documents: [],
@@ -31,13 +31,13 @@ const getDefaultState = () => ({
   odometer_history: [],
   odometer_loading: false,
   rental_history: [],
-  rental_loading: false,
+  rentals_loading: false,
   toll_history: [],
-  toll_loading: false,
+  tolls_loading: false,
   transport_status: [],
   transport_status_loading: false,
   violation_history: [],
-  violation_loading: false
+  violations_loading: false
 })
 
 export const state = () => getDefaultState()
@@ -217,7 +217,7 @@ export const actions = {
    * @param {*} vehicle Vehicle Number
    */
   async fetchTollHistory ({ commit }, { start, end, vehicle }) {
-    commit('setTollLoading', true)
+    commit('setTollsLoading', true)
     try {
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/toll-history', { params: { start, end, vehicle } })
       if (!success) { throw new Error(message) }
@@ -226,7 +226,7 @@ export const actions = {
       commit('pushError', error.message)
       commit('setTollHistory', [])
     } finally {
-      commit('setTollLoading', false)
+      commit('setTollsLoading', false)
     }
   },
   /* TODO: */
@@ -283,7 +283,7 @@ export const actions = {
    * @param {*} vehicle Vehicle Number
    */
   async fetchRentalHistory ({ commit }, { start, end, vehicle }) {
-    commit('setRentalLoading', true)
+    commit('setRentalsLoading', true)
     try {
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/rental-history', { params: { start, end, vehicle } })
       if (!success) { throw new Error(message) }
@@ -292,7 +292,7 @@ export const actions = {
       commit('pushError', error.message)
       commit('setRentalHistory', [])
     } finally {
-      commit('setRentalLoading', false)
+      commit('setRentalsLoading', false)
     }
   },
   /**
@@ -321,7 +321,7 @@ export const actions = {
    * @param {*} vehicle Vehicle Number
    */
   async fetchAccidentHistory ({ commit }, { start, end, vehicle }) {
-    commit('setAccidentLoading', true)
+    commit('setAccidentsLoading', true)
     try {
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/accident-history', { params: { start, end, vehicle } })
       if (!success) { throw new Error(message) }
@@ -330,7 +330,7 @@ export const actions = {
       commit('pushError', error.message)
       commit('setAccidentHistory', [])
     } finally {
-      commit('setAccidentLoading', false)
+      commit('setAccidentsLoading', false)
     }
   },
   /**
@@ -374,7 +374,7 @@ export const actions = {
    * @param {*} vehicle Vehicle Number
    */
   async fetchViolationHistory ({ commit }, { start, end, vehicle }) {
-    commit('setViolationLoading', true)
+    commit('setViolationsLoading', true)
     try {
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/violation-history', { params: { start, end, vehicle } })
       if (!success) { throw new Error(message) }
@@ -383,7 +383,7 @@ export const actions = {
       commit('pushError', error.message)
       commit('setViolationHistory', [])
     } finally {
-      commit('setViolationLoading', false)
+      commit('setViolationsLoading', false)
     }
   },
   reset ({ commit }) {
@@ -404,7 +404,7 @@ export const mutations = {
   setSaleInfo: set('sale_info'),
 
   setAccidentHistory: set('accident_history'),
-  setAccidentLoading: set('accident_loading'),
+  setAccidentsLoading: set('accidents_loading'),
 
   setBillingHistory: set('billing_history'),
   setBillingLoading: set('billing_loading'),
@@ -431,19 +431,19 @@ export const mutations = {
   setExpenseSummaryLoading: set('expense_summary_loading'),
 
   setRentalHistory: set('rental_history'),
-  setRentalLoading: set('rental_loading'),
+  setRentalsLoading: set('rentals_loading'),
 
   setNotes: set('notes'),
   setNotesLoading: set('notes_loading'),
 
   setTollHistory: set('toll_history'),
-  setTollLoading: set('toll_loading'),
+  setTollsLoading: set('tolls_loading'),
 
   setTransportStatus: set('transport_status'),
   setTransportStatusLoading: set('transport_status_loading'),
 
   setViolationHistory: set('violation_history'),
-  setViolationLoading: set('violation_loading'),
+  setViolationsLoading: set('violations_loading'),
 
   setVehicleNumber: set('vehicle_number')
 }
@@ -463,7 +463,7 @@ export const getters = {
   hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0,
 
   getAccidentHistory: state => state.accident_history,
-  getAccidentLoading: state => state.accident_loading,
+  getAccidentsLoading: state => state.accidents_loading,
 
   getBillingHistory: state => state.billing_history,
   getBillingLoading: state => state.billing_loading,
@@ -487,7 +487,7 @@ export const getters = {
   getExpenseSummaryLoading: state => state.expense_summary_loading,
 
   getRentalHistory: state => state.rental_history,
-  getRentalLoading: state => state.rental_loading,
+  getRentalsLoading: state => state.rentals_loading,
 
   getTransportStatus: state => state.transport_status,
   getTransportStatusLoading: state => state.transport_status_loading,
@@ -496,10 +496,10 @@ export const getters = {
   getNotesLoading: state => state.notes_loading,
 
   getTollHistory: state => state.toll_history,
-  getTollLoading: state => state.toll_loading,
+  getTollsLoading: state => state.tolls_loading,
 
   getViolationHistory: state => state.violation_history,
-  getViolationLoading: state => state.violation_loading,
+  getViolationsLoading: state => state.violations_loading,
 
   getVehicleNumber: state => state.vehicle_number,
   hasVehicle: state => !!state.vehicle_number,

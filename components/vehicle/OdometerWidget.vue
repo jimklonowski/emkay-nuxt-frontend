@@ -1,50 +1,129 @@
 <template>
-  <v-card outlined>
+  <v-card outlined class="vehicle-widget">
+    <!-- Title Toolbar and Dropdown Menu -->
     <v-card-title class="pa-0">
-      <v-list-item :to="odometerRoute" link style="height:80px;">
-        <v-list-item-avatar>
+      <v-toolbar flat>
+        <v-avatar class="mr-2" size="36">
           <v-icon v-text="'mdi-counter'" />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-subtitle v-text="$tc('past_days', days)" class="overline" />
-          <v-list-item-title v-text="$t('odometer')" />
-          <client-only>
-            <nuxt-link :to="odometerRoute" v-text="$t('more')" class="caption text-decoration-none" />
-          </client-only>
-        </v-list-item-content>
-      </v-list-item>
+        </v-avatar>
+        <v-toolbar-title>
+          {{ $t('odometer') }}
+        </v-toolbar-title>
+        <v-spacer />
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          origin="top right"
+          transition="scale-transition"
+          left
+        >
+          <template #activator="{ on }">
+            <v-btn v-on="on" icon>
+              <v-icon v-text="'mdi-dots-vertical'" />
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list dense>
+              <v-list-item :to="odometerRoute" link>
+                <v-list-item-avatar>
+                  <v-icon v-text="'mdi-counter'" />
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title v-text="$t('odometer_history')" />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu>
+      </v-toolbar>
     </v-card-title>
     <v-divider />
+    <!-- Datatable -->
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
-        <!-- :hide-default-footer="items.length <= 5" -->
         <v-data-table
-          :dense="items && items.length !== 0"
+          :dense="!!items.length"
           :headers="headers"
+          :hide-default-footer="true"
           :items="items"
-          :items-per-page="5"
+          :items-per-page="pagination.itemsPerPage"
+          :loading="loading"
           :mobile-breakpoint="0"
+          :page.sync="pagination.page"
           :sort-by="['odometer_date']"
           :sort-desc="true"
+          @page-count="pagination.pageCount = $event"
           class="striped"
         />
       </v-skeleton-loader>
     </v-card-text>
-    <!-- <v-card-actions /> -->
+    <v-divider />
+    <!-- Report Length and Pagination -->
+    <v-card-actions class="justify-space-between">
+      <div>
+        <v-btn-toggle
+          v-model="days"
+          mandatory
+          rounded
+          dense
+        >
+          <v-btn
+            v-for="period in periods"
+            :key="period"
+            :value="period"
+            v-text="period"
+            small
+            text
+          />
+        </v-btn-toggle>
+        <span class="caption">{{ $t('days') }}</span>
+      </div>
+      <v-pagination
+        v-show="items.length"
+        v-model="pagination.page"
+        :length="pagination.pageCount"
+        :total-visible="pagination.totalVisible"
+        circle
+        color="grey lighten-1"
+        style="width:auto;"
+      />
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import { headers } from '@/mixins/datatables'
+import { mapGetters } from 'vuex'
 export default {
-  mixins: [headers],
-  data () {
-    return {
-      days: 30,
-      initialized: false
-    }
-  },
+  data: () => ({
+    days: 60,
+    initialized: false,
+    menu: false,
+    pagination: {
+      itemsPerPage: 5,
+      page: 1,
+      pageCount: 0,
+      totalVisible: 5
+    },
+    periods: [30, 60, 90]
+  }),
   computed: {
+    /**
+     * Vuex Getters
+     */
+    ...mapGetters({
+      items: 'vehicle/getOdometerHistory',
+      loading: 'vehicle/getOdometerLoading',
+      vehicle_number: 'vehicle/getVehicleNumber'
+    }),
+    actions () {
+      return [
+        {
+          text: this.$i18n.t('odometer_history'),
+          icon: 'mdi-counter',
+          to: this.odometerRoute
+        }
+      ]
+    },
     columns () {
       return [
         'odometer_date',
@@ -57,12 +136,14 @@ export default {
         {
           text: this.$i18n.t('odometer_date'),
           value: 'odometer_date',
-          class: 'report-column'
+          class: 'report-column',
+          divider: true
         },
         {
           text: this.$i18n.t('odometer'),
           value: 'odometer',
-          class: 'report-column'
+          class: 'report-column',
+          divider: true
         },
         {
           text: this.$i18n.t('type'),
@@ -71,16 +152,30 @@ export default {
         }
       ]
     },
-    odometerRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/odometer` }),
-    items: vm => vm.$store.getters['vehicle/getOdometerHistory'],
-    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber']
+    odometerRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/odometer` })
   },
+  watch: {
+    /**
+     * When the 'days' variable changes, re-fetch data.
+     */
+    async days () {
+      await this.populateWidget()
+    }
+  },
+  /**
+   * Fetch Odometer Data when widget is mounted
+   */
   async mounted () {
-    const vehicle = this.vehicle_number
-    const end = this.$moment().format('YYYY-MM-DD')
-    const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-    await this.$store.dispatch('vehicle/fetchOdometerHistory', { start, end, vehicle })
-    this.initialized = true
+    await this.populateWidget()
+  },
+  methods: {
+    async populateWidget () {
+      const vehicle = this.vehicle_number
+      const end = this.$moment().format('YYYY-MM-DD')
+      const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+      await this.$store.dispatch('vehicle/fetchOdometerHistory', { start, end, vehicle })
+      this.initialized = true
+    }
   }
 }
 </script>

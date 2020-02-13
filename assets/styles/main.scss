@@ -54,11 +54,36 @@
   }
 }
 
+/* Vehicle Widgets */
+.vehicle-widget {
+  .v-toolbar__title {
+    @extend .font-roboto-condensed;
+    font-size: 1.35rem;
+  }
+}
+
 /* Report config */
 .report {
   .v-card__title {
     @extend .font-lato;
     font-size: 1.5rem;
+  }
+}
+
+/* Form config */
+.form {
+  .v-card__title {
+    @extend .font-lato;
+    font-size: 1.5rem;
+  }
+}
+
+.thin-border {
+  &.theme--dark {
+    border: thin solid rgba(255, 255, 255, 0.12);
+  }
+  &.theme--light {
+    border: thin solid rgba(0, 0, 0, 0.12)
   }
 }
 

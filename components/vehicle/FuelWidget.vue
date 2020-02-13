@@ -1,67 +1,58 @@
 <template>
-  <v-card outlined>
-    <v-toolbar flat>
-      <v-avatar class="mr-2">
-        <v-icon v-text="'mdi-gas-station'" />
-      </v-avatar>
-      <v-toolbar-title @click="$router.push(fuelRoute)" class="font-lato" style="cursor:pointer;">
-        {{ $t('fuel') }}
-      </v-toolbar-title>
-      <v-spacer />
-      <v-menu
-        v-model="menu"
-        :close-on-content-click="false"
-        origin="top right"
-        transition="scale-transition"
-        left
-      >
-        <template #activator="{ on }">
-          <v-btn v-on="on" icon>
-            <v-icon v-text="'mdi-dots-vertical'" />
-          </v-btn>
-        </template>
-        <v-card>
-          <v-list nav dense>
-            <v-list-item :to="fuelRoute" link>
-              <v-list-item-avatar>
-                <v-icon v-text="'mdi-gas-station'" />
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title v-text="$t('fuel_history')" />
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item :to="fuelCardRoute" link>
-              <v-list-item-avatar>
-                <v-icon v-text="'mdi-credit-card-settings'" />
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title v-text="$t('fuel_cards')" />
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item :to="fuelProfilesRoute" link>
-              <v-list-item-avatar>
-                <v-icon v-text="'mdi-credit-card-multiple'" />
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title v-text="$t('fuel_authorization_profiles')" />
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-menu>
-    </v-toolbar>
+  <v-card outlined class="vehicle-widget">
+    <!-- Title Toolbar and Dropdown Menu -->
+    <v-card-title class="pa-0">
+      <v-toolbar flat>
+        <v-avatar class="mr-2" size="36">
+          <v-icon v-text="'mdi-gas-station'" color="grey" />
+        </v-avatar>
+        <v-toolbar-title>
+          {{ $t('fuel_history') }}
+        </v-toolbar-title>
+        <v-spacer />
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          origin="top right"
+          transition="scale-transition"
+          left
+        >
+          <template #activator="{ on }">
+            <v-btn v-on="on" icon>
+              <v-icon v-text="'mdi-dots-vertical'" />
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list nav dense>
+              <v-list-item v-for="(action, index) in actions" :key="index" :to="action.to" link>
+                <v-list-item-avatar>
+                  <v-icon v-text="action.icon" />
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title v-text="action.text" />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu>
+      </v-toolbar>
+    </v-card-title>
     <v-divider />
+    <!-- Datatable -->
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
-        <!-- :hide-default-footer="items.length <= 5" -->
         <v-data-table
-          :dense="items && items.length !== 0"
+          :dense="!!items.length"
           :headers="headers"
+          :hide-default-footer="true"
           :items="items"
-          :items-per-page="5"
+          :items-per-page="pagination.itemsPerPage"
+          :loading="loading"
           :mobile-breakpoint="0"
+          :page.sync="pagination.page"
           :sort-by="['service_date']"
-          :sort-desc="true"
+          :sort-desc="[true]"
+          @page-count="pagination.pageCount = $event"
           class="striped"
         >
           <!-- Configure individual column rendering -->
@@ -83,19 +74,37 @@
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
-    <!-- <v-card-actions>
-      <v-slider
-        v-model="days"
-        :max="120"
-        :min="30"
-        :step="30"
-        :tick-labels="[30, 60, 90, 120]"
-        class="align-center"
-        tick-size="5"
-        ticks="always"
-        width="100"
+    <v-divider />
+    <!-- Report Length and Pagination -->
+    <v-card-actions class="justify-space-between">
+      <div>
+        <v-btn-toggle
+          v-model="days"
+          mandatory
+          rounded
+          dense
+        >
+          <v-btn
+            v-for="period in periods"
+            :key="period"
+            :value="period"
+            v-text="period"
+            small
+            text
+          />
+        </v-btn-toggle>
+        <span class="caption">{{ $t('days') }}</span>
+      </div>
+      <v-pagination
+        v-show="items.length"
+        v-model="pagination.page"
+        :length="pagination.pageCount"
+        :total-visible="pagination.totalVisible"
+        circle
+        color="grey lighten-1"
+        style="width:auto;"
       />
-    </v-card-actions> -->
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -103,19 +112,46 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  data () {
-    return {
-      days: 30,
-      initialized: false,
-      menu: false
-    }
-  },
+  data: () => ({
+    days: 60,
+    initialized: false,
+    menu: false,
+    pagination: {
+      itemsPerPage: 5,
+      page: 1,
+      pageCount: 0,
+      totalVisible: 5
+    },
+    periods: [30, 60, 90]
+  }),
   computed: {
+    /**
+     * Vuex Getters
+     */
     ...mapGetters({
       items: 'vehicle/getFuelHistory',
       loading: 'vehicle/getFuelLoading',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
+    actions () {
+      return [
+        {
+          text: this.$i18n.t('fuel_history'),
+          icon: 'mdi-gas-station',
+          to: this.fuelRoute
+        },
+        {
+          text: this.$i18n.t('fuel_cards'),
+          icon: 'mdi-credit-card',
+          to: this.fuelCardRoute
+        },
+        {
+          text: this.$i18n.t('fuel_authorization_profiles'),
+          icon: 'mdi-clipboard-account',
+          to: this.fuelProfilesRoute
+        }
+      ]
+    },
     columns () {
       return [
         'service_date',

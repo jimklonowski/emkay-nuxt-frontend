@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card :loading="loading" outlined tile>
+        <v-card :loading="loading" outlined tile class="form">
           <v-expansion-panels v-model="panel" value="0" accordion hover tile>
             <v-expansion-panel tile>
               <v-expansion-panel-header>

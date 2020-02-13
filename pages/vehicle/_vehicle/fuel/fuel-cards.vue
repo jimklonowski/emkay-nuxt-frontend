@@ -1,5 +1,6 @@
 <template>
-  <v-card outlined tile class="report">
+  <v-card flat tile class="report">
+    <v-divider />
     <v-card-title>
       {{ $t('fuel_cards') }}
       <v-spacer />
@@ -21,7 +22,7 @@
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="loading" type="table">
         <v-data-table
-          :dense="items && items.length !== 0"
+          :dense="!!items.length"
           :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
           :headers="headers"
           :items="items"
