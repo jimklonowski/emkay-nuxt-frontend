@@ -61,29 +61,19 @@ export default {
     actions () {
       return [
         {
-          key: 'transports_and_storage',
+          key: 'documents_and_notes',
           icon: '',
-          to: { path: `/vehicle/${this.$route.params.vehicle}/transports-and-storage` }
+          to: { path: `/vehicle/${this.$route.params.vehicle}/documents-and-notes` }
         },
-        // {
-        //   key: 'edit_custom_labels',
-        //   icon: '',
-        //   to: { path: `/vehicle/${this.$route.params.vehicle}/edit-custom-labels` }
-        // },
-        // {
-        //   key: 'reassign_vehicle',
-        //   icon: '',
-        //   to: { path: `/vehicle/${this.$route.params.vehicle}/reassign-vehicle` }
-        // },
         {
           key: 'saferoads',
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/saferoads` }
         },
         {
-          key: 'documents_and_notes',
+          key: 'transports_and_storage',
           icon: '',
-          to: { path: `/vehicle/${this.$route.params.vehicle}/documents-and-notes` }
+          to: { path: `/vehicle/${this.$route.params.vehicle}/transports-and-storage` }
         }
       ]
     }

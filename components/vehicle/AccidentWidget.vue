@@ -83,10 +83,11 @@
             v-for="period in periods"
             :key="period"
             :value="period"
-            v-text="period"
             small
             text
-          />
+          >
+            {{ period }}
+          </v-btn>
         </v-btn-toggle>
         <span class="caption">{{ $t('days') }}</span>
       </div>

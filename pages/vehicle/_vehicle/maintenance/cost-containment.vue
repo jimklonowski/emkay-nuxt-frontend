@@ -2,7 +2,7 @@
   <v-card flat tile class="report">
     <v-divider />
     <v-card-title>
-      {{ $t('fuel_cards') }}
+      {{ $t('cost_containment') }}
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -42,33 +42,39 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'VehicleFuelCards',
+  name: 'VehicleMaintenanceCostContainment',
   data: () => ({
     search: ''
   }),
   computed: {
     ...mapGetters({
-      items: 'vehicle/getFuelCards',
-      loading: 'vehicle/getFuelCardsLoading',
+      items: 'vehicle/getMaintenanceCostContainmentHistory',
+      loading: 'vehicle/getMaintenanceCostContainmentLoading',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
     columns () {
       return [
-        'card_#',
+        'date',
+        'odometer',
         'vendor',
-        'issue_date',
-        'expiration_date',
-        'restrictions',
-        'pin',
         'status',
-        'actions'
+        'in_network',
+        'service',
+        'quantity',
+        'amount'
       ]
     },
     headers () {
       return [
         {
-          text: this.$i18n.t('card_#'),
-          value: 'card_#',
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('odometer'),
+          value: 'odometer',
           class: 'report-column',
           divider: true
         },
@@ -79,50 +85,44 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('issue_date'),
-          value: 'issue_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('expiration_date'),
-          value: 'expiration_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('restrictions'),
-          value: 'restrictions',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('pin'),
-          value: 'pin',
-          class: 'report-column',
-          divider: true
-        },
-        {
           text: this.$i18n.t('status'),
           value: 'status',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('actions'),
-          value: 'actions',
+          text: this.$i18n.t('in_network'),
+          value: 'in_network',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('service'),
+          value: 'service',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
           class: 'report-column'
         }
       ]
     }
   },
-  async asyncData ({ store, error }) {
+  async asyncData ({ store }) {
     const vehicle = store.getters['vehicle/getVehicleNumber']
-    await store.dispatch('vehicle/fetchFuelCards', { vehicle })
+    await store.dispatch('vehicle/fetchMaintenanceCostContainmentHistory', { vehicle })
     return {}
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$i18n.t('fuel_cards')}`
+    const title = `${this.vehicle_number} - ${this.$i18n.t('cost_containment')}`
     return {
       title,
       meta: [

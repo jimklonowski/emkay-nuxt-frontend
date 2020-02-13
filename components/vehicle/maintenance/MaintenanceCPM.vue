@@ -1,56 +1,71 @@
 <template>
-  <v-card shaped outlined>
-    <v-card-subtitle>
-      {{ $t('cpm') }}
-    </v-card-subtitle>
+  <v-card
+    max-width="600"
+    class="mx-auto"
+    color="primary"
+    dark
+  >
     <v-card-text>
-      <v-simple-table dense>
-        <template #default>
-          <thead>
-            <tr>
-              <th width="40%" />
-              <th v-text="$t('quantity')" class="overline text-right" width="20%" />
-              <th v-text="$t('amount')" class="overline text-right" width="20%" />
-              <th v-text="$t('cpm')" class="overline text-right" width="20%" />
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in items" :key="item.key">
-              <td class="font-weight-regular">
-                {{ $t(item.key) }}
-              </td>
-              <td class="font-weight-light text-right">
-                {{ item.quantity }}
-              </td>
-              <td class="font-weight-light text-right">
-                {{ item.amount | currency }}
-              </td>
-              <td class="font-weight-light text-right">
-                {{ item.cpm | currency(3,3) }}
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td class="font-weight-bold">
-                {{ $t('total') }}:
-              </td>
-              <td class="text-right title">
-                {{ totalQuantity }}
-              </td>
-              <td class="text-right title">
-                {{ totalAmount | currency }}
-              </td>
-              <td class="text-right title">
-                {{ totalCPM | currency(3,3) }}
-              </td>
-            </tr>
-          </tfoot>
-        </template>
-      </v-simple-table>
+      <v-sheet color="rgba(0, 0, 0, .12)">
+        <v-simple-table class="primary pa-2" dense>
+          <template #default>
+            <thead>
+              <tr>
+                <th />
+                <th v-text="$t('quantity')" class="overline text-right" />
+                <th v-text="$t('amount')" class="overline text-right" />
+                <th v-text="$t('cpm')" class="overline text-right" />
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in items" :key="item.key">
+                <td class="font-weight-regular">
+                  {{ $t(item.key) }}
+                </td>
+                <td class="font-weight-light text-right">
+                  {{ item.quantity }}
+                </td>
+                <td class="font-weight-light text-right">
+                  {{ item.amount | currency }}
+                </td>
+                <td class="font-weight-light text-right">
+                  {{ item.cpm | currency(3,3) }}
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="font-weight-bold">
+                  {{ $t('total') }}:
+                </td>
+                <td class="text-right title">
+                  {{ totalQuantity }}
+                </td>
+                <td class="text-right title">
+                  {{ totalAmount | currency }}
+                </td>
+                <td class="text-right title">
+                  {{ totalCPM | currency(3,3) }}
+                </td>
+              </tr>
+            </tfoot>
+          </template>
+        </v-simple-table>
+      </v-sheet>
     </v-card-text>
-    <v-card-actions />
-    </v-card-subtitle>
+    <v-card-text>
+      <div class="display-1 font-weight-thin text-center">
+        {{ $t('cpm') }}
+      </div>
+    </v-card-text>
+
+    <v-divider />
+
+    <v-card-actions class="justify-center">
+      <v-btn block text>
+        This is a button
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 

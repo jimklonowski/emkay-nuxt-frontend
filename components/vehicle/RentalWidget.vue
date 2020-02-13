@@ -7,7 +7,7 @@
           <v-icon v-text="'mdi-bus-clock'" color="grey" />
         </v-avatar>
         <v-toolbar-title>
-          {{ $t('rental_history') }}
+          {{ $t('rentals') }}
         </v-toolbar-title>
         <v-spacer />
         <v-menu
@@ -83,10 +83,11 @@
             v-for="period in periods"
             :key="period"
             :value="period"
-            v-text="period"
             small
             text
-          />
+          >
+            {{ period }}
+          </v-btn>
         </v-btn-toggle>
         <span class="caption">{{ $t('days') }}</span>
       </div>

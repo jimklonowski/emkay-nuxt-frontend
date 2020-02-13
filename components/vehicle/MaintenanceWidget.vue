@@ -7,7 +7,7 @@
           <v-icon v-text="'mdi-tools'" color="grey" />
         </v-avatar>
         <v-toolbar-title>
-          {{ $t('maintenance_history') }}
+          {{ $t('maintenance') }}
         </v-toolbar-title>
         <v-spacer />
         <v-menu
@@ -80,10 +80,11 @@
             v-for="period in periods"
             :key="period"
             :value="period"
-            v-text="period"
             small
             text
-          />
+          >
+            {{ period }}
+          </v-btn>
         </v-btn-toggle>
         <span class="caption">{{ $t('days') }}</span>
       </div>
@@ -131,6 +132,16 @@ export default {
           text: this.$i18n.t('maintenance_history'),
           icon: 'mdi-tools',
           to: this.maintenanceRoute
+        },
+        {
+          text: this.$i18n.t('cpm'),
+          icon: 'mdi-cash',
+          to: this.maintenanceCpmRoute
+        },
+        {
+          text: this.$i18n.t('cost_containment'),
+          icon: 'mdi-cash',
+          to: this.maintenanceCostContainmentRoute
         },
         {
           text: this.$i18n.t('evoucher'),
@@ -181,8 +192,10 @@ export default {
         }
       ]
     },
-    evoucherRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/evoucher` }),
-    maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance` })
+    evoucherRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance/evoucher` }),
+    maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance` }),
+    maintenanceCpmRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance/cpm` }),
+    maintenanceCostContainmentRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance/cost-containment` })
   },
   watch: {
     /**

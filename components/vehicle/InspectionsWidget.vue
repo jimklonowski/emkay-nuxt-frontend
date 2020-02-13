@@ -6,9 +6,7 @@
         <v-avatar class="mr-2" size="36">
           <v-icon v-text="'mdi-cash-usd-outline'" />
         </v-avatar>
-        <v-toolbar-title>
-          {{ $t('billing') }}
-        </v-toolbar-title>
+        <v-toolbar-title v-text="$t('inspections')" />
         <v-spacer />
         <v-menu
           v-model="menu"
@@ -50,28 +48,13 @@
           :loading="loading"
           :mobile-breakpoint="0"
           :page.sync="pagination.page"
-          :sort-by="['invoice_number']"
+          :sort-by="['date']"
           :sort-desc="[true]"
           @page-count="pagination.pageCount = $event"
           class="striped"
         >
-          <!-- Configure individual column rendering -->
-          <template #item.invoice_number="{ item }">
-            <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none">
-              {{ item.invoice_number }}
-            </nuxt-link>
-          </template>
-
-          <template #item.bill_date="{ item }">
-            {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
-          </template>
-
-          <template #item.bill_for_date="{ item }">
-            {{ item.bill_for_date | date('YYYY-MM', 'MM/YYYY') }}
-          </template>
-
-          <template #item.amount="{ item }">
-            {{ item.amount | currency }}
+          <template #item.date="{ item }">
+            {{ item.date | date }}
           </template>
         </v-data-table>
       </v-skeleton-loader>
@@ -113,7 +96,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   data: () => ({
     days: 60,
@@ -132,69 +114,49 @@ export default {
      * Vuex Getters
      */
     ...mapGetters({
-      items: 'vehicle/getBillingHistory',
-      loading: 'vehicle/getBillingLoading',
+      items: 'vehicle/getInspectionHistory',
+      loading: 'vehicle/getInspectionsLoading',
       vehicle_number: 'vehicle/getVehicleNumber',
       vehicle_details: 'vehicle/getVehicleDetails'
     }),
     actions () {
       return [
         {
-          text: this.$i18n.t('billing_history'),
-          icon: 'mdi-cash-usd-outline',
-          to: this.billingRoute
+          text: this.$i18n.t('inspection_history'),
+          icon: 'mdi-file-eye',
+          to: this.inspectionsRoute
         }
       ]
     },
-    /**
-     * Datatable columns/keys (only used for downloading csv)
-     */
     columns () {
       return [
-        'invoice_number',
-        'description',
-        'bill_date',
-        'bill_for_date',
-        'amount'
+        'date',
+        'comments',
+        'report'
       ]
     },
-    /**
-     * Datatable headers
-     */
     headers () {
       return [
         {
-          text: this.$i18n.t('invoice_number'),
-          value: 'invoice_number',
+          text: this.$i18n.t('date'),
+          value: 'date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('description'),
-          value: 'description',
+          text: this.$i18n.t('comments'),
+          value: 'comments',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('bill_date'),
-          value: 'bill_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('bill_for_date'),
-          value: 'bill_for_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('amount'),
-          value: 'amount',
+          text: this.$i18n.t('report'),
+          value: 'report',
           class: 'report-column'
         }
       ]
     },
-    billingRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/billing` })
+    inspectionsRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/inspections` })
   },
   watch: {
     /**
@@ -205,20 +167,17 @@ export default {
     }
   },
   /**
-   * Fetch Billing History when widget is mounted.
+   * Fetch Inspection History when widget is mounted.
    */
   async mounted () {
     await this.populateWidget()
   },
   methods: {
-    invoiceRoute (invoice) {
-      return this.localePath({ path: `/vehicle/${this.vehicle_number}/billing`, query: { invoice } })
-    },
     async populateWidget () {
       const vehicle = this.vehicle_number
       const end = this.$moment().format('YYYY-MM-DD')
       const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-      await this.$store.dispatch('vehicle/fetchBillingHistory', { start, end, vehicle })
+      await this.$store.dispatch('vehicle/fetchInspectionHistory', { start, end, vehicle })
       this.initialized = true
     }
   }

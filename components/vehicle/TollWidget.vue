@@ -7,7 +7,7 @@
           <v-icon v-text="'mdi-highway'" color="grey" />
         </v-avatar>
         <v-toolbar-title>
-          {{ $t('toll_history') }}
+          {{ $t('tolls') }}
         </v-toolbar-title>
         <v-spacer />
         <v-menu
@@ -79,10 +79,11 @@
             v-for="period in periods"
             :key="period"
             :value="period"
-            v-text="period"
             small
             text
-          />
+          >
+            {{ period }}
+          </v-btn>
         </v-btn-toggle>
         <span class="caption">{{ $t('days') }}</span>
       </div>

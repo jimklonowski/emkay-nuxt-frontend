@@ -24,6 +24,10 @@ const getDefaultState = () => ({
   fuel_loading: false,
   fuel_profiles: [],
   fuel_profiles_loading: false,
+  inspection_history: [],
+  inspections_loading: false,
+  maintenance_cost_containment_history: [],
+  maintenance_cost_containment_loading: false,
   maintenance_history: [],
   maintenance_loading: false,
   notes: [],
@@ -231,6 +235,25 @@ export const actions = {
   },
   /* TODO: */
   /**
+   * Fetch Inspection History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchInspectionHistory ({ commit }, { start, end, vehicle }) {
+    commit('setInspectionsLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/inspections', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setInspectionHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setInspectionHistory', [])
+    } finally {
+      commit('setInspectionsLoading', false)
+    }
+  },
+  /**
    * Fetch Fuel Cards by Vehicle Number
    */
   async fetchFuelCards ({ commit }, { vehicle }) {
@@ -274,6 +297,23 @@ export const actions = {
       commit('setTransportStatus', [])
     } finally {
       commit('setTransportStatusLoading', false)
+    }
+  },
+  /**
+   * Fetch Maintenance Cost Containment by Vehicle Number
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchMaintenanceCostContainmentHistory ({ commit }, { vehicle }) {
+    commit('setMaintenanceCostContainmentLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/maintenance-cost-containment', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setMaintenanceCostContainmentHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setMaintenanceCostContainmentHistory', [])
+    } finally {
+      commit('setMaintenanceCostContainmentLoading', false)
     }
   },
   /**
@@ -421,6 +461,12 @@ export const mutations = {
   setFuelProfiles: set('fuel_profiles'),
   setFuelProfilesLoading: set('fuel_profiles_loading'),
 
+  setInspectionHistory: set('inspection_history'),
+  setInspectionsLoading: set('inspections_loading'),
+
+  setMaintenanceCostContainmentHistory: set('maintenance_cost_containment_history'),
+  setMaintenanceCostContainmentLoading: set('maintenance_cost_containment_loading'),
+
   setMaintenanceHistory: set('maintenance_history'),
   setMaintenanceLoading: set('maintenance_loading'),
 
@@ -476,6 +522,12 @@ export const getters = {
 
   getFuelProfiles: state => state.fuel_profiles,
   getFuelProfilesLoading: state => state.fuel_profiles_loading,
+
+  getInspectionHistory: state => state.inspection_history,
+  getInspectionsLoading: state => state.inspections_loading,
+
+  getMaintenanceCostContainmentHistory: state => state.maintenance_cost_containment_history,
+  getMaintenanceCostContainmentLoading: state => state.maintenance_cost_containment_loading,
 
   getMaintenanceHistory: state => state.maintenance_history,
   getMaintenanceLoading: state => state.maintenance_loading,
