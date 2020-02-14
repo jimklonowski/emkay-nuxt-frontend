@@ -13,6 +13,9 @@
       <v-col cols="12" xl="6">
         <maintenance-widget />
       </v-col>
+      <v-col cols="12" xl="6">
+        <licensing-widget />
+      </v-col>
       <v-col v-if="showOrderStatusWidget" cols="12" xl="6">
         <order-status-widget />
       </v-col>
@@ -62,6 +65,7 @@ import ViolationWidget from '@/components/vehicle/ViolationWidget'
 import OrderStatusWidget from '@/components/vehicle/OrderStatusWidget'
 import RentalWidget from '@/components/vehicle/RentalWidget'
 import InspectionsWidget from '@/components/vehicle/InspectionsWidget'
+import LicensingWidget from '@/components/vehicle/LicensingWidget'
 // import DocumentsAndNotesWidget from '@/components/vehicle/DocumentsAndNotesWidget'
 /**
  * Vehicle Dashboard (widgets)
@@ -83,7 +87,8 @@ export default {
     // DocumentsAndNotesWidget,
     RentalWidget,
     OrderStatusWidget,
-    InspectionsWidget
+    InspectionsWidget,
+    LicensingWidget
 
     // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
     // 'maintenance-table': () => import('@/components/vehicle/MaintenanceTable'),

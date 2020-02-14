@@ -366,6 +366,37 @@ export default function ({ $axios, redirect }) {
       ]
       return [200, { drivers, success: true, message: 'OK' }]
     })
+    .onGet('/vehicle/fuel-cards')
+    .reply(function (config) {
+      const data = [
+        {
+          card_number: '3655-3',
+          vendor: 'WEX',
+          issue_date: '2020-01-10',
+          expiration_date: '2024-01',
+          restrictions: 'ID & ODOMETER, UNRESTRICTED',
+          pin: '1234',
+          status: 'ACTIVE',
+          authorization_profile_id: '123'
+        }
+      ]
+      return [200, { data, success: true, message: 'TEST' }]
+    })
+    .onGet('/vehicle/fuel-profiles')
+    .reply(function (config) {
+      const data = [
+        {
+          id: '146',
+          authorization_profile: 'DLY:#3/$300 MTH:$1000',
+          center: 'All',
+          sort: 'All',
+          vehicle_type: 'All',
+          restrictions: 'ID & ODOMETER, UNRESTRICTED',
+          card_type: 'VEH1:1'
+        }
+      ]
+      return [200, { data, success: true, message: 'TEST' }]
+    })
     .onAny().passThrough()
   // debugger
   // $axios.onRequest((config) => {

@@ -196,10 +196,10 @@ export default {
     // Downloaded csv contains these columns.
     columns () {
       return [
-        'service_date',
-        'bill_date',
         'vehicle_number',
         'client_vehicle_number',
+        'service_date',
+        'bill_date',
         'active',
         'amount',
         'ata_group',

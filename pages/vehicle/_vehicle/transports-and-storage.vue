@@ -1,43 +1,54 @@
 <template>
   <v-container>
-    <v-row no-gutters>
+    <v-row>
       <v-col cols="12">
-        <v-toolbar height="72" elevation="1" tile>
-          <v-tabs
-            optional
-            grow
-            centered
-            icons-and-text
-          >
-            <v-tab :to="`${vehicleRoute}/transports-and-storage`" exact nuxt>
-              {{ $t('transport_status') }}
-            </v-tab>
-            <v-tab :to="`${vehicleRoute}/transports-and-storage/request-quote`" nuxt>
-              {{ $t('request_quote') }}
-            </v-tab>
-            <v-tab :to="`${vehicleRoute}/transports-and-storage/create-order`" nuxt>
-              {{ $t('create_order') }}
-            </v-tab>
-          </v-tabs>
-        </v-toolbar>
-        <v-divider />
-      </v-col>
-      <v-col cols="12">
-        <!-- the child views (quote/create) -->
-        <nuxt-child />
+        <v-card outlined tile>
+          <v-card-title class="pa-0">
+            <v-toolbar height="72" elevation="1" tile>
+              <v-tabs
+                centered
+                grow
+                icons-and-text
+                optional
+              >
+                <v-tab :to="transtorRoute" exact nuxt>
+                  {{ $t('transport_status') }}
+                  <v-icon v-text="'mdi-calendar-clock'" />
+                </v-tab>
+                <v-tab :to="transtorQuoteRoute" nuxt>
+                  {{ $t('request_quote') }}
+                  <v-icon v-text="'mdi-poll-box'" />
+                </v-tab>
+                <v-tab :to="transtorOrderRoute" nuxt>
+                  {{ $t('create_order') }}
+                  <v-icon v-text="'mdi-truck-delivery'" />
+                </v-tab>
+              </v-tabs>
+            </v-toolbar>
+          </v-card-title>
+          <v-divider />
+          <!-- the child views (quote/create) -->
+          <nuxt-child />
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { vehicleRoute } from '@/mixins/routing'
 export default {
   name: 'TransportsAndStorage',
   mixins: [vehicleRoute],
   data: () => ({}),
   computed: {
-    vehicle_info: vm => vm.$store.getters['vehicle/getVehicleInfo']
+    ...mapGetters({
+      vehicle_number: 'vehicle/getVehicleNumber'
+    }),
+    transtorRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/transports-and-storage` }),
+    transtorQuoteRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/transports-and-storage/request-quote` }),
+    transtorOrderRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/transports-and-storage/create-order` })
   },
   mounted () {
     console.log('resetting transtor')

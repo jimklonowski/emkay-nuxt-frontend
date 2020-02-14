@@ -1,5 +1,6 @@
 <template>
-  <v-card tile>
+  <v-card flat tile class="report">
+    <v-divider />
     <v-card-title>
       {{ $t('transport_status') }}
     </v-card-title>

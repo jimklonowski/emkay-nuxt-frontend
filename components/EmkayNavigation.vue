@@ -62,7 +62,7 @@
 
       <v-spacer />
 
-      <v-toolbar-items v-if="$auth.loggedIn">
+      <v-toolbar-items v-show="$auth.loggedIn">
         <mega-menu :menu="reportingMenu" v-if="!isRouteActive('reporting')" />
         <mega-menu :menu="orderingMenu" v-if="!isRouteActive('ordering')" />
         <mega-menu :menu="managementMenu" v-if="!isRouteActive('management')" />

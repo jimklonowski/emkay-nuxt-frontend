@@ -26,6 +26,8 @@ const getDefaultState = () => ({
   fuel_profiles_loading: false,
   inspection_history: [],
   inspections_loading: false,
+  licensing_history: [],
+  licensing_loading: false,
   maintenance_cost_containment_history: [],
   maintenance_cost_containment_loading: false,
   maintenance_history: [],
@@ -426,6 +428,25 @@ export const actions = {
       commit('setViolationsLoading', false)
     }
   },
+  /**
+   * Fetch Licensing History by Vehicle Number
+   * @param {*} start Start Date
+   * @param {*} end End Date
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchLicensingHistory ({ commit }, { start, end, vehicle }) {
+    commit('setLicensingLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/licensing-history', { params: { start, end, vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setLicensingHistory', data)
+    } catch (error) {
+      commit('pushError', error.message)
+      commit('setLicensingHistory', [])
+    } finally {
+      commit('setLicensingLoading', false)
+    }
+  },
   reset ({ commit }) {
     commit('reset')
   }
@@ -463,6 +484,9 @@ export const mutations = {
 
   setInspectionHistory: set('inspection_history'),
   setInspectionsLoading: set('inspections_loading'),
+
+  setLicensingHistory: set('licensing_history'),
+  setLicensingLoading: set('licensing_loading'),
 
   setMaintenanceCostContainmentHistory: set('maintenance_cost_containment_history'),
   setMaintenanceCostContainmentLoading: set('maintenance_cost_containment_loading'),
@@ -525,6 +549,9 @@ export const getters = {
 
   getInspectionHistory: state => state.inspection_history,
   getInspectionsLoading: state => state.inspections_loading,
+
+  getLicensingHistory: state => state.licensing_history,
+  getLicensingLoading: state => state.licensing_loading,
 
   getMaintenanceCostContainmentHistory: state => state.maintenance_cost_containment_history,
   getMaintenanceCostContainmentLoading: state => state.maintenance_cost_containment_loading,

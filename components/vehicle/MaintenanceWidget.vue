@@ -42,7 +42,7 @@
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
         <v-data-table
-          :dense="!!items.length"
+          :dense="items && !!items.length"
           :headers="headers"
           :hide-default-footer="true"
           :items="items"
@@ -89,7 +89,7 @@
         <span class="caption">{{ $t('days') }}</span>
       </div>
       <v-pagination
-        v-show="items.length"
+        v-show="items && !!items.length"
         v-model="pagination.page"
         :length="pagination.pageCount"
         :total-visible="pagination.totalVisible"

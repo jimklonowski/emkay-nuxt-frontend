@@ -22,7 +22,6 @@
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="loading" type="table">
         <v-data-table
-          :dense="items && items.length !== 0"
           :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
           :headers="headers"
           :items="items"
@@ -33,7 +32,19 @@
           :sort-by="['date']"
           :sort-desc="[true]"
           class="striped"
-        />
+        >
+          <template #item.details="{ item }">
+            <v-dialog v-model="authorization_profile_dialog">
+              <template #activator="{ on }">
+                <v-btn v-on="on" color="primary" small text tile>
+                  <v-icon v-text="'mdi-eye'" class="mr-2" />
+                  {{ $t('view') }}
+                </v-btn>
+              </template>
+              <fuel-authorization-profile :id="item.id" />
+            </v-dialog>
+          </template>
+        </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
   </v-card>
@@ -41,8 +52,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import FuelAuthorizationProfile from '@/components/vehicle/fuel/FuelAuthorizationProfile'
 export default {
   name: 'VehicleFuelProfiles',
+  components: { FuelAuthorizationProfile },
+  data: () => ({
+    authorization_profile_dialog: false,
+    search: ''
+  }),
   computed: {
     ...mapGetters({
       items: 'vehicle/getFuelProfiles',
@@ -101,16 +118,21 @@ export default {
         {
           text: this.$i18n.t('card_type'),
           value: 'card_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('details'),
+          value: 'details',
           class: 'report-column'
         }
       ]
     }
   },
   async asyncData ({ store, error }) {
-    let search
     const vehicle = store.getters['vehicle/getVehicleNumber']
     await store.dispatch('vehicle/fetchFuelProfiles', { vehicle })
-    return { search }
+    return { }
   },
   head () {
     const title = `${this.vehicle_number} - ${this.$t('fuel_authorization_profiles')}`

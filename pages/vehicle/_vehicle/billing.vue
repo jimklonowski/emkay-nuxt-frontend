@@ -122,7 +122,7 @@
               >
                 <!-- Configure display of columns -->
                 <template #item.invoice_number="{ item }">
-                  <nuxt-link :to="localePath({ path: `/vehicle/${vehicle_number}/billing`, query: { ...$route.query, invoice: item.invoice_number } })" class="text-decoration-none" nuxt>
+                  <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none" nuxt>
                     {{ item.invoice_number }}
                   </nuxt-link>
                 </template>
@@ -232,6 +232,11 @@ export default {
     // Fetch the report data using the above filters
     await store.dispatch('vehicle-detail/fetchBillingHistory', { start, end, vehicle })
     return { start, end }
+  },
+  methods: {
+    invoiceRoute (invoice) {
+      return this.localePath({ path: `/vehicle/${this.vehicle_number}/billing`, query: { ...this.$route.query, invoice } })
+    }
   },
   head () {
     const title = `${this.vehicle_number} - ${this.$t('fuel')}`

@@ -42,7 +42,7 @@
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="!initialized" type="table">
         <v-data-table
-          :dense="!!items.length"
+          :dense="items && !!items.length"
           :headers="headers"
           :hide-default-footer="true"
           :items="items"
@@ -99,7 +99,7 @@
         <span class="caption">{{ $t('days') }}</span>
       </div>
       <v-pagination
-        v-show="items.length"
+        v-show="items && !!items.length"
         v-model="pagination.page"
         :length="pagination.pageCount"
         :total-visible="pagination.totalVisible"
@@ -212,7 +212,10 @@ export default {
   },
   methods: {
     invoiceRoute (invoice) {
-      return this.localePath({ path: `/vehicle/${this.vehicle_number}/billing`, query: { invoice } })
+      // pass along the start and end dates, inferred from report length 'days', to be used by the billing page filters.
+      const end = this.$moment().format('YYYY-MM-DD')
+      const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
+      return this.localePath({ path: `/vehicle/${this.vehicle_number}/billing`, query: { start, end, invoice } })
     },
     async populateWidget () {
       const vehicle = this.vehicle_number

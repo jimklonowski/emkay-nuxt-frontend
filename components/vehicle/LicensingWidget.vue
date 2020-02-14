@@ -4,9 +4,9 @@
     <v-card-title class="pa-0">
       <v-toolbar flat>
         <v-avatar class="mr-2" size="36">
-          <v-icon v-text="'mdi-cash-usd-outline'" />
+          <v-icon v-text="'mdi-smart-card'" />
         </v-avatar>
-        <v-toolbar-title v-text="$t('inspections')" />
+        <v-toolbar-title v-text="$t('licensing')" />
         <v-spacer />
         <v-menu
           v-model="menu"
@@ -48,13 +48,13 @@
           :loading="loading"
           :mobile-breakpoint="0"
           :page.sync="pagination.page"
-          :sort-by="['date']"
+          :sort-by="['expiration_date']"
           :sort-desc="[true]"
           @page-count="pagination.pageCount = $event"
           class="striped"
         >
-          <template #item.date="{ item }">
-            {{ item.date | date }}
+          <template #item.expiration_date="{ item }">
+            {{ item.expiration_date | date }}
           </template>
         </v-data-table>
       </v-skeleton-loader>
@@ -114,60 +114,87 @@ export default {
      * Vuex Getters
      */
     ...mapGetters({
-      items: 'vehicle/getInspectionHistory',
-      loading: 'vehicle/getInspectionsLoading',
-      vehicle_number: 'vehicle/getVehicleNumber',
-      vehicle_details: 'vehicle/getVehicleDetails'
+      items: 'vehicle/getLicensingHistory',
+      loading: 'vehicle/getLicensingLoading',
+      vehicle_number: 'vehicle/getVehicleNumber'
     }),
     actions () {
       return [
         {
-          text: this.$i18n.t('inspection_history'),
-          icon: 'mdi-file-eye',
-          to: this.inspectionsRoute
+          text: this.$i18n.t('licensing_history'),
+          icon: 'mdi-smart-card',
+          to: this.licensingRoute
         }
       ]
     },
     columns () {
       return [
-        'date',
-        'comments',
-        'report'
+        'expiration_date',
+        'license_plate_number',
+        'license_plate_state_province',
+        'sticker_number',
+        'title',
+        'status',
+        'needs'
       ]
     },
     headers () {
       return [
         {
-          text: this.$i18n.t('date'),
-          value: 'date',
+          text: this.$i18n.t('expiration_date'),
+          value: 'expiration_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('comments'),
-          value: 'comments',
+          text: this.$i18n.t('license_plate_number'),
+          value: 'license_plate_number',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('report'),
-          value: 'report',
+          text: this.$i18n.t('license_plate_state_province'),
+          value: 'license_plate_state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('sticker_number'),
+          value: 'sticker_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('title'),
+          value: 'title',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('status'),
+          value: 'status',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('needs'),
+          value: 'needs',
           class: 'report-column'
         }
       ]
     },
-    inspectionsRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/inspections` })
+    licensingRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/licensing` })
   },
   watch: {
     /**
-     * When the 'days' variable changes, re-fetch data.
+     * When the 'days' variable changes, re-fetch the data.
      */
     async days () {
       await this.populateWidget()
     }
   },
   /**
-   * Fetch Inspection History when widget is mounted.
+   * Fetch Licensing History when widget is mounted.
    */
   async mounted () {
     await this.populateWidget()
@@ -177,7 +204,7 @@ export default {
       const vehicle = this.vehicle_number
       const end = this.$moment().format('YYYY-MM-DD')
       const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-      await this.$store.dispatch('vehicle/fetchInspectionHistory', { start, end, vehicle })
+      await this.$store.dispatch('vehicle/fetchLicensingHistory', { start, end, vehicle })
       this.initialized = true
     }
   }

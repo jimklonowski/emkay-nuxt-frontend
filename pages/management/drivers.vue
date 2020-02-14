@@ -298,53 +298,6 @@
             {{ item.driver_email_address }}
           </v-btn>
         </template>
-
-        <!-- Configure how each #item row is rendered -->
-        <!-- <template #item="{ item }">
-          <tr>
-            <td>
-              <v-icon
-                @click.stop="editDriver(item)"
-                v-text="'mdi-account-edit'"
-                class="mr-2 px-2"
-              />
-            </td>
-            <td>{{ item.driver_last_name }}</td>
-            <td>{{ item.driver_first_name }}</td>
-            <td>{{ item.driver_address_1 }}</td>
-            <td>{{ item.driver_address_2 }}</td>
-            <td>{{ item.driver_city }}</td>
-            <td>{{ item.driver_state_province }}</td>
-            <td>{{ item.driver_postal_code }}</td>
-            <td>{{ item.driver_county }}</td>
-            <td>
-              <v-btn v-if="item.driver_phone" @click="dialTo(item.driver_phone)" text small tile>
-                <v-icon v-text="'mdi-phone'" class="mr-2" />
-                {{ item.driver_phone }}
-              </v-btn>
-            </td>
-            <td>
-              <v-btn v-if="item.driver_mobile" @click="dialTo(item.driver_mobile)" text small tile>
-                <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
-                {{ item.driver_mobile }}
-              </v-btn>
-            </td>
-            <td>
-              <v-btn v-if="item.driver_email_address" @click="emailTo(item.driver_email_address)" text small tile>
-                <v-icon v-text="'mdi-email-edit'" class="mr-2" />
-                {{ item.driver_email_address }}
-              </v-btn>
-            </td>
-            <td>{{ item.driver_employee_id }}</td>
-            <td>{{ item.driver_misc_1 }}</td>
-            <td>{{ item.driver_misc_2 }}</td>
-            <td>{{ item.driver_misc_3 }}</td>
-            <td>{{ item.driver_misc_4 }}</td>
-            <td>
-              <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
-            </td>
-          </tr>
-        </template> -->
       </v-data-table>
     </v-card-text>
     <!-- <v-card-actions /> -->
@@ -352,10 +305,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
 export default {
   name: 'ManageYourDrivers',
   computed: {
+    ...mapGetters({
+      items: 'drivers/getDrivers',
+      error: 'drivers/getError',
+      loading: 'drivers/getLoading'
+    }),
     columns () {
       return [
         'actions',
@@ -498,10 +457,7 @@ export default {
     },
     formTitle () {
       return this.editedIndex === -1 ? this.$i18n.t('add_driver') : this.$i18n.t('edit_driver')
-    },
-    items: vm => vm.$store.getters['drivers/getDrivers'],
-    error: vm => vm.$store.getters['drivers/getError'],
-    loading: vm => vm.$store.getters['drivers/getLoading']
+    }
   },
   async asyncData ({ store }) {
     let search, editLoading

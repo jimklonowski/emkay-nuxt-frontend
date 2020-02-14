@@ -39,7 +39,7 @@
           :loading="loading"
           :mobile-breakpoint="0"
           :search="search"
-          :sort-by="[0]"
+          :sort-by="['vehicle_number']"
           :sort-desc="[false]"
           class="striped"
           dense
@@ -110,55 +110,6 @@
           <template #item.in_service_date="{ item }">
             {{ item.in_service_date | date }}
           </template>
-
-          <!-- Configure how each #item row is rendered -->
-          <!-- <template #item="{ item }">
-            <tr>
-              <td>
-                <client-only>
-                  <v-btn :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" nuxt small />
-                </client-only>
-              </td>
-              <td>{{ item.client_vehicle_number }}</td>
-              <td>{{ item.level_01 }}</td>
-              <td>{{ item.level_02 }}</td>
-              <td>{{ item.level_03 }}</td>
-              <td>{{ item.customer_number }}</td>
-              <td>{{ item.center_code }}</td>
-              <td>{{ item.center_name }}</td>
-              <td>{{ item.model_year }}</td>
-              <td>{{ item.vehicle_make }}</td>
-              <td>{{ item.vehicle_model }}</td>
-              <td>{{ item.driver_name }}</td>
-              <td>{{ item.driver_city }}</td>
-              <td>{{ item.driver_state_province }}</td>
-              <td>{{ item.driver_postal_code }}</td>
-              <td>{{ item.order_received_date | date }}</td>
-              <td>{{ item.order_placed_date | date }}</td>
-              <td>{{ item.factory_order_number }}</td>
-              <td>{{ item.vin }}</td>
-              <td>{{ item.factory_acknowledged_date | date }}</td>
-              <td>{{ item.sent_to_plant_date | date }}</td>
-              <td>{{ item.production_scheduled_date | date }}</td>
-              <td>{{ item.built_date | date }}</td>
-              <td>{{ item.shipped_to_body_company_date | date }}</td>
-              <td>{{ item.shipped_from_body_company_date | date }}</td>
-              <td>{{ item.shipped_to_dealer_date | date }}</td>
-              <td>{{ item.delivered_to_dealer_date | date }}</td>
-              <td>{{ item.non_emkay_turnin }}</td>
-              <td>{{ item.turnin_vehicle }}</td>
-              <td>{{ item.sell_comment }}</td>
-              <td>{{ item.status_comment }}</td>
-              <td>{{ item.delivery_comment }}</td>
-              <td>{{ item.current_status }}</td>
-              <td>{{ item.vin_date | date }}</td>
-              <td>{{ item.client_turnin }}</td>
-              <td>{{ item.bill_sort }}</td>
-              <td>{{ item.dealer_code }}</td>
-              <td>{{ item.dealer_name }}</td>
-              <td>{{ item.in_service_date | date }}</td>
-            </tr>
-          </template> -->
         </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
@@ -200,9 +151,6 @@ export default {
       return [
         'vehicle_number',
         'client_vehicle_number',
-        'level_01',
-        'level_02',
-        'level_03',
         'customer_number',
         'center_code',
         'center_name',
@@ -252,27 +200,6 @@ export default {
           text: this.$i18n.t('client_vehicle_number'),
           value: 'client_vehicle_number',
           class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_01'),
-          value: 'level_01',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_02'),
-          value: 'level_02',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_03'),
-          value: 'level_03',
-          class: 'report-column',
-          width: 150,
           divider: true
         },
         {
