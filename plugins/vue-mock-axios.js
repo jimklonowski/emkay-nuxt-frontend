@@ -397,6 +397,51 @@ export default function ({ $axios, redirect }) {
       ]
       return [200, { data, success: true, message: 'TEST' }]
     })
+    .onGet('/vehicle/violation-history')
+    .reply(function (config) {
+      const data = [
+        {
+          date: '2020-01-01',
+          violation_number: 'A1B2C300',
+          type: 'TOLL VIOLATION',
+          state_province: 'IL',
+          paid_date: '2020-02-01',
+          amount: 123.45,
+          document_id: 'AAADOC1'
+        }
+      ]
+      return [200, { data, success: true, message: 'TEST' }]
+    })
+    .onGet('/vehicle/accident-claim')
+    .reply(function (config) {
+      const claim = config.params.claim
+      const vehicle = config.params.vehicle
+      const data = {
+        // clicked claim
+        claim_number: claim,
+        vehicle_number: vehicle,
+        document_id: '1234'
+      }
+      return [200, { data, success: true, message: 'TEST' }]
+    })
+    .onGet('/vehicle/accident-claim-images')
+    .reply(function (config) {
+      const data = [
+        {
+          text: 'Front',
+          src: '//placekitten.com/600/700'
+        },
+        {
+          text: 'Side',
+          src: '//placekitten.com/500/800'
+        },
+        {
+          text: 'Rear',
+          src: '//placekitten.com/600/800'
+        }
+      ]
+      return [200, { data, success: true, message: 'TEST' }]
+    })
     .onAny().passThrough()
   // debugger
   // $axios.onRequest((config) => {

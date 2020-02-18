@@ -3,22 +3,27 @@
     <v-row>
       <v-col cols="12">
         <v-card outlined class="report">
-          <v-card-title>
-            {{ $t('inspections') }}
-            <v-spacer />
-            <v-text-field
-              v-model="search"
-              :label="$t('search')"
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              dense
-              flat
-              hide-details
-              outlined
-              rounded
-              single-line
-              solo
-            />
+          <v-card-title class="pa-0">
+            <v-toolbar height="72" flat color="transparent">
+              <v-toolbar-title>
+                {{ $t('inspections') }}
+              </v-toolbar-title>
+              <v-spacer />
+              <v-text-field
+                v-model="search"
+                :label="$t('search')"
+                prepend-inner-icon="mdi-magnify"
+                background-color="transparent"
+                clearable
+                dense
+                flat
+                hide-details
+                outlined
+                rounded
+                single-line
+                solo
+              />
+            </v-toolbar>
           </v-card-title>
           <v-divider />
           <v-card-text class="pa-0">
@@ -62,10 +67,32 @@ export default {
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
     columns () {
-      return []
+      return [
+        'date',
+        'comments',
+        'report'
+      ]
     },
     headers () {
-      return []
+      return [
+        {
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('comments'),
+          value: 'comments',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('report'),
+          value: 'report',
+          class: 'report-column'
+        }
+      ]
     },
     query () {
       return { start: this.start, end: this.end }

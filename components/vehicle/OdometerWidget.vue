@@ -54,7 +54,14 @@
           :sort-desc="true"
           @page-count="pagination.pageCount = $event"
           class="striped"
-        />
+        >
+          <template #item.date="{ item }">
+            {{ item.date | date }}
+          </template>
+          <template #item.odometer="{ item }">
+            {{ item.odometer | number }}
+          </template>
+        </v-data-table>
       </v-skeleton-loader>
     </v-card-text>
     <v-divider />
@@ -127,7 +134,7 @@ export default {
     },
     columns () {
       return [
-        'odometer_date',
+        'date',
         'odometer',
         'type'
       ]
@@ -136,7 +143,7 @@ export default {
       return [
         {
           text: this.$i18n.t('odometer_date'),
-          value: 'odometer_date',
+          value: 'date',
           class: 'report-column',
           divider: true
         },
@@ -147,7 +154,7 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('type'),
+          text: this.$i18n.t('reading_type'),
           value: 'type',
           class: 'report-column'
         }

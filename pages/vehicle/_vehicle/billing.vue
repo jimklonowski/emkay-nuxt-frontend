@@ -14,6 +14,7 @@
             <v-text-field
               v-model="search"
               :label="$t('search')"
+              background-color="transparent"
               prepend-inner-icon="mdi-magnify"
               clearable
               dense
@@ -94,7 +95,7 @@
             </v-row>
           </v-container>
           <!-- Download as XLS Button -->
-          <v-toolbar flat>
+          <v-toolbar flat color="transparent">
             <v-spacer />
             <v-btn :title="`${$t('save')} .xls`" small depressed>
               <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
@@ -239,7 +240,7 @@ export default {
     }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('fuel')}`
+    const title = `${this.vehicle_number} - ${this.$t('billing')}`
     return {
       title,
       meta: [

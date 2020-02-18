@@ -9,6 +9,7 @@
             <v-text-field
               v-model="search"
               :label="$t('search')"
+              background-color="transparent"
               prepend-inner-icon="mdi-magnify"
               clearable
               dense

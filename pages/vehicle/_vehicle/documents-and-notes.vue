@@ -40,7 +40,7 @@
                     class="striped"
                   >
                     <template #top>
-                      <v-toolbar flat>
+                      <v-toolbar flat color="transparent">
                         <v-toolbar-title>
                           {{ $t('documents') }}
                         </v-toolbar-title>
@@ -131,7 +131,7 @@
                     class="striped"
                   >
                     <template #top>
-                      <v-toolbar flat>
+                      <v-toolbar flat color="transparent">
                         <v-toolbar-title>
                           {{ $t('notes') }}
                         </v-toolbar-title>
@@ -241,6 +241,7 @@
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { vehicleRoute } from '@/mixins/routing'
 
 export default {
@@ -258,7 +259,12 @@ export default {
     }
   },
   computed: {
-    documents: vm => vm.$store.getters['vehicle/getDocuments'],
+    ...mapGetters({
+      documents: 'vehicle/getDocuments',
+      documents_loading: 'vehicle/getDocumentsLoading',
+      notes: 'vehicle/getNotes',
+      notes_loading: 'vehicle/getNotesLoading'
+    }),
     documents_columns () {
       return [
         'date',
@@ -280,8 +286,6 @@ export default {
         }
       ]
     },
-    documents_loading: vm => vm.$store.getters['vehicle/getDocumentsLoading'],
-    notes: vm => vm.$store.getters['vehicle/getNotes'],
     notes_columns () {
       return [
         'date',
@@ -316,8 +320,7 @@ export default {
           class: 'report-column'
         }
       ]
-    },
-    notes_loading: vm => vm.$store.getters['vehicle/getNotesLoading']
+    }
   },
   async asyncData ({ $params, query, store, error }) {
     const vehicle = store.getters['vehicle/getVehicleNumber']

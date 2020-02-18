@@ -3,22 +3,27 @@
     <v-row>
       <v-col cols="12">
         <v-card outlined class="report">
-          <v-card-title>
-            {{ $t('violations') }}
-            <v-spacer />
-            <v-text-field
-              v-model="search"
-              :label="$t('search')"
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              dense
-              flat
-              hide-details
-              outlined
-              rounded
-              single-line
-              solo
-            />
+          <v-card-title class="pa-0">
+            <v-toolbar height="72" flat color="transparent">
+              <v-toolbar-title>
+                {{ $t('violations') }}
+              </v-toolbar-title>
+              <v-spacer />
+              <v-text-field
+                v-model="search"
+                :label="$t('search')"
+                background-color="transparent"
+                prepend-inner-icon="mdi-magnify"
+                clearable
+                dense
+                flat
+                hide-details
+                outlined
+                rounded
+                single-line
+                solo
+              />
+            </v-toolbar>
           </v-card-title>
           <v-divider />
           <v-card-text class="pa-0">
@@ -35,7 +40,23 @@
                 :sort-desc="[true]"
                 class="striped"
                 dense
-              />
+              >
+                <template #item.date="{ item }">
+                  {{ item.date | date }}
+                </template>
+                <template #item.paid_date="{ item }">
+                  {{ item.paid_date | date }}
+                </template>
+                <template #item.amount="{ item }">
+                  {{ item.amount | currency }}
+                </template>
+                <template #item.document_id="{ item }">
+                  <v-btn @click="$snotify.info(`Downloading pdf ${item.document_id}...`, 'info')" small text>
+                    <v-icon>mdi-pdf-box</v-icon>
+                    {{ item.document_id }}
+                  </v-btn>
+                </template>
+              </v-data-table>
             </v-skeleton-loader>
           </v-card-text>
         </v-card>
@@ -62,14 +83,64 @@ export default {
   computed: {
     ...mapGetters({
       items: 'vehicle/getViolationHistory',
-      loading: 'vehicle/getViolationLoading',
+      loading: 'vehicle/getViolationsLoading',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
     columns () {
-      return []
+      return [
+        'date',
+        'violation_number',
+        'type',
+        'state_province',
+        'paid_date',
+        'amount',
+        ''
+      ]
     },
     headers () {
-      return []
+      return [
+        {
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('violation_number'),
+          value: 'violation_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('type'),
+          value: 'type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('state_province'),
+          value: 'state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('paid_date'),
+          value: 'paid_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('view'),
+          value: 'document_id',
+          class: 'report-column'
+        }
+      ]
     },
     query () {
       return { start: this.start, end: this.end }

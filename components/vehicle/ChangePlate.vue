@@ -4,7 +4,7 @@
       <v-form @submit.prevent="handleSubmit(submitPlateChange)">
         <v-card-title v-text="$t('change_plate')" />
         <v-card-text>
-          <v-subheader>{{ $route.params.vehicle }}</v-subheader>
+          <v-subheader>{{ vehicle }}</v-subheader>
           <v-container>
             <v-row>
               <v-col cols="12">
@@ -77,18 +77,18 @@ export default {
   },
   data: () => ({
     loading: false,
-    change_plate_dialog: false,
     expiration_date_dialog: false,
     license_plate_number: null,
     license_plate_expiration_date: null
   }),
   methods: {
-    submitPlateChange () {
+    async submitPlateChange () {
       this.loading = true
       setTimeout(() => {
-        this.$snotify.info('form submitted', 'submit', { position: SnotifyPosition.centerTop })
+        this.$snotify.info('TODO: form submitted', 'submit', { position: SnotifyPosition.centerTop })
         this.loading = false
       }, 1000)
+      await console.log('submit odometer')
     }
   }
 }

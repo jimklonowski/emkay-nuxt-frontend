@@ -27,7 +27,7 @@ export default ({ app }) => {
     }
   })
 
-  Vue.filter('number', (value, minDigits = 1, maxDigits = 2) => {
+  Vue.filter('number', (value, minDigits = 0, maxDigits = 2) => {
     const formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits })
     return formatter.format(value)
   })

@@ -129,9 +129,10 @@ export default {
     columns () {
       return [
         'date',
-        'location',
-        'details',
-        'in_network',
+        'violation_number',
+        'type',
+        'state_province',
+        'paid_date',
         'amount'
       ]
     },
@@ -144,20 +145,26 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('location'),
-          value: 'location',
+          text: this.$i18n.t('violation_number'),
+          value: 'violation_number',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('details'),
-          value: 'details',
+          text: this.$i18n.t('type'),
+          value: 'type',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('in_network'),
-          value: 'in_network',
+          text: this.$i18n.t('state_province'),
+          value: 'state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('paid_date'),
+          value: 'paid_date',
           class: 'report-column',
           divider: true
         },
@@ -186,7 +193,7 @@ export default {
   },
   methods: {
     async populateWidget () {
-      const vehicle = this.vehicleNumber
+      const vehicle = this.vehicle_number
       const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
       const end = this.$moment().format('YYYY-MM-DD')
       await this.$store.dispatch('vehicle/fetchViolationHistory', { start, end, vehicle })

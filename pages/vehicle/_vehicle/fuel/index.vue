@@ -8,6 +8,7 @@
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
+        background-color="transparent"
         clearable
         dense
         flat
@@ -104,7 +105,7 @@
       </v-row>
     </v-container>
     <!-- Download as XLS Button -->
-    <v-toolbar flat>
+    <v-toolbar color="transparent" flat>
       <v-spacer />
       <v-btn :title="`${$t('save')} .xls`" small depressed>
         <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />

@@ -198,7 +198,7 @@ export default {
   },
   methods: {
     async populateWidget () {
-      const vehicle = this.vehicleNumber
+      const vehicle = this.vehicle_number
       const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
       const end = this.$moment().format('YYYY-MM-DD')
       await this.$store.dispatch('vehicle/fetchAccidentHistory', { start, end, vehicle })

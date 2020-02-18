@@ -10,6 +10,7 @@
                 grow
                 icons-and-text
                 optional
+                show-arrows
               >
                 <v-tab :to="fuelRoute" exact nuxt>
                   {{ $t('fuel_history') }}

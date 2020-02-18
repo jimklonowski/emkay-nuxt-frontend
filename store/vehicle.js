@@ -365,6 +365,7 @@ export const actions = {
   async fetchAccidentHistory ({ commit }, { start, end, vehicle }) {
     commit('setAccidentsLoading', true)
     try {
+      // const { data: { success, message, data } } = await this.$axios.get('/vehicle/accident-history', { params: { start, end, vehicle } })
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/accident-history', { params: { start, end, vehicle } })
       if (!success) { throw new Error(message) }
       commit('setAccidentHistory', data)
@@ -570,6 +571,9 @@ export const getters = {
 
   getTransportStatus: state => state.transport_status,
   getTransportStatusLoading: state => state.transport_status_loading,
+
+  getDocuments: state => state.documents,
+  getDocumentsLoading: state => state.documents_loading,
 
   getNotes: state => state.notes,
   getNotesLoading: state => state.notes_loading,

@@ -3,23 +3,29 @@
     <v-row>
       <v-col cols="12">
         <v-card outlined class="report">
-          <v-card-title>
-            {{ $t('rental_history') }}
-            <v-spacer />
-            <v-text-field
-              v-model="search"
-              :label="$t('search')"
-              prepend-inner-icon="mdi-magnify"
-              clearable
-              dense
-              flat
-              hide-details
-              outlined
-              rounded
-              single-line
-              solo
-            />
+          <v-card-title class="pa-0">
+            <v-toolbar height="72" flat color="transparent">
+              <v-toolbar-title>
+                {{ $t('rental_history') }}
+              </v-toolbar-title>
+              <v-spacer />
+              <v-text-field
+                v-model="search"
+                :label="$t('search')"
+                background-color="transparent"
+                prepend-inner-icon="mdi-magnify"
+                clearable
+                dense
+                flat
+                hide-details
+                outlined
+                rounded
+                single-line
+                solo
+              />
+            </v-toolbar>
           </v-card-title>
+          <v-divider />
           <v-card-text class="pa-0">
             <v-skeleton-loader :loading="loading" type="table">
               <v-data-table
@@ -59,14 +65,57 @@ export default {
   computed: {
     ...mapGetters({
       items: 'vehicle/getRentalHistory',
-      loading: 'vehicle/getRentalLoading',
+      loading: 'vehicle/getRentalsLoading',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
     columns () {
-      return []
+      return [
+        'date',
+        'voucher',
+        'days',
+        'rental_rate',
+        'total_amount',
+        'reason'
+      ]
     },
     headers () {
-      return []
+      return [
+        {
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('voucher'),
+          value: 'voucher',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('days'),
+          value: 'days',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rental_rate'),
+          value: 'rental_rate',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('total_amount'),
+          value: 'total_amount',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('reason'),
+          value: 'reason',
+          class: 'report-column'
+        }
+      ]
     },
     query () {
       return { start: this.start, end: this.end }

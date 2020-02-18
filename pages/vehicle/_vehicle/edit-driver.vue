@@ -5,8 +5,13 @@
         <v-card :loading="loading" outlined tile class="form">
           <v-expansion-panels v-model="panel" value="0" accordion hover tile>
             <v-expansion-panel tile>
-              <v-expansion-panel-header>
+              <v-expansion-panel-header class="text-uppercase" color="primary white--text">
                 {{ $t('vehicle_history') }}
+                <template #actions>
+                  <v-icon color="white">
+                    mdi-chevron-down
+                  </v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
