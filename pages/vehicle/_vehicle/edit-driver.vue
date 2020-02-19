@@ -63,11 +63,11 @@
               </v-card-title>
               <v-card-text>
                 <v-container>
-                  <v-row justify="center">
+                  <v-row dense>
                     <v-col cols="12" md="6">
                       <v-subheader v-text="$t('driver_details')" />
                       <v-container>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12" sm="6">
                             <ValidationProvider v-slot="{ errors }" :name="$t('employee_id')" rules="max:9">
                               <v-text-field
@@ -80,7 +80,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="6">
                             <ValidationProvider v-slot="{ errors }" :name="$t('driver_first_name')">
                               <v-text-field
@@ -104,7 +104,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('driver_address_1')" rules="max:30">
                               <v-text-field
@@ -117,7 +117,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('driver_address_2')" rules="max:30">
                               <v-text-field
@@ -130,7 +130,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="6">
                             <ValidationProvider v-slot="{ errors }" :name="$t('driver_city')">
                               <v-text-field
@@ -154,7 +154,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="6">
                             <ValidationProvider v-slot="{ errors }" :name="$t('driver_postal_code')" rules="max:10">
                               <v-text-field
@@ -178,7 +178,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="6">
                             <ValidationProvider v-slot="{ errors }" :name="$t('driver_phone')" rules="numeric|max:10">
                               <v-text-field
@@ -202,7 +202,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('email')" rules="max:60|email">
                               <v-text-field
@@ -220,7 +220,7 @@
                     <v-col cols="12" md="6">
                       <v-subheader v-text="$t('client_use_fields')" />
                       <v-container>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('driver_misc_1')" rules="max:40">
                               <v-text-field

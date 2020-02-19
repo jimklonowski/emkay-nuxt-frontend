@@ -18,7 +18,7 @@
       />
     </v-card-title>
     <!-- Download as XLS button -->
-    <v-toolbar flat>
+    <v-toolbar flat color="transparent">
       <v-spacer />
       <v-btn :title="`${$t('save')} .xls`" small depressed>
         <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
@@ -378,7 +378,7 @@ export default {
           text: this.$i18n.t('current_status'),
           value: 'current_status',
           class: 'report-column',
-          width: 250,
+          width: 420,
           divider: true
         },
         {

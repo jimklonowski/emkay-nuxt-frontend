@@ -166,7 +166,7 @@ export default {
     }
   },
   computed: {
-    items () {
+    items2 () {
       return [
         {
           accident_date: '2019-01-03 15:10:00.000',
@@ -178,7 +178,7 @@ export default {
       ]
     },
     ...mapGetters({
-      items2: 'vehicle/getAccidentHistory',
+      items: 'vehicle/getAccidentHistory',
       loading: 'vehicle/getAccidentsLoading',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),

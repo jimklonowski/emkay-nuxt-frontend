@@ -20,6 +20,7 @@ export const actions = {
     commit('setError', null)
     commit('setLoading', true)
     try {
+      debugger
       const { data: { success, message, data } } = await this.$axios.get('/reports/inventory')
       if (!success) { throw new Error(message) }
       commit('setData', data)
@@ -97,7 +98,7 @@ export const actions = {
     commit('setError', null)
     commit('setLoading', true)
     try {
-      const { data: { success, message, data } } = await this.$axios.get('/reports/toll-detail-report', { params: { start, end } })
+      const { data: { success, message, data } } = await this.$axios.get('/reports/toll-detail', { params: { start, end } })
       if (!success) { throw new Error(message) }
       commit('setData', data)
     } catch (error) {

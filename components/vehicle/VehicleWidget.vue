@@ -1,172 +1,170 @@
 <template>
   <v-card outlined class="vehicle-widget">
     <!-- Title Toolbar and Dropdown Menu -->
-    <v-card-title class="pa-0">
-      <v-toolbar flat>
-        <v-avatar class="mr-2" size="36">
-          <v-icon v-text="'mdi-car'" color="grey" />
-        </v-avatar>
-        <v-toolbar-title>
-          {{ yearMakeModel | uppercase }}
-        </v-toolbar-title>
-        <v-spacer />
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          origin="top right"
-          transition="scale-transition"
-          left
-        >
-          <template #activator="{ on }">
-            <v-btn v-on="on" icon>
-              <v-icon v-text="'mdi-dots-vertical'" />
-            </v-btn>
-          </template>
-          <v-card>
-            <v-list nav dense>
-              <v-list-item :to="editVehicleRoute" link>
-                <v-list-item-action>
-                  <v-icon v-text="'mdi-car-info'" />
-                </v-list-item-action>
-                <v-list-item-title>{{ $t('edit_vehicle') }}</v-list-item-title>
-              </v-list-item>
-              <v-list-item :to="assignDriverRoute" link>
-                <v-list-item-action>
-                  <v-icon v-text="'mdi-smart-card'" />
-                </v-list-item-action>
-                <v-list-item-title>{{ $t('assign_new_driver') }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-menu>
-      </v-toolbar>
-    </v-card-title>
+    <v-toolbar flat color="transparent">
+      <v-avatar class="mr-2" size="36">
+        <v-icon v-text="'mdi-car'" color="grey" />
+      </v-avatar>
+      <v-toolbar-title>
+        {{ yearMakeModel | uppercase }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        origin="top right"
+        transition="scale-transition"
+        left
+      >
+        <template #activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon v-text="'mdi-dots-vertical'" />
+          </v-btn>
+        </template>
+        <v-card>
+          <v-list nav dense>
+            <v-list-item :to="editVehicleRoute" link>
+              <v-list-item-action>
+                <v-icon v-text="'mdi-car-info'" />
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('edit_vehicle') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item :to="assignDriverRoute" link>
+              <v-list-item-action>
+                <v-icon v-text="'mdi-smart-card'" />
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('assign_new_driver') }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+    </v-toolbar>
+
     <v-divider />
+
     <!-- The Data -->
-    <v-card-text class="pa-0">
-      <v-container>
-        <v-row no-gutters>
-          <v-col cols="6">
-            <v-list subheader dense class="widget-list">
-              <v-subheader v-text="$t('vehicle_details')" class="overline" />
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-car-key'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title v-text="vehicle_details.vehicle_number" />
-                  <v-list-item-subtitle v-text="$t('vehicle_number')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-car-key'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.client_vehicle_number || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('client_vehicle_number')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-bus-multiple'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.category || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('vehicle_category')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-palette'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.exterior_color || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('vehicle_color')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-shape'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.status || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('status')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-subtitles'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.lease_type || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('lease_type')" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
-          <v-col cols="6">
-            <v-list dense subheader class="widget-list">
-              <v-subheader v-text="$t('additional_information')" class="overline" />
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-calendar-arrow-left'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ $options.filters.date(vehicle_details.in_service_date) || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('in_service_date')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-calendar-arrow-right'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ $options.filters.date(vehicle_details.out_of_service_date) || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('out_of_service_date')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-calendar-month-outline'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.months_in_service || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('months_in_service')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-counter'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ vehicle_details.reported_odometer || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('reported_odometer')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-label-variant'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ licensePlate }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('license_plate_number')" />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon v-text="'mdi-remote'" />
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ tollTransponder || '--' }}</v-list-item-title>
-                  <v-list-item-subtitle v-text="$t('transponder')" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-text>
+    <v-container>
+      <v-row no-gutters>
+        <v-col cols="6">
+          <v-list subheader dense class="widget-list">
+            <v-subheader v-text="$t('vehicle_details')" class="overline" />
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-car-key'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="vehicle_details.vehicle_number" />
+                <v-list-item-subtitle v-text="$t('vehicle_number')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-car-key'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ vehicle_details.client_vehicle_number || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('client_vehicle_number')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-bus-multiple'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ vehicle_details.category || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('vehicle_category')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-palette'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ vehicle_details.exterior_color || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('vehicle_color')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-shape'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ vehicle_details.status || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('status')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-subtitles'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ vehicle_details.lease_type || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('lease_type')" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+        <v-col cols="6">
+          <v-list dense subheader class="widget-list">
+            <v-subheader v-text="$t('additional_information')" class="overline" />
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-calendar-arrow-left'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $options.filters.date(vehicle_details.in_service_date) || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('in_service_date')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-calendar-arrow-right'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $options.filters.date(vehicle_details.out_of_service_date) || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('out_of_service_date')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-calendar-month-outline'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ vehicle_details.months_in_service || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('months_in_service')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-counter'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ vehicle_details.reported_odometer || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('reported_odometer')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-label-variant'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ licensePlate }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('license_plate_number')" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon v-text="'mdi-remote'" />
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ tollTransponder || '--' }}</v-list-item-title>
+                <v-list-item-subtitle v-text="$t('transponder')" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
+    </v-container>
     <!-- Show More/Less button -->
     <v-card-actions class="pt-0">
       <v-btn

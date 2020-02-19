@@ -1,98 +1,100 @@
 <template>
   <v-card outlined class="vehicle-widget">
     <!-- Title Toolbar and Dropdown Menu -->
-    <v-card-title class="pa-0">
-      <v-toolbar flat>
-        <v-avatar class="mr-2" size="36">
-          <v-icon v-text="'mdi-counter'" />
-        </v-avatar>
-        <v-toolbar-title>
-          {{ $t('odometer') }}
-        </v-toolbar-title>
-        <v-spacer />
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          origin="top right"
-          transition="scale-transition"
-          left
-        >
-          <template #activator="{ on }">
-            <v-btn v-on="on" icon>
-              <v-icon v-text="'mdi-dots-vertical'" />
-            </v-btn>
-          </template>
-          <v-card>
-            <v-list dense>
-              <v-list-item :to="odometerRoute" link>
-                <v-list-item-avatar>
-                  <v-icon v-text="'mdi-counter'" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title v-text="$t('odometer_history')" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-menu>
-      </v-toolbar>
-    </v-card-title>
-    <v-divider />
-    <!-- Datatable -->
-    <v-card-text class="pa-0">
-      <v-skeleton-loader :loading="!initialized" type="table">
-        <v-data-table
-          :dense="items && !!items.length"
-          :headers="headers"
-          :hide-default-footer="true"
-          :items="items"
-          :items-per-page="pagination.itemsPerPage"
-          :loading="loading"
-          :mobile-breakpoint="0"
-          :page.sync="pagination.page"
-          :sort-by="['odometer_date']"
-          :sort-desc="true"
-          @page-count="pagination.pageCount = $event"
-          class="striped"
-        >
-          <template #item.date="{ item }">
-            {{ item.date | date }}
-          </template>
-          <template #item.odometer="{ item }">
-            {{ item.odometer | number }}
-          </template>
-        </v-data-table>
-      </v-skeleton-loader>
-    </v-card-text>
-    <v-divider />
-    <!-- Report Length and Pagination -->
-    <v-card-actions class="justify-space-between">
-      <div>
-        <v-btn-toggle
-          v-model="days"
-          mandatory
-          rounded
-          dense
-        >
-          <v-btn
-            v-for="period in periods"
-            :key="period"
-            :value="period"
-            small
-            text
-          >
-            {{ period }}
+    <v-toolbar flat color="transparent">
+      <v-avatar class="mr-2" size="36">
+        <v-icon v-text="'mdi-counter'" />
+      </v-avatar>
+      <v-toolbar-title>
+        {{ $t('odometer') }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        origin="top right"
+        transition="scale-transition"
+        left
+      >
+        <template #activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon v-text="'mdi-dots-vertical'" />
           </v-btn>
-        </v-btn-toggle>
-        <span class="caption">{{ $t('days') }}</span>
-      </div>
+        </template>
+        <v-card>
+          <v-list dense>
+            <v-list-item :to="odometerRoute" link>
+              <v-list-item-avatar>
+                <v-icon v-text="'mdi-counter'" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title v-text="$t('odometer_history')" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+    </v-toolbar>
+
+    <v-divider />
+
+    <!-- Datatable -->
+    <v-skeleton-loader :loading="!initialized" type="table">
+      <v-data-table
+        :dense="items && !!items.length"
+        :headers="headers"
+        :hide-default-footer="true"
+        :items="items"
+        :items-per-page="pagination.itemsPerPage"
+        :loading="loading"
+        :mobile-breakpoint="0"
+        :page.sync="pagination.page"
+        :sort-by="['odometer_date']"
+        :sort-desc="true"
+        @page-count="pagination.pageCount = $event"
+        class="striped"
+      >
+        <template #item.date="{ item }">
+          {{ item.date | date }}
+        </template>
+        <template #item.odometer="{ item }">
+          {{ item.odometer | number }}
+        </template>
+      </v-data-table>
+    </v-skeleton-loader>
+
+    <v-divider />
+
+    <!-- Report Length and Pagination -->
+    <v-card-actions v-show="initialized" class="pager">
+      <v-btn-toggle
+        v-model="days"
+        background-color="transparent"
+        color="primary"
+        mandatory
+        rounded
+        dense
+      >
+        <v-btn
+          v-for="period in periods"
+          :key="period"
+          :value="period"
+          small
+          text
+        >
+          {{ period }}
+        </v-btn>
+      </v-btn-toggle>
+      <span class="caption mx-2">{{ $t('days') }}</span>
+
+      <v-spacer />
+
       <v-pagination
         v-show="items && !!items.length"
         v-model="pagination.page"
         :length="pagination.pageCount"
         :total-visible="pagination.totalVisible"
         circle
-        color="grey lighten-1"
         style="width:auto;"
       />
     </v-card-actions>
@@ -160,7 +162,9 @@ export default {
         }
       ]
     },
-    odometerRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/odometer` })
+    start_date: vm => vm.$moment().subtract(vm.days, 'days').format('YYYY-MM-DD'),
+    end_date: vm => vm.$moment().format('YYYY-MM-DD'),
+    odometerRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/odometer`, query: { start: vm.start_date, end: vm.end_date } })
   },
   watch: {
     /**
@@ -178,10 +182,11 @@ export default {
   },
   methods: {
     async populateWidget () {
-      const vehicle = this.vehicle_number
-      const end = this.$moment().format('YYYY-MM-DD')
-      const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-      await this.$store.dispatch('vehicle/fetchOdometerHistory', { start, end, vehicle })
+      await this.$store.dispatch('vehicle/fetchOdometerHistory', {
+        start: this.start_date,
+        end: this.end_date,
+        vehicle: this.vehicle_number
+      })
       this.initialized = true
     }
   }

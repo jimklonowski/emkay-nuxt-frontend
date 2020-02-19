@@ -119,8 +119,8 @@
               </v-tab-item>
               <v-tab-item>
                 <v-card flat tile>
+                  <!-- :dense="notes && notes.length !== 0" -->
                   <v-data-table
-                    :dense="notes && notes.length !== 0"
                     :headers="notes_headers"
                     :items="notes"
                     :items-per-page="5"
@@ -183,6 +183,9 @@
                         </v-dialog>
                       </v-toolbar>
                       <v-divider />
+                    </template>
+                    <template #item.create_date="{ item }">
+                      {{ item.create_date | datetime }}
                     </template>
                   </v-data-table>
                 </v-card>
@@ -288,9 +291,8 @@ export default {
     },
     notes_columns () {
       return [
-        'date',
-        'timestamp',
-        'username',
+        'create_date',
+        'create_operator',
         'note'
       ]
     },
@@ -298,19 +300,13 @@ export default {
       return [
         {
           text: this.$i18n.t('date'),
-          value: 'date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('timestamp'),
-          value: 'timestamp',
+          value: 'create_date',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('username'),
-          value: 'username',
+          value: 'create_operator',
           class: 'report-column',
           divider: true
         },

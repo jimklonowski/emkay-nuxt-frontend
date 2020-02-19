@@ -1,110 +1,112 @@
 <template>
   <v-card outlined class="vehicle-widget">
     <!-- Title Toolbar and Dropdown Menu -->
-    <v-card-title class="pa-0">
-      <v-toolbar flat>
-        <v-avatar class="mr-2" size="36">
-          <v-icon v-text="'mdi-cash-usd-outline'" />
-        </v-avatar>
-        <v-toolbar-title>
-          {{ $t('billing') }}
-        </v-toolbar-title>
-        <v-spacer />
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          origin="top right"
-          transition="scale-transition"
-          left
-        >
-          <template #activator="{ on }">
-            <v-btn v-on="on" icon>
-              <v-icon v-text="'mdi-dots-vertical'" />
-            </v-btn>
-          </template>
-          <v-card>
-            <v-list nav dense>
-              <v-list-item v-for="(action, index) in actions" :key="index" :to="action.to" link>
-                <v-list-item-avatar>
-                  <v-icon v-text="action.icon" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title v-text="action.text" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-menu>
-      </v-toolbar>
-    </v-card-title>
-    <v-divider />
-    <!-- Datatable -->
-    <v-card-text class="pa-0">
-      <v-skeleton-loader :loading="!initialized" type="table">
-        <v-data-table
-          :dense="items && !!items.length"
-          :headers="headers"
-          :hide-default-footer="true"
-          :items="items"
-          :items-per-page="pagination.itemsPerPage"
-          :loading="loading"
-          :mobile-breakpoint="0"
-          :page.sync="pagination.page"
-          :sort-by="['invoice_number']"
-          :sort-desc="[true]"
-          @page-count="pagination.pageCount = $event"
-          class="striped"
-        >
-          <!-- Configure individual column rendering -->
-          <template #item.invoice_number="{ item }">
-            <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none">
-              {{ item.invoice_number }}
-            </nuxt-link>
-          </template>
-
-          <template #item.bill_date="{ item }">
-            {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
-          </template>
-
-          <template #item.bill_for_date="{ item }">
-            {{ item.bill_for_date | date('YYYY-MM', 'MM/YYYY') }}
-          </template>
-
-          <template #item.amount="{ item }">
-            {{ item.amount | currency }}
-          </template>
-        </v-data-table>
-      </v-skeleton-loader>
-    </v-card-text>
-    <v-divider />
-    <!-- Report Length and Pagination -->
-    <v-card-actions class="justify-space-between">
-      <div>
-        <v-btn-toggle
-          v-model="days"
-          mandatory
-          rounded
-          dense
-        >
-          <v-btn
-            v-for="period in periods"
-            :key="period"
-            :value="period"
-            small
-            text
-          >
-            {{ period }}
+    <v-toolbar flat color="transparent">
+      <v-avatar class="mr-2" size="36">
+        <v-icon v-text="'mdi-cash-usd-outline'" />
+      </v-avatar>
+      <v-toolbar-title>
+        {{ $t('billing') }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        origin="top right"
+        transition="scale-transition"
+        left
+      >
+        <template #activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon v-text="'mdi-dots-vertical'" />
           </v-btn>
-        </v-btn-toggle>
-        <span class="caption">{{ $t('days') }}</span>
-      </div>
+        </template>
+        <v-card>
+          <v-list nav dense>
+            <v-list-item v-for="(action, index) in actions" :key="index" :to="action.to" link>
+              <v-list-item-avatar>
+                <v-icon v-text="action.icon" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title v-text="action.text" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+    </v-toolbar>
+
+    <v-divider />
+
+    <!-- Datatable -->
+    <v-skeleton-loader :loading="!initialized" type="table">
+      <v-data-table
+        :dense="items && !!items.length"
+        :headers="headers"
+        :hide-default-footer="true"
+        :items="items"
+        :items-per-page="pagination.itemsPerPage"
+        :loading="loading"
+        :mobile-breakpoint="0"
+        :page.sync="pagination.page"
+        :sort-by="['invoice_number']"
+        :sort-desc="[true]"
+        @page-count="pagination.pageCount = $event"
+        class="striped"
+      >
+        <!-- Configure individual column rendering -->
+        <template #item.invoice_number="{ item }">
+          <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none">
+            {{ item.invoice_number }}
+          </nuxt-link>
+        </template>
+
+        <template #item.bill_date="{ item }">
+          {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
+        </template>
+
+        <template #item.bill_for_date="{ item }">
+          {{ item.bill_for_date | date('YYYY-MM', 'MM/YYYY') }}
+        </template>
+
+        <template #item.amount="{ item }">
+          {{ item.amount | currency }}
+        </template>
+      </v-data-table>
+    </v-skeleton-loader>
+
+    <v-divider />
+
+    <!-- Report Length and Pagination -->
+    <v-card-actions v-show="initialized" class="pager">
+      <v-btn-toggle
+        v-model="days"
+        background-color="transparent"
+        color="primary"
+        mandatory
+        rounded
+        dense
+      >
+        <v-btn
+          v-for="period in periods"
+          :key="period"
+          :value="period"
+          small
+          text
+        >
+          {{ period }}
+        </v-btn>
+      </v-btn-toggle>
+      <span class="caption mx-2">{{ $t('days') }}</span>
+
+      <v-spacer />
+
       <v-pagination
         v-show="items && !!items.length"
         v-model="pagination.page"
         :length="pagination.pageCount"
         :total-visible="pagination.totalVisible"
         circle
-        color="grey lighten-1"
         style="width:auto;"
       />
     </v-card-actions>
@@ -194,7 +196,9 @@ export default {
         }
       ]
     },
-    billingRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/billing` })
+    start_date: vm => vm.$moment().subtract(vm.days, 'days').format('YYYY-MM-DD'),
+    end_date: vm => vm.$moment().format('YYYY-MM-DD'),
+    billingRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/billing`, query: { start: vm.start_date, end: vm.end_date } })
   },
   watch: {
     /**
@@ -213,15 +217,21 @@ export default {
   methods: {
     invoiceRoute (invoice) {
       // pass along the start and end dates, inferred from report length 'days', to be used by the billing page filters.
-      const end = this.$moment().format('YYYY-MM-DD')
-      const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-      return this.localePath({ path: `/vehicle/${this.vehicle_number}/billing`, query: { start, end, invoice } })
+      return this.localePath({
+        path: `/vehicle/${this.vehicle_number}/billing`,
+        query: {
+          start: this.start_date,
+          end: this.end_date,
+          invoice
+        }
+      })
     },
     async populateWidget () {
-      const vehicle = this.vehicle_number
-      const end = this.$moment().format('YYYY-MM-DD')
-      const start = this.$moment().subtract(this.days, 'days').format('YYYY-MM-DD')
-      await this.$store.dispatch('vehicle/fetchBillingHistory', { start, end, vehicle })
+      await this.$store.dispatch('vehicle/fetchBillingHistory', {
+        start: this.start_date,
+        end: this.end_date,
+        vehicle: this.vehicle_number
+      })
       this.initialized = true
     }
   }

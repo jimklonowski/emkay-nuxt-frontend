@@ -51,6 +51,9 @@ import { updateQuery, vehicleRoute } from '@/mixins/routing'
 export default {
   name: 'Saferoads',
   mixins: [downloadFields, updateQuery, vehicleRoute],
+  data: () => ({
+    search: ''
+  }),
   computed: {
     ...mapGetters({
       error: 'saferoads/getError',

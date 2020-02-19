@@ -44,11 +44,11 @@
               </v-card-title>
               <v-card-text>
                 <v-container>
-                  <v-row justify="center">
+                  <v-row dense>
                     <v-col cols="12" sm="6">
                       <v-subheader v-text="$t('vehicle_details')" />
                       <v-container>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('client_vehicle_number')">
                               <v-text-field
@@ -61,7 +61,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <v-dialog
                               ref="driver_effective_date_modal"
@@ -93,7 +93,7 @@
                             </v-dialog>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('center_code')" rules="required">
                               <v-combobox
@@ -106,7 +106,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('bill_sort')">
                               <v-combobox
@@ -124,7 +124,7 @@
                     <v-col cols="12" sm="6">
                       <v-subheader v-text="$t('client_use_fields')" />
                       <v-container>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('client_use_1')" rules="max:40">
                               <v-text-field
@@ -137,7 +137,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('client_use_2')" rules="max:40">
                               <v-text-field
@@ -150,7 +150,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('client_use_3')" rules="max:40">
                               <v-text-field
@@ -163,7 +163,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('client_use_4')" rules="max:40">
                               <v-text-field
@@ -176,7 +176,7 @@
                             </ValidationProvider>
                           </v-col>
                         </v-row>
-                        <v-row>
+                        <v-row dense>
                           <v-col cols="12">
                             <ValidationProvider v-slot="{ errors }" :name="$t('client_use_5')" rules="max:40">
                               <v-text-field

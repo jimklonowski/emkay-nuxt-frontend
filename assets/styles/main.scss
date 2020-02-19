@@ -60,6 +60,9 @@
     @extend .font-roboto-condensed;
     font-size: 1.35rem;
   }
+  .v-card__actions.pager {
+    height: 60px;
+  }
 }
 
 /* Report config */

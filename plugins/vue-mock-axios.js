@@ -397,21 +397,21 @@ export default function ({ $axios, redirect }) {
       ]
       return [200, { data, success: true, message: 'TEST' }]
     })
-    .onGet('/vehicle/violation-history')
-    .reply(function (config) {
-      const data = [
-        {
-          date: '2020-01-01',
-          violation_number: 'A1B2C300',
-          type: 'TOLL VIOLATION',
-          state_province: 'IL',
-          paid_date: '2020-02-01',
-          amount: 123.45,
-          document_id: 'AAADOC1'
-        }
-      ]
-      return [200, { data, success: true, message: 'TEST' }]
-    })
+    // .onGet('/vehicle/violation-history')
+    // .reply(function (config) {
+    //   const data = [
+    //     {
+    //       date: '2020-01-01',
+    //       violation_number: 'A1B2C300',
+    //       type: 'TOLL VIOLATION',
+    //       state_province: 'IL',
+    //       paid_date: '2020-02-01',
+    //       amount: 123.45,
+    //       document_id: 'AAADOC1'
+    //     }
+    //   ]
+    //   return [200, { data, success: true, message: 'TEST' }]
+    // })
     .onGet('/vehicle/accident-claim')
     .reply(function (config) {
       const claim = config.params.claim

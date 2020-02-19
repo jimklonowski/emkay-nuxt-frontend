@@ -127,7 +127,14 @@
                 :sort-desc="[true]"
                 class="striped"
                 dense
-              />
+              >
+                <template #item.date="{ item }">
+                  {{ item.date | date }}
+                </template>
+                <template #item.odometer="{ item }">
+                  {{ item.odometer | number }}
+                </template>
+              </v-data-table>
             </v-skeleton-loader>
           </v-card-text>
         </v-card>
