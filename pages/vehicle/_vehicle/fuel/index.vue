@@ -19,6 +19,7 @@
         solo
       />
     </v-card-title>
+    <v-divider />
     <!-- Report Filters -->
     <v-container>
       <v-subheader v-text="$t('report_filters')" class="overline" />

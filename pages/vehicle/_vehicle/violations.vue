@@ -89,10 +89,10 @@ export default {
     columns () {
       return [
         'date',
+        'paid_date',
         'violation_number',
         'type',
-        'state_province',
-        'paid_date',
+        'state_or_province',
         'amount',
         ''
       ]
@@ -102,6 +102,12 @@ export default {
         {
           text: this.$i18n.t('date'),
           value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('paid_date'),
+          value: 'paid_date',
           class: 'report-column',
           divider: true
         },
@@ -118,14 +124,8 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('state_province'),
-          value: 'state_province',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('paid_date'),
-          value: 'paid_date',
+          text: this.$i18n.t('state_or_province'),
+          value: 'state_or_province',
           class: 'report-column',
           divider: true
         },

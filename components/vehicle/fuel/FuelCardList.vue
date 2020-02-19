@@ -18,7 +18,6 @@
         <v-data-table
           :headers="headers"
           :items="items"
-          dense
           disable-filtering
           disable-pagination
           hide-default-footer

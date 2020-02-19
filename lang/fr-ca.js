@@ -518,6 +518,7 @@ export default {
   start_date: "Date de début",
   start_time: "Heure de début",
   state: "Province",
+  state_or_province: "Province",
   state_province: "Province",
   status: "Statut",
   status_comment: "Commentaire d'état",

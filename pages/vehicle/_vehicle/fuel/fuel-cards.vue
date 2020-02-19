@@ -21,8 +21,8 @@
     <v-divider />
     <v-card-text class="pa-0">
       <v-skeleton-loader :loading="loading" type="table">
+        <!-- :dense="!!items.length" -->
         <v-data-table
-          :dense="!!items.length"
           :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
           :headers="headers"
           :items="items"
