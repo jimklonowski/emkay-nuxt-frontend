@@ -1,19 +1,19 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" class="font-lato font-weight-regular" style="font-size:2.5rem;">
         {{ $t('my_reports') }}
       </v-col>
       <v-col cols="12">
         <v-stepper v-model="step" vertical>
           <!-- Step 1: Pick Report Type -->
-          <v-stepper-step :complete="step > 1" step="1">
+          <v-stepper-step :complete="step > 1" step="1" class="font-roboto">
             {{ stepOneHeader }}
           </v-stepper-step>
           <v-stepper-content step="1">
-            <v-list shaped>
+            <v-list color="transparent" class="font-roboto-condensed" shaped>
               <v-list-item-group v-model="report_type">
-                <v-list-item v-for="(item, key) in report_types" :key="key" @click="step = 2">
+                <v-list-item v-for="(item, key) in report_types" :key="key" active-class="primary--text text--accent-4">
                   <v-list-item-avatar>
                     <v-icon v-text="item.icon" />
                   </v-list-item-avatar>
@@ -25,14 +25,14 @@
             </v-list>
           </v-stepper-content>
           <!-- Step 2: Choose Columns -->
-          <v-stepper-step :complete="step > 2" step="2">
+          <v-stepper-step :complete="step > 2" step="2" class="font-roboto">
             {{ stepTwoHeader }}
           </v-stepper-step>
           <v-stepper-content step="2">
-            <v-list dense shaped subheader>
+            <v-list class="font-roboto-condensed" color="transparent" dense shaped subheader>
               <v-list-item-group v-model="columns_selected" multiple class="row">
-                <v-col v-for="(group, name, g) in columns" :key="g" cols="12" sm="6">
-                  <v-subheader v-text="$t(name)" />
+                <v-col v-for="(group, name, g) in columns" :key="g" cols="12" md="6">
+                  <v-subheader v-text="$t(name)" class="font-roboto" />
                   <template v-for="(item, i) in group">
                     <v-list-item :key="`${item.key}-${i}`" :value="item.key" active-class="primary--text text--accent-4">
                       <template v-slot:default="{ active, toggle }">
@@ -53,11 +53,12 @@
               </v-list-item-group>
             </v-list>
           </v-stepper-content>
-          <!-- Step 3: Scope -->
-          <v-stepper-step :complete="step > 3" step="3">
+          <!-- Step 3: Scope (Dates and Centers) -->
+          <v-stepper-step :complete="step > 3" step="3" class="font-roboto">
             {{ stepThreeHeader }}
           </v-stepper-step>
           <v-stepper-content step="3">
+            <v-subheader v-text="$t('filters')" />
             <v-row>
               <v-col cols="12" sm="6">
                 <v-menu
@@ -124,12 +125,81 @@
                 </v-menu>
               </v-col>
             </v-row>
+            <v-subheader v-text="$t('centers')" />
+            <v-row>
+              <v-treeview
+                :items="center_hierarchy"
+                item-key="center_code"
+                item-text="center_name"
+                selected-color="primary"
+                selectable
+                class="px-2"
+              />
+            </v-row>
           </v-stepper-content>
-          <v-stepper-step :complete="step > 4" step="4">
+          <!-- Step 4: Saving -->
+          <v-stepper-step :complete="step > 4" step="4" class="font-roboto">
             {{ stepFourHeader }}
           </v-stepper-step>
           <v-stepper-content step="4">
-            Save your report
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="report_title"
+                  :counter="40"
+                  :label="$t('report_title')"
+                  clearable
+                  dense
+                  hint="Provide a descriptive title to save this report as"
+                  outlined
+                  autocomplete="off"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-checkbox
+                  v-model="auto_send"
+                  :label="$t('auto_send')"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-radio-group
+                  v-model="schedule"
+                  :label="$t('schedule')"
+                  background-color="transparent"
+                  color="primary"
+                  dense
+                  mandatory
+                  rounded
+                  row
+                >
+                  <v-radio :label="$t('daily')" value="daily" />
+                  <v-radio :label="$t('weekly')" value="weekly" />
+                  <v-radio :label="$t('monthly')" value="monthly" />
+                </v-radio-group>
+              </v-col>
+              <v-col cols="12">
+                <v-combobox
+                  v-model="email_recipients"
+                  :label="$t('email_recipients')"
+                  chips
+                  clearable
+                  multiple
+                  prepend-icon="mdi-email-plus"
+                >
+                  <template #selection="{ attrs, item, select, selected }">
+                    <v-chip
+                      v-bind="attrs"
+                      :input-value="selected"
+                      @click="select"
+                      @click:close="removeEmail(item)"
+                      close
+                    >
+                      <strong>{{ item }}</strong>
+                    </v-chip>
+                  </template>
+                </v-combobox>
+              </v-col>
+            </v-row>
           </v-stepper-content>
         </v-stepper>
       </v-col>
@@ -139,10 +209,10 @@
         Restart
       </v-btn>
       <v-spacer />
-      <v-btn @click="prevStep" class="mx-2">
+      <v-btn @click="prevStep" class="mx-2" text>
         {{ $t('previous_step') }}
       </v-btn>
-      <v-btn @click="nextStep">
+      <v-btn @click="nextStep" color="primary">
         {{ $t('next_step') }}
       </v-btn>
     </v-row>
@@ -162,9 +232,125 @@ export default {
     report_type: null,
     columns_selected: [],
     start: vm.$moment().subtract(1, 'years').format('YYYY-MM-DD'),
-    end: vm.$moment().format('YYYY-MM-DD')
+    end: vm.$moment().format('YYYY-MM-DD'),
+    report_title: '',
+    auto_send: false,
+    schedule: 'weekly',
+    email_recipients: []
   }),
   computed: {
+    center_hierarchy () {
+      return [
+        {
+          center_code: 'A01',
+          center_name: 'Emkay Inc',
+          children: [
+            {
+              center_code: '001',
+              center_name: 'Executive',
+              children: []
+            },
+            {
+              center_code: 'B01',
+              center_name: 'Sales',
+              children: [
+                {
+                  center_code: '002',
+                  center_name: 'Sales',
+                  children: []
+                },
+                {
+                  center_code: '003',
+                  center_name: 'Account Managers',
+                  children: []
+                },
+                {
+                  center_code: '004',
+                  center_name: 'Short Term & Unassigned Demos',
+                  children: []
+                },
+                {
+                  center_code: '005',
+                  center_name: 'Sales/Canada',
+                  children: []
+                },
+                {
+                  center_code: '006',
+                  center_name: 'Board of Directors',
+                  children: []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          center_code: 'A02',
+          center_name: 'Jessica Tepas',
+          children: []
+        },
+        {
+          center_code: 'A03',
+          center_name: 'Dan Corbett',
+          children: [
+            {
+              center_code: 'B03',
+              center_name: 'Dan Corbett',
+              children: [
+                {
+                  center_code: '008',
+                  center_name: 'Dan Corbett',
+                  children: []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          center_code: 'A04',
+          center_name: 'Greg Depace',
+          children: [
+            {
+              center_code: 'B04',
+              center_name: 'Greg Depace',
+              children: [
+                {
+                  center_code: '009',
+                  center_name: 'Greg Depace',
+                  children: []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          center_code: 'A05',
+          center_name: 'Chris Tepas',
+          children: [
+            {
+              center_code: '010',
+              center_name: 'Chris Tepas',
+              children: []
+            },
+            {
+              center_code: 'B05',
+              center_name: 'Chris Tepas',
+              children: []
+            }
+          ]
+        },
+        {
+          center_code: 'B02',
+          center_name: 'Jessica Tepas',
+          children: [
+            {
+              center_code: '007',
+              center_name: 'Jessica Tepas',
+              children: []
+            }
+          ]
+        }
+      ]
+    },
     flattenedColumns () {
       return [
         {
@@ -250,11 +436,11 @@ export default {
       if (this.step < 4) {
         return this.$i18n.t('select_scope')
       } else {
-        return `${this.$i18n.t('start_date')}: ${this.$moment(this.start).format('L')}\t${this.$i18n.t('end_date')}: ${this.$moment(this.end).format('L')}`
+        return `${this.$i18n.t('start_date')}: ${this.$moment(this.start).format('L')} ${this.$i18n.t('end_date')}: ${this.$moment(this.end).format('L')}`
       }
     },
     stepFourHeader () {
-      return this.$i18n.t('save')
+      return this.$i18n.t('saving_and_scheduling')
     }
   },
   watch: {
@@ -270,10 +456,14 @@ export default {
       return Object.values(this.columns).map(x => x.filter(y => y.selected === true)).flat().map(z => z.key)
     },
     nextStep () {
-      this.step++
+      if (this.step < 4) { this.step++ } else { this.step = 1 }
     },
     prevStep () {
-      this.step--
+      if (this.step > 1) { this.step-- } else { this.step = 4 }
+    },
+    removeEmail (item) {
+      this.email_recipients.splice(this.email_recipients.indexOf(item), 1)
+      this.email_recipients = [...this.email_recipients]
     },
     startOver () {
       this.step = 1
