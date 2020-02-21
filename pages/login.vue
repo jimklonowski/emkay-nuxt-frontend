@@ -127,13 +127,15 @@ export default {
       } catch (error) {
         // error
         console.error(error.message)
-      }
-      // debugger
-      if (this.$auth.loggedIn && this.$auth.user.token) {
-        // save the session cookie
-        this.$cookies.set('SESSIONID', this.$auth.user.token)
+      } finally {
+        this.loading = false
         // debugger
-        console.log('logged in')
+        if (this.$auth.loggedIn && this.$auth.user.token) {
+          // save the session cookie
+          this.$cookies.set('SESSIONID', this.$auth.user.token)
+          // debugger
+          console.log('logged in')
+        }
       }
     },
     async login2 () {

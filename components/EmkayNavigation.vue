@@ -106,9 +106,19 @@ export default {
           to: { path: '/' }
         },
         {
-          icon: 'mdi-chart-bubble',
+          icon: 'mdi-car-cruise-control',
           key: 'vehicle_dashboard',
           to: { path: '/vehicle-search' }
+        },
+        {
+          icon: 'mdi-chart-areaspline',
+          key: 'fleet_dashboard',
+          to: { path: '/fleet' }
+        },
+        {
+          icon: 'mdi-file-certificate',
+          key: 'my_reports',
+          to: { path: '/my-reports' }
         },
         {
           icon: 'mdi-file-chart-outline',

@@ -41,7 +41,8 @@ export const actions = {
       if (!success) { throw new Error(message) }
       commit('setCustomLabels', data)
     } catch (error) {
-      debugger
+      // debugger
+      console.error('error in fetchcustomlabels')
       console.error(error)
     }
   },

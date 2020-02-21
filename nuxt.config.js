@@ -354,6 +354,7 @@ export default {
   env: {
     BASE_URL: process.env.BASE_URL,
     EMKAY_API: process.env.EMKAY_API,
+    FLEET_DASHBOARD_URL: process.env.FLEET_DASHBOARD_URL,
     GA_ID: process.env.GA_ID
   },
   /*

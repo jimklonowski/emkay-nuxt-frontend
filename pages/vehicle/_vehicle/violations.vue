@@ -50,11 +50,24 @@
                 <template #item.amount="{ item }">
                   {{ item.amount | currency }}
                 </template>
+                <!-- <template #item.document_id="{ item }">
+                  <v-dialog>
+                    <template #activator="{ on }">
+                      <v-btn v-on="on" small text>
+                        <v-icon>mdi-pdf-box</v-icon>
+                        {{ item.document_id }}
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title>{{ item.document_id }}.pdf</v-card-title>
+                      <v-img :src="getViolationImageUrl(item.document_path.trim(), item.document_id.trim())" />
+                    </v-card>
+                  </v-dialog>
+                </template> -->
                 <template #item.document_id="{ item }">
-                  <v-btn @click="$snotify.info(`Downloading pdf ${item.document_id}...`, 'info')" small text>
-                    <v-icon>mdi-pdf-box</v-icon>
-                    {{ item.document_id }}
-                  </v-btn>
+                  <a :href="getViolationPdfUrl(item.document_path.trim(), item.document_id.trim())" target="_blank">
+                    View PDF
+                  </a>
                 </template>
               </v-data-table>
             </v-skeleton-loader>
@@ -153,6 +166,17 @@ export default {
     const end = query.end || $moment().format('YYYY-MM-DD')
     await store.dispatch('vehicle/fetchViolationHistory', { start, end, vehicle })
     return { start, end }
+  },
+  methods: {
+    getViolationPdfUrl (path, file) {
+      if (process.browser) {
+        const url = new URL(`${process.env.BASE_URL}/vehicle/violation`)
+        url.searchParams.set('path', path)
+        url.searchParams.set('file', file)
+        url.searchParams.set('type', 'pdf')
+        return url.href
+      }
+    }
   },
   head () {
     const title = `${this.vehicle_number} - ${this.$t('violations')}`
