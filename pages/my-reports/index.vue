@@ -12,10 +12,26 @@
           </v-stepper-step>
           <v-stepper-content step="1">
             <v-container>
+              <v-subheader v-text="$t('load_a_saved_report')" class="subtitle-2 pl-1" />
+              <v-row>
+                <v-col cols="12" md="6" lg="4">
+                  <v-select
+                    v-model="saved_report"
+                    :items="saved_reports"
+                    :label="$t('pick_a_report')"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    outlined
+                    dense
+                    clearable
+                  />
+                </v-col>
+              </v-row>
+              <v-subheader v-text="$t('or')" />
+              <v-subheader v-text="$t('create_a_new_report')" class="subtitle-2 pl-1" />
               <v-row>
                 <v-col cols="12">
                   <v-list color="transparent" class="font-roboto-condensed" shaped>
-                    <v-list-item-group v-model="config.report_type" mandatory>
+                    <v-list-item-group v-model="config.report_type">
                       <v-list-item v-for="(report, r) in report_types" @click="step = 2" :key="`${report.type}-${r}`" :value="report.type" active-class="primary--text text--accent-4">
                         <v-list-item-avatar>
                           <v-icon v-text="report.icon" />
@@ -280,6 +296,7 @@
                         solo
                       />
                     </v-card-title>
+                    <v-divider />
                     <v-skeleton-loader :loading="loading" type="table">
                       <v-data-table
                         :items="items"
@@ -323,6 +340,8 @@
 <script>
 export default {
   data: vm => ({
+    saved_report: null,
+    saved_reports: [],
     available_column_groups: [],
     suggested_emails: [],
     email_input: '',
@@ -535,10 +554,21 @@ export default {
         await console.log('Last Step, make it count')
         this.fetchMyReport()
       }
+    },
+    async saved_report () {
+      if (!this.saved_report) {
+        this.startOver()
+      } else {
+        this.$router.replace({ query: { reportId: this.saved_report } })
+        await this.loadModel(this.saved_report)
+        this.step = 5
+      }
     }
   },
   async mounted () {
     await console.log('Entered My Reports')
+
+    await this.getSavedReports()
 
     // if reportId is a query parameter, load the requested report config
     if (this.$route.query && this.$route.query.reportId) {
@@ -546,13 +576,28 @@ export default {
     }
     // TODO: load email suggestions from account settings or other
     // this.suggested_emails = await this.$axios.get('/account/preferred-emails')
-    this.suggested_emails = [
-      'agriffith@emkay.com',
-      'jklonowski@emkay.com',
-      'jim@jimklonowski.com'
-    ]
+    this.getSuggestedEmails()
   },
   methods: {
+    getSuggestedEmails () {
+      // const data = await this.$axios.get('...')
+      this.suggested_emails = [
+        'agriffith@emkay.com',
+        'jklonowski@emkay.com',
+        'jim@jimklonowski.com'
+      ]
+    },
+    async getSavedReports () {
+      await console.log('Fetching saved reports...')
+      // TODO: write endpoint
+      // this.saved_reports = await this.$axios.get('/reports/my-reports')
+      this.saved_reports = [
+        { header: this.$i18n.t('your_saved_reports') },
+        { header: 'these are fake...' },
+        'ABC123',
+        'QWERTY666'
+      ]
+    },
     async fetchMyReport () {
       this.loading = true
       try {
@@ -565,13 +610,17 @@ export default {
       }
     },
     async loadModel (id) {
-      // copy empty config into model
-      // let config = this.defaultConfig
-      // Request Saved Report Config
-      const { data: { savedConfig, success, message } } = await this.$axios.get('/reports/my-reports-saved-config', { params: { id } })
-      if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
-      // copy loaded config into model
-      this.config = { ...this.config, ...savedConfig }
+      if (typeof id === 'undefined') {
+        this.config = { ...this.config, ...this.defaultConfig }
+      } else {
+        // copy empty config into model
+        // let config = this.defaultConfig
+        // Request Saved Report Config
+        const { data: { savedConfig, success, message } } = await this.$axios.get('/reports/my-reports-saved-config', { params: { id } })
+        if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
+        // copy loaded config into model
+        this.config = { ...this.config, ...savedConfig }
+      }
     },
     async getAvailableColumnGroups (type) {
       const { data: { groups, success, message } } = await this.$axios.get('/reports/my-reports-columns', { params: { type } })
@@ -588,6 +637,15 @@ export default {
       this.config.email_recipients.splice(this.config.email_recipients.indexOf(item), 1)
       this.config.email_recipients = [...this.config.email_recipients]
     },
+    async savedReportChanged () {
+      // If we cleared the saved-report dropdown, then clear the current model
+      if (this.saved_report === undefined) {
+        this.startOver()
+      } else {
+        await this.loadModel(this.saved_report)
+        this.$router.push({ query: { reportId: this.saved_report } })
+      }
+    },
     startOver () {
       // Start Over button pressed, restore blank default configuration and remove reportId from query param
       this.step = 1
@@ -599,10 +657,21 @@ export default {
       this.search = ''
       this.end_menu = false
       this.start_menu = false
+      this.saved_report = null
       this.config = { ...this.config, ...this.defaultConfig }
+      this.getSuggestedEmails()
       if (this.$route.query && this.$route.query.reportId) {
         this.$router.push({ query: { reportId: undefined } })
       }
+    }
+  },
+  head () {
+    const title = this.$t('my_reports')
+    return {
+      title,
+      meta: [
+        { hid: 'og:description', property: 'og:description', content: title }
+      ]
     }
   }
 }

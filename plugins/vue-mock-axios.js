@@ -444,15 +444,16 @@ export default function ({ $axios, redirect }) {
     })
     .onGet('/reports/my-reports-saved-config')
     .reply(function (config) {
+      const id = config.params.id
       const savedConfig = {
         auto_send: true,
         report_schedule: 'monthly',
-        report_title: 'SAVED1',
+        report_title: id,
         report_type: 'fuel',
         start: '2019-01-01',
         end: '2020-01-01',
         centers_selected: ['002', '003', '004', '005', '006'],
-        columns_selected: ['vehicle_number'],
+        columns_selected: ['vehicle_number', 'client_vehicle_number', 'driver_last_name', 'employee_id', 'bill_month', 'bill_year'],
         email_recipients: ['agriffith2@mmmkay.com', 'jklonowski@mmmkay.ca']
       }
       return [200, { savedConfig, success: true, message: 'OK' }]
