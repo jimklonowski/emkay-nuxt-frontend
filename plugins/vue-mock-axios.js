@@ -442,6 +442,689 @@ export default function ({ $axios, redirect }) {
       ]
       return [200, { data, success: true, message: 'TEST' }]
     })
+    .onGet('/reports/my-reports-saved-config')
+    .reply(function (config) {
+      const savedConfig = {
+        auto_send: true,
+        report_schedule: 'monthly',
+        report_title: 'SAVED1',
+        report_type: 'fuel',
+        start: '2019-01-01',
+        end: '2020-01-01',
+        centers_selected: ['002', '003', '004', '005', '006'],
+        columns_selected: ['vehicle_number'],
+        email_recipients: ['agriffith2@mmmkay.com', 'jklonowski@mmmkay.ca']
+      }
+      return [200, { savedConfig, success: true, message: 'OK' }]
+    })
+    .onGet('/reports/my-reports-columns')
+    .reply(function (config) {
+      const type = config.params.type
+      console.log(`returning mocked columns for report type ${type}`)
+      let groups = []
+      switch (type) {
+        case 'vehicle':
+          groups = [
+            {
+              category: 'vehicle_information',
+              columns: [
+                'vehicle_number',
+                'client_vehicle_number',
+                'prior_vehicle_number',
+                'next_vehicle_number',
+                'center_code',
+                'center_name',
+                'bill_sort',
+                'lease_type',
+                'status',
+                'model_year',
+                'vehicle_make',
+                'vehicle_model',
+                'vehicle_category',
+                'body_style',
+                'vehicle_color',
+                'number_of_cylinders',
+                'vin',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'order_date',
+                'in_service_date',
+                'out_of_service_date',
+                'date_sold'
+                // ,...
+              ]
+            },
+            {
+              category: 'driver_information',
+              columns: [
+                'driver_last_name',
+                'driver_first_name',
+                // 'driver_first_initial',
+                'driver_address_1',
+                'driver_address_2',
+                'driver_city',
+                'driver_state_province',
+                'driver_postal_code',
+                'driver_county',
+                'driver_phone',
+                'driver_mobile',
+                'driver_fax',
+                'driver_email_address',
+                'employee_id',
+                'driver_misc_1',
+                'driver_misc_2',
+                'driver_misc_3',
+                'driver_misc_4'
+              ]
+            },
+            {
+              category: 'billing_information',
+              columns: [
+                'months_in_service',
+                'capitalized_cost',
+                'accumulated_depreciation',
+                'current_depreciation',
+                'rental_amount'
+              ]
+            }
+          ]
+          break
+        case 'billing':
+          groups = [
+            {
+              category: 'vehicle_information',
+              columns: [
+                'vehicle_number',
+                'client_vehicle_number',
+                'prior_vehicle_number',
+                'next_vehicle_number',
+                'center_code',
+                'center_name',
+                'bill_sort',
+                'lease_type',
+                'status',
+                'model_year',
+                'vehicle_make',
+                'vehicle_model',
+                'vehicle_category',
+                'number_of_cylinders',
+                'vin',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'in_service_date',
+                'out_of_service_date',
+                'date_sold',
+                'close_odometer',
+                // 'mgd_original_date', ?
+                'depreciation_rate',
+                'license_plate_number',
+                'license_plate_state_province',
+                // 'c_e_team', ?
+                // 'c_e_alw_ml, ?
+                'client_use_label_1',
+                'client_use_label_2',
+                'client_use_label_3',
+                'client_use_label_4',
+                'client_use_label_5',
+                'gross_vehicle_weight'
+                // ,...
+              ]
+            },
+            {
+              category: 'driver_information',
+              columns: [
+                'driver_last_name',
+                'driver_first_name',
+                // 'driver_first_initial',
+                // 'driver_address_1',
+                // 'driver_address_2',
+                'driver_city',
+                'driver_state_province',
+                // 'driver_postal_code',
+                'driver_county',
+                // 'driver_phone',
+                // 'driver_mobile',
+                // 'driver_fax',
+                // 'driver_email_address',
+                'employee_id',
+                'driver_misc_1',
+                'driver_misc_2',
+                'driver_misc_3',
+                'driver_misc_4'
+              ]
+            },
+            {
+              category: 'billing_information',
+              columns: [
+                'bill_year',
+                'bill_month',
+                'cycle',
+                'bill_for_year',
+                'bill_for_month',
+                'lease_period',
+                'invoice_number',
+                'days_billed',
+                'months_in_service',
+                'interest_rate',
+                // 'int_rpt_type', ?
+                'capitalized_cost',
+                'accumulated_depreciation',
+                'residual_value',
+                'current_depreciation',
+                'rental_amount',
+                'lease_tax',
+                'provincial_tax',
+                'insurance_expense',
+                'maintenance_expense',
+                'license_expense',
+                'fuel_expense',
+                'fleet_services',
+                'sales_tax'
+              ]
+            }
+          ]
+          break
+        case 'fuel':
+          groups = [
+            {
+              category: 'vehicle_information',
+              columns: [
+                'vehicle_number',
+                'client_vehicle_number',
+                'prior_vehicle_number',
+                'next_vehicle_number',
+                'center_code',
+                'center_name',
+                'bill_sort',
+                'lease_type',
+                'status',
+                'model_year',
+                'vehicle_make',
+                'vehicle_model',
+                'vehicle_category',
+                'number_of_cylinders',
+                'vin',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'in_service_date',
+                'out_of_service_date',
+                'date_sold',
+                'close_odometer',
+                // 'mgd_original_date', ?
+                'depreciation_rate',
+                'license_plate_number',
+                'license_plate_state_province',
+                // 'c_e_team', ?
+                // 'c_e_alw_ml, ?
+                'client_use_label_1',
+                'client_use_label_2',
+                'client_use_label_3',
+                'client_use_label_4',
+                'client_use_label_5',
+                'gross_vehicle_weight'
+                // ,...
+              ]
+            },
+            {
+              category: 'driver_information',
+              columns: [
+                'driver_last_name',
+                'driver_first_name',
+                'driver_city',
+                'driver_state_province',
+                'driver_county',
+                'employee_id',
+                'driver_misc_1',
+                'driver_misc_2',
+                'driver_misc_3',
+                'driver_misc_4'
+              ]
+            },
+            {
+              category: 'billing_information',
+              columns: [
+                'months_in_service',
+                'capitalized_cost',
+                'accumulated_depreciation',
+                'residual_value',
+                'current_depreciation',
+                'rental_amount'
+              ]
+            },
+            {
+              category: 'fuel_information',
+              columns: [
+                'bill_year',
+                'bill_month',
+                'vendor_invoice',
+                'vendor_name',
+                'vendor_address_1',
+                'vendor_address_2',
+                'vendor_city',
+                'vendor_state_province',
+                'vendor_postal_code',
+                'card_number',
+                'purchase_date',
+                'odometer',
+                'voucher',
+                'charge_code',
+                'product_type',
+                'purchase_product',
+                'premium',
+                'quantity',
+                'unit_cost',
+                'amount',
+                'purchaser_id',
+                'purchaser_name'
+              ]
+            }
+          ]
+          break
+        case 'maintenance':
+          groups = [
+            {
+              category: 'vehicle_information',
+              columns: [
+                'vehicle_number',
+                'client_vehicle_number',
+                'prior_vehicle_number',
+                'next_vehicle_number',
+                'center_code',
+                'center_name',
+                'bill_sort',
+                'lease_type',
+                'status',
+                'model_year',
+                'vehicle_make',
+                'vehicle_model',
+                'vehicle_category',
+                'number_of_cylinders',
+                'vin',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'in_service_date',
+                'out_of_service_date',
+                'date_sold',
+                'close_odometer',
+                'depreciation_rate',
+                'license_plate_number',
+                'license_plate_state_province',
+                'client_use_label_1',
+                'client_use_label_2',
+                'client_use_label_3',
+                'client_use_label_4',
+                'client_use_label_5',
+                'gross_vehicle_weight'
+              ]
+            },
+            {
+              category: 'driver_information',
+              columns: [
+                'driver_last_name',
+                'driver_first_name',
+                'driver_city',
+                'driver_state_province',
+                'driver_county',
+                'employee_id',
+                'driver_misc_1',
+                'driver_misc_2',
+                'driver_misc_3',
+                'driver_misc_4'
+              ]
+            },
+            {
+              category: 'billing_information',
+              columns: [
+                'months_in_service',
+                'capitalized_cost',
+                'accumulated_depreciation',
+                'residual_value',
+                'current_depreciation',
+                'rental_amount'
+              ]
+            },
+            {
+              category: 'maintenance_information',
+              columns: [
+                'service_date',
+                'voucher',
+                'coupon',
+                'odometer',
+                'vendor_name',
+                'vendor_address_1',
+                'vendor_address_2',
+                'vendor_city',
+                'vendor_state_province',
+                'vendor_postal_code',
+                'national_vendor',
+                'ata_group',
+                'maintenance_type',
+                'description',
+                'charge_code',
+                'quantity',
+                'amount',
+                'preferred_vendor'
+              ]
+            }
+          ]
+          break
+        case 'expenses':
+          groups = [
+            {
+              category: 'vehicle_information',
+              columns: [
+                'vehicle_number',
+                'client_vehicle_number',
+                'prior_vehicle_number',
+                'next_vehicle_number',
+                'center_code',
+                'center_name',
+                'bill_sort',
+                'lease_type',
+                'status',
+                'model_year',
+                'vehicle_make',
+                'vehicle_model',
+                'vehicle_category',
+                'number_of_cylinders',
+                'vin',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'in_service_date',
+                'out_of_service_date',
+                'date_sold',
+                'close_odometer',
+                'depreciation_rate',
+                'license_plate_number',
+                'license_plate_state_province',
+                'client_use_label_1',
+                'client_use_label_2',
+                'client_use_label_3',
+                'client_use_label_4',
+                'client_use_label_5',
+                'gross_vehicle_weight'
+              ]
+            },
+            {
+              category: 'driver_information',
+              columns: [
+                'driver_last_name',
+                'driver_first_name',
+                'driver_city',
+                'driver_state_province',
+                'driver_county',
+                'employee_id',
+                'driver_misc_1',
+                'driver_misc_2',
+                'driver_misc_3',
+                'driver_misc_4'
+              ]
+            },
+            {
+              category: 'expense_summary_information',
+              columns: [
+                'month_year',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'business_miles',
+                'personal_miles',
+                'gallons',
+                'fuel_cost',
+                'tire_quantity',
+                'tire_cost',
+                'oil_change',
+                'maintenance_expense',
+                'license_tax',
+                'license_expense',
+                'accident_expense',
+                // 'subr_exp',
+                // 'liab_exp',
+                // 'phys_exp',
+                // 'misc_exp',
+                // 'park_exp',
+                // 'prs_card',
+                'rental_amount',
+                'depreciation',
+                // 'rent-a-car',
+                'toll_expense',
+                'glass_expense',
+                'violation_expense',
+                'tax_expense',
+                'provincial_tax'
+
+              ]
+            },
+            {
+              category: 'billing_information',
+              columns: [
+                'months_in_service',
+                'capitalized_cost',
+                'accumulated_depreciation',
+                'residual_value',
+                'current_depreciation',
+                'rental_amount'
+              ]
+            }
+          ]
+          break
+        case 'claims':
+          groups = [
+            {
+              category: 'vehicle_information',
+              columns: [
+                'vehicle_number',
+                'client_vehicle_number',
+                'prior_vehicle_number',
+                'next_vehicle_number',
+                'center_code',
+                'center_name',
+                'bill_sort',
+                'lease_type',
+                'status',
+                'model_year',
+                'vehicle_make',
+                'vehicle_model',
+                'vehicle_category',
+                'number_of_cylinders',
+                'vin',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'in_service_date',
+                'out_of_service_date',
+                'date_sold',
+                'close_odometer',
+                'depreciation_rate',
+                'license_plate_number',
+                'license_plate_state_province',
+                'client_use_label_1',
+                'client_use_label_2',
+                'client_use_label_3',
+                'client_use_label_4',
+                'client_use_label_5',
+                'gross_vehicle_weight'
+              ]
+            },
+            {
+              category: 'driver_information',
+              columns: [
+                'driver_last_name',
+                'driver_first_name',
+                'driver_city',
+                'driver_state_province',
+                'driver_county',
+                'employee_id',
+                'driver_misc_1',
+                'driver_misc_2',
+                'driver_misc_3',
+                'driver_misc_4'
+              ]
+            },
+            {
+              category: 'billing_information',
+              columns: [
+                'months_in_service',
+                'capitalized_cost',
+                'accumulated_depreciation',
+                'residual_value',
+                'current_depreciation',
+                'rental_amount'
+              ]
+            },
+            {
+              category: 'insurance_claims',
+              columns: [
+                'claim_number',
+                'loss_date',
+                'report_date',
+                'city',
+                'state_province',
+                'location',
+                'preventable',
+                'percentage_of_fault',
+                'authority',
+                'report_number',
+                'damages',
+                'not_drivable',
+                'vendor_name',
+                'repair_cost',
+                'days_to_repair',
+                'cost_containment',
+                'rental',
+                'subrogated',
+                'subrogation_start_date',
+                'subrogation_end_date',
+                'subrogation_amount',
+                'subrogation_received',
+                'rental_subrogation_amount',
+                'rental_subrogation_received',
+                'date_closed',
+                'claim_status'
+              ]
+            }
+          ]
+          break
+        case 'violations':
+          groups = [
+            {
+              category: 'vehicle_information',
+              columns: [
+                'vehicle_number',
+                'client_vehicle_number',
+                'prior_vehicle_number',
+                'next_vehicle_number',
+                'center_code',
+                'center_name',
+                'bill_sort',
+                'lease_type',
+                'status',
+                'model_year',
+                'vehicle_make',
+                'vehicle_model',
+                'vehicle_category',
+                'number_of_cylinders',
+                'vin',
+                'odometer',
+                'odometer_date',
+                'reading_type',
+                'in_service_date',
+                'out_of_service_date',
+                'date_sold',
+                'close_odometer',
+                'depreciation_rate',
+                'license_plate_number',
+                'license_plate_state_province',
+                'client_use_label_1',
+                'client_use_label_2',
+                'client_use_label_3',
+                'client_use_label_4',
+                'client_use_label_5',
+                'gross_vehicle_weight'
+              ]
+            },
+            {
+              category: 'driver_information',
+              columns: [
+                'driver_last_name',
+                'driver_first_name',
+                'driver_city',
+                'driver_state_province',
+                'driver_county',
+                'employee_id',
+                'driver_misc_1',
+                'driver_misc_2',
+                'driver_misc_3',
+                'driver_misc_4'
+              ]
+            },
+            {
+              category: 'billing_information',
+              columns: [
+                'months_in_service',
+                'capitalized_cost',
+                'accumulated_depreciation',
+                'residual_value',
+                'current_depreciation',
+                'rental_amount'
+              ]
+            },
+            {
+              category: 'tickets_and_violations',
+              columns: [
+                'violation_number',
+                'violation_date',
+                'description'
+              ]
+            }
+          ]
+          break
+      }
+      // const data = [
+      //   {
+      //     key: 'vehicle_number',
+      //     group: 'vehicle_information'
+      //   },
+      //   {
+      //     key: 'center_code',
+      //     group: 'vehicle_information'
+      //   },
+      //   {
+      //     key: 'last_name',
+      //     group: 'driver_information'
+      //   },
+      //   {
+      //     key: 'first_name',
+      //     group: 'driver_information'
+      //   },
+      //   {
+      //     key: 'months_in_service',
+      //     group: 'billing_information'
+      //   },
+      //   {
+      //     key: 'rental_amount',
+      //     group: 'billing_information'
+      //   },
+      //   {
+      //     key: 'purchase_amount',
+      //     group: 'fuel_information'
+      //   },
+      //   {
+      //     key: 'purchase_quantity',
+      //     group: 'fuel_information'
+      //   },
+      //   {
+      //     key: 'purchase_date',
+      //     group: 'fuel_information'
+      //   }
+      // ]
+      return [200, { groups, success: true, message: 'TEST' }]
+    })
     .onAny().passThrough()
   // debugger
   // $axios.onRequest((config) => {
