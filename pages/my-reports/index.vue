@@ -52,7 +52,7 @@
                       </v-toolbar-title>
                     </v-toolbar>
                     <template v-for="(column, c) in group.columns">
-                      <v-list-item :key="`col-${column}-${c}`" :value="column" active-class="primary--text text--accent-4 mx-1">
+                      <v-list-item :key="`col-${column}-${c}`" :value="column" active-class="primary--text text--accent-4" class="mx-1">
                         <template #default="{ active }">
                           <v-list-item-content>
                             {{ $t(column) }}
@@ -257,7 +257,7 @@
           <v-stepper-step :complete="step > 5" step="5" class="font-roboto">
             {{ $t('my_report') }}
           </v-stepper-step>
-          <v-stepper-content step="5">
+          <v-stepper-content step="5" class="ma-0 pa-0">
             <v-container>
               <v-row no-gutters>
                 <v-col cols="12">
@@ -307,11 +307,11 @@
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <v-btn @click="startOver" color="error">
+      <v-btn @click="startOver" color="error" depressed>
         Restart
       </v-btn>
       <v-spacer />
-      <v-btn @click="prevStep" class="mx-2" text>
+      <v-btn @click="prevStep" text>
         {{ $t('previous_step') }}
       </v-btn>
       <v-btn @click="nextStep" color="primary">
