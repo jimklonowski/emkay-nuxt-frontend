@@ -1,50 +1,25 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12" class="font-lato font-weight-regular" style="font-size:2.5rem;">
-        {{ $t('my_reports') }}
-      </v-col>
+    <v-row no-gutters>
       <v-col cols="12">
-        <v-stepper v-model="step" vertical>
+        <v-stepper v-model="step" vertical class="pb-4">
           <!-- Step 1: Pick Report Type -->
           <v-stepper-step :complete="step > 1" step="1" class="font-roboto">
             {{ step1Header }}
           </v-stepper-step>
           <v-stepper-content step="1">
-            <v-container>
-              <v-subheader v-text="$t('load_a_saved_report')" class="subtitle-2 pl-1" />
-              <v-row>
-                <v-col cols="12" md="6" lg="4">
-                  <v-select
-                    v-model="saved_report"
-                    :items="saved_reports"
-                    :label="$t('pick_a_report')"
-                    :menu-props="{ bottom: true, offsetY: true }"
-                    outlined
-                    dense
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-              <v-subheader v-text="$t('or')" />
-              <v-subheader v-text="$t('create_a_new_report')" class="subtitle-2 pl-1" />
-              <v-row>
-                <v-col cols="12">
-                  <v-list color="transparent" class="font-roboto-condensed" shaped>
-                    <v-list-item-group v-model="config.report_type">
-                      <v-list-item v-for="(report, r) in report_types" @click="step = 2" :key="`${report.type}-${r}`" :value="report.type" active-class="primary--text text--accent-4">
-                        <v-list-item-avatar>
-                          <v-icon v-text="report.icon" />
-                        </v-list-item-avatar>
-                        <v-list-item-content>
-                          <v-list-item-title>{{ $t(report.type) }}</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-col>
-              </v-row>
-            </v-container>
+            <v-list color="transparent" class="font-roboto-condensed" shaped>
+              <v-list-item-group v-model="config.report_type">
+                <v-list-item v-for="(report, r) in report_types" @click="step = 2" :key="`${report.type}-${r}`" :value="report.type" active-class="primary--text text--accent-4">
+                  <v-list-item-avatar>
+                    <v-icon v-text="report.icon" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ $t(report.type) }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
           </v-stepper-content>
 
           <!-- Step 2: Choose Columns -->
@@ -52,40 +27,38 @@
             {{ step2Header }}
           </v-stepper-step>
           <v-stepper-content step="2">
-            <v-container>
-              <v-list class="font-roboto-condensed" color="transparent" dense shaped subheader>
-                <v-list-item-group v-model="config.columns_selected" multiple class="row no-gutters">
-                  <v-col v-for="(group, g) in available_column_groups" :key="`group-${group}-${g}`" cols="12" sm="6" md="4">
-                    <v-toolbar
-                      class="mx-1 font-lato my-2"
-                      color="primary"
-                      flat
-                      dark
-                      dense
-                    >
-                      <v-toolbar-title>
-                        {{ $t(group.category) }}
-                      </v-toolbar-title>
-                    </v-toolbar>
-                    <template v-for="(column, c) in group.columns">
-                      <v-list-item :key="`col-${column}-${c}`" :value="column" active-class="primary--text text--accent-4" class="mx-1">
-                        <template #default="{ active }">
-                          <v-list-item-content>
-                            {{ $t(column) }}
-                          </v-list-item-content>
-                          <v-list-item-action>
-                            <v-checkbox
-                              :input-value="active"
-                              :true-value="column"
-                            />
-                          </v-list-item-action>
-                        </template>
-                      </v-list-item>
-                    </template>
-                  </v-col>
-                </v-list-item-group>
-              </v-list>
-            </v-container>
+            <v-list class="font-roboto-condensed" color="transparent" dense shaped subheader>
+              <v-list-item-group v-model="config.columns_selected" multiple class="row no-gutters">
+                <v-col v-for="(group, g) in available_column_groups" :key="`group-${group}-${g}`" cols="12" sm="6" md="4">
+                  <v-toolbar
+                    class="mx-1 font-lato my-2"
+                    color="primary"
+                    flat
+                    dark
+                    dense
+                  >
+                    <v-toolbar-title>
+                      {{ $t(group.category) }}
+                    </v-toolbar-title>
+                  </v-toolbar>
+                  <template v-for="(column, c) in group.columns">
+                    <v-list-item :key="`col-${column}-${c}`" :value="column" active-class="primary--text text--accent-4" class="mx-1">
+                      <template #default="{ active }">
+                        <v-list-item-content>
+                          {{ $t(column) }}
+                        </v-list-item-content>
+                        <v-list-item-action>
+                          <v-checkbox
+                            :input-value="active"
+                            :true-value="column"
+                          />
+                        </v-list-item-action>
+                      </template>
+                    </v-list-item>
+                  </template>
+                </v-col>
+              </v-list-item-group>
+            </v-list>
           </v-stepper-content>
 
           <!-- Step 3: Date Range and Center Selection -->
@@ -93,87 +66,85 @@
             {{ step3Header }}
           </v-stepper-step>
           <v-stepper-content step="3">
-            <v-container>
-              <v-subheader v-text="$t('filters')" />
-              <v-row>
-                <v-col cols="12" sm="6">
-                  <v-menu
-                    ref="start_menu"
-                    :close-on-content-click="false"
-                    :return-value.sync="config.start"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="290px"
+            <v-subheader v-text="$t('filters')" />
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-menu
+                  ref="start_menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="config.start"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(config.start).format('L')"
+                      :label="$t('start_date')"
+                      v-on="on"
+                      prepend-icon="mdi-calendar"
+                      outlined
+                      dense
+                      readonly
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="config.start"
+                    no-title
+                    scrollable
                   >
-                    <template #activator="{ on }">
-                      <v-text-field
-                        :value="$moment(config.start).format('L')"
-                        :label="$t('start_date')"
-                        v-on="on"
-                        prepend-icon="mdi-calendar"
-                        outlined
-                        dense
-                        readonly
-                      />
-                    </template>
-                    <v-date-picker
-                      v-model="config.start"
-                      no-title
-                      scrollable
-                    >
-                      <v-spacer />
-                      <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-                      <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(config.start)" text />
-                    </v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-menu
-                    ref="end_menu"
-                    :close-on-content-click="false"
-                    :return-value.sync="config.end"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="290px"
+                    <v-spacer />
+                    <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(config.start)" text />
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-menu
+                  ref="end_menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="config.end"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(config.end).format('L')"
+                      :label="$t('end_date')"
+                      v-on="on"
+                      prepend-icon="mdi-calendar"
+                      outlined
+                      dense
+                      readonly
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="config.end"
+                    no-title
+                    scrollable
                   >
-                    <template #activator="{ on }">
-                      <v-text-field
-                        :value="$moment(config.end).format('L')"
-                        :label="$t('end_date')"
-                        v-on="on"
-                        prepend-icon="mdi-calendar"
-                        outlined
-                        dense
-                        readonly
-                      />
-                    </template>
-                    <v-date-picker
-                      v-model="config.end"
-                      no-title
-                      scrollable
-                    >
-                      <v-spacer />
-                      <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-                      <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(config.end)" text />
-                    </v-date-picker>
-                  </v-menu>
-                </v-col>
-              </v-row>
-              <v-subheader v-text="$t('centers')" />
-              <v-row>
-                <v-treeview
-                  v-model="config.centers_selected"
-                  :items="center_hierarchy"
-                  item-key="center_code"
-                  item-text="center_name"
-                  selected-color="primary"
-                  selectable
-                  class="px-2"
-                />
-              </v-row>
-            </v-container>
+                    <v-spacer />
+                    <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(config.end)" text />
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
+            <v-subheader v-text="$t('centers')" />
+            <v-row>
+              <v-treeview
+                v-model="config.centers_selected"
+                :items="center_hierarchy"
+                item-key="center_code"
+                item-text="center_name"
+                selected-color="primary"
+                selectable
+                class="px-2"
+              />
+            </v-row>
           </v-stepper-content>
 
           <!-- Step 4: Saving and Schedule -->
@@ -182,7 +153,7 @@
           </v-stepper-step>
           <v-stepper-content step="4">
             <v-container>
-              <v-row>
+              <v-row no-gutters>
                 <v-col cols="12">
                   <v-text-field
                     v-model="config.report_title"
@@ -190,6 +161,7 @@
                     :label="$t('report_title')"
                     prepend-icon="mdi-content-save-edit"
                     clearable
+                    dense
                     outlined
                     autocomplete="off"
                   />
@@ -227,6 +199,7 @@
                     @blur="email_input = ''"
                     prepend-icon="mdi-email-plus"
                     clearable
+                    dense
                     multiple
                     outlined
                     small-chips
@@ -270,70 +243,59 @@
           </v-stepper-content>
 
           <!-- Step 5: The Report -->
-          <v-stepper-step :complete="step > 5" step="5" class="font-roboto">
+          <v-stepper-step :complete="step === 5" step="5" class="font-roboto" complete-icon="mdi-finance">
             {{ $t('my_report') }}
           </v-stepper-step>
           <v-stepper-content step="5" class="ma-0 pa-0">
-            <v-container>
-              <v-row no-gutters>
-                <v-col cols="12">
-                  <v-card outlined>
-                    <v-toolbar flat color="transparent">
-                      <v-toolbar-title>{{ config.report_title }}</v-toolbar-title>
-                      <v-spacer />
-                      <v-text-field
-                        v-model="search"
-                        :label="$t('search')"
-                        prepent-inner-icon="mdi-magnify"
-                        background-color="transparent"
-                        class="mr-1"
-                        clearable
-                        dense
-                        flat
-                        hide-details
-                        outlined
-                        rounded
-                        single-line
-                        solo
-                      />
-                      <v-divider vertical inset class="mx-4" />
-                      <!-- Download as XLS button -->
-                      <client-only>
-                        <download-excel :fields="downloadFields" :data="items">
-                          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
-                            <v-icon v-text="'mdi-cloud-download'" />
-                          </v-btn>
-                        </download-excel>
-                      </client-only>
-                    </v-toolbar>
-                    <v-divider />
-                    <v-skeleton-loader :loading="loading" type="table">
-                      <v-data-table
-                        :items="items"
-                        :headers="report_headers"
-                        :items-per-page="25"
-                        :loading="loading"
-                        :mobile-breakpoint="0"
-                        :search="search"
-                        outlined
-                        class="striped"
-                      />
-                    </v-skeleton-loader>
-                  </v-card>
-                </v-col>
-                <!-- <v-col cols="12">
-                  <div v-for="(item, name) in config" :key="`config-${name}`">
-                    <label>{{ name }}</label>
-                    <span>{{ item }}</span>
-                  </div>
-                </v-col> -->
-              </v-row>
-            </v-container>
+            <v-card flat>
+              <v-divider />
+              <v-toolbar flat color="transparent">
+                <v-toolbar-title>{{ config.report_title }}</v-toolbar-title>
+                <v-spacer />
+                <v-text-field
+                  v-model="search"
+                  :label="$t('search')"
+                  prepent-inner-icon="mdi-magnify"
+                  background-color="transparent"
+                  class="mr-1"
+                  clearable
+                  dense
+                  flat
+                  hide-details
+                  outlined
+                  rounded
+                  single-line
+                  solo
+                />
+                <v-divider vertical inset class="mx-4" />
+                <!-- Download as XLS button -->
+                <client-only>
+                  <download-excel :fields="downloadFields" :data="items">
+                    <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+                      <v-icon v-text="'mdi-cloud-download'" />
+                    </v-btn>
+                  </download-excel>
+                </client-only>
+              </v-toolbar>
+              <v-divider />
+              <v-skeleton-loader :loading="loading" type="table">
+                <v-data-table
+                  :items="items"
+                  :headers="report_headers"
+                  :items-per-page="25"
+                  :loading="loading"
+                  :mobile-breakpoint="0"
+                  :search="search"
+                  outlined
+                  class="striped"
+                />
+              </v-skeleton-loader>
+            </v-card>
           </v-stepper-content>
         </v-stepper>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row class="mt-2" no-gutters>
       <v-btn @click="startOver" color="error" depressed>
         Restart
       </v-btn>
@@ -350,8 +312,8 @@
 <script>
 export default {
   name: 'MyReports',
+  layout: 'myreports',
   data: vm => ({
-    saved_report: null,
     saved_reports: [],
     available_column_groups: [],
     suggested_emails: [],
@@ -550,9 +512,7 @@ export default {
     async 'config.report_type' () {
       console.log(`Report Type Changed: ${this.config.report_type}`)
       // Fetch available columns for this report type
-      await this.getAvailableColumnGroups(this.config.report_type)
-      // Clear selected columns since we have gone back a step and changed report types
-      // this.config.columns_selected = []
+      await this.getAvailableColumns(this.config.report_type)
     },
     'config.centers_selected' () {
       console.log(`Centers Changed: ${this.config.centers_selected}`)
@@ -567,7 +527,7 @@ export default {
       if (this.step === 5) {
         await console.log('Last Step, make it count')
         try {
-          await this.fetchMyReport()
+          await this.getMyReport()
         } catch (error) {
           console.error(error.message)
         } finally {
@@ -576,53 +536,21 @@ export default {
         }
       }
     },
-    async saved_report () {
-      if (!this.saved_report) {
-        this.startOver()
-      } else {
-        // if we're just refreshing the page, don't navigate to the same url
-        if (this.$route.query.reportId !== this.saved_report) {
-          this.$router.replace({ query: { reportId: this.saved_report } })
-        }
-        await this.loadModel(this.saved_report)
-        this.step = 5
-      }
+    async '$route.query.reportId' (id) {
+      await this.loadSavedReport(id)
     }
   },
   async mounted () {
     await console.log('Entered My Reports')
-
-    await this.getSavedReports()
-
     // if reportId is a query parameter, load the requested report config
     if (this.$route.query && this.$route.query.reportId) {
-      await this.loadModel(this.$route.query.reportId)
+      await this.loadSavedReport(this.$route.query.reportId)
+    } else {
+      await this.loadSavedReport(null)
     }
-    // TODO: load email suggestions from account settings or other
-    // this.suggested_emails = await this.$axios.get('/account/preferred-emails')
-    this.getSuggestedEmails()
   },
   methods: {
-    getSuggestedEmails () {
-      // const data = await this.$axios.get('...')
-      this.suggested_emails = [
-        'agriffith@emkay.com',
-        'jklonowski@emkay.com',
-        'jim@jimklonowski.com'
-      ]
-    },
-    async getSavedReports () {
-      await console.log('Fetching saved reports...')
-      // TODO: write endpoint
-      // this.saved_reports = await this.$axios.get('/reports/my-reports')
-      this.saved_reports = [
-        { header: this.$i18n.t('your_saved_reports') },
-        { header: 'these are fake...' },
-        'ABC123',
-        'QWERTY666'
-      ]
-    },
-    async fetchMyReport () {
+    async getMyReport () {
       this.loading = true
       try {
         const data = await this.$axios.post('/reports/my-report', this.config)
@@ -633,24 +561,35 @@ export default {
         await setTimeout(() => { this.loading = false }, 2000)
       }
     },
-    async loadModel (id) {
-      if (typeof id === 'undefined') {
-        this.config = { ...this.config, ...this.defaultConfig }
+    async getAvailableColumns (type) {
+      if (type) {
+        const { data: { groups, success, message } } = await this.$axios.get('/reports/my-reports-columns', { params: { type } })
+        if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
+        this.available_column_groups = groups
+      }
+    },
+    async getSuggestedEmails () {
+      await console.log('Getting suggested emails')
+      // TODO: load email suggestions from account settings or other
+      // this.suggested_emails = await this.$axios.get('/account/preferred-emails')
+      this.suggested_emails = [
+        'agriffith@emkay.com',
+        'jklonowski@emkay.com',
+        'jim@jimklonowski.com'
+      ]
+    },
+    async loadSavedReport (id) {
+      if (!id) {
+        this.startOver()
       } else {
-        // copy empty config into model
-        // let config = this.defaultConfig
         // Request Saved Report Config
         const { data: { savedConfig, success, message } } = await this.$axios.get('/reports/my-reports-saved-config', { params: { id } })
         if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
         // copy loaded config into model
         this.config = { ...this.config, ...savedConfig }
-        this.saved_report = id
+        this.step = 5
+        await this.getSuggestedEmails()
       }
-    },
-    async getAvailableColumnGroups (type) {
-      const { data: { groups, success, message } } = await this.$axios.get('/reports/my-reports-columns', { params: { type } })
-      if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
-      this.available_column_groups = groups
     },
     nextStep () {
       if (this.step < 5) { this.step++ } else { this.step = 1 }
@@ -662,17 +601,6 @@ export default {
       this.config.email_recipients.splice(this.config.email_recipients.indexOf(item), 1)
       this.config.email_recipients = [...this.config.email_recipients]
     },
-    // async savedReportChanged () {
-    //   debugger
-    //   // If we cleared the saved-report dropdown, then clear the current model
-    //   if (this.saved_report === undefined) {
-    //     this.startOver()
-    //   } else {
-    //     debugger
-    //     await this.loadModel(this.saved_report)
-    //     this.$router.push({ query: { reportId: this.saved_report } })
-    //   }
-    // },
     startOver () {
       // Start Over button pressed, restore blank default configuration and remove reportId from query param
       this.step = 1
@@ -684,11 +612,10 @@ export default {
       this.search = ''
       this.end_menu = false
       this.start_menu = false
-      this.saved_report = null
       this.config = { ...this.config, ...this.defaultConfig }
       this.getSuggestedEmails()
       if (this.$route.query && this.$route.query.reportId) {
-        this.$router.push({ query: { reportId: undefined } })
+        this.$router.replace({ query: { reportId: undefined } })
       }
     }
   },
