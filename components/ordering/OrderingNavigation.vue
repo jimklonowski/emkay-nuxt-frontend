@@ -44,7 +44,7 @@
         <v-row>
           <v-col cols="12">
             <v-subheader>Select an action</v-subheader>
-            <v-tabs-items v-model="tab">
+            <v-tabs-items v-model="tab" style="background-color:transparent;">
               <v-tab-item v-for="(category, key) in $options.ordering.categories" :key="key">
                 <v-flex>
                   <v-chip

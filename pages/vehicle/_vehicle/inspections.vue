@@ -3,46 +3,50 @@
     <v-row>
       <v-col cols="12">
         <v-card outlined class="report">
-          <v-card-title class="pa-0">
-            <v-toolbar height="72" flat color="transparent">
-              <v-toolbar-title>
-                {{ $t('inspections') }}
-              </v-toolbar-title>
-              <v-spacer />
-              <v-text-field
-                v-model="search"
-                :label="$t('search')"
-                prepend-inner-icon="mdi-magnify"
-                background-color="transparent"
-                clearable
-                dense
-                flat
-                hide-details
-                outlined
-                rounded
-                single-line
-                solo
-              />
-            </v-toolbar>
-          </v-card-title>
+          <v-toolbar flat color="transparent">
+            <v-toolbar-title>{{ $t('inspections') }}</v-toolbar-title>
+            <v-spacer />
+            <v-text-field
+              v-model="search"
+              :label="$t('search')"
+              prepend-inner-icon="mdi-magnify"
+              background-color="transparent"
+              class="mr-1"
+              clearable
+              dense
+              flat
+              hide-details
+              outlined
+              rounded
+              single-line
+              solo
+            />
+            <v-divider vertical inset class="mx-4" />
+            <!-- Download as XLS button -->
+            <client-only>
+              <download-excel :fields="downloadFields" :data="items">
+                <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+                  <v-icon v-text="'mdi-cloud-download'" />
+                </v-btn>
+              </download-excel>
+            </client-only>
+          </v-toolbar>
           <v-divider />
-          <v-card-text class="pa-0">
-            <v-skeleton-loader :loading="loading" type="table">
-              <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-                :headers="headers"
-                :items="items"
-                :items-per-page="25"
-                :loading="loading"
-                :mobile-breakpoint="0"
-                :search="search"
-                :sort-by="['date']"
-                :sort-desc="[true]"
-                class="striped"
-                dense
-              />
-            </v-skeleton-loader>
-          </v-card-text>
+          <v-skeleton-loader :loading="loading" type="table">
+            <v-data-table
+              :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+              :headers="headers"
+              :items="items"
+              :items-per-page="25"
+              :loading="loading"
+              :mobile-breakpoint="0"
+              :search="search"
+              :sort-by="['date']"
+              :sort-desc="[true]"
+              class="striped"
+              dense
+            />
+          </v-skeleton-loader>
         </v-card>
       </v-col>
     </v-row>

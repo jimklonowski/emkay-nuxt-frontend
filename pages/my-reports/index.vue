@@ -278,14 +278,15 @@
               <v-row no-gutters>
                 <v-col cols="12">
                   <v-card outlined>
-                    <v-card-title>
-                      {{ config.report_title }}
+                    <v-toolbar flat color="transparent">
+                      <v-toolbar-title>{{ config.report_title }}</v-toolbar-title>
                       <v-spacer />
                       <v-text-field
                         v-model="search"
                         :label="$t('search')"
                         prepent-inner-icon="mdi-magnify"
                         background-color="transparent"
+                        class="mr-1"
                         clearable
                         dense
                         flat
@@ -295,7 +296,16 @@
                         single-line
                         solo
                       />
-                    </v-card-title>
+                      <v-divider vertical inset class="mx-4" />
+                      <!-- Download as XLS button -->
+                      <client-only>
+                        <download-excel :fields="downloadFields" :data="items">
+                          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+                            <v-icon v-text="'mdi-cloud-download'" />
+                          </v-btn>
+                        </download-excel>
+                      </client-only>
+                    </v-toolbar>
                     <v-divider />
                     <v-skeleton-loader :loading="loading" type="table">
                       <v-data-table
@@ -339,6 +349,7 @@
 </template>
 <script>
 export default {
+  name: 'MyReports',
   data: vm => ({
     saved_report: null,
     saved_reports: [],
@@ -366,6 +377,9 @@ export default {
     }
   }),
   computed: {
+    downloadFields () {
+      return (Object.assign({}, ...this.config.columns_selected.map(column => ({ [this.$i18n.t(column)]: column }))))
+    },
     step1Header () {
       return (this.step <= 1)
         ? this.$i18n.t('report_type')
@@ -552,14 +566,24 @@ export default {
     async step () {
       if (this.step === 5) {
         await console.log('Last Step, make it count')
-        this.fetchMyReport()
+        try {
+          await this.fetchMyReport()
+        } catch (error) {
+          console.error(error.message)
+        } finally {
+          // testing
+          this.items = [{ vehicle_number: 'ABC123' }, { vehicle_number: 'QWERTY2' }]
+        }
       }
     },
     async saved_report () {
       if (!this.saved_report) {
         this.startOver()
       } else {
-        this.$router.replace({ query: { reportId: this.saved_report } })
+        // if we're just refreshing the page, don't navigate to the same url
+        if (this.$route.query.reportId !== this.saved_report) {
+          this.$router.replace({ query: { reportId: this.saved_report } })
+        }
         await this.loadModel(this.saved_report)
         this.step = 5
       }
@@ -620,6 +644,7 @@ export default {
         if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
         // copy loaded config into model
         this.config = { ...this.config, ...savedConfig }
+        this.saved_report = id
       }
     },
     async getAvailableColumnGroups (type) {
@@ -637,15 +662,17 @@ export default {
       this.config.email_recipients.splice(this.config.email_recipients.indexOf(item), 1)
       this.config.email_recipients = [...this.config.email_recipients]
     },
-    async savedReportChanged () {
-      // If we cleared the saved-report dropdown, then clear the current model
-      if (this.saved_report === undefined) {
-        this.startOver()
-      } else {
-        await this.loadModel(this.saved_report)
-        this.$router.push({ query: { reportId: this.saved_report } })
-      }
-    },
+    // async savedReportChanged () {
+    //   debugger
+    //   // If we cleared the saved-report dropdown, then clear the current model
+    //   if (this.saved_report === undefined) {
+    //     this.startOver()
+    //   } else {
+    //     debugger
+    //     await this.loadModel(this.saved_report)
+    //     this.$router.push({ query: { reportId: this.saved_report } })
+    //   }
+    // },
     startOver () {
       // Start Over button pressed, restore blank default configuration and remove reportId from query param
       this.step = 1

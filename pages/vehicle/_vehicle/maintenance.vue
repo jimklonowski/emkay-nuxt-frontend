@@ -11,7 +11,7 @@
               optional
               show-arrows
             >
-              <v-tab :to="maintenanceRoute" nuxt>
+              <v-tab :to="maintenanceRoute" exact nuxt>
                 {{ $t('maintenance_history') }}
                 <v-icon v-text="'mdi-tools'" />
               </v-tab>
@@ -29,6 +29,7 @@
               </v-tab>
             </v-tabs>
           </v-toolbar>
+          <v-divider />
           <nuxt-child />
         </v-card>
       </v-col>

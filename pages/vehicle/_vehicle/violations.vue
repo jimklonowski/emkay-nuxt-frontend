@@ -3,75 +3,65 @@
     <v-row>
       <v-col cols="12">
         <v-card outlined class="report">
-          <v-card-title class="pa-0">
-            <v-toolbar height="72" flat color="transparent">
-              <v-toolbar-title>
-                {{ $t('violations') }}
-              </v-toolbar-title>
-              <v-spacer />
-              <v-text-field
-                v-model="search"
-                :label="$t('search')"
-                background-color="transparent"
-                prepend-inner-icon="mdi-magnify"
-                clearable
-                dense
-                flat
-                hide-details
-                outlined
-                rounded
-                single-line
-                solo
-              />
-            </v-toolbar>
-          </v-card-title>
+          <v-toolbar flat color="transparent">
+            <v-toolbar-title>{{ $t('violation_history') }}</v-toolbar-title>
+            <v-spacer />
+            <v-text-field
+              v-model="search"
+              :label="$t('search')"
+              prepend-inner-icon="mdi-magnify"
+              background-color="transparent"
+              class="mr-1"
+              clearable
+              dense
+              flat
+              hide-details
+              outlined
+              rounded
+              single-line
+              solo
+            />
+            <v-divider vertical inset class="mx-4" />
+            <!-- Download as XLS button -->
+            <client-only>
+              <download-excel :fields="downloadFields" :data="items">
+                <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+                  <v-icon v-text="'mdi-cloud-download'" />
+                </v-btn>
+              </download-excel>
+            </client-only>
+          </v-toolbar>
           <v-divider />
-          <v-card-text class="pa-0">
-            <v-skeleton-loader :loading="loading" type="table">
-              <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-                :headers="headers"
-                :items="items"
-                :items-per-page="25"
-                :loading="loading"
-                :mobile-breakpoint="0"
-                :search="search"
-                :sort-by="['date']"
-                :sort-desc="[true]"
-                class="striped"
-                dense
-              >
-                <template #item.date="{ item }">
-                  {{ item.date | date }}
-                </template>
-                <template #item.paid_date="{ item }">
-                  {{ item.paid_date | date }}
-                </template>
-                <template #item.amount="{ item }">
-                  {{ item.amount | currency }}
-                </template>
-                <!-- <template #item.document_id="{ item }">
-                  <v-dialog>
-                    <template #activator="{ on }">
-                      <v-btn v-on="on" small text>
-                        <v-icon>mdi-pdf-box</v-icon>
-                        {{ item.document_id }}
-                      </v-btn>
-                    </template>
-                    <v-card>
-                      <v-card-title>{{ item.document_id }}.pdf</v-card-title>
-                      <v-img :src="getViolationImageUrl(item.document_path.trim(), item.document_id.trim())" />
-                    </v-card>
-                  </v-dialog>
-                </template> -->
-                <template #item.document_id="{ item }">
-                  <a :href="getViolationPdfUrl(item.document_path.trim(), item.document_id.trim())" target="_blank">
-                    View PDF
-                  </a>
-                </template>
-              </v-data-table>
-            </v-skeleton-loader>
-          </v-card-text>
+          <v-skeleton-loader :loading="loading" type="table">
+            <v-data-table
+              :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+              :headers="headers"
+              :items="items"
+              :items-per-page="25"
+              :loading="loading"
+              :mobile-breakpoint="0"
+              :search="search"
+              :sort-by="['date']"
+              :sort-desc="[true]"
+              class="striped"
+              dense
+            >
+              <template #item.date="{ item }">
+                {{ item.date | date }}
+              </template>
+              <template #item.paid_date="{ item }">
+                {{ item.paid_date | date }}
+              </template>
+              <template #item.amount="{ item }">
+                {{ item.amount | currency }}
+              </template>
+              <template #item.document_id="{ item }">
+                <a :href="getViolationPdfUrl(item.document_path.trim(), item.document_id.trim())" target="_blank">
+                  View PDF
+                </a>
+              </template>
+            </v-data-table>
+          </v-skeleton-loader>
         </v-card>
       </v-col>
     </v-row>

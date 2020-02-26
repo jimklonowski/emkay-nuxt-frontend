@@ -20,7 +20,6 @@ export const actions = {
     commit('setError', null)
     commit('setLoading', true)
     try {
-      debugger
       const { data: { success, message, data } } = await this.$axios.get('/reports/inventory')
       if (!success) { throw new Error(message) }
       commit('setData', data)

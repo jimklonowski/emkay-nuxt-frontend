@@ -53,6 +53,7 @@ export default {
   authority: "Authority",
   authorization: "Authorization",
   authorization_profile: "Authorization Profile",
+  authorization_profile_id: "Authorization Profile ID",
   authorization_profile_detail: "Authorization Profile Detail",
   auto_send: "Auto Send",
   automotive_links: "Automotive Links",

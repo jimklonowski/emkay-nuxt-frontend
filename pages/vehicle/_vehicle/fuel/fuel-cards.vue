@@ -1,13 +1,14 @@
 <template>
-  <v-card flat tile class="report">
-    <v-divider />
-    <v-card-title>
-      {{ $t('fuel_cards') }}
+  <v-card flat class="report">
+    <v-toolbar flat color="transparent">
+      <v-toolbar-title>{{ $t('fuel_cards') }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
+        background-color="transparent"
+        class="mr-1"
         clearable
         dense
         flat
@@ -17,73 +18,83 @@
         single-line
         solo
       />
-    </v-card-title>
+      <v-divider vertical inset class="mx-4" />
+      <!-- Download as XLS button -->
+      <client-only>
+        <download-excel :fields="downloadFields" :data="items">
+          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+            <v-icon v-text="'mdi-cloud-download'" />
+          </v-btn>
+        </download-excel>
+      </client-only>
+    </v-toolbar>
     <v-divider />
-    <v-card-text class="pa-0">
-      <v-skeleton-loader :loading="loading" type="table">
-        <!-- :dense="!!items.length" -->
-        <v-data-table
-          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-          :headers="headers"
-          :items="items"
-          :items-per-page="25"
-          :loading="loading"
-          :mobile-breakpoint="0"
-          :search="search"
-          :sort-by="['card_#']"
-          :sort-desc="[true]"
-          class="striped"
-        >
-          <template #item.issue_date="{ item }">
-            {{ item.issue_date | date }}
-          </template>
+    <!-- Report Content -->
+    <v-skeleton-loader :loading="loading" type="table">
+      <!-- :dense="!!items.length" -->
+      <v-data-table
+        :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+        :headers="headers"
+        :items="items"
+        :items-per-page="25"
+        :loading="loading"
+        :mobile-breakpoint="0"
+        :search="search"
+        :sort-by="['card_#']"
+        :sort-desc="[true]"
+        class="striped"
+      >
+        <template #item.issue_date="{ item }">
+          {{ item.issue_date | date }}
+        </template>
 
-          <template #item.issue_date="{ item }">
-            {{ item.expiration_date | date }}
-          </template>
+        <template #item.issue_date="{ item }">
+          {{ item.expiration_date | date }}
+        </template>
 
-          <template #item.status="{ item }">
-            <v-chip :outlined="$vuetify.theme.dark" x-small>
-              {{ item.status }}
-            </v-chip>
-          </template>
+        <template #item.status="{ item }">
+          <v-chip :outlined="$vuetify.theme.dark" x-small>
+            {{ item.status }}
+          </v-chip>
+        </template>
 
-          <template #item.authorization_profile_id="{ item }">
-            <v-dialog v-model="authorization_profile_dialog" max-width="1200" scrollable>
-              <template #activator="{ on }">
-                <v-btn v-on="on" color="primary" small text tile>
-                  <v-icon v-text="'mdi-eye'" class="mr-2" />
-                  {{ $t('view') }}
-                </v-btn>
-              </template>
-              <FuelAuthorizationProfile :id="item.authorization_profile_id" />
-            </v-dialog>
-          </template>
+        <template #item.authorization_profile_id="{ item }">
+          <v-dialog v-model="authorization_profile_dialog" max-width="1200" scrollable>
+            <template #activator="{ on }">
+              <v-btn v-on="on" color="primary" small text tile>
+                <v-icon v-text="'mdi-eye'" class="mr-2" />
+                {{ $t('view') }}
+              </v-btn>
+            </template>
+            <FuelAuthorizationProfile :id="item.authorization_profile_id" />
+          </v-dialog>
+        </template>
 
-          <template #item.actions="{ item }">
-            <v-dialog v-model="card_request_dialog" max-width="1200" scrollable>
-              <template #activator="{ on }">
-                <v-btn v-on="on" color="error" small text tile>
-                  <v-icon v-text="'mdi-credit-card-off'" class="mr-2" />
-                  {{ $t('reorder_or_terminate') }}
-                </v-btn>
-              </template>
-              <FuelCardRequest :card="item.card_number" @close-dialog="card_request_dialog = false" />
-            </v-dialog>
-          </template>
-        </v-data-table>
-      </v-skeleton-loader>
-    </v-card-text>
+        <template #item.actions="{ item }">
+          <v-dialog v-model="card_request_dialog" max-width="1200" scrollable>
+            <template #activator="{ on }">
+              <v-btn v-on="on" color="error" small text tile>
+                <v-icon v-text="'mdi-credit-card-off'" class="mr-2" />
+                {{ $t('reorder_or_terminate') }}
+              </v-btn>
+            </template>
+            <FuelCardRequest :card="item.card_number" @close-dialog="card_request_dialog = false" />
+          </v-dialog>
+        </template>
+      </v-data-table>
+    </v-skeleton-loader>
   </v-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { downloadFields } from '@/mixins/datatables'
 import FuelAuthorizationProfile from '@/components/vehicle/fuel/FuelAuthorizationProfile'
 import FuelCardRequest from '@/components/vehicle/fuel/FuelCardRequest'
 export default {
   name: 'VehicleFuelCards',
   components: { FuelAuthorizationProfile, FuelCardRequest },
+  mixins: [downloadFields],
   data: () => ({
     authorization_profile_dialog: false,
     card_request_dialog: false,

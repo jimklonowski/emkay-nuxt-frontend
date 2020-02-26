@@ -7,15 +7,16 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-card outlined class="report">
-          <v-card-title>
-            {{ $t('billing_history') }}
+        <v-card outlined tile class="report">
+          <v-toolbar flat color="transparent">
+            <v-toolbar-title>{{ $t('billing_history') }}</v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
               :label="$t('search')"
-              background-color="transparent"
               prepend-inner-icon="mdi-magnify"
+              background-color="transparent"
+              class="mr-1"
               clearable
               dense
               flat
@@ -25,7 +26,17 @@
               rounded
               solo
             />
-          </v-card-title>
+            <v-divider vertical inset class="mx-4" />
+            <!-- Download as XLS button -->
+            <client-only>
+              <download-excel :fields="downloadFields" :data="items">
+                <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+                  <v-icon v-text="'mdi-cloud-download'" />
+                </v-btn>
+              </download-excel>
+            </client-only>
+          </v-toolbar>
+          <v-divider />
           <!-- Report Filters -->
           <v-container>
             <v-subheader v-text="$t('report_filters')" class="overline" />
@@ -94,54 +105,42 @@
               </v-col>
             </v-row>
           </v-container>
-          <!-- Download as XLS Button -->
-          <v-toolbar flat color="transparent">
-            <v-spacer />
-            <v-btn :title="`${$t('save')} .xls`" small depressed>
-              <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-              <client-only>
-                <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-              </client-only>
-            </v-btn>
-          </v-toolbar>
           <v-divider />
           <!-- Report Content -->
-          <v-card-text class="pa-0">
-            <v-skeleton-loader :loading="loading" type="table">
-              <v-data-table
-                :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-                :headers="headers"
-                :items="items"
-                :items-per-page="25"
-                :loading="loading"
-                :mobile-breakpoint="0"
-                :search="search"
-                :sort-by="['bill_date']"
-                :sort-desc="[true]"
-                class="striped"
-                dense
-              >
-                <!-- Configure display of columns -->
-                <template #item.invoice_number="{ item }">
-                  <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none" nuxt>
-                    {{ item.invoice_number }}
-                  </nuxt-link>
-                </template>
+          <v-skeleton-loader :loading="loading" type="table">
+            <v-data-table
+              :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+              :headers="headers"
+              :items="items"
+              :items-per-page="25"
+              :loading="loading"
+              :mobile-breakpoint="0"
+              :search="search"
+              :sort-by="['bill_date']"
+              :sort-desc="[true]"
+              class="striped"
+              dense
+            >
+              <!-- Configure display of columns -->
+              <template #item.invoice_number="{ item }">
+                <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none" nuxt>
+                  {{ item.invoice_number }}
+                </nuxt-link>
+              </template>
 
-                <template #item.bill_date="{ item }">
-                  {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
-                </template>
+              <template #item.bill_date="{ item }">
+                {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
+              </template>
 
-                <template #item.bill_for_date="{ item }">
-                  {{ item.bill_for_date | date('YYYY-MM', 'MM/YYYY') }}
-                </template>
+              <template #item.bill_for_date="{ item }">
+                {{ item.bill_for_date | date('YYYY-MM', 'MM/YYYY') }}
+              </template>
 
-                <template #item.amount="{ item }">
-                  {{ item.amount | currency }}
-                </template>
-              </v-data-table>
-            </v-skeleton-loader>
-          </v-card-text>
+              <template #item.amount="{ item }">
+                {{ item.amount | currency }}
+              </template>
+            </v-data-table>
+          </v-skeleton-loader>
         </v-card>
       </v-col>
     </v-row>

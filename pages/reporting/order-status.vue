@@ -1,12 +1,14 @@
 <template>
   <v-card outlined class="report">
-    <v-card-title>
-      {{ $t('order_status_report') }}
+    <v-toolbar flat color="transparent">
+      <v-toolbar-title>{{ $t('order_status_report') }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
+        background-color="transparent"
+        class="mr-1"
         clearable
         dense
         flat
@@ -16,103 +18,100 @@
         single-line
         solo
       />
-    </v-card-title>
-    <!-- Download as XLS button -->
-    <v-toolbar flat color="transparent">
-      <v-spacer />
-      <v-btn :title="`${$t('save')} .xls`" small depressed>
-        <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-        <client-only>
-          <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-        </client-only>
-      </v-btn>
+      <v-divider vertical inset class="mx-4" />
+      <!-- Download as XLS button -->
+      <client-only>
+        <download-excel :fields="downloadFields" :data="items">
+          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+            <v-icon v-text="'mdi-cloud-download'" />
+          </v-btn>
+        </download-excel>
+      </client-only>
     </v-toolbar>
     <v-divider />
     <!-- Report Content -->
-    <v-card-text class="pa-0">
-      <v-skeleton-loader :loading="loading" type="table">
-        <v-data-table
-          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-          :headers="headers"
-          :items="items"
-          :items-per-page="25"
-          :loading="loading"
-          :mobile-breakpoint="0"
-          :search="search"
-          :sort-by="['vehicle_number']"
-          :sort-desc="[false]"
-          class="striped"
-          dense
-        >
-          <!-- Configure the #no-data message (no data from server) -->
-          <template #no-data>
-            <div class="text-left">
-              {{ $t('no_data_found', { 'message': error }) }}
-            </div>
-          </template>
+    <v-skeleton-loader :loading="loading" type="table">
+      <v-data-table
+        :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+        :headers="headers"
+        :items="items"
+        :items-per-page="25"
+        :loading="loading"
+        :mobile-breakpoint="0"
+        :search="search"
+        :sort-by="['vehicle_number']"
+        :sort-desc="[false]"
+        class="striped"
+        dense
+      >
+        <!-- Configure the #no-data message (no data from server) -->
+        <template #no-data>
+          <div class="text-left">
+            {{ $t('no_data_found', { 'message': error }) }}
+          </div>
+        </template>
 
-          <!-- Configure the #no-results message (no rows in filtered search) -->
-          <template #no-results>
-            <div class="text-left">
-              {{ $t('no_search_results', { 'query': search }) }}
-            </div>
-          </template>
+        <!-- Configure the #no-results message (no rows in filtered search) -->
+        <template #no-results>
+          <div class="text-left">
+            {{ $t('no_search_results', { 'query': search }) }}
+          </div>
+        </template>
 
-          <!-- configure individual columns -->
-          <template #item.vehicle_number="{ item }">
-            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
-          </template>
+        <!-- configure individual columns -->
+        <template #item.vehicle_number="{ item }">
+          <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
+        </template>
 
-          <template #item.order_received_date="{ item }">
-            {{ item.order_received_date | date }}
-          </template>
+        <template #item.order_received_date="{ item }">
+          {{ item.order_received_date | date }}
+        </template>
 
-          <template #item.order_placed_date="{ item }">
-            {{ item.order_placed_date | date }}
-          </template>
+        <template #item.order_placed_date="{ item }">
+          {{ item.order_placed_date | date }}
+        </template>
 
-          <template #item.factory_acknowledged_date="{ item }">
-            {{ item.factory_acknowledged_date | date }}
-          </template>
+        <template #item.factory_acknowledged_date="{ item }">
+          {{ item.factory_acknowledged_date | date }}
+        </template>
 
-          <template #item.sent_to_plant_date="{ item }">
-            {{ item.sent_to_plant_date | date }}
-          </template>
+        <template #item.sent_to_plant_date="{ item }">
+          {{ item.sent_to_plant_date | date }}
+        </template>
 
-          <template #item.production_scheduled_date="{ item }">
-            {{ item.production_scheduled_date | date }}
-          </template>
+        <template #item.production_scheduled_date="{ item }">
+          {{ item.production_scheduled_date | date }}
+        </template>
 
-          <template #item.built_date="{ item }">
-            {{ item.built_date | date }}
-          </template>
+        <template #item.built_date="{ item }">
+          {{ item.built_date | date }}
+        </template>
 
-          <template #item.shipped_to_body_company_date="{ item }">
-            {{ item.shipped_to_body_company_date | date }}
-          </template>
+        <template #item.shipped_to_body_company_date="{ item }">
+          {{ item.shipped_to_body_company_date | date }}
+        </template>
 
-          <template #item.shipped_from_body_company_date="{ item }">
-            {{ item.shipped_from_body_company_date | date }}
-          </template>
+        <template #item.shipped_from_body_company_date="{ item }">
+          {{ item.shipped_from_body_company_date | date }}
+        </template>
 
-          <template #item.shipped_to_dealer_date="{ item }">
-            {{ item.shipped_to_dealer_date | date }}
-          </template>
+        <template #item.shipped_to_dealer_date="{ item }">
+          {{ item.shipped_to_dealer_date | date }}
+        </template>
 
-          <template #item.delivered_to_dealer_date="{ item }">
-            {{ item.delivered_to_dealer_date | date }}
-          </template>
+        <template #item.delivered_to_dealer_date="{ item }">
+          {{ item.delivered_to_dealer_date | date }}
+        </template>
 
-          <template #item.vin_date="{ item }">
-            {{ item.vin_date | date }}
-          </template>
+        <template #item.vin_date="{ item }">
+          {{ item.vin_date | date }}
+        </template>
 
-          <template #item.in_service_date="{ item }">
-            {{ item.in_service_date | date }}
-          </template>
-        </v-data-table>
-      </v-skeleton-loader>
-    </v-card-text>
+        <template #item.in_service_date="{ item }">
+          {{ item.in_service_date | date }}
+        </template>
+      </v-data-table>
+    </v-skeleton-loader>
   </v-card>
 </template>
 

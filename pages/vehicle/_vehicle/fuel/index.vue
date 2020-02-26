@@ -1,14 +1,14 @@
 <template>
-  <v-card flat tile class="report">
-    <v-divider />
-    <v-card-title>
-      {{ $t('fuel_history') }}
+  <v-card flat class="report">
+    <v-toolbar flat color="transparent">
+      <v-toolbar-title>{{ $t('fuel_history') }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
         background-color="transparent"
+        class="mr-1"
         clearable
         dense
         flat
@@ -18,7 +18,16 @@
         single-line
         solo
       />
-    </v-card-title>
+      <v-divider vertical inset class="mx-4" />
+      <!-- Download as XLS button -->
+      <client-only>
+        <download-excel :fields="downloadFields" :data="items">
+          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+            <v-icon v-text="'mdi-cloud-download'" />
+          </v-btn>
+        </download-excel>
+      </client-only>
+    </v-toolbar>
     <v-divider />
     <!-- Report Filters -->
     <v-container>
@@ -105,63 +114,51 @@
         </v-col>
       </v-row>
     </v-container>
-    <!-- Download as XLS Button -->
-    <v-toolbar color="transparent" flat>
-      <v-spacer />
-      <v-btn :title="`${$t('save')} .xls`" small depressed>
-        <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-        <client-only>
-          <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-        </client-only>
-      </v-btn>
-    </v-toolbar>
     <v-divider />
     <!-- Report Content -->
-    <v-card-text class="pa-0">
-      <v-skeleton-loader :loading="loading" type="table">
-        <v-data-table
-          :dense="items && items.length !== 0"
-          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-          :headers="headers"
-          :items="items"
-          :items-per-page="25"
-          :loading="loading"
-          :mobile-breakpoint="0"
-          :search="search"
-          :sort-by="['service_date']"
-          :sort-desc="true"
-          class="striped"
-        >
-          <!-- Configure the #no-results message (no rows in filtered search) -->
-          <template #no-results>
-            <div class="text-left">
-              {{ $t('no_search_results', { 'query': search }) }}
-            </div>
-          </template>
+    <v-skeleton-loader :loading="loading" type="table">
+      <v-data-table
+        :dense="items && items.length !== 0"
+        :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+        :headers="headers"
+        :items="items"
+        :items-per-page="25"
+        :loading="loading"
+        :mobile-breakpoint="0"
+        :search="search"
+        :sort-by="['service_date']"
+        :sort-desc="[true]"
+        class="striped"
+      >
+        <!-- Configure the #no-results message (no rows in filtered search) -->
+        <template #no-results>
+          <div class="text-left">
+            {{ $t('no_search_results', { 'query': search }) }}
+          </div>
+        </template>
 
-          <!-- Configure individual column rendering -->
-          <template #item.service_date="{ item }">
-            {{ item.service_date | date }}
-          </template>
+        <!-- Configure individual column rendering -->
+        <template #item.service_date="{ item }">
+          {{ item.service_date | date }}
+        </template>
 
-          <template #item.bill_date="{ item }">
-            {{ item.bill_date | date }}
-          </template>
+        <template #item.bill_date="{ item }">
+          {{ item.bill_date | date }}
+        </template>
 
-          <template #item.product_type="{ item }">
-            <v-chip :outlined="!$vuetify.theme.dark" v-text="item.product_type" x-small />
-          </template>
+        <template #item.product_type="{ item }">
+          <v-chip :outlined="!$vuetify.theme.dark" v-text="item.product_type" x-small />
+        </template>
 
-          <template #item.unit_price="{ item }">
-            {{ item.unit_price | currency(3, 3) }}
-          </template>
+        <template #item.unit_price="{ item }">
+          {{ item.unit_price | currency(3, 3) }}
+        </template>
 
-          <template #item.amount="{ item }">
-            {{ item.amount | currency }}
-          </template>
-        </v-data-table>
-      </v-skeleton-loader>
-    </v-card-text>
+        <template #item.amount="{ item }">
+          {{ item.amount | currency }}
+        </template>
+      </v-data-table>
+    </v-skeleton-loader>
   </v-card>
 </template>
 

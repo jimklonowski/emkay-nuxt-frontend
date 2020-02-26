@@ -1,12 +1,14 @@
 <template>
   <v-card outlined class="report">
-    <v-card-title>
-      {{ $t('todo') }}
+    <v-toolbar flat color="transparent">
+      <v-toolbar-title>{{ $t('todo') }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
+        background-color="transparent"
+        class="mr-1"
         clearable
         dense
         flat
@@ -16,7 +18,17 @@
         single-line
         solo
       />
-    </v-card-title>
+      <v-divider vertical inset class="mx-4" />
+      <!-- Download as XLS button -->
+      <client-only>
+        <download-excel :fields="downloadFields" :data="items">
+          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+            <v-icon v-text="'mdi-cloud-download'" />
+          </v-btn>
+        </download-excel>
+      </client-only>
+    </v-toolbar>
+    <v-divider />
     <!-- Report Filters -->
     <v-container>
       <v-subheader v-text="$t('report_filters')" class="overline" />
@@ -85,61 +97,37 @@
         </v-col>
       </v-row>
     </v-container>
-    <!-- Download as XLS button -->
-    <v-toolbar flat>
-      <v-spacer />
-      <v-btn :title="`${$t('save')} .xls`" small depressed>
-        <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-        <client-only>
-          <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-        </client-only>
-      </v-btn>
-    </v-toolbar>
     <v-divider />
     <!-- Report Content -->
-    <v-card-text class="pa-0">
-      <v-skeleton-loader :loading="loading" type="table">
-        <v-data-table
-          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-          :headers="headers"
-          :items="items"
-          :items-per-page="25"
-          :loading="loading"
-          :mobile-breakpoint="0"
-          :search="search"
-          :sort-by="[0]"
-          :sort-desc="[true]"
-          class="striped"
-          dense
-        >
-          <!-- Configure the #no-data message (no data from server) -->
-          <template #no-data>
-            <div class="text-left">
-              {{ $t('no_data_found', { 'message': error }) }}
-            </div>
-          </template>
+    <v-skeleton-loader :loading="loading" type="table">
+      <v-data-table
+        :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+        :headers="headers"
+        :items="items"
+        :items-per-page="25"
+        :loading="loading"
+        :mobile-breakpoint="0"
+        :search="search"
+        :sort-by="[0]"
+        :sort-desc="[true]"
+        class="striped"
+        dense
+      >
+        <!-- Configure the #no-data message (no data from server) -->
+        <template #no-data>
+          <div class="text-left">
+            {{ $t('no_data_found', { 'message': error }) }}
+          </div>
+        </template>
 
-          <!-- Configure the #no-results message (no rows in filtered search) -->
-          <template #no-results>
-            <div class="text-left">
-              {{ $t('no_search_results', { 'query': search }) }}
-            </div>
-          </template>
-
-          <!-- Configure how specific columns are rendered -->
-          <!-- <template #item.vehicle_number="{ item }">
-            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" />
-          </template> -->
-
-          <!-- Configure how each #item row is rendered (loses customizations from headers like divider, align, etc.) -->
-          <!-- <template #item="{ item }">
-            <tr>
-              <td>{{ item.date | date }}</td>
-            </tr>
-          </template> -->
-        </v-data-table>
-      </v-skeleton-loader>
-    </v-card-text>
+        <!-- Configure the #no-results message (no rows in filtered search) -->
+        <template #no-results>
+          <div class="text-left">
+            {{ $t('no_search_results', { 'query': search }) }}
+          </div>
+        </template>
+      </v-data-table>
+    </v-skeleton-loader>
   </v-card>
 </template>
 

@@ -1,12 +1,14 @@
 <template>
   <v-card outlined class="report">
-    <v-card-title>
-      {{ $t('fuel_detail') }}
+    <v-toolbar flat color="transparent">
+      <v-toolbar-title>{{ $t('fuel_detail') }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
+        background-color="transparent"
+        class="mr-1"
         clearable
         dense
         flat
@@ -16,7 +18,17 @@
         single-line
         solo
       />
-    </v-card-title>
+      <v-divider vertical inset class="mx-4" />
+      <!-- Download as XLS button -->
+      <client-only>
+        <download-excel :fields="downloadFields" :data="items">
+          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+            <v-icon v-text="'mdi-cloud-download'" />
+          </v-btn>
+        </download-excel>
+      </client-only>
+    </v-toolbar>
+    <v-divider />
     <!-- Report Filters -->
     <v-container>
       <v-subheader v-text="$t('report_filters')" class="overline" />
@@ -92,92 +104,80 @@
         </v-col>
       </v-row>
     </v-container>
-    <!-- Download as XLS button -->
-    <v-toolbar flat>
-      <v-spacer />
-      <v-btn :title="`${$t('save')} .xls`" small depressed>
-        <v-icon v-text="'mdi-cloud-download'" small class="mr-2" />
-        <client-only>
-          <download-excel v-text="$t('download')" :fields="downloadFields" :data="items" />
-        </client-only>
-      </v-btn>
-    </v-toolbar>
     <v-divider />
     <!-- Report Content -->
-    <v-card-text class="pa-0">
-      <v-skeleton-loader :loading="loading" type="table">
-        <v-data-table
-          :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
-          :headers="headers"
-          :items="items"
-          :items-per-page="25"
-          :loading="loading"
-          :mobile-breakpoint="0"
-          :search="search"
-          :sort-by="['service_date']"
-          :sort-desc="[true]"
-          class="striped"
-          dense
-        >
-          <!-- Configure the #no-data message (no data from server) -->
-          <template #no-data>
-            <div class="text-left">
-              {{ $t('no_data_found', { 'message': error }) }}
-            </div>
-          </template>
+    <v-skeleton-loader :loading="loading" type="table">
+      <v-data-table
+        :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
+        :headers="headers"
+        :items="items"
+        :items-per-page="25"
+        :loading="loading"
+        :mobile-breakpoint="0"
+        :search="search"
+        :sort-by="['service_date']"
+        :sort-desc="[true]"
+        class="striped"
+        dense
+      >
+        <!-- Configure the #no-data message (no data from server) -->
+        <template #no-data>
+          <div class="text-left">
+            {{ $t('no_data_found', { 'message': error }) }}
+          </div>
+        </template>
 
-          <!-- Configure the #no-results message (no rows in filtered search) -->
-          <template #no-results>
-            <div class="text-left">
-              {{ $t('no_search_results', { 'query': search }) }}
-            </div>
-          </template>
+        <!-- Configure the #no-results message (no rows in filtered search) -->
+        <template #no-results>
+          <div class="text-left">
+            {{ $t('no_search_results', { 'query': search }) }}
+          </div>
+        </template>
 
-          <!-- configure individual column rendering -->
-          <template #item.service_date="{ item }">
-            {{ item.service_date | date }}
-          </template>
+        <!-- configure individual column rendering -->
+        <template #item.service_date="{ item }">
+          {{ item.service_date | date }}
+        </template>
 
-          <template #item.bill_date="{ item }">
-            {{ item.bill_date | date }}
-          </template>
+        <template #item.bill_date="{ item }">
+          {{ item.bill_date | date }}
+        </template>
 
-          <template #item.vehicle_number="{ item }">
-            <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
-          </template>
+        <template #item.vehicle_number="{ item }">
+          <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
+        </template>
 
-          <template #item.amount="{ item }">
-            {{ item.amount | currency }}
-          </template>
+        <template #item.amount="{ item }">
+          {{ item.amount | currency }}
+        </template>
 
-          <template #item.card_number="{ item }">
-            <v-chip :outlined="$vuetify.theme.dark" x-small>
-              {{ item.card_number }}
-            </v-chip>
-          </template>
+        <template #item.card_number="{ item }">
+          <v-chip :outlined="$vuetify.theme.dark" x-small>
+            {{ item.card_number }}
+          </v-chip>
+        </template>
 
-          <template #item.emkay_invoice_date="{ item }">
-            {{ item.emkay_invoice_date | date }}
-          </template>
+        <template #item.emkay_invoice_date="{ item }">
+          {{ item.emkay_invoice_date | date }}
+        </template>
 
-          <template #item.quantity="{ item }">
-            {{ item.quantity | number }}
-          </template>
+        <template #item.quantity="{ item }">
+          {{ item.quantity | number }}
+        </template>
 
-          <template #item.tank_capacity="{ item }">
-            {{ item.tank_capacity | number }}
-          </template>
+        <template #item.tank_capacity="{ item }">
+          {{ item.tank_capacity | number }}
+        </template>
 
-          <template #item.tax_exempt="{ item }">
-            {{ item.tax_exempt | currency }}
-          </template>
+        <template #item.tax_exempt="{ item }">
+          {{ item.tax_exempt | currency }}
+        </template>
 
-          <template #item.unit_price="{ item }">
-            {{ item.unit_price | currency(3,3) }}
-          </template>
-        </v-data-table>
-      </v-skeleton-loader>
-    </v-card-text>
+        <template #item.unit_price="{ item }">
+          {{ item.unit_price | currency(3,3) }}
+        </template>
+      </v-data-table>
+    </v-skeleton-loader>
   </v-card>
 </template>
 
