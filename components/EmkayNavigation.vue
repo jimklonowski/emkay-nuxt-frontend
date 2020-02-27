@@ -106,14 +106,14 @@ export default {
           to: { path: '/' }
         },
         {
-          icon: 'mdi-car-cruise-control',
-          key: 'vehicle_dashboard',
-          to: { path: '/vehicle-search' }
-        },
-        {
           icon: 'mdi-chart-areaspline',
           key: 'fleet_dashboard',
           to: { path: '/fleet' }
+        },
+        {
+          icon: 'mdi-car-cruise-control',
+          key: 'vehicle_dashboard',
+          to: { path: '/vehicle-search' }
         },
         {
           icon: 'mdi-file-certificate',
