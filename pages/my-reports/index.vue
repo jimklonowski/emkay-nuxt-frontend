@@ -268,10 +268,12 @@
                   solo
                 />
                 <v-divider vertical inset class="mx-4" />
+                <!-- Save Config Dialog -->
                 <v-dialog
                   v-model="save_dialog"
                   persistent
                   max-width="650"
+                  scrollable
                 >
                   <template #activator="{ on }">
                     <v-btn v-on="on" :title="`${$t('save_configuration')}`" large icon>
@@ -283,7 +285,7 @@
                       {{ $t('save_configuration') }}
                     </v-card-title>
                     <v-divider />
-                    <v-card-text>
+                    <v-card-text style="max-height:350px;">
                       <v-list subheader>
                         <v-list-item>
                           <v-list-item-content>
@@ -341,6 +343,7 @@
                         </v-list-item>
                       </v-list>
                     </v-card-text>
+                    <v-divider />
                     <v-card-actions>
                       <v-spacer />
                       <v-btn @click="save_dialog = false" text>
@@ -446,11 +449,11 @@ export default {
     },
     step3Header () {
       return (this.step <= 3)
-        ? this.$i18n.t('scope_of_report')
-        : `${this.$i18n.t('scope_of_report')}: ${this.$moment(this.config.start).format('L')} - ${this.$moment(this.config.end).format('L')}, ${this.$i18n.tc('centers_selected', this.config.centers_selected.length)}`
+        ? this.$i18n.t('report_scope')
+        : `${this.$i18n.t('report_scope')}: ${this.$moment(this.config.start).format('L')} - ${this.$moment(this.config.end).format('L')}, ${this.$i18n.tc('centers_selected', this.config.centers_selected.length)}`
     },
     step4Header () {
-      return this.$i18n.t('saving_and_scheduling')
+      return this.$i18n.t('scheduling')
     },
     defaultConfig () {
       return {

@@ -447,6 +447,7 @@ export default function ({ $axios, redirect }) {
       const id = config.params.id
       const savedConfig = {
         auto_send: true,
+        report_id: id,
         report_schedule: 'monthly',
         report_title: id,
         report_type: 'fuel',
