@@ -9,7 +9,7 @@
       flat
       hide-on-scroll
       elevation="4"
-      scroll-threshold="60"
+      scroll-threshold="150"
       class="emkay-image-nav"
     >
       <template #img="{ props }">
@@ -24,18 +24,19 @@
         </nuxt-link>
       </v-toolbar-title>
       <template #extension>
-        <p class="body-2 font-weight-light">Load a saved report or build your own!</p>
+        <div class="body-2 font-weight-light">Load a saved report or build your own!</div>
       </template>
     </v-app-bar>
     <v-card tile outlined>
       <v-container>
         <v-row>
           <v-col cols="12" sm="6" md="4" lg="3">
-            <v-subheader>{{ $t('load_a_saved_report') }}</v-subheader>
+            <v-subheader class="pl-0 mb-2">{{ $t('load_a_saved_report') }}</v-subheader>
             <v-select
               v-model="selected_report"
               :items="saved_reports"
               :label="$t('pick_a_report')"
+              :loading="saved_reports_loading"
               :menu-props="{ bottom: true, offsetY: true }"
               max-width="auto"
               outlined
@@ -48,12 +49,30 @@
     </v-card>
   </span>
 </template>
+
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data: () => ({
-    saved_reports: [],
-    selected_report: undefined
+    // saved_reports: [],
+    // selected_report: undefined
   }),
+  computed: {
+    // ...mapState('my-reports', ['selected_report']),
+    ...mapGetters({
+      saved_reports_loading: 'my-reports/getLoading',
+      saved_reports: 'my-reports/getSavedReports'
+      // selected_report: 'my-reports/getSelectedReport'
+    }),
+    selected_report: {
+      set (reportId) {
+        this.$store.commit('my-reports/setSelectedReport', reportId)
+      },
+      get () {
+        return this.$store.state['my-reports'].selected_report
+      }
+    }
+  },
   watch: {
     // change the query parameter when selected_report changes
     async selected_report () {
@@ -63,20 +82,11 @@ export default {
     }
   },
   async mounted () {
-    await this.getSavedReports()
+    // fetch saved reports from backend
+    await this.$store.dispatch('my-reports/fetchSavedReports')
     if (this.$route.query && this.$route.query.reportId) {
-      this.selected_report = this.$route.query.reportId
-    }
-  },
-  methods: {
-    async getSavedReports () {
-      await console.log('Fetching Saved Reports')
-      // TODO...
-      this.saved_reports = [
-        { header: `${this.$i18n.t('your_saved_reports')} (mocked)` },
-        'ABC123',
-        'QWERTY666'
-      ]
+      // this.selected_report = this.$route.query.reportId
+      this.$store.commit('my-reports/setSelectedReport', this.$route.query.reportId)
     }
   }
 }

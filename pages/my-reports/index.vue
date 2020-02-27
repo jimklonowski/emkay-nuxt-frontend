@@ -2,7 +2,7 @@
   <v-container>
     <v-row no-gutters>
       <v-col cols="12">
-        <v-stepper v-model="step" vertical class="pb-4">
+        <v-stepper v-model="step" vertical class="pb-0">
           <!-- Step 1: Pick Report Type -->
           <v-stepper-step :complete="step > 1" step="1" class="font-roboto">
             {{ step1Header }}
@@ -268,10 +268,94 @@
                   solo
                 />
                 <v-divider vertical inset class="mx-4" />
+                <v-dialog
+                  v-model="save_dialog"
+                  persistent
+                  max-width="650"
+                >
+                  <template #activator="{ on }">
+                    <v-btn v-on="on" :title="`${$t('save_configuration')}`" large icon>
+                      <v-icon v-text="'mdi-content-save'" />
+                    </v-btn>
+                  </template>
+                  <v-card :loading="save_loading">
+                    <v-card-title class="headline">
+                      Save this report for future use
+                    </v-card-title>
+                    <v-divider />
+                    <v-card-text>
+                      <v-list subheader>
+                        <v-list-item>
+                          <v-list-item-content>
+                            <v-list-item-subtitle v-text="$t('report_title')" style="font-size:.75rem;" />
+                            <v-list-item-title v-text="config.report_title" />
+                          </v-list-item-content>
+                          <v-list-item-action class="align-center">
+                            <v-list-item-action-text v-text="$t('type')" />
+                            <v-chip label small color="primary">
+                              {{ $t(config.report_type) }}
+                            </v-chip>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-row>
+                            <v-col cols="6">
+                              <v-text-field :label="$t('start_date')" :value="$moment(config.start).format('L')" readonly />
+                            </v-col>
+                            <v-col cols="6">
+                              <v-text-field :label="$t('end_date')" :value="$moment(config.end).format('L')" readonly />
+                            </v-col>
+                          </v-row>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>
+                            <v-list-item-subtitle v-text="$t('columns')" style="font-size:.75rem;" />
+                            <v-chip-group column>
+                              <v-chip v-for="column in config.columns_selected" :key="column" small>
+                                {{ $t(column) }}
+                              </v-chip>
+                            </v-chip-group>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>
+                            <v-list-item-subtitle v-text="$t('centers')" style="font-size:.75rem;" />
+                            <v-chip-group column>
+                              <v-chip v-for="center in config.centers_selected" :key="center" small>
+                                {{ center }}
+                              </v-chip>
+                            </v-chip-group>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item v-show="config.auto_send">
+                          <v-list-item-content>
+                            <v-list-item-subtitle style="font-size:.75rem;">
+                              {{ `${$t('auto_send')} (${$t(config.report_schedule)})` }}
+                            </v-list-item-subtitle>
+                            <v-chip-group column>
+                              <v-chip v-for="email in config.email_recipients" :key="email" small>
+                                {{ email }}
+                              </v-chip>
+                            </v-chip-group>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer />
+                      <v-btn @click="save_dialog = false" text>
+                        Cancel
+                      </v-btn>
+                      <v-btn @click="saveConfig" text color="primary darken-1">
+                        Save
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
                 <!-- Download as XLS button -->
                 <client-only>
                   <download-excel :fields="downloadFields" :data="items">
-                    <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+                    <v-btn :title="`${$t('download')} .xls`" color="primary" large icon>
                       <v-icon v-text="'mdi-cloud-download'" />
                     </v-btn>
                   </download-excel>
@@ -300,10 +384,10 @@
         Restart
       </v-btn>
       <v-spacer />
-      <v-btn @click="prevStep" text>
+      <v-btn v-show="step > 1" @click="prevStep" text>
         {{ $t('previous_step') }}
       </v-btn>
-      <v-btn @click="nextStep" color="primary">
+      <v-btn :disabled="step === 5" @click="nextStep" color="primary">
         {{ $t('next_step') }}
       </v-btn>
     </v-row>
@@ -314,6 +398,8 @@ export default {
   name: 'MyReports',
   layout: 'myreports',
   data: vm => ({
+    save_dialog: false,
+    save_loading: false,
     saved_reports: [],
     available_column_groups: [],
     suggested_emails: [],
@@ -339,6 +425,12 @@ export default {
     }
   }),
   computed: {
+    listCenters () {
+      return this.config.centers_selected.join(', ')
+    },
+    translatedColumns () {
+      return this.config.columns_selected.join(', ')
+    },
     downloadFields () {
       return (Object.assign({}, ...this.config.columns_selected.map(column => ({ [this.$i18n.t(column)]: column }))))
     },
@@ -601,6 +693,17 @@ export default {
       this.config.email_recipients.splice(this.config.email_recipients.indexOf(item), 1)
       this.config.email_recipients = [...this.config.email_recipients]
     },
+    async saveConfig () {
+      this.save_loading = true
+      // TODO:
+      await new Promise(resolve => setTimeout(() => {
+        console.log('fake 2s delay...')
+        this.save_loading = false
+        this.$snotify.info('saving.', 'ok')
+        this.save_dialog = false
+        resolve()
+      }, 2000))
+    },
     startOver () {
       // Start Over button pressed, restore blank default configuration and remove reportId from query param
       this.step = 1
@@ -614,9 +717,10 @@ export default {
       this.start_menu = false
       this.config = { ...this.config, ...this.defaultConfig }
       this.getSuggestedEmails()
-      if (this.$route.query && this.$route.query.reportId) {
-        this.$router.replace({ query: { reportId: undefined } })
-      }
+      this.$store.commit('my-reports/setSelectedReport', undefined)
+      // if (this.$route.query && this.$route.query.reportId) {
+      //   this.$router.replace({ query: { reportId: undefined } })
+      // }
     }
   },
   head () {

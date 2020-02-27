@@ -33,6 +33,7 @@ const management = {
       icon: '',
       items: [
         { key: 'fleet_navigator', icon: 'mdi-compass', to: { path: '/management/fleet-navigator' } },
+        { key: 'ev_charging_locations', icon: 'mdi-car-electric', to: { path: '/management/charging-locations' } },
         { key: 'locate_preferred_shops', icon: '', to: { path: '/management/locate-preferred-shops' } },
         { key: 'quote_a_transport', icon: '', to: { path: '/management/transport-quote' } },
         { key: 'lcca', icon: '', to: { path: '/management/lcca' } }

@@ -458,6 +458,16 @@ export default function ({ $axios, redirect }) {
       }
       return [200, { savedConfig, success: true, message: 'OK' }]
     })
+    .onGet('/my-reports/saved-reports')
+    .reply(function (config) {
+      const data = [
+        { header: '(Mocked) Your saved reports' },
+        'ABC123',
+        'QWERTY666',
+        'MySavedReport3'
+      ]
+      return [200, { data, success: true, message: 'TEST' }]
+    })
     .onGet('/reports/my-reports-columns')
     .reply(function (config) {
       const type = config.params.type
