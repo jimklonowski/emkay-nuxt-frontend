@@ -280,7 +280,7 @@
                   </template>
                   <v-card :loading="save_loading">
                     <v-card-title class="headline">
-                      Save this report for future use
+                      {{ $t('save_configuration') }}
                     </v-card-title>
                     <v-divider />
                     <v-card-text>
@@ -344,10 +344,10 @@
                     <v-card-actions>
                       <v-spacer />
                       <v-btn @click="save_dialog = false" text>
-                        Cancel
+                        {{ $t('cancel') }}
                       </v-btn>
                       <v-btn @click="saveConfig" text color="primary darken-1">
-                        Save
+                        {{ $t('save') }}
                       </v-btn>
                     </v-card-actions>
                   </v-card>
@@ -381,7 +381,7 @@
     </v-row>
     <v-row class="mt-2" no-gutters>
       <v-btn @click="startOver" color="error" depressed>
-        Restart
+        {{ $t('restart') }}
       </v-btn>
       <v-spacer />
       <v-btn v-show="step > 1" @click="prevStep" text>
