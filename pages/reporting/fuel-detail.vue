@@ -8,7 +8,7 @@
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
         background-color="transparent"
-        class="mr-1"
+        class="mr-2"
         clearable
         dense
         flat
@@ -18,9 +18,10 @@
         single-line
         solo
       />
-      <v-divider vertical inset class="mx-4" />
+
       <!-- Download as XLS button -->
       <client-only>
+        <v-divider vertical inset class="mx-3" />
         <download-excel :fields="downloadFields" :data="items">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
@@ -29,85 +30,105 @@
       </client-only>
     </v-toolbar>
     <v-divider />
+
     <!-- Report Filters -->
-    <v-container>
-      <v-subheader v-text="$t('report_filters')" class="overline" />
-      <v-row>
-        <v-col cols="12" sm="6">
-          <v-menu
-            ref="start_menu"
-            v-model="start_menu"
-            :close-on-content-click="false"
-            :return-value.sync="start"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template #activator="{ on }">
-              <v-text-field
-                :value="$moment(start).format('L')"
-                :label="$t('start_date')"
-                v-on="on"
-                prepend-icon="mdi-calendar"
-                readonly
-              />
-            </template>
-            <v-date-picker
-              v-model="start"
-              no-title
-              scrollable
-            >
-              <v-spacer />
-              <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start), updateQuery()" text />
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" sm="6">
-          <v-menu
-            ref="end_menu"
-            v-model="end_menu"
-            :close-on-content-click="false"
-            :return-value.sync="end"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template #activator="{ on }">
-              <v-text-field
-                :value="$moment(end).format('L')"
-                :label="$t('end_date')"
-                v-on="on"
-                prepend-icon="mdi-calendar"
-                readonly
-              />
-            </template>
-            <v-date-picker
-              v-model="end"
-              no-title
-              scrollable
-            >
-              <v-spacer />
-              <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end), updateQuery()" text />
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" sm="6">
-          <v-switch
-            v-model="use_bill_date"
-            :label="$t(`bill_date`)"
-            @change="updateQuery()"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-expansion-panels accordion flat hover tile>
+      <v-expansion-panel class="transparent">
+        <v-expansion-panel-header class="overline">
+          {{ $t('report_filters') }}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-container class="pb-0">
+            <v-row>
+              <v-col cols="12" sm="4">
+                <v-dialog
+                  ref="start_dialog"
+                  v-model="start_dialog"
+                  :return-value.sync="start"
+                  @keydown.esc="start_dialog = false"
+                  persistent
+                  width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(start).format('L')"
+                      :label="$t('start_date')"
+                      v-on="on"
+                      prepend-icon="mdi-calendar"
+                      dense
+                      outlined
+                      readonly
+                      rounded
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="start"
+                    :locale="$moment.locale()"
+                    color="primary"
+                    header-color="primary"
+                    scrollable
+                  >
+                    <v-spacer />
+                    <v-btn v-text="$t('cancel')" @click="start_dialog = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.start_dialog.save(start), updateQuery()" text />
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-dialog
+                  ref="end_dialog"
+                  v-model="end_dialog"
+                  :return-value.sync="end"
+                  @keydown.esc="end_dialog = false"
+                  persistent
+                  width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(end).format('L')"
+                      :label="$t('end_date')"
+                      v-on="on"
+                      prepend-icon="mdi-calendar"
+                      dense
+                      outlined
+                      readonly
+                      rounded
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="end"
+                    :locale="$moment.locale()"
+                    color="primary"
+                    header-color="primary"
+                    scrollable
+                  >
+                    <v-spacer />
+                    <v-btn v-text="$t('cancel')" @click="end_dialog = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.end_dialog.save(end), updateQuery()" text />
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-switch
+                  v-model="use_bill_date"
+                  :label="$t(`use_bill_date`)"
+                  :loading="loading"
+                  @change="updateQuery()"
+                  class="mt-1"
+                  inset
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
     <v-divider />
+
     <!-- Report Content -->
     <v-skeleton-loader :loading="loading" type="table">
       <v-data-table
+        :dense="items && !!items.length"
         :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
         :headers="headers"
         :items="items"
@@ -118,7 +139,6 @@
         :sort-by="['service_date']"
         :sort-desc="[true]"
         class="striped"
-        dense
       >
         <!-- Configure the #no-data message (no data from server) -->
         <template #no-data>
@@ -206,13 +226,11 @@ export default {
    * https://vuejs.org/v2/api/#data
    * Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain!
    */
-  data () {
-    return {
-      end_menu: false,
-      start_menu: false,
-      search: ''
-    }
-  },
+  data: () => ({
+    end_dialog: false,
+    start_dialog: false,
+    search: ''
+  }),
 
   /**
    * Computed Properties
@@ -334,7 +352,7 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
-          width: 250,
+          width: 300,
           divider: true
         },
         {
@@ -428,27 +446,6 @@ export default {
           class: 'report-column',
           divider: true
         },
-        // {
-        //   text: this.$i18n.t('level_01'),
-        //   value: 'level_01',
-        //   class: 'report-column',
-        //   width: 250,
-        //   divider: true
-        // },
-        // {
-        //   text: this.$i18n.t('level_02'),
-        //   value: 'level_02',
-        //   class: 'report-column',
-        //   width: 250,
-        //   divider: true
-        // },
-        // {
-        //   text: this.$i18n.t('level_03'),
-        //   value: 'level_03',
-        //   class: 'report-column',
-        //   width: 250,
-        //   divider: true
-        // },
         {
           text: this.$i18n.t('merchant_address'),
           value: 'merchant_address',
@@ -460,6 +457,7 @@ export default {
           text: this.$i18n.t('merchant_city'),
           value: 'merchant_city',
           class: 'report-column',
+          width: 200,
           divider: true
         },
         {
@@ -601,67 +599,6 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  },
-
-  /**
-   * Specify a layout defined in the layouts directory. (compared to just a single App.vue)
-   * Every file (first level) in the layouts directory will create a custom layout accessible with the layout property in the page component.
-   * THIS IS SET IN THE PARENT reporting.vue to be the reports.vue layout
-   * https://nuxtjs.org/api/pages-layout
-   * https://nuxtjs.org/guide/views#layouts */
-  // layout: 'report',
-
-  /**
-   * Nuxt.js gives you its own loading progress bar component that's shown between routes. You can customize it, disable it or create your own component.
-   * https://nuxtjs.org/api/pages-loading */
-  loading: true,
-
-  /**
-   * You can create named middleware by creating a file inside the middleware/ directory, the file name will be the middleware name.
-   * If you need to use a middleware only for a specific page, you can directly use a function for it (or an array of functions)
-   * https://nuxtjs.org/api/pages-middleware */
-  // middleware: 'auth',
-  middleware ({ store, redirect }) {
-    // The parent reporting route should already have the 'auth' middleware, so no need for child report route
-  },
-
-  /**
-   * Nuxt.js lets you define a validator method inside your dynamic route component.
-   * https://nuxtjs.org/api/pages-validate */
-  validate ({ $moment, query }) {
-    // console.info('validate()')
-    // add this later, we can forbid invalid queries from being manually typed
-    // if (query.start_date && !$moment(query.start_date).isValid()) {
-    //   throw new Error(`Invalid date parameter: '${query.start_date}'`)
-    // }
-    // if (query.end_date && !$moment(query.end_date).isValid()) {
-    //   throw new Error(`Invalid date parameter: '${query.end_date}'`)
-    // }
-    return true
-  },
-
-  /**
-   * The fetch method is used to fill the store before rendering the page, it's like the asyncData method except it doesn't set the component data.
-   * https://nuxtjs.org/api/pages-fetch
-   */
-  async fetch ({ $moment, query, store }) {
-    // await console.info('fetch()')
-  },
-
-  /**
-   * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
-   * https://nuxtjs.org/api/pages-scrolltotop
-   * Parent view (reporting.vue) overrides with scrollToTop: false
-   */
-  // scrollToTop: false,
-
-  /**
-   * To define a custom transition for a specific route, simply add the transition key to the page component.
-   * @type {String|Object|Function}
-   * https://nuxtjs.org/api/pages-transition */
-  transition (to, from) {
-    // if (!from) { return 'slide-left' }
-    // return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
   },
 
   /**

@@ -1,17 +1,19 @@
 <template>
-  <ValidationObserver ref="fuelCardRequestForm" @submit.prevent v-slot="{ handleSubmit }" tag="form">
-    <!-- <v-form @submit.prevent="handleSubmit(submitFuelCardRequest)"> -->
-    <v-card :loading="loading">
-      <v-card-title color="primary" dark flat>
-        <v-toolbar-title v-text="$t('fuel_card_request')" class="font-lato" />
-        <v-spacer />
-        <v-btn @click="$emit('close-dialog')" icon>
-          <v-icon v-text="'mdi-close'" />
-        </v-btn>
-      </v-card-title>
-      <v-divider />
-      <v-card-text style="max-height:850px;">
-        <v-container>
+  <v-card :loading="loading">
+    <ValidationObserver ref="fuelCardRequestForm" v-slot="{ handleSubmit }">
+      <v-form @submit.prevent="handleSubmit(submitFuelCardRequest)">
+        <v-toolbar dark color="primary">
+          <v-btn @click="$emit('close-dialog')" dark icon>
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-divider vertical inset class="mr-4" />
+          <v-toolbar-title>
+            {{ $t('fuel_card_request') }}
+          </v-toolbar-title>
+          <v-spacer />
+        </v-toolbar>
+        <v-divider />
+        <v-card-text>
           <v-row>
             <v-col cols="12">
               <v-expansion-panels
@@ -22,10 +24,12 @@
                 tile
               >
                 <v-expansion-panel>
-                  <v-expansion-panel-header class="text-uppercase font-lato" color="primary white--text">
+                  <v-expansion-panel-header class="text-uppercase" color="primary white--text">
                     {{ $t('card_information') }}
                     <template #actions>
-                      <v-icon v-text="'mdi-chevron-down'" color="white" />
+                      <v-icon color="white">
+                        mdi-chevron-down
+                      </v-icon>
                     </template>
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
@@ -165,18 +169,16 @@
               </v-list>
             </v-col>
           </v-row>
-        </v-container>
-      </v-card-text>
-      <v-divider />
-      <v-card-actions>
-        <v-spacer />
-        <v-btn @click="handleSubmit(submitFuelCardRequest)" type="submit" color="primary">
-          {{ $t('submit') }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-    <!-- </v-form> -->
-  </ValidationObserver>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn type="submit" color="primary">
+            Submit
+          </v-btn>
+        </v-card-actions>
+      </v-form>
+    </ValidationObserver>
+  </v-card>
 </template>
 
 <script>
@@ -217,13 +219,8 @@ export default {
   },
   methods: {
     async submitFuelCardRequest () {
-      this.loading = true
-      await new Promise(resolve => setTimeout(() => {
-        console.log('adding 2s delay...')
-        this.loading = false
-        this.$snotify.info('saving...', 'TODO')
-        resolve()
-      }, 2000))
+      debugger
+      await console.log('test')
     }
   }
 }

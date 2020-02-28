@@ -8,7 +8,7 @@
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
         background-color="transparent"
-        class="mr-1"
+        class="mr-2"
         clearable
         dense
         flat
@@ -18,9 +18,10 @@
         single-line
         solo
       />
-      <v-divider vertical inset class="mx-4" />
+
       <!-- Download as XLS button -->
       <client-only>
+        <v-divider vertical inset class="mx-3" />
         <download-excel :fields="downloadFields" :data="items">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
@@ -29,9 +30,14 @@
       </client-only>
     </v-toolbar>
     <v-divider />
+
+    <!-- Report Filters -->
+    <!-- ... -->
+
     <!-- Report Content -->
     <v-skeleton-loader :loading="loading" type="table">
       <v-data-table
+        :dense="items && !!items.length"
         :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
         :headers="headers"
         :items="items"
@@ -39,10 +45,9 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="[0]"
+        :sort-by="['vehicle_number']"
         :sort-desc="[false]"
         class="striped"
-        dense
       >
         <!-- Configure the #no-data message (no data from server) -->
         <template #no-data>
@@ -63,27 +68,23 @@
 </template>
 
 <script>
-// Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
+import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 /**
  * License Renewal Report
  */
 export default {
   name: 'LicenseRenewal',
-
-  /**
-   * Mixins
-   * https://vuejs.org/v2/guide/mixins.html
-   * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
-   * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
-   */
   mixins: [downloadFields],
-
-  /**
-   * Computed Properties
-   * https://vuejs.org/v2/api/#computed
-   */
+  data: () => ({
+    search: ''
+  }),
   computed: {
+    ...mapGetters({
+      items: 'reports/getData',
+      error: 'reports/getError',
+      loading: 'reports/getLoading'
+    }),
     /**
      * Implement a computed columns property that returns an array of strings that represent the datatable columns
      */
@@ -93,9 +94,6 @@ export default {
         'client_vehicle_number',
         'center_code',
         'center_name',
-        'level_01',
-        'level_02',
-        'level_03',
         'driver_name',
         'in_service_date',
         'year_make_model',
@@ -129,24 +127,6 @@ export default {
         {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_01'),
-          value: 'level_01',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_02'),
-          value: 'level_02',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('level_03'),
-          value: 'level_03',
           class: 'report-column',
           divider: true
         },
@@ -195,36 +175,15 @@ export default {
         {
           text: this.$i18n.t('renewal_status'),
           value: 'renewal_status',
-          class: 'report-column',
-          divider: true
+          class: 'report-column'
         }
       ]
-    },
-    items: vm => vm.$store.getters['reports/getData'],
-    error: vm => vm.$store.getters['reports/getError'],
-    loading: vm => vm.$store.getters['reports/getLoading']
-  },
-
-  /**
-   * asyncData is called every time before loading the page component and is only available for such.
-   * The result from asyncData will be merged with data.
-   * https://nuxtjs.org/guide/async-data
-   */
-  async asyncData ({ $moment, query, store, error }) {
-    let search
-    const filters = {
-      command: '???',
-      subcommand: '???',
-      json: 'Y'
     }
-    await store.dispatch('reports/fetchData', filters)
-    return { search }
   },
-
-  /**
-   * Set specific <meta> tags for the current page.
-   * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
-   * https://nuxtjs.org/api/pages-head */
+  async asyncData ({ store }) {
+    await store.dispatch('reports/fetchLicenseRenewalReport')
+    return { }
+  },
   head () {
     const title = this.$t('license_renewal_report')
     return {

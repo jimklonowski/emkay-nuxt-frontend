@@ -1097,44 +1097,6 @@ export default function ({ $axios, redirect }) {
           ]
           break
       }
-      // const data = [
-      //   {
-      //     key: 'vehicle_number',
-      //     group: 'vehicle_information'
-      //   },
-      //   {
-      //     key: 'center_code',
-      //     group: 'vehicle_information'
-      //   },
-      //   {
-      //     key: 'last_name',
-      //     group: 'driver_information'
-      //   },
-      //   {
-      //     key: 'first_name',
-      //     group: 'driver_information'
-      //   },
-      //   {
-      //     key: 'months_in_service',
-      //     group: 'billing_information'
-      //   },
-      //   {
-      //     key: 'rental_amount',
-      //     group: 'billing_information'
-      //   },
-      //   {
-      //     key: 'purchase_amount',
-      //     group: 'fuel_information'
-      //   },
-      //   {
-      //     key: 'purchase_quantity',
-      //     group: 'fuel_information'
-      //   },
-      //   {
-      //     key: 'purchase_date',
-      //     group: 'fuel_information'
-      //   }
-      // ]
       return [200, { groups, success: true, message: 'TEST' }]
     })
     .onAny().passThrough()

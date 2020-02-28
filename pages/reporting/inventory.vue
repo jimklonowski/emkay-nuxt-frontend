@@ -8,7 +8,7 @@
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
         background-color="transparent"
-        class="mr-1"
+        class="mr-2"
         clearable
         dense
         flat
@@ -18,9 +18,9 @@
         single-line
         solo
       />
-      <v-divider vertical inset class="mx-4" />
       <!-- Download as XLS button -->
       <client-only>
+        <v-divider vertical inset class="mx-3" />
         <download-excel :fields="downloadFields" :data="items">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
@@ -29,9 +29,15 @@
       </client-only>
     </v-toolbar>
     <v-divider />
+
+    <!-- Report Filters -->
+    <!-- no filters yet for inventory report -->
+    <!-- <v-divider /> -->
+
     <!-- Report Content -->
     <v-skeleton-loader :loading="loading" type="table">
       <v-data-table
+        :dense="items && !!items.length"
         :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
         :headers="headers"
         :items="items"
@@ -42,25 +48,7 @@
         :sort-by="[0]"
         :sort-desc="[false]"
         class="striped"
-        dense
       >
-        <!-- filters template -->
-        <!-- <template #top>
-          <v-container>
-            <v-row>
-              <v-col cols="6">
-                <v-select
-                  v-model="centerCodeFilterValue"
-                  :items="centers"
-                  label="Center Filter"
-                  clearable
-                  outlined
-                  dense
-                />
-              </v-col>
-            </v-row>
-          </v-container>
-        </template> -->
         <!-- Configure the #no-data message (no data from server) -->
         <template #no-data>
           <div class="text-left">
@@ -267,7 +255,7 @@ export default {
           value: 'center_name',
           class: 'report-column',
           divider: true,
-          width: 250
+          width: 300
         },
         {
           text: this.$i18n.t('client_use_1'),
@@ -444,27 +432,6 @@ export default {
           class: 'report-column',
           divider: true
         },
-        // {
-        //   text: this.$i18n.t('level_01'),
-        //   value: 'level_01',
-        //   class: 'report-column',
-        //   width: 150,
-        //   divider: true
-        // },
-        // {
-        //   text: this.$i18n.t('level_02'),
-        //   value: 'level_02',
-        //   class: 'report-column',
-        //   width: 150,
-        //   divider: true
-        // },
-        // {
-        //   text: this.$i18n.t('level_03'),
-        //   value: 'level_03',
-        //   class: 'report-column',
-        //   width: 150,
-        //   divider: true
-        // },
         {
           text: this.$i18n.t('license_plate_expiration_date'),
           value: 'license_plate_expiration_date',

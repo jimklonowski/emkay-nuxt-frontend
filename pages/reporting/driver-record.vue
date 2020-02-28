@@ -8,7 +8,7 @@
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
         background-color="transparent"
-        class="mr-1"
+        class="mr-2"
         clearable
         dense
         flat
@@ -18,9 +18,10 @@
         single-line
         solo
       />
-      <v-divider vertical inset class="mx-4" />
+
       <!-- Download as XLS button -->
       <client-only>
+        <v-divider vertical inset class="mx-3" />
         <download-excel :fields="downloadFields" :data="items">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
@@ -29,78 +30,14 @@
       </client-only>
     </v-toolbar>
     <v-divider />
+
     <!-- Report Filters -->
-    <v-container>
-      <v-subheader v-text="$t('report_filters')" class="overline" />
-      <v-row>
-        <v-col cols="12" sm="6">
-          <v-menu
-            ref="start_menu"
-            v-model="start_menu"
-            :close-on-content-click="false"
-            :return-value.sync="start_date"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template #activator="{ on }">
-              <v-text-field
-                :value="$moment(start_date).format('L')"
-                :label="$t('start_date')"
-                v-on="on"
-                prepend-icon="mdi-calendar"
-                readonly
-              />
-            </template>
-            <v-date-picker
-              v-model="start_date"
-              no-title
-              scrollable
-            >
-              <v-spacer />
-              <v-btn v-text="$t('cancel')" @click="start_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.start_menu.save(start_date), updateQuery()" text />
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" sm="6">
-          <v-menu
-            ref="end_menu"
-            v-model="end_menu"
-            :close-on-content-click="false"
-            :return-value.sync="end_date"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template #activator="{ on }">
-              <v-text-field
-                :value="$moment(end_date).format('L')"
-                :label="$t('end_date')"
-                v-on="on"
-                prepend-icon="mdi-calendar"
-                readonly
-              />
-            </template>
-            <v-date-picker
-              v-model="end_date"
-              no-title
-              scrollable
-            >
-              <v-spacer />
-              <v-btn v-text="$t('cancel')" @click="end_menu = false" text />
-              <v-btn v-text="$t('ok')" @click="$refs.end_menu.save(end_date), updateQuery()" text />
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-divider />
+    <!-- ... -->
+
     <!-- Report Content -->
     <v-skeleton-loader :loading="loading" type="table">
       <v-data-table
+        :dense="items && !!items.length"
         :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
         :headers="headers"
         :items="items"
@@ -108,10 +45,9 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="[0]"
+        :sort-by="['driver_id']"
         :sort-desc="[true]"
         class="striped"
-        dense
       >
         <!-- Configure the #no-data message (no data from server) -->
         <template #no-data>
@@ -132,98 +68,77 @@
 </template>
 
 <script>
-// Adds computed properties that are needed for formatting the datatable as well as downloading a report as .xls
-import { downloadFields, headers, reportGetters } from '@/mixins/datatables'
-// Adds a method called updateQuery that depends on the computed 'query' property
-import { updateQuery } from '@/mixins/routing'
+import { mapGetters } from 'vuex'
+import { downloadFields } from '@/mixins/datatables'
 /**
  * Driver Record Report
  */
 export default {
   name: 'DriverRecord',
-
-  /**
-   * Mixins
-   * https://vuejs.org/v2/guide/mixins.html
-   * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
-   * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
-   */
-  mixins: [downloadFields, headers, reportGetters, updateQuery],
-
-  /**
-   * The data object for the Vue instance.
-   * https://vuejs.org/v2/api/#data
-   * Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain!
-   */
-  data (context) {
-    return {
-      search: '',
-      end_menu: false,
-      start_menu: false
-    }
-  },
-
-  /**
-   * Computed Properties
-   * https://vuejs.org/v2/api/#computed
-   */
+  mixins: [downloadFields],
+  data: () => ({
+    search: ''
+  }),
   computed: {
-    /**
-     * Implement a computed columns property that returns an array of strings that represent the datatable columns
-     */
+    ...mapGetters({
+      items: 'reports/getData',
+      error: 'reports/getError',
+      loading: 'reports/getLoading'
+    }),
     columns () {
       return [
-        'date',
-        'description',
-        'amount'
+        'driver_id',
+        'last_name',
+        'first_name',
+        'license_number',
+        'date_of_birth',
+        'state_province'
       ]
     },
-    /**
-     * Implement a computed query property that returns an object that corresponds with watchQuery
-     * REQUIRED
-     */
-    query () {
-      const query = {
-        start_date: this.start_date,
-        end_date: this.end_date
-      }
-      return query
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('driver_id'),
+          value: 'driver_id',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('last_name'),
+          value: 'last_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('first_name'),
+          value: 'first_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('license_number'),
+          value: 'license_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('state_province'),
+          value: 'state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('date_of_birth'),
+          value: 'date_of_birth',
+          class: 'report-column'
+        }
+      ]
     }
   },
-
-  /**
-   * asyncData is called every time before loading the page component and is only available for such.
-   * The result from asyncData will be merged with data.
-   * https://nuxtjs.org/guide/async-data
-   */
-  async asyncData ({ $moment, query, store, error }) {
-    const report_length = 30
-    const start_date = query.start_date || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
-    const end_date = query.end_date || $moment().format('YYYY-MM-DD')
-
-    const filters = {
-      command: '???',
-      subcommand: '???',
-      start_date,
-      end_date,
-      json: 'Y'
-    }
-    await store.dispatch('reports/fetchData', filters)
-    return { end_date, start_date }
+  async asyncData ({ store }) {
+    await store.dispatch('reports/fetchDriverRecordReport')
+    return {}
   },
-
-  /**
-   * The fetch method is used to fill the store before rendering the page, it's like the asyncData method except it doesn't set the component data.
-   * https://nuxtjs.org/api/pages-fetch
-   */
-  async fetch ({ $moment, query, store }) {
-    // await console.info('fetch()')
-  },
-
-  /**
-   * Set specific <meta> tags for the current page.
-   * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
-   * https://nuxtjs.org/api/pages-head */
   head () {
     const title = this.$t('driver_record')
     return {
@@ -232,58 +147,6 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  },
-
-  /**
-   * Specify a layout defined in the layouts directory. (compared to just a single App.vue)
-   * Every file (first level) in the layouts directory will create a custom layout accessible with the layout property in the page component.
-   * THIS IS SET IN THE PARENT reporting.vue!
-   * https://nuxtjs.org/api/pages-layout
-   * https://nuxtjs.org/guide/views#layouts */
-  // layout: 'report',
-
-  /**
-   * Nuxt.js gives you its own loading progress bar component that's shown between routes. You can customize it, disable it or create your own component.
-   * https://nuxtjs.org/api/pages-loading */
-  loading: true,
-
-  /**
-   * Nuxt.js lets you define a validator method inside your dynamic route component.
-   * https://nuxtjs.org/api/pages-validate */
-  validate ({ $moment, query }) {
-    // validate the report params.  return false or throw error if invalid
-    return true
-  },
-
-  /**
-   * You can create named middleware by creating a file inside the middleware/ directory, the file name will be the middleware name.
-   * If you need to use a middleware only for a specific page, you can directly use a function for it (or an array of functions)
-   * https://nuxtjs.org/api/pages-middleware */
-  // middleware: 'auth',
-  middleware ({ store, redirect }) {
-    // The parent reporting route should already have the 'auth' middleware, so no need for child report route
-  },
-
-  /**
-   * The scrollToTop property lets you tell Nuxt.js to scroll to the top before rendering the page.
-   * https://nuxtjs.org/api/pages-scrolltotop
-   * THIS IS SET IN THE PARENT reporting.vue!
-   */
-  // scrollToTop: false,
-
-  /**
-   * To define a custom transition for a specific route, simply add the transition key to the page component.
-   * @type {String|Object|Function}
-   * https://nuxtjs.org/api/pages-transition */
-  transition (to, from) {
-    // if (!from) { return 'slide-left' }
-    // return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
-  },
-
-  /**
-   * Watch query strings and execute component methods on change (asyncData, fetch, validate, layout, ...)
-   * https://nuxtjs.org/api/pages-watchquery
-   */
-  watchQuery: ['start_date', 'end_date']
+  }
 }
 </script>

@@ -89,6 +89,248 @@ export const actions = {
     }
   },
   /**
+   * Fetch REPLACEMENT ANALYSIS REPORT data.
+   * No parameters are supplied.
+   */
+  async fetchReplacementAnalysisReport ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/replacement-analysis-report')
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch SOLD VEHICLE ANALYSIS REPORT data.
+   * No parameters are supplied.
+   */
+  async fetchSoldVehicleAnalysisReport ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/sold-vehicle-analysis-report')
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch EXPENSE DETAIL REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchExpenseDetailReport ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/expense-detail-report', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch SHORT TERM RENTAL DETAIL REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchShortTermRentalDetailReport ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/short-term-rental-detail-report', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch INVOICE HISTORY data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchInvoiceHistory ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/invoice-history', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch ACCIDENT CLAIM STATUS REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchAccidentClaimStatusReport ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/accident-claim-status-report', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch DRIVER 360 MILEAGE REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchDriver360MileageReport ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/driver-360-mileage-report', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch DRIVER RECORD REPORT data.
+   * No parameters given.
+   */
+  async fetchDriverRecordReport ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/driver-record-report')
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch DRIVER SAFETY REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchDriverSafetyReport ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/driver-safety-report', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch SAFEROADS FLEET SUMMARY data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchSaferoadsFleetSummary ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/saferoads-fleet-summary', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch SAFEROADS TRIP DETAIL REPORT data.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
+   */
+  async fetchSaferoadsTripDetailReport ({ commit }, { start, end }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/saferoads-trip-detail-report', { params: { start, end } })
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch EVOUCHER REPORT data.
+   * No parameters given
+   */
+  async fetchEvoucherReport ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/evoucher-report')
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
+   * Fetch LICENSE RENEWAL REPORT data.
+   * No parameters given
+   */
+  async fetchLicenseRenewalReport ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/reports/license-renewal-report')
+      if (!success) { throw new Error(message) }
+      commit('setData', data)
+    } catch (error) {
+      commit('setError', error.message)
+      commit('setData', [])
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+  /**
    * Fetch TOLL DETAIL REPORT data.
    * @param {*} start Start Date
    * @param {*} end End Date
