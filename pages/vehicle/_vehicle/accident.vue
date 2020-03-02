@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card outlined class="report">
+        <v-card outlined tile class="report">
           <v-toolbar flat color="transparent">
             <v-toolbar-title>{{ $t('accident') }}</v-toolbar-title>
             <v-spacer />
@@ -11,7 +11,7 @@
               :label="$t('search')"
               prepend-inner-icon="mdi-magnify"
               background-color="transparent"
-              class="mr-1"
+              class="mr-2"
               clearable
               dense
               flat
@@ -21,9 +21,10 @@
               single-line
               solo
             />
-            <v-divider vertical inset class="mx-4" />
+
             <!-- Download as XLS button -->
             <client-only>
+              <v-divider vertical inset class="mx-3" />
               <download-excel :fields="downloadFields" :data="items">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
@@ -32,87 +33,102 @@
             </client-only>
           </v-toolbar>
           <v-divider />
+
           <!-- Report Filters -->
-          <v-container>
-            <v-subheader v-text="$t('report_filters')" class="overline" />
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="start_menu"
-                  v-model="start_menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="start"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template #activator="{ on }">
-                    <v-text-field
-                      v-model="start"
-                      :label="$t('start_date')"
-                      v-on="on"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                    />
-                  </template>
-                  <v-date-picker
-                    v-model="start"
-                    :locale="$i18n.locale"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer />
-                    <v-btn @click="start_menu = false" text>
-                      {{ $t('cancel') }}
-                    </v-btn>
-                    <v-btn @click="$refs.start_menu.save(start), updateQuery()" text>
-                      {{ $t('ok') }}
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="end_menu"
-                  v-model="end_menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="end"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template #activator="{ on }">
-                    <v-text-field
-                      v-model="end"
-                      :label="$t('end_date')"
-                      v-on="on"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                    />
-                  </template>
-                  <v-date-picker
-                    v-model="end"
-                    :locale="$i18n.locale"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer />
-                    <v-btn @click="end_menu = false" text>
-                      {{ $t('cancel') }}
-                    </v-btn>
-                    <v-btn @click="$refs.end_menu.save(end), updateQuery()" text>
-                      {{ $t('ok') }}
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
-          </v-container>
+          <v-expansion-panels
+            v-model="panels_expanded"
+            accordion
+            flat
+            hover
+            multiple
+            tile
+          >
+            <v-expansion-panel class="transparent">
+              <v-expansion-panel-header class="overline">
+                {{ $t('report_filters') }}
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-container class="pb-0">
+                  <v-row>
+                    <v-col cols="12" sm="4">
+                      <v-dialog
+                        ref="start_dialog"
+                        v-model="start_dialog"
+                        :return-value.sync="start"
+                        @keydown.esc="start_dialog = false"
+                        persistent
+                        width="290px"
+                      >
+                        <template #activator="{ on }">
+                          <v-text-field
+                            :value="$moment(start).format('L')"
+                            :label="$t('start_date')"
+                            v-on="on"
+                            prepend-icon="mdi-calendar"
+                            dense
+                            outlined
+                            readonly
+                            rounded
+                          />
+                        </template>
+                        <v-date-picker
+                          v-model="start"
+                          :locale="$moment.locale()"
+                          color="primary"
+                          header-color="primary"
+                          scrollable
+                        >
+                          <v-spacer />
+                          <v-btn v-text="$t('cancel')" @click="start_dialog = false" text />
+                          <v-btn v-text="$t('ok')" @click="$refs.start_dialog.save(start), updateQuery()" text />
+                        </v-date-picker>
+                      </v-dialog>
+                    </v-col>
+                    <v-col cols="12" sm="4">
+                      <v-dialog
+                        ref="end_dialog"
+                        v-model="end_dialog"
+                        :return-value.sync="end"
+                        @keydown.esc="end_dialog = false"
+                        persistent
+                        width="290px"
+                      >
+                        <template #activator="{ on }">
+                          <v-text-field
+                            :value="$moment(end).format('L')"
+                            :label="$t('end_date')"
+                            v-on="on"
+                            prepend-icon="mdi-calendar"
+                            dense
+                            outlined
+                            readonly
+                            rounded
+                          />
+                        </template>
+                        <v-date-picker
+                          v-model="end"
+                          :locale="$moment.locale()"
+                          color="primary"
+                          header-color="primary"
+                          scrollable
+                        >
+                          <v-spacer />
+                          <v-btn v-text="$t('cancel')" @click="end_dialog = false" text />
+                          <v-btn v-text="$t('ok')" @click="$refs.end_dialog.save(end), updateQuery()" text />
+                        </v-date-picker>
+                      </v-dialog>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           <v-divider />
+
+          <!-- Report Content -->
           <v-skeleton-loader :loading="loading" type="table">
             <v-data-table
+              :dense="items && !!items.length"
               :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
               :headers="headers"
               :items="items"
@@ -123,7 +139,6 @@
               :sort-by="['date']"
               :sort-desc="[true]"
               class="striped"
-              dense
             >
               <template #item.accident_date="{ item }">
                 {{ item.accident_date | datetime }}
@@ -164,24 +179,14 @@ export default {
   mixins: [downloadFields, updateQuery, vehicleRoute],
   data () {
     return {
+      panels_expanded: [0],
       claim_dialog: false,
-      end_menu: false,
-      start_menu: false,
+      start_dialog: false,
+      end_dialog: false,
       search: ''
     }
   },
   computed: {
-    items2 () {
-      return [
-        {
-          accident_date: '2019-01-03 15:10:00.000',
-          claim_number: '12345',
-          claim_type: 'Collision',
-          claim_amount: 1000.00,
-          subrogation_amount: 666
-        }
-      ]
-    },
     ...mapGetters({
       items: 'vehicle/getAccidentHistory',
       loading: 'vehicle/getAccidentsLoading',

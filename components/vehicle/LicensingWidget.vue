@@ -136,8 +136,7 @@ export default {
         'license_plate_state_province',
         'sticker_number',
         'title',
-        'status',
-        'needs'
+        'status'
       ]
     },
     headers () {
@@ -175,12 +174,6 @@ export default {
         {
           text: this.$i18n.t('status'),
           value: 'status',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('needs'),
-          value: 'needs',
           class: 'report-column'
         }
       ]

@@ -50,8 +50,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { downloadFields } from '@/mixins/datatables'
 export default {
   name: 'VehicleMaintenanceCostContainment',
+  mixins: [downloadFields],
   data: () => ({
     search: ''
   }),

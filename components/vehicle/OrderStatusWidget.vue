@@ -1,26 +1,43 @@
 <template>
-  <v-card outlined>
-    <v-card-title class="pa-0">
-      <v-list-item :to="$route.path.includes('order-status') ? '' : orderStatusRoute" :link="!$route.path.includes('order-status')" style="height:80px;">
-        <v-list-item-avatar>
-          <v-icon v-text="'mdi-timeline-clock'" />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-subtitle v-text="yearMakeModel()" class="overline" />
-          <v-list-item-title v-text="$t('order_status')" />
-          <client-only>
-            <nuxt-link :to="orderStatusRoute" v-text="$t('more')" class="caption text-decoration-none" />
-          </client-only>
-        </v-list-item-content>
-        <v-list-item-action v-if="orderStatus.factory_order_number">
-          <v-list-item-action-text v-text="$t('factory_order_number')" class="caption" />
-          <client-only>
-            <v-chip v-text="orderStatus.factory_order_number" :title="$t('factory_order_number')" x-small />
-          </client-only>
-        </v-list-item-action>
-      </v-list-item>
-    </v-card-title>
+  <v-card outlined class="vehicle-widget">
+    <!-- Title Toolbar and Dropdown Menu -->
+    <v-toolbar flat color="transparent">
+      <v-avatar class="mr-2" size="36">
+        <v-icon v-text="'mdi-timeline-clock'" />
+      </v-avatar>
+      <v-toolbar-title>
+        {{ $t('order_status') }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        origin="top right"
+        transition="scale-transition"
+        left
+      >
+        <template #activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon v-text="'mdi-dots-vertical'" />
+          </v-btn>
+        </template>
+        <v-card>
+          <v-list dense>
+            <v-list-item :to="orderStatusRoute" link>
+              <v-list-item-avatar>
+                <v-icon v-text="'mdi-timeline-clock'" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title v-text="$t('order_status')" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+    </v-toolbar>
     <v-divider />
+
+    <!-- Data -->
     <v-card-text class="pa-0">
       <v-container>
         <v-row no-gutters>
@@ -110,6 +127,7 @@
 <script>
 export default {
   data: () => ({
+    menu: false,
     hideTimeline: true
   }),
   computed: {

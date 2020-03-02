@@ -1,12 +1,14 @@
 <template>
-  <v-card outlined>
-    <v-card-title class="font-lato">
-      {{ $t('manage_your_drivers') }}
+  <v-card outlined class="report">
+    <v-toolbar flat color="transparent">
+      <v-toolbar-title>{{ $t('manage_your_drivers') }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
+        background-color="transparent"
+        class="mr-2"
         clearable
         dense
         flat
@@ -16,8 +18,211 @@
         single-line
         solo
       />
-    </v-card-title>
-    <v-card-text class="pa-0">
+
+      <!-- Add Driver Button -->
+      <client-only>
+        <v-divider vertical inset class="mx-3" />
+        <!-- Edit/Create Dialog -->
+        <v-dialog v-model="dialog" max-width="800px" persistent>
+          <template #activator="{ on }">
+            <v-btn v-on="on" color="primary">
+              <v-icon v-text="'mdi-account-plus'" class="mr-2" />
+              {{ $t('add_driver') }}
+            </v-btn>
+          </template>
+          <v-card :loading="editLoading">
+            <ValidationObserver ref="driverForm" v-slot="{ handleSubmit }">
+              <v-form @submit.prevent="handleSubmit(submitDriverEdit)">
+                <v-card-title v-text="formTitle" />
+                <v-card-subtitle v-text="editedItem.driver_id" />
+                <v-card-text>
+                  <v-container>
+                    <v-subheader v-text="$t('driver')" class="px-0" />
+                    <v-row>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_last_name')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_last_name"
+                            :label="$t('driver_last_name')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_first_name')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_first_name"
+                            :label="$t('driver_first_name')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_address_1')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_address_1"
+                            :label="$t('driver_address_1')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_address_2')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_address_2"
+                            :label="$t('driver_address_2')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="12" md="5">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_city')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_city"
+                            :label="$t('driver_city')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6" md="3">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_state_province')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_state_province"
+                            :label="$t('driver_state_province')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6" md="4">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_postal_code')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_postal_code"
+                            :label="$t('driver_postal_code')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_county')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_county"
+                            :label="$t('driver_county')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_email_address')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_email_address"
+                            :label="$t('driver_email_address')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_phone')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_phone"
+                            :label="$t('driver_phone')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_mobile')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_mobile"
+                            :label="$t('driver_mobile')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                    </v-row>
+                    <v-subheader v-text="$t('driver_labels')" class="px-0" />
+                    <v-row>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_1')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_misc_1"
+                            :label="$t('driver_misc_1')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_2')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_misc_2"
+                            :label="$t('driver_misc_2')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_3')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_misc_3"
+                            :label="$t('driver_misc_3')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_4')" rules="required">
+                          <v-text-field
+                            v-model="editedItem.driver_misc_4"
+                            :label="$t('driver_misc_4')"
+                            :error-messages="errors"
+                            :success="valid"
+                          />
+                        </ValidationProvider>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer />
+                  <v-btn
+                    @click="close"
+                    color="error lighten-1"
+                    tabindex="-1"
+                    text
+                  >
+                    {{ $t('cancel') }}
+                  </v-btn>
+                  <v-btn
+                    @click="save"
+                    type="submit"
+                    color="primary"
+                    text
+                  >
+                    {{ $t('save') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-form>
+            </ValidationObserver>
+          </v-card>
+        </v-dialog>
+      </client-only>
+    </v-toolbar>
+    <v-divider />
+
+    <v-skeleton-loader :loading="loading" type="table">
       <v-data-table
         :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
         :headers="headers"
@@ -32,207 +237,11 @@
         dense
       >
         <!-- Configure Top Section -->
-        <template #top>
+        <!-- <template #top>
           <v-toolbar flat>
             <v-spacer />
-            <!-- Edit/Create Dialog -->
-            <v-dialog v-model="dialog" max-width="800px" persistent>
-              <template #activator="{ on }">
-                <v-btn v-on="on" color="primary" class="mb-2">
-                  <v-icon v-text="'mdi-account-plus'" class="mr-2" />
-                  {{ $t('add_driver') }}
-                </v-btn>
-              </template>
-              <v-card :loading="editLoading">
-                <ValidationObserver ref="driverForm" v-slot="{ handleSubmit }">
-                  <v-form @submit.prevent="handleSubmit(submitDriverEdit)">
-                    <v-card-title v-text="formTitle" />
-                    <v-card-subtitle v-text="editedItem.driver_id" />
-                    <v-card-text>
-                      <v-container>
-                        <v-subheader v-text="$t('driver')" class="px-0" />
-                        <v-row>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_last_name')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_last_name"
-                                :label="$t('driver_last_name')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_first_name')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_first_name"
-                                :label="$t('driver_first_name')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="12" md="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_address_1')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_address_1"
-                                :label="$t('driver_address_1')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="12" md="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_address_2')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_address_2"
-                                :label="$t('driver_address_2')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="12" md="5">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_city')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_city"
-                                :label="$t('driver_city')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6" md="3">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_state_province')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_state_province"
-                                :label="$t('driver_state_province')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6" md="4">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_postal_code')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_postal_code"
-                                :label="$t('driver_postal_code')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_county')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_county"
-                                :label="$t('driver_county')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_email_address')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_email_address"
-                                :label="$t('driver_email_address')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_phone')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_phone"
-                                :label="$t('driver_phone')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_mobile')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_mobile"
-                                :label="$t('driver_mobile')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                        </v-row>
-                        <v-subheader v-text="$t('driver_labels')" class="px-0" />
-                        <v-row>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_1')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_misc_1"
-                                :label="$t('driver_misc_1')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_2')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_misc_2"
-                                :label="$t('driver_misc_2')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_3')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_misc_3"
-                                :label="$t('driver_misc_3')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                          <v-col cols="6">
-                            <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_4')" rules="required">
-                              <v-text-field
-                                v-model="editedItem.driver_misc_4"
-                                :label="$t('driver_misc_4')"
-                                :error-messages="errors"
-                                :success="valid"
-                              />
-                            </ValidationProvider>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer />
-                      <v-btn
-                        @click="close"
-                        color="error lighten-1"
-                        tabindex="-1"
-                        text
-                      >
-                        {{ $t('cancel') }}
-                      </v-btn>
-                      <v-btn
-                        @click="save"
-                        type="submit"
-                        color="primary"
-                        text
-                      >
-                        {{ $t('save') }}
-                      </v-btn>
-                    </v-card-actions>
-                  </v-form>
-                </ValidationObserver>
-              </v-card>
-            </v-dialog>
           </v-toolbar>
-        </template>
+        </template> -->
         <!-- Configure the #no-data message (no data from server) -->
         <template #no-data>
           <div class="text-left">
@@ -299,7 +308,7 @@
           </v-btn>
         </template>
       </v-data-table>
-    </v-card-text>
+    </v-skeleton-loader>
     <!-- <v-card-actions /> -->
   </v-card>
 </template>

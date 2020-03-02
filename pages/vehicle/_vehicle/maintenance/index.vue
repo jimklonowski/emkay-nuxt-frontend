@@ -32,7 +32,14 @@
     <v-divider />
 
     <!-- Report Filters -->
-    <v-expansion-panels accordion flat hover tile>
+    <v-expansion-panels
+      v-model="panels_expanded"
+      accordion
+      flat
+      hover
+      multiple
+      tile
+    >
       <v-expansion-panel class="transparent">
         <v-expansion-panel-header class="overline">
           {{ $t('report_filters') }}
@@ -172,9 +179,10 @@ export default {
   name: 'VehicleMaintenanceHistory',
   mixins: [downloadFields, updateQuery, vehicleRoute],
   data: () => ({
+    panels_expanded: [0],
+    search: '',
     start_dialog: false,
-    end_dialog: false,
-    search: ''
+    end_dialog: false
   }),
   computed: {
     /**
@@ -250,7 +258,7 @@ export default {
       }
     }
   },
-  async asyncData ({ $moment, params, query, store }) {
+  async asyncData ({ $moment, query, store }) {
     const vehicle = store.getters['vehicle/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')

@@ -33,6 +33,7 @@
           <v-divider />
           <v-skeleton-loader :loading="loading" type="table">
             <v-data-table
+              :dense="items && !!items.length"
               :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
               :headers="headers"
               :items="items"
@@ -43,7 +44,6 @@
               :sort-by="['date']"
               :sort-desc="[true]"
               class="striped"
-              dense
             />
           </v-skeleton-loader>
         </v-card>
@@ -60,8 +60,8 @@ export default {
   mixins: [downloadFields, vehicleRoute, updateQuery],
   data () {
     return {
-      end_menu: false,
-      start_menu: false,
+      end_dialog: false,
+      start_dialog: false,
       search: ''
     }
   },

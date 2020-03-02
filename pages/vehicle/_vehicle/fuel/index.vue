@@ -32,7 +32,14 @@
     <v-divider />
 
     <!-- Report Filters -->
-    <v-expansion-panels accordion flat hover tile>
+    <v-expansion-panels
+      v-model="panels_expanded"
+      accordion
+      flat
+      hover
+      multiple
+      tile
+    >
       <v-expansion-panel class="transparent">
         <v-expansion-panel-header class="overline">
           {{ $t('report_filters') }}
@@ -124,7 +131,6 @@
       </v-expansion-panel>
     </v-expansion-panels>
     <v-divider />
-
     <!-- Report Content -->
     <v-skeleton-loader :loading="loading" type="table">
       <v-data-table
@@ -183,9 +189,10 @@ export default {
   mixins: [downloadFields, updateQuery, vehicleRoute],
   data () {
     return {
-      end_dialog: false,
+      panels_expanded: [0],
+      search: '',
       start_dialog: false,
-      search: ''
+      end_dialog: false
     }
   },
   computed: {
@@ -258,7 +265,7 @@ export default {
       }
     }
   },
-  async asyncData ({ $moment, params, query, store, error }) {
+  async asyncData ({ $moment, query, store }) {
     const vehicle = store.getters['vehicle/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
@@ -268,7 +275,7 @@ export default {
     // Fetch report data in vehicle-detail store
     await store.dispatch('vehicle-detail/fetchFuelHistory', { start, end, use_bill_date, vehicle })
 
-    return { end, start, use_bill_date }
+    return { start, end, use_bill_date }
   },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('fuel')}`

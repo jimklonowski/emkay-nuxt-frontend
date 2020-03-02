@@ -16,14 +16,14 @@
       <v-col cols="12" xl="6">
         <licensing-widget />
       </v-col>
+      <v-col cols="12" xl="6">
+        <billing-widget />
+      </v-col>
       <v-col v-if="showOrderStatusWidget" cols="12" xl="6">
         <order-status-widget />
       </v-col>
       <v-col cols="12" xl="6">
         <expense-widget />
-      </v-col>
-      <v-col cols="12" xl="6">
-        <billing-widget />
       </v-col>
       <v-col cols="12" xl="6">
         <odometer-widget />

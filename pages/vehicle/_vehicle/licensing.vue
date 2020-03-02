@@ -11,7 +11,7 @@
               :label="$t('search')"
               prepend-inner-icon="mdi-magnify"
               background-color="transparent"
-              class="mr-1"
+              class="mr-2"
               clearable
               dense
               flat
@@ -21,9 +21,10 @@
               single-line
               solo
             />
-            <v-divider vertical inset class="mx-4" />
+
             <!-- Download as XLS button -->
             <client-only>
+              <v-divider vertical inset class="mx-3" />
               <download-excel :fields="downloadFields" :data="items">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
@@ -35,6 +36,7 @@
           <!-- Report Content -->
           <v-skeleton-loader :loading="loading" type="table">
             <v-data-table
+              :dense="items && !!items.length"
               :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
               :headers="headers"
               :items="items"
@@ -42,10 +44,9 @@
               :loading="loading"
               :mobile-breakpoint="0"
               :search="search"
-              :sort-by="['date']"
+              :sort-by="['expiration_date']"
               :sort-desc="[true]"
               class="striped"
-              dense
             />
           </v-skeleton-loader>
         </v-card>
@@ -61,9 +62,9 @@ export default {
   name: 'VehicleLicensing',
   mixins: [downloadFields, updateQuery, vehicleRoute],
   data: () => ({
-    start_menu: false,
-    end_menu: false,
-    search: ''
+    search: '',
+    start_dialog: false,
+    end_dialog: false
   }),
   computed: {
     ...mapGetters({

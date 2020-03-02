@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card outlined class="report">
+        <v-card outlined tile class="report">
           <v-toolbar flat color="transparent">
             <v-toolbar-title>{{ $t('inspections') }}</v-toolbar-title>
             <v-spacer />
@@ -11,7 +11,7 @@
               :label="$t('search')"
               prepend-inner-icon="mdi-magnify"
               background-color="transparent"
-              class="mr-1"
+              class="mr-2"
               clearable
               dense
               flat
@@ -21,9 +21,10 @@
               single-line
               solo
             />
-            <v-divider vertical inset class="mx-4" />
+
             <!-- Download as XLS button -->
             <client-only>
+              <v-divider vertical inset class="mx-3" />
               <download-excel :fields="downloadFields" :data="items">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
@@ -32,8 +33,11 @@
             </client-only>
           </v-toolbar>
           <v-divider />
+
+          <!-- Report Content -->
           <v-skeleton-loader :loading="loading" type="table">
             <v-data-table
+              :dense="items && !!items.length"
               :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
               :headers="headers"
               :items="items"
@@ -44,7 +48,6 @@
               :sort-by="['date']"
               :sort-desc="[true]"
               class="striped"
-              dense
             />
           </v-skeleton-loader>
         </v-card>
@@ -60,9 +63,10 @@ export default {
   name: 'VehicleInspections',
   mixins: [downloadFields, updateQuery, vehicleRoute],
   data: () => ({
-    start_menu: false,
-    end_menu: false,
-    search: ''
+    panels_expanded: [0],
+    search: '',
+    start_dialog: false,
+    end_dialog: false
   }),
   computed: {
     ...mapGetters({

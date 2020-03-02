@@ -32,7 +32,14 @@
     <v-divider />
 
     <!-- Report Filters -->
-    <v-expansion-panels accordion flat hover tile>
+    <v-expansion-panels
+      v-model="panels_expanded"
+      accordion
+      flat
+      hover
+      multiple
+      tile
+    >
       <v-expansion-panel class="transparent">
         <v-expansion-panel-header class="overline">
           {{ $t('report_filters') }}
@@ -157,9 +164,10 @@ export default {
   name: 'AccidentClaimStatus',
   mixins: [downloadFields, updateQuery],
   data: () => ({
+    panels_expanded: [0],
     search: '',
-    end_dialog: false,
-    start_dialog: false
+    start_dialog: false,
+    end_dialog: false
   }),
   computed: {
     ...mapGetters({
