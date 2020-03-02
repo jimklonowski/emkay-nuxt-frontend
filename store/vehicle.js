@@ -54,6 +54,7 @@ export const actions = {
    * @param {*} vehicle Vehicle Number
    */
   async init ({ commit, dispatch }, { vehicle }) {
+    console.log(`[vuex][vehicle] called init with vehicle #${vehicle}`)
     try {
       commit('reset')
       commit('setLoading', true)
@@ -523,6 +524,7 @@ export const getters = {
   getErrors: state => state.errors,
   getInitialized: state => state.initialized,
   getLoading: state => state.loading,
+  vehicleExists: state => !!state.vehicle_details && Object.keys(state.vehicle_details).length !== 0,
 
   getDriverDetails: state => state.driver_details,
   getVehicleDetails: state => state.vehicle_details,

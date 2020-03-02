@@ -331,6 +331,7 @@ export default {
   insurance_expense: "Frais d'assurance",
   interest: "L'intérêt",
   interest_rate: "Taux d'intérêt",
+  invalid_vehicle_number: "Numéro de véhicule invalide",
   inventory_report: "Rapport d'inventaire",
   invoicing: "Facturation",
   invoice: "Invoice",

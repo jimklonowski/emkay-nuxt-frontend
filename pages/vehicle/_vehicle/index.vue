@@ -99,8 +99,12 @@ export default {
       showOrderStatusWidget: 'vehicle/hasOrderStatus'
     })
   },
-  async asyncData ({ store }) {
-    // await console.log('asyncData()')
+  async asyncData ({ error, params, store }) {
+    await store.dispatch('vehicle/init', { vehicle: params.vehicle })
+    if (!store.getters['vehicle/vehicleExists']) {
+      // if no vehicleDetails object after fetching, throw an error
+      error({ statusCode: 404, key: 'invalid_vehicle_number' })
+    }
   },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('vehicle_dashboard')}`
@@ -111,19 +115,15 @@ export default {
       ]
     }
   },
-  methods: {
-    expand () {
-      alert('expand in vehicle dashboard')
-    }
-  },
   /**
-   * If validator doesn't return true (or a promise reolving to true), or throws an error, nuxt will load the 404 or 500 error pages
+   * If validator doesn't return true (or a promise resolving to true), or throws an error, nuxt will load the 404 or 500 error pages
    * https://nuxtjs.org/guide/routing/#validate-route-params
    */
-  validate ({ params }) {
-    // To test, vehicle param must be alphanumeric
-    // return true
-    return /^[a-z0-9]+$/i.test(params.vehicle)
+  validate ({ error, params, store }) {
+    // if there's no vehicle parameter, throw an error
+    return (params && !!params.vehicle)
+      ? true
+      : error({ statusCode: 404, key: 'invalid_vehicle_number' })
   }
 }
 </script>
