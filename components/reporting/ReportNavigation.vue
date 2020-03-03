@@ -8,7 +8,7 @@
       prominent
       flat
       hide-on-scroll
-      elevation="4"
+      elevation="1"
       scroll-threshold="60"
       class="emkay-image-nav"
     >
@@ -40,7 +40,7 @@
         </v-tabs>
       </template>
     </v-app-bar>
-    <v-card tile outlined>
+    <v-card :style="$vuetify.theme.dark ? 'border-bottom: thin solid rgba(255, 255, 255, 0.12)' : 'border-bottom: thin solid rgba(0, 0, 0, .12)'" flat tile>
       <v-container>
         <v-row>
           <v-col cols="12">

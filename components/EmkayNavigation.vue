@@ -116,6 +116,11 @@ export default {
           to: { path: '/vehicle-search' }
         },
         {
+          icon: 'mdi-bell-ring',
+          key: 'critical_alerts',
+          to: { path: '/management/critical-alerts' }
+        },
+        {
           icon: 'mdi-file-certificate',
           key: 'my_reports',
           to: { path: '/my-reports' }

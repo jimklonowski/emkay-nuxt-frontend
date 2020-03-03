@@ -32,6 +32,7 @@ const management = {
       key: 'tools',
       icon: '',
       items: [
+        { key: 'critical_alerts', icon: 'mdi-bell-ring', to: { path: '/management/critical-alerts' } },
         { key: 'fleet_navigator', icon: 'mdi-compass', to: { path: '/management/fleet-navigator' } },
         { key: 'ev_charging_locations', icon: 'mdi-car-electric', to: { path: '/management/charging-locations' } },
         { key: 'locate_preferred_shops', icon: '', to: { path: '/management/locate-preferred-shops' } },

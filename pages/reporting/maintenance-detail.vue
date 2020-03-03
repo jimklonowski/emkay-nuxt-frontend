@@ -120,6 +120,8 @@
                   v-model="use_bill_date"
                   :label="$t(`use_bill_date`)"
                   :loading="loading"
+                  :false-value="false"
+                  :true-value="true"
                   @change="updateQuery()"
                   class="mt-1"
                   inset

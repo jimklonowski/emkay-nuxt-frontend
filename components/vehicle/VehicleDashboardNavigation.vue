@@ -7,7 +7,7 @@
     prominent
     flat
     hide-on-scroll
-    elevation="4"
+    elevation="1"
     scroll-threshold="60"
     class="emkay-image-nav"
   >

@@ -120,6 +120,8 @@
                   v-model="use_bill_date"
                   :label="$t(`use_bill_date`)"
                   :loading="loading"
+                  :false-value="false"
+                  :true-value="true"
                   @change="updateQuery()"
                   class="mt-1"
                   inset
@@ -173,6 +175,10 @@
         <template #item.vehicle_number="{ item }">
           <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
         </template>
+
+        <!-- <template #item.client_vehicle_number="{ item }">
+          <span v-html="item.client_vehicle_number" />
+        </template> -->
 
         <template #item.amount="{ item }">
           {{ item.amount | currency }}

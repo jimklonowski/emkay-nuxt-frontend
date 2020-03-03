@@ -108,7 +108,7 @@ export default {
     }
   },
   mounted () {
-    debugger
+    // debugger
   },
   methods: {
     async login () {
