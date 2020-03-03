@@ -11,7 +11,7 @@
               :label="$t('search')"
               prepend-inner-icon="mdi-magnify"
               background-color="transparent"
-              class="mr-1"
+              class="mr-2"
               clearable
               dense
               flat
@@ -21,9 +21,9 @@
               single-line
               solo
             />
-            <v-divider vertical inset class="mx-4" />
             <!-- Download as XLS button -->
             <client-only>
+              <v-divider vertical inset class="mx-3" />
               <download-excel :fields="downloadFields" :data="items">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />

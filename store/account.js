@@ -25,6 +25,7 @@ export const actions = {
    * Set custom labels, user preferences, save off the center hierarchy(?) for superfast widgets, etc.
    */
   async init ({ dispatch, commit }) {
+    console.log(`[vuex][account] called init`)
     await Promise.all([
       dispatch('fetchCustomLabels'),
       dispatch('fetchCenterHierarchy')
@@ -37,7 +38,7 @@ export const actions = {
    */
   async fetchCustomLabels ({ commit }) {
     try {
-      const { data: { success, message, data } } = await this.$axios.get('/account/custom-labels')
+      const { data: { data, success, message } } = await this.$axios.get('/account/custom-labels')
       if (!success) { throw new Error(message) }
       commit('setCustomLabels', data)
     } catch (error) {

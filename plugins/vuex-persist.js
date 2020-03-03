@@ -10,7 +10,8 @@ export default ({ store }) => {
   return new VuexPersistence({
     key: 'vuex',
     // persist auth and account
-    modules: ['auth'],
+    // modules: ['auth'],
+    modules: [],
     storage: {
       getItem: key => store.$cookies.get(key),
       setItem: (key, state) => store.$cookies.set(key, state, { path: '/', maxAge: COOKIE_MAX_AGE, secure: SECURE_COOKIE }),

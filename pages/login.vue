@@ -107,12 +107,9 @@ export default {
       ]
     }
   },
-  // mounted () {
-  //   debugger
-  //   this.$axios.get('/user').then(res => {
-  //     console.log(res)
-  //   })
-  // },
+  mounted () {
+    debugger
+  },
   methods: {
     async login () {
       this.loading = true

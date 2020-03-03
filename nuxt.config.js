@@ -6,26 +6,37 @@ import colors from 'vuetify/es5/util/colors'
 import locales from './plugins/i18n/locales'
 require('dotenv').config()
 
+// const isDev = process.env.NODE_ENV !== 'production'
+
 export default {
   mode: 'universal',
+  generate: {
+    fallback: true
+  },
   server: {
     port: 3000,
     host: '127.0.0.1',
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
       cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
+    },
+    timing: {
+      total: true
     }
-    // timing: {
-    //   total: true
-    // }
   },
   /*
   ** vue.config: https://nuxtjs.org/api/configuration-vue-config
   */
   vue: {
     config: {
-      productionTip: false,
-      devtools: true // process.env.NODE_ENV === 'development'
+      devtools: true,
+      performance: true,
+      productionTip: true,
+      silent: false
+      // devtools: isDev,
+      // performance: isDev,
+      // productionTip: isDev,
+      // silent: !isDev
     }
   },
   /*
@@ -361,6 +372,7 @@ export default {
   ** Build configuration
   */
   build: {
+    // analyze: true,
     html: {
       // Fix hydration errors? https://github.com/nuxt/nuxt.js/issues/5800#issuecomment-570110683
       minify: {
