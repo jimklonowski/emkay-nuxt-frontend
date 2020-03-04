@@ -1,11 +1,9 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        {{ $t('critical_alerts') }}
-      </v-col>
-    </v-row>
-    <v-row>
+  <v-card flat>
+    <v-card-title>
+      {{ $t('critical_alerts') }}
+    </v-card-title>
+    <v-card-text class="row">
       <v-col v-if="hasSelection" cols="12" sm="6" lg="4">
         <!-- eslint-disable-next-line -->
         <component :is="edit_form" @close-alert-form="selected = undefined" class="mt-6" />
@@ -57,8 +55,8 @@
           </v-container>
         </v-item-group>
       </v-col>
-    </v-row>
-  </v-container>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

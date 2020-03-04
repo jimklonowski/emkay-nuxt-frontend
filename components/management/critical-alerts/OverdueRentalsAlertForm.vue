@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card outlined tile>
     <v-card-title>
       {{ $t('configure_alert') }}
       <v-spacer />
