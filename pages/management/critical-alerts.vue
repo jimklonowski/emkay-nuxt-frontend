@@ -1,9 +1,9 @@
 <template>
   <v-card flat>
-    <v-card-title>
+    <v-card-title class="font-lato" style="font-size:2rem;">
       {{ $t('critical_alerts') }}
     </v-card-title>
-    <v-card-text class="row">
+    <v-card-text class="row no-gutters">
       <v-col v-if="hasSelection" cols="12" sm="6" lg="4">
         <!-- eslint-disable-next-line -->
         <component :is="edit_form" @close-alert-form="selected = undefined" class="mt-6" />
@@ -86,7 +86,7 @@ export default {
   },
   watch: {
     selected () {
-      console.log(this.selected)
+      // console.log(this.selected)
     }
   },
   methods: {

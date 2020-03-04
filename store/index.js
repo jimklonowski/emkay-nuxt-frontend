@@ -9,39 +9,30 @@ export const actions = {
    */
   async nuxtServerInit ({ commit, dispatch }, { app, params, redirect, req, res, route }) {
     if (process.server) {
-      await console.log('[nuxtServerInit] server')
-      // const cookie = app.$cookies.get('SESSIONID')
-      // const u = await app.$axios.get('/user')
-      // console.log(u)
-      // console.log(app.$auth.user)
-      // console.log(route)
+      // await console.log('[nuxtServerInit] server')
       app.$auth.fetchUser()
-      console.log(app.$auth.user)
+      // console.log(app.$auth.user)
       if (app.$auth.loggedIn) {
-        console.log('logged in')
+        // console.log('logged in')
         await dispatch('account/init')
         // if the app was initiated using a vehicle# param in url, call the vehicle/init
         if (route.path.includes('/vehicle/')) {
           if (params && params.vehicle) {
             const vehicle = params.vehicle
-            console.log(`[nuxtServerInit] vehicle dashboard #${vehicle}`)
+            // console.log(`[nuxtServerInit] vehicle dashboard #${vehicle}`)
             await dispatch('vehicle/init', { vehicle })
           } else {
-            console.log(`[nuxtServerInit] redirecting /vehicle/ to /vehicle-search`)
+            // console.log(`[nuxtServerInit] redirecting /vehicle/ to /vehicle-search`)
             redirect(app.localePath({ path: '/vehicle-search' }))
           }
         }
       } else {
-        console.log('[nuxtServerInit] logout')
+        // console.log('[nuxtServerInit] logout')
         await dispatch('account/logout')
         redirect(app.localePath({ path: '/login' }))
+        // await app.$auth.logout()
+        // await app.$auth.reset()
       }
-      // else {
-      //   console.log('[nuxtServerInit] logout')
-      //   await dispatch('account/logout')
-      //   // redirect(app.localePath({ path: '/login' }))
-      //   // console.log(app.i18n.locale) // LOCALE
-      // }
     }
   }
 }
