@@ -397,6 +397,7 @@
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'MyReports',
   layout: 'myreports',
@@ -428,6 +429,9 @@ export default {
     }
   }),
   computed: {
+    ...mapGetters({
+      center_hierarchy: 'account/getCenters'
+    }),
     listCenters () {
       return this.config.centers_selected.join(', ')
     },
@@ -468,119 +472,119 @@ export default {
         end: this.$moment().format('YYYY-MM-DD')
       }
     },
-    center_hierarchy () {
-      // TODO: this will probably be coming from $store.getters['account/getCenterHierarchy'], but here is some test data:
-      return [
-        {
-          center_code: 'A01',
-          center_name: 'Emkay Inc',
-          children: [
-            {
-              center_code: '001',
-              center_name: 'Executive',
-              children: []
-            },
-            {
-              center_code: 'B01',
-              center_name: 'Sales',
-              children: [
-                {
-                  center_code: '002',
-                  center_name: 'Sales',
-                  children: []
-                },
-                {
-                  center_code: '003',
-                  center_name: 'Account Managers',
-                  children: []
-                },
-                {
-                  center_code: '004',
-                  center_name: 'Short Term & Unassigned Demos',
-                  children: []
-                },
-                {
-                  center_code: '005',
-                  center_name: 'Sales/Canada',
-                  children: []
-                },
-                {
-                  center_code: '006',
-                  center_name: 'Board of Directors',
-                  children: []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          center_code: 'A02',
-          center_name: 'Jessica Tepas',
-          children: []
-        },
-        {
-          center_code: 'A03',
-          center_name: 'Dan Corbett',
-          children: [
-            {
-              center_code: 'B03',
-              center_name: 'Dan Corbett',
-              children: [
-                {
-                  center_code: '008',
-                  center_name: 'Dan Corbett',
-                  children: []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          center_code: 'A04',
-          center_name: 'Greg Depace',
-          children: [
-            {
-              center_code: 'B04',
-              center_name: 'Greg Depace',
-              children: [
-                {
-                  center_code: '009',
-                  center_name: 'Greg Depace',
-                  children: []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          center_code: 'A05',
-          center_name: 'Chris Tepas',
-          children: [
-            {
-              center_code: '010',
-              center_name: 'Chris Tepas',
-              children: []
-            },
-            {
-              center_code: 'B05',
-              center_name: 'Chris Tepas',
-              children: []
-            }
-          ]
-        },
-        {
-          center_code: 'B02',
-          center_name: 'Jessica Tepas',
-          children: [
-            {
-              center_code: '007',
-              center_name: 'Jessica Tepas',
-              children: []
-            }
-          ]
-        }
-      ]
-    },
+    // center_hierarchy () {
+    //   // TODO: this will probably be coming from $store.getters['account/getCenterHierarchy'], but here is some test data:
+    //   return [
+    //     {
+    //       center_code: 'A01',
+    //       center_name: 'Emkay Inc',
+    //       children: [
+    //         {
+    //           center_code: '001',
+    //           center_name: 'Executive',
+    //           children: []
+    //         },
+    //         {
+    //           center_code: 'B01',
+    //           center_name: 'Sales',
+    //           children: [
+    //             {
+    //               center_code: '002',
+    //               center_name: 'Sales',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '003',
+    //               center_name: 'Account Managers',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '004',
+    //               center_name: 'Short Term & Unassigned Demos',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '005',
+    //               center_name: 'Sales/Canada',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '006',
+    //               center_name: 'Board of Directors',
+    //               children: []
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'A02',
+    //       center_name: 'Jessica Tepas',
+    //       children: []
+    //     },
+    //     {
+    //       center_code: 'A03',
+    //       center_name: 'Dan Corbett',
+    //       children: [
+    //         {
+    //           center_code: 'B03',
+    //           center_name: 'Dan Corbett',
+    //           children: [
+    //             {
+    //               center_code: '008',
+    //               center_name: 'Dan Corbett',
+    //               children: []
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'A04',
+    //       center_name: 'Greg Depace',
+    //       children: [
+    //         {
+    //           center_code: 'B04',
+    //           center_name: 'Greg Depace',
+    //           children: [
+    //             {
+    //               center_code: '009',
+    //               center_name: 'Greg Depace',
+    //               children: []
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'A05',
+    //       center_name: 'Chris Tepas',
+    //       children: [
+    //         {
+    //           center_code: '010',
+    //           center_name: 'Chris Tepas',
+    //           children: []
+    //         },
+    //         {
+    //           center_code: 'B05',
+    //           center_name: 'Chris Tepas',
+    //           children: []
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'B02',
+    //       center_name: 'Jessica Tepas',
+    //       children: [
+    //         {
+    //           center_code: '007',
+    //           center_name: 'Jessica Tepas',
+    //           children: []
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // },
     report_headers () {
       return this.config.columns_selected.map((column, index) => {
         return {

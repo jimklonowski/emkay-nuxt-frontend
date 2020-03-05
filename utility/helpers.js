@@ -78,3 +78,8 @@ export const compareObjectByKey = (key, order = 'asc') => {
     return ((order === 'desc') ? (comparison * -1) : comparison)
   }
 }
+
+/**
+ * Flatten tree-like center hierarchy
+ */
+export const flatten = array => array.reduce((res, { center_code, center_name, children = [] }) => res.concat({ center_code, center_name }).concat(flatten(children)), [])

@@ -7,6 +7,8 @@
     <v-divider />
     <v-tabs
       v-model="tab"
+      background-color="transparent"
+      elevation-4
       centered
       grow
       icons-and-text

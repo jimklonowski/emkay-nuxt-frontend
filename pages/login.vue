@@ -132,6 +132,7 @@ export default {
           this.$cookies.set('SESSIONID', this.$auth.user.token)
           // debugger
           console.log('logged in')
+          await this.$store.dispatch('account/init')
         }
       }
     },

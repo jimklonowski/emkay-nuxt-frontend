@@ -274,16 +274,16 @@ export default function ({ $axios, redirect }) {
     .reply(function (config) {
       return [200, { data: {}, success: true, message: 'Labels Updated' }]
     })
-    .onGet('/account/centers')
-    .reply(function (config) {
-      const centers = [
-        { text: 'Executive', value: '001' },
-        { text: 'Sales', value: '002' },
-        { text: 'Account Managers', value: '003' },
-        { text: 'Short Term/Unassigned Demos', value: '004' }
-      ]
-      return [200, { centers }]
-    })
+    // .onGet('/account/centers')
+    // .reply(function (config) {
+    //   const centers = [
+    //     { text: 'Executive', value: '001' },
+    //     { text: 'Sales', value: '002' },
+    //     { text: 'Account Managers', value: '003' },
+    //     { text: 'Short Term/Unassigned Demos', value: '004' }
+    //   ]
+    //   return [200, { centers }]
+    // })
     .onPost('/transtor/quote')
     .reply(function (config) {
       const request = JSON.parse(config.data)

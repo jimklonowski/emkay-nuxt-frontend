@@ -72,6 +72,15 @@ export default {
     selected: undefined
   }),
   computed: {
+    // alert_types () {
+    //   return [
+    //     { key: 'fuel_card_misuse', value: 264, suppressed: false, component: () => import('@/components/management/critical-alerts/FuelCardMisuseAlertForm') },
+    //     { key: 'delayed_orders', value: 21, suppressed: false, component: () => import('@/components/management/critical-alerts/DelayedOrdersAlertForm') },
+    //     { key: 'neglected_maintenance', value: 94, suppressed: false, component: () => import('@/components/management/critical-alerts/NeglectedMaintenanceAlertForm') },
+    //     { key: 'plate_expirations', value: 10, suppressed: false, component: () => import('@/components/management/critical-alerts/PlateExpirationsAlertForm') },
+    //     { key: 'overdue_rentals', value: 2, suppressed: true, component: () => import('@/components/management/critical-alerts/OverdueRentalsAlertForm') }
+    //   ]
+    // },
     alert_types () {
       return [
         { key: 'fuel_card_misuse', value: 264, suppressed: false, component: FuelCardMisuseAlertForm },

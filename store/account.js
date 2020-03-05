@@ -1,4 +1,5 @@
 import { set, assign } from '@/utility/vuex'
+import { flatten } from '@/utility/helpers'
 
 const getDefaultState = () => ({
   initialized: false,
@@ -48,9 +49,14 @@ export const actions = {
     }
   },
   async fetchCenterHierarchy ({ commit }) {
-    const url = `/account/centers`
-    const { data: { centers } } = await this.$axios.get(url)
-    commit('setCenters', centers)
+    try {
+      const { data: { data, success, message } } = await this.$axios.get('/account/centers')
+      if (!success) { throw new Error(message) }
+      commit('setCenters', data)
+    } catch (error) {
+      console.error('error in fetchCenterHierarchy')
+      console.error(error)
+    }
   },
   async logout ({ commit }) {
     // purge the current vuex state
@@ -81,5 +87,6 @@ export const getters = {
   getCenters: state => state.centers,
   getCustomLabels: state => state.custom_labels,
   getLoginMessages: state => state.login_messages,
-  isInitialized: state => state.initialized
+  isInitialized: state => state.initialized,
+  getFlattenedCenters: state => flatten(state.centers)
 }
