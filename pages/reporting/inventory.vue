@@ -31,8 +31,79 @@
     <v-divider />
 
     <!-- Report Filters -->
-    <!-- no filters yet for inventory report -->
-    <!-- <v-divider /> -->
+    <v-expansion-panels
+      v-model="panels_expanded"
+      accordion
+      flat
+      hover
+      multiple
+      tile
+    >
+      <v-expansion-panel class="transparent">
+        <v-expansion-panel-header class="overline">
+          {{ $t('report_filters') }}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-container class="pb-0">
+            <v-row>
+              <v-col cols="12" sm="6" lg="3">
+                <v-dialog
+                  ref="centers_dialog"
+                  v-model="centers_dialog"
+                  max-width="650"
+                  scrollable
+                >
+                  <template #activator="{ on }">
+                    <v-btn v-on="on" color="primary" width="100%" depressed rounded>
+                      {{ $tc('centers_filtered', centers_selected.length) }}
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-sheet class="pa-0 primary" dark>
+                      <v-toolbar flat color="transparent">
+                        <v-toolbar-title>{{ $t('centers') }}</v-toolbar-title>
+                        <v-spacer />
+                        <v-btn @click="centers_dialog = false" icon>
+                          <v-icon v-text="'mdi-close'" />
+                        </v-btn>
+                      </v-toolbar>
+                      <v-sheet class="primary lighten-1 flex-column pa-4" dark>
+                        <v-text-field
+                          v-model="search_centers"
+                          :label="$t('search_centers')"
+                          dark
+                          flat
+                          solo-inverted
+                          hide-details
+                          clearable
+                          clear-icon="mdi-close-circle-outline"
+                          autocomplete="off"
+                        />
+                      </v-sheet>
+                    </v-sheet>
+                    <v-card-text>
+                      <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search_centers" />
+                    </v-card-text>
+                    <v-divider />
+                    <v-card-actions>
+                      {{ $tc('centers_selected', centers_selected.length) }}
+                      <v-spacer />
+                      <v-btn @click="centers_selected = [], search_centers = ''" color="error" text>
+                        {{ $t('reset') }}
+                      </v-btn>
+                      <v-btn @click="centers_dialog = false" color="primary">
+                        {{ $t('ok') }}
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+    <v-divider />
 
     <!-- Report Content -->
     <v-skeleton-loader :loading="loading" type="table">
@@ -132,15 +203,21 @@
 import { mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
 import { downloadFields } from '@/mixins/datatables'
+
+import CenterPicker from '@/components/core/CenterPicker'
 /**
  * Inventory Report (vehicle audit report)
  */
 export default {
   name: 'Inventory',
+  components: { CenterPicker },
   mixins: [downloadFields],
   data: () => ({
-    // centerCodeFilterValue: null,
-    search: ''
+    centers_dialog: false,
+    centers_selected: [],
+    panels_expanded: [0],
+    search: '',
+    search_centers: ''
   }),
   computed: {
     // Mapped Vuex Getters
@@ -245,9 +322,12 @@ export default {
           value: 'center_code',
           class: 'report-column',
           divider: true,
-          filter: value => {
-            if (!this.centerCodeFilterValue) { return true }
-            return value.toLowerCase().includes(this.centerCodeFilterValue.toLowerCase())
+          filter: (value) => {
+            if (!this.centers_selected || this.centers_selected.length === 0) {
+              // no centers selected, don't filter anything
+              return true
+            }
+            return this.centers_selected.find(center => center.center_code === value)
           }
         },
         {

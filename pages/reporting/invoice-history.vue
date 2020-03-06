@@ -61,7 +61,7 @@
                       :value="$moment(start).format('L')"
                       :label="$t('start_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -95,7 +95,7 @@
                       :value="$moment(end).format('L')"
                       :label="$t('end_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly

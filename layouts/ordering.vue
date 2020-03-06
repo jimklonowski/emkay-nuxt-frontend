@@ -2,7 +2,7 @@
   <v-app>
     <emkay-navigation />
     <v-content>
-      <ordering-navigation />
+      <ordering-navigation :menu="menu" />
       <v-container>
         <v-row>
           <v-col cols="12">
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { ordering } from '@/static/data/menus'
 import EmkayFooter from '@/components/EmkayFooter'
 import EmkayNavigation from '@/components/EmkayNavigation'
 import OrderingNavigation from '@/components/ordering/OrderingNavigation'
@@ -30,6 +31,11 @@ export default {
     EmkayFooter,
     EmkayNavigation,
     OrderingNavigation
+  },
+  computed: {
+    menu () {
+      return ordering
+    }
   },
   middleware: ['check-auth'],
   head () {

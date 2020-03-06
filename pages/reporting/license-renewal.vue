@@ -32,7 +32,147 @@
     <v-divider />
 
     <!-- Report Filters -->
-    <!-- ... -->
+    <v-expansion-panels
+      v-model="panels_expanded"
+      accordion
+      flat
+      hover
+      multiple
+      tile
+    >
+      <v-expansion-panel class="transparent">
+        <v-expansion-panel-header class="overline">
+          {{ $t('report_filters') }}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-container class="pb-0">
+            <v-row>
+              <v-col cols="12" sm="6" lg="3">
+                <v-dialog
+                  ref="start_dialog"
+                  v-model="start_dialog"
+                  :return-value.sync="start"
+                  @keydown.esc="start_dialog = false"
+                  persistent
+                  width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(start).format('L')"
+                      :label="$t('start_date')"
+                      v-on="on"
+                      prepend-inner-icon="mdi-calendar"
+                      dense
+                      outlined
+                      readonly
+                      rounded
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="start"
+                    :locale="$moment.locale()"
+                    color="primary"
+                    header-color="primary"
+                    scrollable
+                  >
+                    <v-spacer />
+                    <v-btn v-text="$t('cancel')" @click="start_dialog = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.start_dialog.save(start), updateQuery()" text />
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12" sm="6" lg="3">
+                <v-dialog
+                  ref="end_dialog"
+                  v-model="end_dialog"
+                  :return-value.sync="end"
+                  @keydown.esc="end_dialog = false"
+                  persistent
+                  width="290px"
+                >
+                  <template #activator="{ on }">
+                    <v-text-field
+                      :value="$moment(end).format('L')"
+                      :label="$t('end_date')"
+                      v-on="on"
+                      prepend-inner-icon="mdi-calendar"
+                      dense
+                      outlined
+                      readonly
+                      rounded
+                    />
+                  </template>
+                  <v-date-picker
+                    v-model="end"
+                    :locale="$moment.locale()"
+                    color="primary"
+                    header-color="primary"
+                    scrollable
+                  >
+                    <v-spacer />
+                    <v-btn v-text="$t('cancel')" @click="end_dialog = false" text />
+                    <v-btn v-text="$t('ok')" @click="$refs.end_dialog.save(end), updateQuery()" text />
+                  </v-date-picker>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12" sm="6" lg="3">
+                <v-dialog
+                  ref="centers_dialog"
+                  v-model="centers_dialog"
+                  max-width="650"
+                  scrollable
+                >
+                  <template #activator="{ on }">
+                    <v-btn v-on="on" color="primary" width="100%" depressed rounded>
+                      {{ $tc('centers_filtered', centers_selected.length) }}
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-sheet class="pa-0 primary" dark>
+                      <v-toolbar flat color="transparent">
+                        <v-toolbar-title>{{ $t('centers') }}</v-toolbar-title>
+                        <v-spacer />
+                        <v-btn @click="centers_dialog = false" icon>
+                          <v-icon v-text="'mdi-close'" />
+                        </v-btn>
+                      </v-toolbar>
+                      <v-sheet class="primary lighten-1 flex-column pa-4" dark>
+                        <v-text-field
+                          v-model="search_centers"
+                          :label="$t('search_centers')"
+                          dark
+                          flat
+                          solo-inverted
+                          hide-details
+                          clearable
+                          clear-icon="mdi-close-circle-outline"
+                          autocomplete="off"
+                        />
+                      </v-sheet>
+                    </v-sheet>
+                    <v-card-text>
+                      <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search_centers" />
+                    </v-card-text>
+                    <v-divider />
+                    <v-card-actions>
+                      {{ $tc('centers_selected', centers_selected.length) }}
+                      <v-spacer />
+                      <v-btn @click="centers_selected = [], search_centers = ''" color="error" text>
+                        {{ $t('reset') }}
+                      </v-btn>
+                      <v-btn @click="centers_dialog = false" color="primary">
+                        {{ $t('ok') }}
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+    <v-divider />
 
     <!-- Report Content -->
     <v-skeleton-loader :loading="loading" type="table">
@@ -70,14 +210,23 @@
 <script>
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
+import { updateQuery } from '@/mixins/routing'
+import CenterPicker from '@/components/core/CenterPicker'
 /**
  * License Renewal Report
  */
 export default {
   name: 'LicenseRenewal',
-  mixins: [downloadFields],
+  components: { CenterPicker },
+  mixins: [downloadFields, updateQuery],
   data: () => ({
-    search: ''
+    centers_dialog: false,
+    centers_selected: [],
+    panels_expanded: [0],
+    search: '',
+    search_centers: '',
+    start_dialog: false,
+    end_dialog: false
   }),
   computed: {
     ...mapGetters({
@@ -122,7 +271,14 @@ export default {
           text: this.$i18n.t('center_code'),
           value: 'center_code',
           class: 'report-column',
-          divider: true
+          divider: true,
+          filter: (value) => {
+            if (!this.centers_selected || this.centers_selected.length === 0) {
+              // no centers selected, don't filter anything
+              return true
+            }
+            return this.centers_selected.find(center => center.center_code === value)
+          }
         },
         {
           text: this.$i18n.t('center_name'),
@@ -178,11 +334,21 @@ export default {
           class: 'report-column'
         }
       ]
+    },
+    query () {
+      return {
+        start: this.start,
+        end: this.end
+      }
     }
   },
-  async asyncData ({ store }) {
-    await store.dispatch('reports/fetchLicenseRenewalReport')
-    return { }
+  async asyncData ({ $moment, query, store }) {
+    const report_length = 30
+    const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
+    const end = query.end || $moment().format('YYYY-MM-DD')
+
+    await store.dispatch('reports/fetchLicenseRenewalReport', { start, end })
+    return { start, end }
   },
   head () {
     const title = this.$t('license_renewal_report')
@@ -192,6 +358,7 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  }
+  },
+  watchQuery: ['start', 'end']
 }
 </script>

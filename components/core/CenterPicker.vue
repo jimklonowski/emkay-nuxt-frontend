@@ -1,5 +1,13 @@
 <script>
 import { VTreeview } from 'vuetify/lib'
+
+/**
+ * Treeview that allows selection of centers from the hierarchy. Extends vuetify's VTreeview and sets defaults.
+ * Usage:
+ * centers_selected: []
+ * search: ''
+ * <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search" />
+ */
 export default {
   name: 'center-picker',
   extends: VTreeview,

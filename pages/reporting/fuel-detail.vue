@@ -127,8 +127,8 @@
                       {{ $tc('centers_filtered', centers_selected.length) }}
                     </v-btn>
                   </template>
-                  <v-card class="mx-auto" max-width="650">
-                    <v-sheet class="pa-0 primary lighten-2" dark>
+                  <v-card>
+                    <v-sheet class="pa-0 primary" dark>
                       <v-toolbar flat color="transparent">
                         <v-toolbar-title>{{ $t('centers') }}</v-toolbar-title>
                         <v-spacer />
@@ -138,28 +138,29 @@
                       </v-toolbar>
                       <v-sheet class="primary lighten-1 flex-column pa-4" dark>
                         <v-text-field
-                          v-model="search"
-                          label="Search Centers"
+                          v-model="search_centers"
+                          :label="$t('search_centers')"
                           dark
                           flat
                           solo-inverted
                           hide-details
                           clearable
                           clear-icon="mdi-close-circle-outline"
+                          autocomplete="off"
                         />
                       </v-sheet>
                     </v-sheet>
                     <v-card-text>
-                      <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search" />
+                      <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search_centers" />
                     </v-card-text>
                     <v-divider />
                     <v-card-actions>
-                      Centers Selected: {{ centers_selected.length }}
+                      {{ $tc('centers_selected', centers_selected.length) }}
                       <v-spacer />
-                      <v-btn @click="centers_selected = [], search = ''" color="error" text>
-                        RESET
+                      <v-btn @click="centers_selected = [], search_centers = ''" color="error" text>
+                        {{ $t('reset') }}
                       </v-btn>
-                      <v-btn @click="centers_dialog = false">
+                      <v-btn @click="centers_dialog = false" color="primary">
                         {{ $t('ok') }}
                       </v-btn>
                     </v-card-actions>
@@ -296,6 +297,7 @@ export default {
     centers_selected: [],
     panels_expanded: [0],
     search: '',
+    search_centers: '',
     start_dialog: false,
     end_dialog: false
   }),
@@ -416,16 +418,11 @@ export default {
           class: 'report-column',
           divider: true,
           filter: (value) => {
-            // if no center filters selected, return false to ignore filter for every row
-            if (!this.centers_selected || !this.centers_selected.length) {
-              console.log('nope')
+            if (!this.centers_selected || this.centers_selected.length === 0) {
+              // no centers selected, don't filter anything
               return true
             }
-            function isSelected (center) {
-              return center.center_code === value
-            }
-            console.log(this.centers_selected)
-            return this.centers_selected.find(isSelected)
+            return this.centers_selected.find(center => center.center_code === value)
           }
         },
         {

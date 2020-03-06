@@ -2,7 +2,7 @@
   <v-app>
     <emkay-navigation />
     <v-content>
-      <management-navigation />
+      <management-navigation :menu="menu" />
       <v-container>
         <v-row>
           <v-col cols="12">
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { management } from '@/static/data/menus'
 import EmkayFooter from '@/components/EmkayFooter'
 import EmkayNavigation from '@/components/EmkayNavigation'
 import ManagementNavigation from '@/components/management/ManagementNavigation'
@@ -31,8 +32,14 @@ export default {
     EmkayNavigation,
     ManagementNavigation
   },
+  computed: {
+    menu () {
+      // load the menu json from static/data/menus and pass it to ManagementNavigation component
+      return management
+    }
+  },
   // All pages with the management layout will require auth
-  middleware: ['check-auth', 'account'],
+  middleware: ['check-auth'],
   head () {
     return {
       htmlAttrs: {

@@ -72,13 +72,14 @@ export const actions = {
   },
   /**
    * Fetch ORDER STATUS REPORT data.
-   * No parameters are supplied.
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
    */
-  async fetchOrderStatusReport ({ commit }) {
+  async fetchOrderStatusReport ({ commit }, { start, end }) {
     commit('setError', null)
     commit('setLoading', true)
     try {
-      const { data: { success, message, data } } = await this.$axios.get('/reports/order-status-report')
+      const { data: { success, message, data } } = await this.$axios.get('/reports/order-status-report', { params: { start, end } })
       if (!success) { throw new Error(message) }
       commit('setData', data)
     } catch (error) {
@@ -296,13 +297,14 @@ export const actions = {
   },
   /**
    * Fetch EVOUCHER REPORT data.
-   * No parameters given
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
    */
-  async fetchEvoucherReport ({ commit }) {
+  async fetchEvoucherReport ({ commit }, { start, end }) {
     commit('setError', null)
     commit('setLoading', true)
     try {
-      const { data: { success, message, data } } = await this.$axios.get('/reports/evoucher-report')
+      const { data: { success, message, data } } = await this.$axios.get('/reports/evoucher-report', { params: { start, end } })
       if (!success) { throw new Error(message) }
       commit('setData', data)
     } catch (error) {
@@ -314,13 +316,14 @@ export const actions = {
   },
   /**
    * Fetch LICENSE RENEWAL REPORT data.
-   * No parameters given
+   * @param start (YYYY-MM-DD)
+   * @param end (YYYY-MM-DD)
    */
-  async fetchLicenseRenewalReport ({ commit }) {
+  async fetchLicenseRenewalReport ({ commit }, { start, end }) {
     commit('setError', null)
     commit('setLoading', true)
     try {
-      const { data: { success, message, data } } = await this.$axios.get('/reports/license-renewal-report')
+      const { data: { success, message, data } } = await this.$axios.get('/reports/license-renewal-report', { params: { start, end } })
       if (!success) { throw new Error(message) }
       commit('setData', data)
     } catch (error) {

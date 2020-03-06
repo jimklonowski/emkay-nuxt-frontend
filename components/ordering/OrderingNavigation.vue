@@ -33,7 +33,7 @@
           background-color="transparent"
           color="white"
         >
-          <v-tab v-for="(category, key) in $options.ordering.categories" :key="key" text>
+          <v-tab v-for="(category, key) in menu.categories" :key="key" text>
             <v-icon v-text="category.icon" />
             {{ $t(category.key) }}
           </v-tab>
@@ -46,7 +46,7 @@
           <v-col cols="12">
             <v-subheader>{{ $t('select_a_report') }}</v-subheader>
             <v-tabs-items v-model="tab" style="background-color:transparent;">
-              <v-tab-item v-for="(category, key) in $options.ordering.categories" :key="key">
+              <v-tab-item v-for="(category, key) in menu.categories" :key="key">
                 <v-flex>
                   <v-chip
                     v-for="(item, key2) in category.items"
@@ -71,9 +71,13 @@
 </template>
 
 <script>
-import { ordering } from '@/static/data/menus'
 export default {
-  data: () => ({ tab: 0 }),
-  ordering
+  props: {
+    menu: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  data: () => ({ tab: 0 })
 }
 </script>

@@ -11,9 +11,9 @@ export default function ({ app, $auth, redirect }) {
   //     // return redirect('/login')
   //   }
   // }
-  // if (!$auth.loggedIn) {
-  //   console.log(`[${process.server ? 'SERVER' : 'CLIENT'}][check-auth]: Not logged in, redirecting to login.`)
-  //   return redirect('/login')
-  //   // return redirect(app.localePath('/login'))
-  // }
+  if (!$auth.loggedIn) {
+    console.log(`[${process.server ? 'SERVER' : 'CLIENT'}][check-auth]: Not logged in, redirecting to login.`)
+    return redirect('/login')
+    // return redirect(app.localePath('/login'))
+  }
 }

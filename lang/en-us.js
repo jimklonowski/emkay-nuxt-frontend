@@ -657,6 +657,7 @@ export default {
   scope: "Scope",
   scope_of_report: "Scope of Report",
   search: "Search",
+  search_centers: "Search Centers",
   search_for_text: "Search for text",
   search_placeholder: "Enter a vehicle number, driver name, license plate number, or last 8 of VIN",
   select: "Select",
