@@ -1,17 +1,30 @@
 <template>
   <v-container>
-    <v-btn @click="centers_selected = []" class="mb-4" color="error" text>
-      RESET
-    </v-btn>
-    <v-btn @click="select(['001', '002', '003'])" class="mb-4" color="error lighten-2">
+    <v-row>
+      <v-scroll-x-transition group hide-on-leave tag="div" class="overflow-auto flex" style="height:100%;">
+        <v-chip
+          v-for="item in centers_selected"
+          :key="`${item.center_code}`"
+          class="mr-1 mb-1"
+          color="primary lighten-2"
+          text-color="white"
+          small
+        >
+          <!-- <v-avatar left class="caption primary darken-2">
+            {{ item.center_code }}
+          </v-avatar> -->
+          {{ item.center_name || item.center_code }}
+        </v-chip>
+      </v-scroll-x-transition>
+    </v-row>
+    <v-btn @click="selectCenters(['001', '002', '003'])" class="mb-4" color="error lighten-2">
       Test Selection by selecting 001, 002, 003
     </v-btn>
     <br>
     <v-dialog
       ref="centers_dialog"
       v-model="centers_dialog"
-      max-width="1000"
-      persistent
+      max-width="650"
       scrollable
     >
       <template #activator="{ on }">
@@ -20,7 +33,7 @@
           ({{ centers_selected.length }} selected)
         </v-btn>
       </template>
-      <v-card class="mx-auto" max-width="1000">
+      <v-card class="mx-auto" max-width="650">
         <v-sheet class="pa-0 primary lighten-2" dark>
           <v-toolbar flat color="transparent">
             <v-toolbar-title>{{ $t('centers') }}</v-toolbar-title>
@@ -40,52 +53,24 @@
               clearable
               clear-icon="mdi-close-circle-outline"
             />
-            <v-checkbox
+            <!-- <v-checkbox
               v-model="case_sensitive_search"
               dark
               hide-details
               label="Case sensitive search"
-            />
+            /> -->
           </v-sheet>
         </v-sheet>
-        <v-card-text class="row">
-          <v-col cols="12" md="6">
-            <v-treeview
-              v-model="centers_selected"
-              :items="centers"
-              :filter="filter"
-              :search="search"
-              :return-value.sync="centers_selected"
-              return-object
-              selected-color="primary"
-              item-children="children"
-              item-key="center_code"
-              item-text="center_name"
-              selectable
-            />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-scroll-x-transition group hide-on-leave tag="div" class="overflow-auto flex" style="height:100%;">
-              <v-chip
-                v-for="item in centers_selected"
-                :key="`${item.center_code}`"
-                class="mr-1 mb-1"
-                color="primary lighten-2"
-                text-color="white"
-                small
-              >
-                <v-avatar left class="caption primary darken-2">
-                  {{ item.center_code }}
-                </v-avatar>
-                {{ item.center_name }}
-              </v-chip>
-            </v-scroll-x-transition>
-          </v-col>
+        <v-card-text>
+          <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search" />
         </v-card-text>
         <v-divider />
         <v-card-actions>
           Centers Selected: {{ centers_selected.length }}
           <v-spacer />
+          <v-btn @click="centers_selected = [], search = ''" color="error" text>
+            RESET
+          </v-btn>
           <v-btn @click="centers_dialog = false">
             {{ $t('ok') }}
           </v-btn>
@@ -97,12 +82,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import CenterPicker from '@/components/core/CenterPicker'
 export default {
   name: 'Centers',
+  components: { CenterPicker },
   data: () => ({
     case_sensitive_search: false,
     centers_dialog: false,
     centers_selected: [],
+    centers_selected2: [],
     search: ''
   }),
   computed: {
@@ -114,6 +102,12 @@ export default {
       return this.case_sensitive_search
         ? (item, search, textKey) => item[textKey].includes(search)
         : undefined
+    },
+    selectedList () {
+      return this.centers_selected.map(x => x.center_code).join(', ')
+    },
+    selectedList2 () {
+      return this.centers_selected2.map(x => x.center_code).join(', ')
     }
   },
   watch: {
@@ -128,12 +122,15 @@ export default {
   },
   methods: {
     printSelection () {
-      console.log(`Selected: ${this.centers_selected.map(x => x.center_code).join(', ')}`)
+      console.log(`Selected: ${this.selectedList}`)
+    },
+    printSelection2 () {
+      console.log(`Selected2: ${this.selectedList2}`)
     },
     /**
      * Accepts a list of center_codes(strings), looks up the corresponding { code, name } objects and stores in centers_selected.
      */
-    select (codes = []) {
+    selectCenters (codes = []) {
       if (!codes.length) { return }
       const array = []
       codes.forEach(x => {

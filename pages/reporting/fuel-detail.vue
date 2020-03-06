@@ -47,7 +47,7 @@
         <v-expansion-panel-content>
           <v-container class="pb-0">
             <v-row>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="6" lg="3">
                 <v-dialog
                   ref="start_dialog"
                   v-model="start_dialog"
@@ -61,7 +61,7 @@
                       :value="$moment(start).format('L')"
                       :label="$t('start_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -81,7 +81,7 @@
                   </v-date-picker>
                 </v-dialog>
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="6" lg="3">
                 <v-dialog
                   ref="end_dialog"
                   v-model="end_dialog"
@@ -95,7 +95,7 @@
                       :value="$moment(end).format('L')"
                       :label="$t('end_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -115,7 +115,58 @@
                   </v-date-picker>
                 </v-dialog>
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="6" lg="3">
+                <v-dialog
+                  ref="centers_dialog"
+                  v-model="centers_dialog"
+                  max-width="650"
+                  scrollable
+                >
+                  <template #activator="{ on }">
+                    <v-btn v-on="on" color="primary" width="100%" depressed rounded>
+                      {{ $tc('centers_filtered', centers_selected.length) }}
+                    </v-btn>
+                  </template>
+                  <v-card class="mx-auto" max-width="650">
+                    <v-sheet class="pa-0 primary lighten-2" dark>
+                      <v-toolbar flat color="transparent">
+                        <v-toolbar-title>{{ $t('centers') }}</v-toolbar-title>
+                        <v-spacer />
+                        <v-btn @click="centers_dialog = false" icon>
+                          <v-icon v-text="'mdi-close'" />
+                        </v-btn>
+                      </v-toolbar>
+                      <v-sheet class="primary lighten-1 flex-column pa-4" dark>
+                        <v-text-field
+                          v-model="search"
+                          label="Search Centers"
+                          dark
+                          flat
+                          solo-inverted
+                          hide-details
+                          clearable
+                          clear-icon="mdi-close-circle-outline"
+                        />
+                      </v-sheet>
+                    </v-sheet>
+                    <v-card-text>
+                      <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search" />
+                    </v-card-text>
+                    <v-divider />
+                    <v-card-actions>
+                      Centers Selected: {{ centers_selected.length }}
+                      <v-spacer />
+                      <v-btn @click="centers_selected = [], search = ''" color="error" text>
+                        RESET
+                      </v-btn>
+                      <v-btn @click="centers_dialog = false">
+                        {{ $t('ok') }}
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-col>
+              <v-col cols="12" sm="6" lg="3">
                 <v-switch
                   v-model="use_bill_date"
                   :label="$t(`use_bill_date`)"
@@ -218,6 +269,7 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
+import CenterPicker from '@/components/core/CenterPicker'
 /**
  * Fuel Detail Report
  * When a date filter changes, a call is made to updateQuery which updates the route's query parameters (?start=2019-11&end=2019-11&...)
@@ -225,7 +277,7 @@ import { updateQuery } from '@/mixins/routing'
  */
 export default {
   name: 'FuelDetail',
-
+  components: { CenterPicker },
   /**
    * Mixins
    * https://vuejs.org/v2/guide/mixins.html
@@ -240,6 +292,8 @@ export default {
    * Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain!
    */
   data: () => ({
+    centers_dialog: false,
+    centers_selected: [],
     panels_expanded: [0],
     search: '',
     start_dialog: false,
@@ -360,7 +414,19 @@ export default {
           text: this.$i18n.t('center_code'),
           value: 'center_code',
           class: 'report-column',
-          divider: true
+          divider: true,
+          filter: (value) => {
+            // if no center filters selected, return false to ignore filter for every row
+            if (!this.centers_selected || !this.centers_selected.length) {
+              console.log('nope')
+              return true
+            }
+            function isSelected (center) {
+              return center.center_code === value
+            }
+            console.log(this.centers_selected)
+            return this.centers_selected.find(isSelected)
+          }
         },
         {
           text: this.$i18n.t('center_name'),
