@@ -182,7 +182,8 @@ export default {
      */
     ...mapGetters({
       custom_labels: 'account/getCustomLabels',
-      driver_details: 'vehicle/getDriverDetails',
+      driver_details: 'driver/getDriverDetails',
+      // driver_details: 'vehicle/getDriverDetails',
       vehicle_number: 'vehicle/getVehicleNumber'
     }),
     cityStateZip () {
@@ -203,10 +204,3 @@ export default {
   }
 }
 </script>
-<style>
-.action-icon {
-  justify-content: center;
-  align-items: center;
-  max-width:24px;
-}
-</style>

@@ -61,7 +61,7 @@
                       :value="$moment(start).format('L')"
                       :label="$t('start_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -95,7 +95,7 @@
                       :value="$moment(end).format('L')"
                       :label="$t('end_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -189,10 +189,9 @@ export default {
      * Vuex Getters
      */
     ...mapGetters({
-      error: 'vehicle-detail/getError',
-      items: 'vehicle-detail/getData',
-      loading: 'vehicle-detail/getLoading',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      items: 'vehicle-dashboard/getMaintenanceHistory',
+      loading: 'vehicle-dashboard/getMaintenanceLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -259,13 +258,13 @@ export default {
     }
   },
   async asyncData ({ $moment, query, store }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
-    await store.dispatch('vehicle-detail/fetchMaintenanceHistory', { start, end, use_bill_date, vehicle })
+    await store.dispatch('vehicle-dashboard/fetchMaintenanceHistory', { start, end, use_bill_date, vehicle })
 
     return { start, end, use_bill_date }
   },

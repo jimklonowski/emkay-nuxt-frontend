@@ -37,10 +37,10 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'VehicleFuel',
+  name: 'VehicleDashboardFuel',
   computed: {
     ...mapGetters({
-      vehicle_number: 'vehicle/getVehicleNumber'
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     fuelRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/fuel` }),
     fuelCardRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/fuel/fuel-cards` }),

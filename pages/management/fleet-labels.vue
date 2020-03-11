@@ -1,214 +1,110 @@
 <template>
-  <v-card :loading="loading" outlined>
-    <ValidationObserver v-slot="{ invalid, handleSubmit }">
-      <v-form @submit.prevent="handleSubmit(submit)">
-        <v-card-title v-text="$t('customize_fleet_labels')" class="font-lato" />
-        <v-card-text>
-          <v-container class="pa-0">
-            <v-alert
-              outlined
-              type="info"
-              color="primary"
-              border="left"
-            >
-              {{ $t('custom_labels_warning') }}
-            </v-alert>
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-subheader v-text="$t('client')" />
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('client_use_1_label')" rules="max:40">
-                        <v-text-field
-                          v-model="client_use_labels.client_use_1_label"
-                          :label="$t('client_use_1_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('client_use_2_label')" rules="max:40">
-                        <v-text-field
-                          v-model="client_use_labels.client_use_2_label"
-                          :label="$t('client_use_2_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('client_use_3_label')" rules="max:40">
-                        <v-text-field
-                          v-model="client_use_labels.client_use_3_label"
-                          :label="$t('client_use_3_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('client_use_4_label')" rules="max:40">
-                        <v-text-field
-                          v-model="client_use_labels.client_use_4_label"
-                          :label="$t('client_use_4_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('client_use_5_label')" rules="max:40">
-                        <v-text-field
-                          v-model="client_use_labels.client_use_5_label"
-                          :label="$t('client_use_5_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-subheader v-text="$t('driver')" />
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('driver_misc_1_label')" rules="max:40">
-                        <v-text-field
-                          v-model="driver_misc_labels.driver_misc_1_label"
-                          :label="$t('driver_misc_1_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('driver_misc_2_label')" rules="max:40">
-                        <v-text-field
-                          v-model="driver_misc_labels.driver_misc_2_label"
-                          :label="$t('driver_misc_2_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('driver_misc_3_label')" rules="max:40">
-                        <v-text-field
-                          v-model="driver_misc_labels.driver_misc_3_label"
-                          :label="$t('driver_misc_3_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                    <v-col cols="12">
-                      <ValidationProvider v-slot="{ errors }" :name="$t('driver_misc_4_label')" rules="max:40">
-                        <v-text-field
-                          v-model="driver_misc_labels.driver_misc_4_label"
-                          :label="$t('driver_misc_4_label')"
-                          :error-messages="errors"
-                          outlined
-                          dense
-                        />
-                      </ValidationProvider>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            :ripple="false"
-            :to="localePath({ path: `/management/` })"
-            color="error"
-            exact
-            nuxt
-            text
-          >
-            {{ $t('cancel') }}
-          </v-btn>
-          <v-btn :disabled="invalid" type="submit" color="primary">
-            {{ $t('save') }}
-            <v-icon v-text="'mdi-content-save-all'" class="ml-2" small />
-          </v-btn>
-        </v-card-actions>
-      </v-form>
-    </ValidationObserver>
-  </v-card>
+  <ValidationObserver ref="labelsForm" @submit.prevent v-slot="{ handleSubmit }" tag="form">
+    <v-card :loading="loading" outlined>
+      <v-card-title class="font-lato">
+        {{ $t('edit_custom_labels') }}
+      </v-card-title>
+      <v-card-subtitle>
+        {{ $t('custom_labels_warning') }}
+      </v-card-subtitle>
+      <v-divider />
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <!-- Client Labels -->
+            <v-col cols="12" md="6">
+              <v-subheader class="px-0">
+                {{ $t('client_labels') }}
+              </v-subheader>
+              <ValidationProvider v-for="item in client_labels" :key="item.key" v-slot="{ errors }" :name="$t(item.key)" rules="max:40">
+                <v-text-field
+                  :label="$t(item.key)"
+                  v-model="model[item.key]"
+                  :error-messages="errors"
+                  dense
+                  outlined
+                />
+              </ValidationProvider>
+            </v-col>
+            <!-- Driver Labels -->
+            <v-col cols="12" md="6">
+              <v-subheader class="px-0">
+                {{ $t('driver_labels') }}
+              </v-subheader>
+              <ValidationProvider v-for="item in driver_labels" :key="item.key" v-slot="{ errors }" :name="$t(item.key)" rules="max:40">
+                <v-text-field
+                  :label="$t(item.key)"
+                  v-model="model[item.key]"
+                  :error-messages="errors"
+                  dense
+                  outlined
+                />
+              </ValidationProvider>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-spacer />
+        <v-fade-transition>
+          <span v-show="hasChanges" class="font-italic text--disabled body-2 px-4">{{ $t('unsaved_changes') }}</span>
+        </v-fade-transition>
+        <v-btn @click="handleSubmit(submitLabels)" :disabled="!hasChanges" type="submit" color="primary" depressed>
+          {{ $t('save_changes') }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </ValidationObserver>
 </template>
-
 <script>
+import { mapGetters } from 'vuex'
+import isEqual from 'lodash.isequal'
 import { SnotifyPosition } from 'vue-snotify'
 export default {
-  name: 'FleetLabels',
-  data () {
-    return {
-      client_use_labels: null,
-      driver_misc_labels: null,
-      feedback: null,
-      loading: false
+  name: 'ManagementFleetLabels',
+  data: () => ({
+    loading: false,
+    model: {
+      client_use_label_1: '',
+      client_use_label_2: '',
+      client_use_label_3: '',
+      client_use_label_4: '',
+      client_use_label_5: '',
+      driver_use_label_1: '',
+      driver_use_label_2: '',
+      driver_use_label_3: '',
+      driver_use_label_4: ''
     }
-  },
+  }),
   computed: {
-    model () {
-      return {
-        client_use_labels: this.client_use_labels,
-        driver_misc_labels: this.driver_misc_labels
-      }
-    }
+    ...mapGetters({
+      custom_labels: 'account/getCustomLabels',
+      client_labels: 'account/getClientLabels',
+      driver_labels: 'account/getDriverLabels'
+    }),
+    /**
+     * I wanted to keep the save button disabled unless there had been changes made to the form.  Easy to use Lodash's isEqual to compare objects
+     */
+    hasChanges: vm => !isEqual(vm.model, vm.custom_labels)
   },
-  async asyncData ({ store, query, $axios }) {
-    // fetch the current labels by calling the account/fetchCustomLabels action
-    console.log('dispatching fetchCustomLabels')
-    await store.dispatch('account/fetchCustomLabels')
-
-    // asyncData's return object is merged with data's return object
-    return {
-      client_use_labels: store.getters['account/getClientUseLabels'],
-      driver_misc_labels: store.getters['account/getDriverMiscLabels']
-    }
-  },
-  mounted () {
-    // this.client_use_labels = Object.assign({}, this.$store.getters['account/getClientUseLabels'])
-    // this.driver_misc_labels = Object.assign({}, this.$store.getters['account/getDriverMiscLabels'])
-  },
-  head () {
-    const title = this.$t('customize_fleet_labels')
-    return {
-      title,
-      meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
-      ]
-    }
+  async asyncData ({ store }) {
+    await console.log('Loading current labels')
+    // copy existing labels into model
+    const loadedLabels = store.getters['account/getCustomLabels']
+    const model = { ...loadedLabels }
+    return { model }
   },
   methods: {
-    async submit () {
-      this.loading = true
+    async submitLabels () {
       try {
-        const { data: { data, success, message } } = await this.$axios.post('account/update-custom-labels', this.model)
-        if (!success) {
-          throw new Error(message)
-        }
-        // success handler
-        this.$snotify.success(message, '', { position: SnotifyPosition.centerTop })
-        console.dir(data)
+        this.loading = true
+        const { data: { success, message } } = await this.$axios.post('account/update-labels', this.model)
+        if (!success) { throw new Error(message) }
+        this.$snotify.success(this.$i18n.t('labels_updated'), this.$i18n.t('success'), { position: SnotifyPosition.centerBottom })
+        this.$store.dispatch('account/fetchCustomLabels')
       } catch (error) {
-        this.$snotify.error(error, '', { position: SnotifyPosition.centerTop })
+        this.$snotify.error(error.message, this.$i18n.t('error'), { position: SnotifyPosition.centerBottom })
       } finally {
         this.loading = false
       }

@@ -14,16 +14,10 @@
         <maintenance-widget />
       </v-col>
       <v-col cols="12" xl="6">
-        <licensing-widget />
-      </v-col>
-      <v-col cols="12" xl="6">
         <billing-widget />
       </v-col>
-      <v-col v-if="showOrderStatusWidget" cols="12" xl="6">
-        <order-status-widget />
-      </v-col>
       <v-col cols="12" xl="6">
-        <expense-widget />
+        <licensing-widget />
       </v-col>
       <v-col cols="12" xl="6">
         <odometer-widget />
@@ -32,79 +26,59 @@
         <toll-widget />
       </v-col>
       <v-col cols="12" xl="6">
-        <rental-widget />
+        <accident-widget />
       </v-col>
       <v-col cols="12" xl="6">
-        <accident-widget />
+        <rental-widget />
       </v-col>
       <v-col cols="12" xl="6">
         <violation-widget />
       </v-col>
       <v-col cols="12" xl="6">
-        <inspections-widget />
+        <inspection-widget />
       </v-col>
-      <!-- <v-col cols="12" xl="6">
-        <documents-and-notes-widget />
-      </v-col> -->
+      <v-col cols="12" xl="6">
+        <order-status-widget v-if="hasOrderStatus" />
+        <pre v-else>No order status found, skipping order status widget.</pre>
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import DriverWidget from '@/components/vehicle/DriverWidget'
-import VehicleWidget from '@/components/vehicle/VehicleWidget'
-import FuelWidget from '@/components/vehicle/FuelWidget'
-import MaintenanceWidget from '@/components/vehicle/MaintenanceWidget'
-import ExpenseWidget from '@/components/vehicle/ExpenseWidget'
-import OdometerWidget from '@/components/vehicle/OdometerWidget'
-import BillingWidget from '@/components/vehicle/BillingWidget'
-import AccidentWidget from '@/components/vehicle/AccidentWidget'
-import TollWidget from '@/components/vehicle/TollWidget'
-import ViolationWidget from '@/components/vehicle/ViolationWidget'
-import OrderStatusWidget from '@/components/vehicle/OrderStatusWidget'
-import RentalWidget from '@/components/vehicle/RentalWidget'
-import InspectionsWidget from '@/components/vehicle/InspectionsWidget'
-import LicensingWidget from '@/components/vehicle/LicensingWidget'
-// import DocumentsAndNotesWidget from '@/components/vehicle/DocumentsAndNotesWidget'
+import { mapActions, mapGetters } from 'vuex'
 /**
  * Vehicle Dashboard (widgets)
  */
 export default {
   name: 'VehicleDashboard',
-  /* eslint-disable vue/no-unused-components */
   components: {
-    VehicleWidget,
-    DriverWidget,
-    FuelWidget,
-    MaintenanceWidget,
-    AccidentWidget,
-    OdometerWidget,
-    TollWidget,
-    ExpenseWidget,
-    BillingWidget,
-    ViolationWidget,
-    // DocumentsAndNotesWidget,
-    RentalWidget,
-    OrderStatusWidget,
-    InspectionsWidget,
-    LicensingWidget
-
-    // 'fuel-table': () => import('@/components/vehicle/FuelTable'),
-    // 'maintenance-table': () => import('@/components/vehicle/MaintenanceTable'),
+    'vehicle-widget': () => import(/* webpackChunkName: "VehicleWidget" */ `@/components/vehicle-dashboard/VehicleWidget`),
+    'driver-widget': () => import(/* webpackChunkName: "DriverWidget" */ `@/components/vehicle-dashboard/DriverWidget`),
+    'order-status-widget': () => import(/* webpackChunkName: "OrderStatusWidget" */ `@/components/vehicle-dashboard/OrderStatusWidget`),
+    'fuel-widget': () => import(/* webpackChunkName: "FuelWidget" */ `@/components/vehicle-dashboard/FuelWidget`),
+    'maintenance-widget': () => import(/* webpackChunkName: "MaintenanceWidget" */ `@/components/vehicle-dashboard/MaintenanceWidget`),
+    'billing-widget': () => import(/* webpackChunkName: "BillingWidget" */ `@/components/vehicle-dashboard/BillingWidget`),
+    'licensing-widget': () => import(/* webpackChunkName: "LicensingWidget" */ `@/components/vehicle-dashboard/LicensingWidget`),
+    'odometer-widget': () => import(/* webpackChunkName: "OdometerWidget" */ `@/components/vehicle-dashboard/OdometerWidget`),
+    'toll-widget': () => import(/* webpackChunkName: "TollWidget" */ `@/components/vehicle-dashboard/TollWidget`),
+    'accident-widget': () => import(/* webpackChunkName: "AccidentWidget" */ `@/components/vehicle-dashboard/AccidentWidget`),
+    'rental-widget': () => import(/* webpackChunkName: "RentalWidget" */ `@/components/vehicle-dashboard/RentalWidget`),
+    'violation-widget': () => import(/* webpackChunkName: "ViolationWidget" */ `@/components/vehicle-dashboard/ViolationWidget`),
+    'inspection-widget': () => import(/* webpackChunkName: "InspectionWidget" */ `@/components/vehicle-dashboard/InspectionWidget`)
   },
-  data: () => ({}),
   computed: {
     ...mapGetters({
-      showOrderStatusWidget: 'vehicle/hasOrderStatus'
+      hasOrderStatus: 'vehicle-dashboard/hasOrderStatus'
     })
   },
-  async asyncData ({ error, params, store }) {
-    await store.dispatch('vehicle/init', { vehicle: params.vehicle })
-    if (!store.getters['vehicle/vehicleExists']) {
-      // if no vehicleDetails object after fetching, throw an error
-      error({ statusCode: 404, key: 'invalid_vehicle_number' })
-    }
+  async asyncData ({ params, store }) {
+    await store.dispatch('vehicle-dashboard/init', { vehicle: params.vehicle })
+  },
+  methods: {
+    ...mapActions({
+      initialize: 'vehicle-dashboard/init'
+    })
   },
   head () {
     const title = `${this.$route.params.vehicle} - ${this.$t('vehicle_dashboard')}`
@@ -114,16 +88,6 @@ export default {
         { hid: 'og:description', property: 'og:description', content: title }
       ]
     }
-  },
-  /**
-   * If validator doesn't return true (or a promise resolving to true), or throws an error, nuxt will load the 404 or 500 error pages
-   * https://nuxtjs.org/guide/routing/#validate-route-params
-   */
-  validate ({ error, params, store }) {
-    // if there's no vehicle parameter, throw an error
-    return (params && !!params.vehicle)
-      ? true
-      : error({ statusCode: 404, key: 'invalid_vehicle_number' })
   }
 }
 </script>

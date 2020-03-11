@@ -43,7 +43,7 @@ export default {
   name: 'VehicleMaintenance',
   computed: {
     ...mapGetters({
-      vehicle_number: 'vehicle/getVehicleNumber'
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     evoucherRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance/evoucher` }),
     maintenanceRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/maintenance` }),

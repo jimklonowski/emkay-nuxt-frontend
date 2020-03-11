@@ -1,10 +1,5 @@
 <template>
   <v-container>
-    <v-row v-if="$route.query.invoice">
-      <v-col cols="9">
-        <invoice :invoice-number="$route.query.invoice" :vehicle-number="vehicle_number" />
-      </v-col>
-    </v-row>
     <v-row>
       <v-col cols="12">
         <v-card outlined tile class="report">
@@ -69,7 +64,7 @@
                             :value="$moment(start).format('L')"
                             :label="$t('start_date')"
                             v-on="on"
-                            prepend-icon="mdi-calendar"
+                            prepend-inner-icon="mdi-calendar"
                             dense
                             outlined
                             readonly
@@ -103,7 +98,7 @@
                             :value="$moment(end).format('L')"
                             :label="$t('end_date')"
                             v-on="on"
-                            prepend-icon="mdi-calendar"
+                            prepend-inner-icon="mdi-calendar"
                             dense
                             outlined
                             readonly
@@ -133,7 +128,6 @@
           <!-- Report Content -->
           <v-skeleton-loader :loading="loading" type="table">
             <v-data-table
-              :dense="items && !!items.length"
               :footer-props="{ itemsPerPageOptions: [10, 25, 50, 100, -1] }"
               :headers="headers"
               :items="items"
@@ -143,13 +137,32 @@
               :search="search"
               :sort-by="['bill_date']"
               :sort-desc="[true]"
+              :expanded.sync="expanded"
               class="striped"
+              item-key="invoice_number"
+              show-expand
+              single-expand
             >
               <!-- Configure display of columns -->
               <template #item.invoice_number="{ item }">
-                <nuxt-link :to="invoiceRoute(item.invoice_number)" class="text-decoration-none" nuxt>
+                {{ item.invoice_number }}
+                <!-- <nuxt-link @click="dialog = true" :to="invoiceRoute(item.invoice_number)" class="text-decoration-none" nuxt>
                   {{ item.invoice_number }}
-                </nuxt-link>
+                </nuxt-link> -->
+                <!-- <v-btn
+                  :to="invoiceRoute(item.invoice_number)"
+                  color="primary"
+                  exact
+                  small
+                  text
+                >
+                  {{ item.invoice_number }}
+                </v-btn> -->
+              </template>
+              <template #expanded-item="props">
+                <td :colspan="props.headers.length" class="pa-4">
+                  <invoice :invoice-number="props.item.invoice_number" :vehicle-number="vehicle_number" />
+                </td>
               </template>
 
               <template #item.bill_date="{ item }">
@@ -175,26 +188,27 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
-import Invoice from '@/components/vehicle/billing/Invoice'
+// import Invoice from '@/components/vehicle/billing/Invoice'
 
 export default {
   name: 'Billing',
-  components: { Invoice },
-  mixins: [downloadFields, updateQuery, vehicleRoute],
-  data (context) {
-    return {
-      panels_expanded: [0],
-      search: '',
-      start_dialog: false,
-      end_dialog: false
-    }
+  components: {
+    // Invoice
+    'invoice': () => import(/* webpackChunkName: "Invoice" */ `@/components/vehicle-dashboard/billing/Invoice`)
   },
+  mixins: [downloadFields, updateQuery, vehicleRoute],
+  data: () => ({
+    expanded: [],
+    panels_expanded: [0],
+    search: '',
+    start_dialog: false,
+    end_dialog: false
+  }),
   computed: {
     ...mapGetters({
-      error: 'vehicle-detail/getError',
-      items: 'vehicle-detail/getData',
-      loading: 'vehicle-detail/getLoading',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      items: 'vehicle-dashboard/getBillingHistory',
+      loading: 'vehicle-dashboard/getBillingLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -207,6 +221,7 @@ export default {
     },
     headers () {
       return [
+        { text: '', value: 'data-table-expand', divider: true },
         {
           text: this.$i18n.t('invoice_number'),
           value: 'invoice_number',
@@ -247,14 +262,26 @@ export default {
     }
   },
   async asyncData ({ $moment, query, store, error }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    console.log('asyncdata')
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     // if no date params in query, use 30 day period ending with today
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
     // Fetch the report data using the above filters
-    await store.dispatch('vehicle-detail/fetchBillingHistory', { start, end, vehicle })
+    await store.dispatch('vehicle-dashboard/fetchBillingHistory', { start, end, vehicle })
     return { start, end }
+  },
+  mounted () {
+    console.log('mounted')
+    if (this.$route.query.invoice) {
+      // if an invoice is in query, find and expand that invoice's row
+      const found = this.items.find(x => x.invoice_number === this.$route.query.invoice)
+      // if the invoice# in query is not found in the rows of the datatable, then don't expand a row
+      this.expanded = found ? [found] : []
+      // remove the invoice# from query
+      this.$router.replace({ query: { ...this.$route.query, invoice: undefined } })
+    }
   },
   methods: {
     invoiceRoute (invoice) {

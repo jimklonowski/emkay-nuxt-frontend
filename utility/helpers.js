@@ -83,3 +83,9 @@ export const compareObjectByKey = (key, order = 'asc') => {
  * Flatten tree-like center hierarchy
  */
 export const flatten = array => array.reduce((res, { center_code, center_name, children = [] }) => res.concat({ center_code, center_name }).concat(flatten(children)), [])
+
+/**
+ * Use to add a delay in an async request (for debugging)
+ * @param {*} m time in millis
+ */
+export const sleep = m => new Promise(resolve => setTimeout(resolve, m))

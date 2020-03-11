@@ -18,9 +18,10 @@ export const actions = {
         // if the app was initiated using a vehicle# param in url, call the vehicle/init
         if (route.path.includes('/vehicle/')) {
           if (params && params.vehicle) {
-            const vehicle = params.vehicle
+            // const vehicle = params.vehicle
             // console.log(`[nuxtServerInit] vehicle dashboard #${vehicle}`)
-            await dispatch('vehicle/init', { vehicle })
+            // await dispatch('vehicle/init', { vehicle })
+            // await dispatch('vehicle-dashboard/init')
           } else {
             // console.log(`[nuxtServerInit] redirecting /vehicle/ to /vehicle-search`)
             redirect(app.localePath({ path: '/vehicle-search' }))

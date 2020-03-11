@@ -83,6 +83,8 @@ export const actions = {
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/driver-details', { params: { vehicle } })
       if (!success) { throw new Error(message) }
       commit('setDriverDetails', data)
+      // populate driver_details in driver store with driver data
+      commit('driver/setDriverDetails', data, { root: true })
     } catch (error) {
       commit('pushError', error.message)
       commit('setDriverDetails', {})
@@ -586,6 +588,7 @@ export const getters = {
   getViolationHistory: state => state.violation_history,
   getViolationsLoading: state => state.violations_loading,
 
+  getDriverNumber: state => state.driver_details.reference_number,
   getVehicleNumber: state => state.vehicle_number,
   hasVehicle: state => !!state.vehicle_number,
   hasDriver: state => !!state.driver_details.reference_number

@@ -300,72 +300,72 @@ export default function ({ $axios, redirect }) {
     .reply(function (config) {
       return [400, { data: {}, success: false, message: 'Bad Details' }]
     })
-    .onGet('/fleet/drivers')
-    .reply(function (config) {
-      const drivers = [
-        {
-          driver_id: '1',
-          driver_last_name: 'GRIFFITH',
-          driver_first_name: 'ANDREW',
-          driver_address_1: 'EMKAY, Inc.',
-          driver_address_2: '805 W. THORNDALE AVE.',
-          driver_city: 'ITASCA',
-          driver_state_province: 'IL',
-          driver_postal_code: '60143',
-          driver_county: 'DuPage',
-          driver_phone: '6308649999',
-          driver_mobile: '6309996464',
-          driver_email_address: 'TESTEMAIL@EMKAY.COM',
-          driver_employee_id: '123456',
-          driver_misc_1: 'MISC 1',
-          driver_misc_2: 'MISC 2',
-          driver_misc_3: 'MISC 3',
-          driver_misc_4: 'MISC 4',
-          vehicle_number: 'E66429'
-        },
-        {
-          driver_id: '2',
-          driver_last_name: 'KLONOWSKI',
-          driver_first_name: 'JAMES',
-          driver_address_1: '1077 BRIARBROOK DR.',
-          driver_address_2: 'APT 420',
-          driver_city: 'WHEATON',
-          driver_state_province: 'IL',
-          driver_postal_code: '60189',
-          driver_county: 'DuPage',
-          driver_phone: '6308649999',
-          driver_mobile: '6309996464',
-          driver_email_address: 'JCK@EMKAY.COM',
-          driver_employee_id: '123456',
-          driver_misc_1: 'MISC 1',
-          driver_misc_2: 'MISC 2',
-          driver_misc_3: 'MISC 3',
-          driver_misc_4: 'MISC 4',
-          vehicle_number: 'E66420'
-        },
-        {
-          driver_id: '3',
-          driver_last_name: 'SMITH',
-          driver_first_name: 'JOHN',
-          driver_address_1: '',
-          driver_address_2: '',
-          driver_city: 'CHICAGO',
-          driver_state_province: 'IL',
-          driver_postal_code: '60607',
-          driver_county: 'Cook',
-          driver_phone: '6308649999',
-          driver_mobile: '6309996464',
-          driver_email_address: 'test@EMKAY.COM',
-          driver_employee_id: '123456',
-          driver_misc_1: 'MISC 1',
-          driver_misc_2: 'MISC 2',
-          driver_misc_3: 'MISC 3',
-          driver_misc_4: 'MISC 4',
-          vehicle_number: 'E22111'
-        }
-      ]
-      return [200, { drivers, success: true, message: 'OK' }]
-    })
+    // .onGet('/fleet/drivers')
+    // .reply(function (config) {
+    //   const drivers = [
+    //     {
+    //       driver_id: '1',
+    //       driver_last_name: 'GRIFFITH',
+    //       driver_first_name: 'ANDREW',
+    //       driver_address_1: 'EMKAY, Inc.',
+    //       driver_address_2: '805 W. THORNDALE AVE.',
+    //       driver_city: 'ITASCA',
+    //       driver_state_province: 'IL',
+    //       driver_postal_code: '60143',
+    //       driver_county: 'DuPage',
+    //       driver_phone: '6308649999',
+    //       driver_mobile: '6309996464',
+    //       driver_email_address: 'TESTEMAIL@EMKAY.COM',
+    //       driver_employee_id: '123456',
+    //       driver_misc_1: 'MISC 1',
+    //       driver_misc_2: 'MISC 2',
+    //       driver_misc_3: 'MISC 3',
+    //       driver_misc_4: 'MISC 4',
+    //       vehicle_number: 'E66429'
+    //     },
+    //     {
+    //       driver_id: '2',
+    //       driver_last_name: 'KLONOWSKI',
+    //       driver_first_name: 'JAMES',
+    //       driver_address_1: '1077 BRIARBROOK DR.',
+    //       driver_address_2: 'APT 420',
+    //       driver_city: 'WHEATON',
+    //       driver_state_province: 'IL',
+    //       driver_postal_code: '60189',
+    //       driver_county: 'DuPage',
+    //       driver_phone: '6308649999',
+    //       driver_mobile: '6309996464',
+    //       driver_email_address: 'JCK@EMKAY.COM',
+    //       driver_employee_id: '123456',
+    //       driver_misc_1: 'MISC 1',
+    //       driver_misc_2: 'MISC 2',
+    //       driver_misc_3: 'MISC 3',
+    //       driver_misc_4: 'MISC 4',
+    //       vehicle_number: 'E66420'
+    //     },
+    //     {
+    //       driver_id: '3',
+    //       driver_last_name: 'SMITH',
+    //       driver_first_name: 'JOHN',
+    //       driver_address_1: '',
+    //       driver_address_2: '',
+    //       driver_city: 'CHICAGO',
+    //       driver_state_province: 'IL',
+    //       driver_postal_code: '60607',
+    //       driver_county: 'Cook',
+    //       driver_phone: '6308649999',
+    //       driver_mobile: '6309996464',
+    //       driver_email_address: 'test@EMKAY.COM',
+    //       driver_employee_id: '123456',
+    //       driver_misc_1: 'MISC 1',
+    //       driver_misc_2: 'MISC 2',
+    //       driver_misc_3: 'MISC 3',
+    //       driver_misc_4: 'MISC 4',
+    //       vehicle_number: 'E22111'
+    //     }
+    //   ]
+    //   return [200, { drivers, success: true, message: 'OK' }]
+    // })
     .onGet('/vehicle/fuel-cards')
     .reply(function (config) {
       const data = [
@@ -1098,6 +1098,61 @@ export default function ({ $axios, redirect }) {
           break
       }
       return [200, { groups, success: true, message: 'TEST' }]
+    })
+    // .onGet('/driver/driver-details')
+    // .reply(function (config) {
+    //   const driverId = config.params.driver
+    //   const data = {
+    //     driver_id: driverId,
+    //     driver_last_name: 'GRIFFITH',
+    //     driver_first_name: 'ANDREW',
+    //     driver_address_1: 'EMKAY, Inc.',
+    //     driver_address_2: '805 W. THORNDALE AVE.',
+    //     driver_city: 'ITASCA',
+    //     driver_state_province: 'IL',
+    //     driver_postal_code: '60143',
+    //     driver_county: 'DuPage',
+    //     driver_phone: '6308649999',
+    //     driver_mobile: '6309996464',
+    //     driver_email_address: 'TESTEMAIL@EMKAY.COM',
+    //     driver_employee_id: '123456',
+    //     driver_misc_1: 'MISC 1',
+    //     driver_misc_2: 'MISC 2',
+    //     driver_misc_3: 'MISC 3',
+    //     driver_misc_4: 'MISC 4',
+    //     vehicle_number: 'E66429'
+    //   }
+    //   return [200, { data, success: true, message: 'TEST' }]
+    // })
+    .onGet('/driver/vehicle-history')
+    .reply(function (config) {
+      const data = [
+        {
+          vehicle: '269947',
+          model_year: '2012',
+          model: 'EXPLORER LTD',
+          status: 'CLOSE OUT'
+        },
+        {
+          vehicle: '442545',
+          model_year: '2014',
+          model: 'DURANGO CITADEL',
+          status: 'CLOSE OUT'
+        },
+        {
+          vehicle: 'E05060',
+          model_year: '2019',
+          model: 'DURANGO CITADEL BATTLE TANK',
+          status: 'CLOSE OUT'
+        },
+        {
+          vehicle: 'E66429',
+          model_year: '2020',
+          model: 'DURANGO GT AWD',
+          status: 'ON BILLING'
+        }
+      ]
+      return [200, { data, success: true, message: 'TEST' }]
     })
     .onAny().passThrough()
   // debugger

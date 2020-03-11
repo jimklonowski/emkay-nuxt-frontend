@@ -61,7 +61,7 @@
                       :value="$moment(start).format('L')"
                       :label="$t('start_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -95,7 +95,7 @@
                       :value="$moment(end).format('L')"
                       :label="$t('end_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -185,7 +185,7 @@ import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
 export default {
-  name: 'VehicleFuelHistory',
+  name: 'VehicleDashboardFuelHistory',
   mixins: [downloadFields, updateQuery, vehicleRoute],
   data () {
     return {
@@ -197,9 +197,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      error: 'vehicle-detail/getError',
-      items: 'vehicle-detail/getData',
-      loading: 'vehicle-detail/getLoading'
+      items: 'vehicle-dashboard/getFuelHistory',
+      loading: 'vehicle-dashboard/getFuelLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -266,19 +266,19 @@ export default {
     }
   },
   async asyncData ({ $moment, query, store }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
     const use_bill_date = query.use_bill_date || false
 
     // Fetch report data in vehicle-detail store
-    await store.dispatch('vehicle-detail/fetchFuelHistory', { start, end, use_bill_date, vehicle })
+    await store.dispatch('vehicle-dashboard/fetchFuelHistory', { start, end, use_bill_date, vehicle })
 
     return { start, end, use_bill_date }
   },
   head () {
-    const title = `${this.$route.params.vehicle} - ${this.$t('fuel')}`
+    const title = `${this.vehicle_number} - ${this.$t('fuel')}`
     return {
       title,
       meta: [

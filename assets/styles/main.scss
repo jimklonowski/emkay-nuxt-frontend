@@ -55,7 +55,8 @@
 }
 
 /* Vehicle Widgets */
-.vehicle-widget {
+.vehicle-widget,
+.vehicle-dashboard-widget {
   .v-toolbar__title {
     @extend .font-roboto-condensed;
     font-size: 1.35rem;
@@ -63,7 +64,13 @@
   .v-card__actions.pager {
     height: 60px;
   }
+  .action-icon {
+    justify-content: center;
+    align-items: center;
+    max-width:24px;
+  }
 }
+
 
 /* Report config */
 .report {

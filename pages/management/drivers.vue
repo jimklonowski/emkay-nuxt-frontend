@@ -18,207 +18,28 @@
         single-line
         solo
       />
-
-      <!-- Add Driver Button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
         <!-- Edit/Create Dialog -->
-        <v-dialog v-model="dialog" max-width="800px" persistent>
+        <v-dialog v-model="dialog" max-width="1000" persistent scrollable>
           <template #activator="{ on }">
-            <v-btn v-on="on" color="primary">
+            <v-btn v-on="on" @click="driverId = undefined" color="primary" rounded depressed>
               <v-icon v-text="'mdi-account-plus'" class="mr-2" />
-              {{ $t('add_driver') }}
+              {{ $t('add_new_driver') }}
             </v-btn>
           </template>
-          <v-card :loading="editLoading">
-            <ValidationObserver ref="driverForm" v-slot="{ handleSubmit }">
-              <v-form @submit.prevent="handleSubmit(submitDriverEdit)">
-                <v-card-title v-text="formTitle" />
-                <v-card-subtitle v-text="editedItem.driver_id" />
-                <v-card-text>
-                  <v-container>
-                    <v-subheader v-text="$t('driver')" class="px-0" />
-                    <v-row>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_last_name')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_last_name"
-                            :label="$t('driver_last_name')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_first_name')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_first_name"
-                            :label="$t('driver_first_name')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_address_1')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_address_1"
-                            :label="$t('driver_address_1')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_address_2')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_address_2"
-                            :label="$t('driver_address_2')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="12" md="5">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_city')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_city"
-                            :label="$t('driver_city')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6" md="3">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_state_province')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_state_province"
-                            :label="$t('driver_state_province')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6" md="4">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_postal_code')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_postal_code"
-                            :label="$t('driver_postal_code')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_county')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_county"
-                            :label="$t('driver_county')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_email_address')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_email_address"
-                            :label="$t('driver_email_address')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_phone')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_phone"
-                            :label="$t('driver_phone')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_mobile')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_mobile"
-                            :label="$t('driver_mobile')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                    </v-row>
-                    <v-subheader v-text="$t('driver_labels')" class="px-0" />
-                    <v-row>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_1')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_misc_1"
-                            :label="$t('driver_misc_1')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_2')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_misc_2"
-                            :label="$t('driver_misc_2')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_3')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_misc_3"
-                            :label="$t('driver_misc_3')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                      <v-col cols="6">
-                        <ValidationProvider v-slot="{ errors, valid }" :name="$t('driver_misc_4')" rules="required">
-                          <v-text-field
-                            v-model="editedItem.driver_misc_4"
-                            :label="$t('driver_misc_4')"
-                            :error-messages="errors"
-                            :success="valid"
-                          />
-                        </ValidationProvider>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer />
-                  <v-btn
-                    @click="close"
-                    color="error lighten-1"
-                    tabindex="-1"
-                    text
-                  >
-                    {{ $t('cancel') }}
-                  </v-btn>
-                  <v-btn
-                    @click="save"
-                    type="submit"
-                    color="primary"
-                    text
-                  >
-                    {{ $t('save') }}
-                  </v-btn>
-                </v-card-actions>
-              </v-form>
-            </ValidationObserver>
-          </v-card>
+          <add-or-edit-driver-form @close="dialog = false" :driver-id="driverId" />
         </v-dialog>
       </client-only>
+      <!-- Download as XLS button -->
+      <!-- <client-only>
+        <v-divider vertical inset class="mx-3" />
+        <download-excel :fields="downloadFields" :data="items">
+          <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
+            <v-icon v-text="'mdi-cloud-download'" />
+          </v-btn>
+        </download-excel>
+      </client-only> -->
     </v-toolbar>
     <v-divider />
 
@@ -231,17 +52,11 @@
         :loading="loading"
         :mobile-break-point="0"
         :search="search"
-        :sort-by="['vehicle_number']"
+        :sort-by="['last_name']"
         :sort-desc="[false]"
         class="striped"
         dense
       >
-        <!-- Configure Top Section -->
-        <!-- <template #top>
-          <v-toolbar flat>
-            <v-spacer />
-          </v-toolbar>
-        </template> -->
         <!-- Configure the #no-data message (no data from server) -->
         <template #no-data>
           <div class="text-left">
@@ -258,11 +73,9 @@
 
         <!-- Customize rendering of individual columns -->
         <template #item.actions="{ item }">
-          <v-icon
-            @click.stop="editDriver(item)"
-            v-text="'mdi-account-edit'"
-            class="mr-2 px-2"
-          />
+          <v-btn @click.stop="editDriver(item)" icon>
+            <v-icon v-text="'mdi-account-edit'" />
+          </v-btn>
         </template>
 
         <template #item.vehicle_number="{ item }">
@@ -316,8 +129,17 @@
 <script>
 import { mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
+import { downloadFields } from '@/mixins/datatables'
+import AddOrEditDriverForm from '@/components/management/AddOrEditDriverForm'
 export default {
   name: 'ManageYourDrivers',
+  components: { AddOrEditDriverForm },
+  mixins: [downloadFields],
+  data: () => ({
+    dialog: false,
+    driverId: undefined,
+    search: ''
+  }),
   computed: {
     ...mapGetters({
       items: 'drivers/getDrivers',
@@ -327,23 +149,24 @@ export default {
     columns () {
       return [
         'actions',
-        'vehicle_number',
-        'driver_last_name',
-        'driver_first_name',
-        'driver_address_1',
-        'driver_address_2',
-        'driver_city',
-        'driver_state_province',
-        'driver_postal_code',
-        'driver_county',
-        'driver_phone',
-        'driver_mobile',
-        'driver_email_address',
-        'driver_employee_id',
-        'driver_misc_1',
-        'driver_misc_2',
-        'driver_misc_3',
-        'driver_misc_4'
+        'reference_number',
+        'driver_vehicle',
+        'last_name',
+        'first_name',
+        'address_1',
+        'address_2',
+        'city',
+        'state_province',
+        'postal_code',
+        'county',
+        'phone',
+        'mobile',
+        'email',
+        'employee_id',
+        'misc_1',
+        'misc_2',
+        'misc_3',
+        'misc_4'
       ]
     },
     headers () {
@@ -356,216 +179,133 @@ export default {
           divider: true
         },
         {
+          text: this.$i18n.t('driver_reference_number'),
+          value: 'reference_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
           text: this.$i18n.t('vehicle_number'),
-          value: 'vehicle_number',
+          value: 'driver_vehicle',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_last_name'),
-          value: 'driver_last_name',
+          value: 'last_name',
           class: 'report-column',
-          width: 200,
+          width: 250,
           divider: true
         },
         {
           text: this.$i18n.t('driver_first_name'),
-          value: 'driver_first_name',
+          value: 'first_name',
           class: 'report-column',
           width: 150,
           divider: true
         },
         {
           text: this.$i18n.t('driver_address_1'),
-          value: 'driver_address_1',
+          value: 'address_1',
           class: 'report-column',
-          width: 200,
+          width: 250,
           divider: true
         },
         {
           text: this.$i18n.t('driver_address_2'),
-          value: 'driver_address_2',
+          value: 'address_2',
           class: 'report-column',
-          width: 200,
+          width: 250,
           divider: true
         },
         {
           text: this.$i18n.t('driver_city'),
-          value: 'driver_city',
+          value: 'city',
           class: 'report-column',
-          width: 150,
+          width: 250,
           divider: true
         },
         {
           text: this.$i18n.t('driver_state_province'),
-          value: 'driver_state_province',
+          value: 'state_province',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_postal_code'),
-          value: 'driver_postal_code',
+          value: 'postal_code',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_county'),
-          value: 'driver_county',
+          value: 'county',
           class: 'report-column',
+          width: 250,
           divider: true
         },
         {
           text: this.$i18n.t('driver_phone'),
-          value: 'driver_phone',
+          value: 'phone',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_mobile'),
-          value: 'driver_mobile',
+          value: 'mobile',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_email_address'),
-          value: 'driver_email_address',
+          value: 'email',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_employee_id'),
-          value: 'driver_employee_id',
+          value: 'employee_id',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_misc_1'),
-          value: 'driver_misc_1',
+          value: 'misc_1',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_misc_2'),
-          value: 'driver_misc_2',
+          value: 'misc_2',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_misc_3'),
-          value: 'driver_misc_3',
+          value: 'misc_3',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('driver_misc_4'),
-          value: 'driver_misc_4',
+          value: 'misc_4',
           class: 'report-column',
           divider: true
         }
       ]
-    },
-    formTitle () {
-      return this.editedIndex === -1 ? this.$i18n.t('add_driver') : this.$i18n.t('edit_driver')
     }
   },
   async asyncData ({ store }) {
-    let search, editLoading
-    const dialog = false
-    const editedIndex = -1
-    // create an object to use as model for ADD NEW DRIVER form
-    const defaultItem = {
-      driver_id: '',
-      driver_last_name: '',
-      driver_first_name: '',
-      driver_address_1: '',
-      driver_address_2: '',
-      driver_city: '',
-      driver_state_province: '',
-      driver_postal_code: '',
-      driver_county: '',
-      driver_phone: '',
-      driver_mobile: '',
-      driver_email_address: '',
-      driver_employee_id: '',
-      driver_misc_1: '',
-      driver_misc_2: '',
-      driver_misc_3: '',
-      driver_misc_4: '',
-      vehicle_number: ''
-    }
-    // shallow clone this object to use as the model for EDIT form
-    const editedItem = { ...defaultItem }
-
-    const filters = {
-      command: 'FLEET',
-      subcommand: 'DRIVERS',
-      customer: 'EM102',
-      json: 'Y'
-    }
-    // Fetch drivers
-    await store.dispatch('drivers/fetchDrivers', filters)
-    return {
-      defaultItem,
-      dialog,
-      editedIndex,
-      editedItem,
-      editLoading,
-      search
-    }
+    await store.dispatch('drivers/fetchDrivers')
+    return {}
   },
   methods: {
     dialTo,
     emailTo,
-    close () {
-      this.dialog = false
-      // not sure if this setTimeout is required, copied from vuetify CRUD datatable example
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-        this.$refs.driverForm.reset()
-      }, 300)
-    },
-    save () {
-      try {
-        this.editLoading = true
-        if (this.editedIndex > -1) {
-          // Editing existing driver details...
-          debugger
-          Object.assign(this.items[this.editedIndex], this.editedItem)
-        } else {
-          // Saving new driver...
-          debugger
-          this.items.push(this.editedItem)
-        }
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.editLoading = false
-        this.close()
-      }
-    },
     editDriver (item) {
-      // if editing, set the editIndex to that of the item we clicked
-      this.editedIndex = this.items.indexOf(item)
-      // load the selected item's data into the editedItem object before opening dialog
-      this.editedItem = Object.assign({}, item)
+      this.driverId = item.reference_number
       this.dialog = true
     }
-    // async submitDriverEdit () {
-    //   this.editLoading = true
-    //   try {
-    //     // get the driver id
-    //     const id = this.editedItem.driver_id
-    //     await this.$axios.post('/fleet/drivers/edit', { id, item: this.editedItem })
-    //   } catch (error) {
-    //     console.error(error)
-    //   } finally {
-    //     this.editLoading = false
-    //   }
-    // },
-    // deleteDriver (item) {
-    //   this.$snotify.info('TODO', 'delete')
-    // }
   },
   head () {
     const title = this.$t('manage_your_drivers')

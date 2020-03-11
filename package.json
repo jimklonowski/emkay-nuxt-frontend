@@ -30,6 +30,7 @@
     "imagemin-mozjpeg": "^8.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash.groupby": "^4.6.0",
+    "lodash.isequal": "^4.5.0",
     "nuxt": "^2.11.0",
     "nuxt-i18n": "^6.5.0",
     "nuxt-webfontloader": "^1.1.0",

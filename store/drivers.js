@@ -10,16 +10,14 @@ export const state = () => getDefaultState()
 
 export const actions = {
   async fetchDrivers ({ commit }, params) {
-    commit('setError', null)
-    commit('setLoading', true)
     try {
-      const url = '/fleet/drivers'
-      const { data: { drivers } } = await this.$axios.get(url, params)
-      commit('setDrivers', drivers)
+      commit('setLoading', true)
+      const { data: { success, message, data } } = await this.$axios.get('/fleet/drivers')
+      if (!success) { throw new Error(message) }
+      commit('setDrivers', data)
     } catch (error) {
-      commit('setError', error.message)
+      console.error(`[vuex error]: ${error.message}`)
       commit('setDrivers', [])
-      console.error(error)
     } finally {
       commit('setLoading', false)
     }

@@ -1,34 +1,37 @@
 <template>
-  <v-card outlined>
-    <v-card-title>{{ $t('invoice') }}</v-card-title>
-    <v-card-subtitle>{{ $route.query.invoice }}</v-card-subtitle>
-    <v-divider />
-    <v-card-text class="pa-0">
-      <v-data-table
-        :headers="headers"
-        :items="items"
-        :items-per-page="25"
-        :mobile-breakpoint="0"
-        :sort-by="['voucher_date']"
-        :sort-desc="[true]"
-        class="striped"
-        dense
-      >
-        <template #item.voucher_date="{ item }">
-          {{ item.voucher_date | date }}
-        </template>
+  <v-skeleton-loader :loading="loading" type="table">
+    <v-card rounded>
+      <v-card-title>{{ $t('invoice') }}</v-card-title>
+      <v-card-subtitle>{{ invoiceNumber }}</v-card-subtitle>
+      <v-divider />
+      <v-card-text class="pa-0">
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :items-per-page="5"
+          :loading="loading"
+          :mobile-breakpoint="0"
+          :sort-by="['voucher_date']"
+          :sort-desc="[true]"
+          class="striped"
+          dense
+        >
+          <template #item.voucher_date="{ item }">
+            {{ item.voucher_date | date }}
+          </template>
 
-        <template #item.bill_date="{ item }">
-          {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
-        </template>
+          <template #item.bill_date="{ item }">
+            {{ item.bill_date | date('YYYY-MM', 'MM/YYYY') }}
+          </template>
 
-        <template #item.amount="{ item }">
-          {{ item.amount | currency }}
-        </template>
-      </v-data-table>
-    </v-card-text>
-    <v-card-actions />
-  </v-card>
+          <template #item.amount="{ item }">
+            {{ item.amount | currency }}
+          </template>
+        </v-data-table>
+      </v-card-text>
+      <!-- <v-card-actions /> -->
+    </v-card>
+  </v-skeleton-loader>
 </template>
 
 <script>
@@ -44,11 +47,10 @@ export default {
       default: () => null
     }
   },
-  data () {
-    return {
-      items: []
-    }
-  },
+  data: () => ({
+    items: [],
+    loading: false
+  }),
   computed: {
     columns () {
       return [
@@ -106,6 +108,7 @@ export default {
   methods: {
     async fetchInvoice () {
       try {
+        this.loading = true
         const invoice = this.invoiceNumber
         const vehicle = this.vehicleNumber
         const { data: { success, message, data } } = await this.$axios.get('/vehicle/invoice', { params: { vehicle, invoice } })
@@ -115,6 +118,7 @@ export default {
         this.$snotify.error(error.message, this.$i18n.t('error'))
       } finally {
         this.$vuetify.goTo(0)
+        this.loading = false
       }
     }
   }

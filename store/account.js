@@ -85,7 +85,9 @@ export const mutations = {
 
 export const getters = {
   getCenters: state => state.centers,
+  getClientLabels: state => Object.entries(state.custom_labels).map(([key, value]) => ({ key, value })).slice(0, 5),
   getCustomLabels: state => state.custom_labels,
+  getDriverLabels: state => Object.entries(state.custom_labels).map(([key, value]) => ({ key, value })).slice(5),
   getLoginMessages: state => state.login_messages,
   isInitialized: state => state.initialized,
   getFlattenedCenters: state => flatten(state.centers)
