@@ -48,6 +48,16 @@ export const actions = {
       console.error(error)
     }
   },
+  async updateCustomLabels ({ commit, dispatch }, payload) {
+    try {
+      const { data: { success, message } } = await this.$axios.post('/account/update-labels', payload)
+      if (!success) { throw new Error(message) }
+      await dispatch('fetchCustomLabels')
+    } catch (error) {
+      console.error(`[vuex error]: ${error.message}`)
+      throw new Error(error.message)
+    }
+  },
   async fetchCenterHierarchy ({ commit }) {
     try {
       const { data: { data, success, message } } = await this.$axios.get('/account/centers')

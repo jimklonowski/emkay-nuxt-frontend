@@ -58,9 +58,9 @@
   </ValidationObserver>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import isEqual from 'lodash.isequal'
+import { mapActions, mapGetters } from 'vuex'
 import { SnotifyPosition } from 'vue-snotify'
+import isEqual from 'lodash.isequal'
 export default {
   name: 'ManagementFleetLabels',
   data: () => ({
@@ -88,23 +88,23 @@ export default {
      */
     hasChanges: vm => !isEqual(vm.model, vm.custom_labels)
   },
-  async asyncData ({ store }) {
-    await console.log('Loading current labels')
+  asyncData ({ store }) {
     // copy existing labels into model
     const loadedLabels = store.getters['account/getCustomLabels']
     const model = { ...loadedLabels }
     return { model }
   },
   methods: {
+    ...mapActions({
+      updateLabels: 'account/updateCustomLabels'
+    }),
     async submitLabels () {
       try {
         this.loading = true
-        const { data: { success, message } } = await this.$axios.post('account/update-labels', this.model)
-        if (!success) { throw new Error(message) }
+        await this.updateLabels(this.model)
         this.$snotify.success(this.$i18n.t('labels_updated'), this.$i18n.t('success'), { position: SnotifyPosition.centerBottom })
-        this.$store.dispatch('account/fetchCustomLabels')
       } catch (error) {
-        this.$snotify.error(error.message, this.$i18n.t('error'), { position: SnotifyPosition.centerBottom })
+        this.$snotify.error(error, this.$i18n.t('error'), { position: SnotifyPosition.centerBottom })
       } finally {
         this.loading = false
       }

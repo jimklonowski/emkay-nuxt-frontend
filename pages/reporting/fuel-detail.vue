@@ -270,7 +270,7 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
+// import CenterPicker from '@/components/core/CenterPicker'
 /**
  * Fuel Detail Report
  * When a date filter changes, a call is made to updateQuery which updates the route's query parameters (?start=2019-11&end=2019-11&...)
@@ -278,7 +278,10 @@ import CenterPicker from '@/components/core/CenterPicker'
  */
 export default {
   name: 'FuelDetail',
-  components: { CenterPicker },
+  // components: { CenterPicker },
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker.vue`)
+  },
   /**
    * Mixins
    * https://vuejs.org/v2/guide/mixins.html

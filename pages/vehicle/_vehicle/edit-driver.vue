@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <AddOrEditDriverForm :driver-id="driver_number">
+        <driver-details-form :driver-id="driver_number">
           <template #title>
             {{ $t('edit_driver') }}
           </template>
@@ -12,7 +12,7 @@
           <template #history>
             <driver-vehicle-history :driver-id="driver_number" />
           </template>
-        </AddOrEditDriverForm>
+        </driver-details-form>
       </v-col>
     </v-row>
   </v-container>
@@ -22,11 +22,14 @@
 import { mapActions, mapGetters } from 'vuex'
 import { SnotifyPosition } from 'vue-snotify'
 import { vehicleRoute } from '@/mixins/routing'
-import AddOrEditDriverForm from '@/components/management/AddOrEditDriverForm'
-import DriverVehicleHistory from '@/components/driver/DriverVehicleHistory'
+// import AddOrEditDriverForm from '@/components/management/AddOrEditDriverForm'
+// import DriverVehicleHistory from '@/components/driver/DriverVehicleHistory'
 export default {
   name: 'edit-driver',
-  components: { AddOrEditDriverForm, DriverVehicleHistory },
+  components: {
+    'driver-details-form': () => import(/* webpackChunkName: "DriverDetailsForm" */ `@/components/driver/DriverDetailsForm.vue`),
+    'driver-vehicle-history': () => import(/* webpackChunkName: "DriverHistory" */ `@/components/driver/DriverVehicleHistory.vue`)
+  },
   mixins: [vehicleRoute],
   head () {
     const title = this.$t('edit_driver')

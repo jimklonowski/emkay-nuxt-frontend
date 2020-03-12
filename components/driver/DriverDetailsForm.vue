@@ -4,11 +4,15 @@
       <v-card-title>
         <slot name="title">
           {{ title }}
+          <v-spacer />
+          <v-btn @click="close" icon>
+            <v-icon v-text="'mdi-close'" />
+          </v-btn>
         </slot>
       </v-card-title>
       <v-card-subtitle>
         <slot name="subtitle">
-          {{ subtitle }} UNDER CONSTRUCTION
+          {{ subtitle }}
         </slot>
       </v-card-subtitle>
       <v-divider />
@@ -21,7 +25,7 @@
               </v-subheader>
               <v-row class="mx-1" dense>
                 <v-col cols="12">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('employee_id')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('employee_id')" rules="alpha_dash|max:9">
                     <v-text-field
                       v-model="model.employee_id"
                       :label="$t('employee_id')"
@@ -32,7 +36,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_last_name')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_last_name')" rules="required|max:25">
                     <v-text-field
                       v-model="model.last_name"
                       :label="$t('driver_last_name')"
@@ -43,7 +47,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_first_name')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_first_name')" rules="required|max:25">
                     <v-text-field
                       v-model="model.first_name"
                       :label="$t('driver_first_name')"
@@ -54,7 +58,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_address_1')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_address_1')" rules="required|max:30">
                     <v-text-field
                       v-model="model.address_1"
                       :label="$t('driver_address_1')"
@@ -65,7 +69,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_address_2')">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_address_2')" rules="max:30">
                     <v-text-field
                       v-model="model.address_2"
                       :label="$t('driver_address_2')"
@@ -76,7 +80,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="12" md="5">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_city')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_city')" rules="required|max:25">
                     <v-text-field
                       v-model="model.city"
                       :label="$t('driver_city')"
@@ -87,7 +91,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6" md="3">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_state_province')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_state_province')" rules="required|alpha|max:2">
                     <v-text-field
                       v-model="model.state_province"
                       :label="$t('driver_state_province')"
@@ -98,7 +102,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6" md="4">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_postal_code')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_postal_code')" rules="required|max:10">
                     <v-text-field
                       v-model="model.postal_code"
                       :label="$t('driver_postal_code')"
@@ -109,7 +113,7 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_county')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_county')" rules="max:25">
                     <v-text-field
                       v-model="model.county"
                       :label="$t('driver_county')"
@@ -120,33 +124,36 @@
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_email_address')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_email_address')" rules="email|max:60">
                     <v-text-field
                       v-model="model.email"
                       :label="$t('driver_email_address')"
                       :error-messages="errors"
+                      type="email"
                       dense
                       outlined
                     />
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_phone')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_phone')" rules="digits:10">
                     <v-text-field
                       v-model="model.phone"
                       :label="$t('driver_phone')"
                       :error-messages="errors"
+                      type="tel"
                       dense
                       outlined
                     />
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="6">
-                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_mobile')" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :name="$t('driver_mobile')" rules="digits:10">
                     <v-text-field
                       v-model="model.mobile"
                       :label="$t('driver_mobile')"
                       :error-messages="errors"
+                      type="tel"
                       dense
                       outlined
                     />
@@ -217,10 +224,13 @@
       <slot name="actions">
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="close" color="error lighten-1" tabindex="-1" text>
+          <v-fade-transition>
+            <span v-show="hasChanges" v-if="driverId" class="font-italic text--disabled caption px-2">{{ $t('unsaved_changes') }}</span>
+          </v-fade-transition>
+          <v-btn @click="close" color="error lighten-1" text>
             {{ $t('cancel') }}
           </v-btn>
-          <v-btn @click="handleSubmit(submitDriver)" type="submit" color="primary" depressed>
+          <v-btn @click="handleSubmit(submitDriver)" :disabled="!hasChanges" type="submit" color="primary" depressed>
             {{ $t('save') }}
           </v-btn>
         </v-card-actions>
@@ -231,7 +241,9 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { sleep } from '@/utility/helpers'
+import { SnotifyPosition } from 'vue-snotify'
+import isEqual from 'lodash.isequal'
+// import { sleep } from '@/utility/helpers'
 export default {
   props: {
     driverId: {
@@ -241,7 +253,6 @@ export default {
   },
   data: vm => ({
     loading: false,
-    // model: { ...vm.defaultItem },
     model: {}
   }),
   computed: {
@@ -273,7 +284,8 @@ export default {
       }
     },
     title: vm => vm.driverId ? vm.$i18n.t('edit_driver') : vm.$i18n.t('add_driver'),
-    subtitle: vm => vm.driverId
+    subtitle: vm => vm.driverId,
+    hasChanges: vm => !isEqual(vm.model, vm.driver_details)
   },
   watch: {
     async driverId () {
@@ -286,18 +298,17 @@ export default {
   },
   methods: {
     ...mapActions({
-      initialize: 'driver/init'
+      initialize: 'driver/init',
+      addDriver: 'drivers/addDriver',
+      updateDriver: 'drivers/updateDriver'
     }),
     async populateModel (id) {
       if (id) {
         try {
           console.log(`Populating form model for editing driver ${id}`)
           await this.initialize({ driver: id })
-          // await this.$store.dispatch('driver/init', { driver: id })
-          // const { data: { data, success, message } } = await this.$axios.get('/driver/summary', { params: { driverId: id } })
-          // if (!success) { throw new Error(message) }
-          this.model = { ...this.defaultItem, ...this.driver_details }
-          debugger
+          this.model = { ...this.driver_details }
+          // debugger
         } catch (error) {
           this.$nuxt.error({ statusCode: 404, message: error.message })
         }
@@ -306,7 +317,8 @@ export default {
         this.model = { ...this.defaultItem }
       }
     },
-    close () {
+    async close () {
+      await this.populateModel(this.driverId)
       this.$refs.driverForm.reset()
       this.$emit('close')
     },
@@ -314,12 +326,15 @@ export default {
       try {
         this.loading = true
         if (this.driverId) {
-          console.log('SAVING EDITED DRIVER')
-          await sleep(3000)
+          // updating existing driver
+          await this.updateDriver(this.model)
         } else {
-          console.log('ADDING NEW DRIVER')
+          // adding new driver
+          await this.addDriver(this.model)
         }
+        this.$snotify.success(this.$i18n.t('driver_saved'), this.$i18n.t('success'), { position: SnotifyPosition.centerBottom })
       } catch (error) {
+        this.$snotify.error(error, this.$i18n.t('error'), { position: SnotifyPosition.centerBottom })
         console.error(error)
       } finally {
         this.loading = false

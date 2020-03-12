@@ -119,7 +119,7 @@ export default {
           label: this.$i18n.t('additional_information'),
           items: [
             {
-              icon: 'mdi-account-card-details',
+              icon: 'mdi-card-account-details',
               value: this.driver_details.employee_id || '--',
               label: this.$i18n.t('employee_id')
             },

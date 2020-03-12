@@ -9,7 +9,7 @@ const getDefaultState = () => ({
 export const state = () => getDefaultState()
 
 export const actions = {
-  async fetchDrivers ({ commit }, params) {
+  async fetchDrivers ({ commit }) {
     try {
       commit('setLoading', true)
       const { data: { success, message, data } } = await this.$axios.get('/fleet/drivers')
@@ -20,6 +20,26 @@ export const actions = {
       commit('setDrivers', [])
     } finally {
       commit('setLoading', false)
+    }
+  },
+  async addDriver ({ commit, dispatch }, payload) {
+    try {
+      const { data: { success, message } } = await this.$axios.post('drivers/add-driver', payload)
+      if (!success) { throw new Error(message) }
+      await dispatch('fetchDrivers')
+    } catch (error) {
+      console.error(`[vuex error]: ${error.message}`)
+      throw new Error(error.message)
+    }
+  },
+  async updateDriver ({ commit, dispatch }, payload) {
+    try {
+      const { data: { success, message } } = await this.$axios.post('drivers/update-driver', payload)
+      if (!success) { throw new Error(message) }
+      await dispatch('fetchDrivers')
+    } catch (error) {
+      console.error(`[vuex error]: ${error.message}`)
+      throw new Error(error.message)
     }
   },
   reset ({ commit }) {

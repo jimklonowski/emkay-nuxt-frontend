@@ -27,8 +27,8 @@ export const actions = {
     }
   },
   async fetchDriverDetails ({ commit }, { driver }) {
-    commit('setLoading', true)
     try {
+      commit('setLoading', true)
       const { data: { success, message, data } } = await this.$axios.get('/driver/driver-details', { params: { driver } })
       if (!success) { throw new Error(message) }
       commit('setDriverDetails', data)
@@ -53,6 +53,9 @@ export const actions = {
     } finally {
       commit('setLoading', false)
     }
+  },
+  reset ({ commit }) {
+    commit('reset')
   }
 }
 

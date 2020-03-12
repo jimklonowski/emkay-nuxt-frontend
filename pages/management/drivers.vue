@@ -21,14 +21,14 @@
       <client-only>
         <v-divider vertical inset class="mx-3" />
         <!-- Edit/Create Dialog -->
-        <v-dialog v-model="dialog" max-width="1000" persistent scrollable>
+        <v-dialog v-model="dialog" max-width="75vw" persistent scrollable>
           <template #activator="{ on }">
             <v-btn v-on="on" @click="driverId = undefined" color="primary" rounded depressed>
               <v-icon v-text="'mdi-account-plus'" class="mr-2" />
               {{ $t('add_new_driver') }}
             </v-btn>
           </template>
-          <add-or-edit-driver-form @close="dialog = false" :driver-id="driverId" />
+          <driver-details-form @close="dialog = false" :driver-id="driverId" />
         </v-dialog>
       </client-only>
       <!-- Download as XLS button -->
@@ -130,10 +130,12 @@
 import { mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
 import { downloadFields } from '@/mixins/datatables'
-import AddOrEditDriverForm from '@/components/management/AddOrEditDriverForm'
+// import AddOrEditDriverForm from '@/components/management/AddOrEditDriverForm'
 export default {
   name: 'ManageYourDrivers',
-  components: { AddOrEditDriverForm },
+  components: {
+    'driver-details-form': () => import(/* webpackChunkName: "DriverDetailsForm" */ `@/components/driver/DriverDetailsForm.vue`)
+  },
   mixins: [downloadFields],
   data: () => ({
     dialog: false,
