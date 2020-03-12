@@ -4,10 +4,10 @@
 
 <script>
 export default {
-  name: 'Management',
-  layout: 'management',
+  name: 'Account',
+  layout: 'account',
   head () {
-    const title = this.$t('management')
+    const title = this.$t('account_management')
     return {
       title,
       meta: [

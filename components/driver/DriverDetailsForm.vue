@@ -227,9 +227,9 @@
           <v-fade-transition>
             <span v-show="hasChanges" v-if="driverId" class="font-italic text--disabled caption px-2">{{ $t('unsaved_changes') }}</span>
           </v-fade-transition>
-          <v-btn @click="close" color="error lighten-1" text>
+          <!-- <v-btn @click.stop="close" color="error lighten-1" text>
             {{ $t('cancel') }}
-          </v-btn>
+          </v-btn> -->
           <v-btn @click="handleSubmit(submitDriver)" :disabled="!hasChanges" type="submit" color="primary" depressed>
             {{ $t('save') }}
           </v-btn>

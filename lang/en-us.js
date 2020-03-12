@@ -647,6 +647,7 @@ export default {
   saferoads_score: "Saferoads Score",
   saferoads_trip_detail: "Saferoads Trip Detail",
   safety_and_telematics: "Safety and Telematics",
+  sale_info: "Sale Info",
   sale_odometer: "Sale Odometer",
   sale_price: "Sale Price",
   sales_tax: "Sales Tax",

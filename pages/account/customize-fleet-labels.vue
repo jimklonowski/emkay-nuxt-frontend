@@ -62,7 +62,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { SnotifyPosition } from 'vue-snotify'
 import isEqual from 'lodash.isequal'
 export default {
-  name: 'ManagementFleetLabels',
+  name: 'AccountUpdateLabels',
   data: () => ({
     loading: false,
     model: {

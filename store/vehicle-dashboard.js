@@ -1,4 +1,4 @@
-import { set } from '@/utility/vuex'
+import { assign, set } from '@/utility/vuex'
 
 const getDefaultState = () => ({
   accident_history: [],
@@ -6,6 +6,7 @@ const getDefaultState = () => ({
   billing_history: [],
   billing_loading: false,
   driver_details: {},
+  driver_number: null,
   fuel_history: [],
   fuel_loading: false,
   inspection_history: [],
@@ -19,6 +20,7 @@ const getDefaultState = () => ({
   order_status: {},
   rental_history: [],
   rental_loading: false,
+  sale_info: {},
   toll_history: [],
   toll_loading: false,
   vehicle_details: {},
@@ -39,8 +41,8 @@ export const actions = {
     await Promise.all([
       dispatch('fetchVehicleDetails', { vehicle }),
       dispatch('fetchDriverDetails', { vehicle }),
-      dispatch('fetchOrderStatus', { vehicle })
-      // dispatch('fetchSaleInfo', { vehicle })
+      dispatch('fetchOrderStatus', { vehicle }),
+      dispatch('fetchSaleInfo', { vehicle })
     ]).then(() => {
       commit('setVehicleNumber', vehicle)
     })
@@ -69,6 +71,7 @@ export const actions = {
       const { data: { success, message, data } } = await this.$axios.get('/vehicle/driver-details', { params: { vehicle } })
       if (!success) { throw new Error(message) }
       commit('setDriverDetails', data)
+      commit('setDriverNumber', data.reference_number)
     } catch (error) {
       console.error(`[vuex error]: ${error.message}`)
       commit('setDriverDetails', {})
@@ -86,6 +89,20 @@ export const actions = {
     } catch (error) {
       console.error(`[vuex error]: ${error.message}`)
       commit('setOrderStatus', {})
+    }
+  },
+  /**
+   * Fetch Sale Info
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchSaleInfo ({ commit }, { vehicle }) {
+    try {
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/sale-info', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setSaleInfo', data)
+    } catch (error) {
+      console.error(`[vuex error]: ${error.message}`)
+      commit('setSaleInfo', {})
     }
   },
   /**
@@ -279,15 +296,20 @@ export const actions = {
     } finally {
       commit('setInspectionLoading', false)
     }
+  },
+  reset ({ commit }) {
+    commit('reset')
   }
 }
 
 export const mutations = {
+  reset: assign(getDefaultState()),
   setAccidentHistory: set('accident_history'),
   setAccidentLoading: set('accident_loading'),
   setBillingHistory: set('billing_history'),
   setBillingLoading: set('billing_loading'),
   setDriverDetails: set('driver_details'),
+  setDriverNumber: set('driver_number'),
   setFuelHistory: set('fuel_history'),
   setFuelLoading: set('fuel_loading'),
   setInspectionHistory: set('inspection_history'),
@@ -301,6 +323,7 @@ export const mutations = {
   setOrderStatus: set('order_status'),
   setRentalHistory: set('rental_history'),
   setRentalLoading: set('rental_loading'),
+  setSaleInfo: set('sale_info'),
   setTollHistory: set('toll_history'),
   setTollLoading: set('toll_loading'),
   setVehicleDetails: set('vehicle_details'),
@@ -315,6 +338,7 @@ export const getters = {
   getBillingHistory: state => state.billing_history,
   getBillingLoading: state => state.billing_loading,
   getDriverDetails: state => state.driver_details,
+  getDriverNumber: state => state.driver_number,
   getFuelHistory: state => state.fuel_history,
   getFuelLoading: state => state.fuel_loading,
   getInspectionHistory: state => state.inspection_history,
@@ -328,11 +352,13 @@ export const getters = {
   getOrderStatus: state => state.order_status,
   getRentalHistory: state => state.rental_history,
   getRentalLoading: state => state.rental_loading,
+  getSaleInfo: state => state.sale_info,
   getTollHistory: state => state.toll_history,
   getTollLoading: state => state.toll_loading,
   getVehicleDetails: state => state.vehicle_details,
   getVehicleNumber: state => state.vehicle_number,
   getViolationHistory: state => state.violation_history,
   getViolationLoading: state => state.violation_loading,
-  hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0
+  hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0,
+  hasSaleInfo: state => !!state.sale_info && !!state.sale_info.sale_date
 }

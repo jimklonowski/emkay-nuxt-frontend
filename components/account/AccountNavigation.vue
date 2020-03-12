@@ -19,7 +19,7 @@
         />
       </template>
       <v-toolbar-title>
-        <nuxt-link :to="localePath({ path: '/management' })" class="text-decoration-none white--text">
+        <nuxt-link :to="localePath({ path: '/account' })" class="text-decoration-none white--text">
           {{ $t('account_management') }}
         </nuxt-link>
       </v-toolbar-title>

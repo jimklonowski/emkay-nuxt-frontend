@@ -68,11 +68,25 @@ export const actions = {
       console.error(error)
     }
   },
+  async login ({ commit, dispatch }, credentials) {
+    debugger
+    try {
+      await this.$auth.loginWith('local', { data: credentials })
+      if (this.$auth.loggedIn && this.$auth.user.token) {
+        // save session cookie
+        this.$cookies.set('SESSIONID', this.$auth.user.token)
+      }
+      await dispatch('account/init', null, { root: true })
+    } catch (error) {
+      console.error(error.message)
+    }
+  },
   async logout ({ commit }) {
     // purge the current vuex state
     commit('account/reset', null, { root: true }) // saved custom labels, centers
     commit('reports/reset', null, { root: true }) // vuex data from the last report viewed
-    commit('vehicle/reset', null, { root: true }) // vuex data from the last vehicle dashboard viewed
+    commit('vehicle-dashboard/reset', null, { root: true }) // vuex data from the last vehicle dashboard viewed
+    commit('drivers/reset', null, { root: true }) // vuex data from drivers
     await this.$auth.logout()
     // if a french user is logging out, make sure we redirect to /fr-ca/login instead of /login
     // this.$router.push(this.app.localePath({ name: 'login' }))

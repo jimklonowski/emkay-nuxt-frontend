@@ -127,16 +127,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
-import { downloadFields } from '@/mixins/datatables'
-// import AddOrEditDriverForm from '@/components/management/AddOrEditDriverForm'
+// import { downloadFields } from '@/mixins/datatables'
 export default {
   name: 'ManageYourDrivers',
   components: {
     'driver-details-form': () => import(/* webpackChunkName: "DriverDetailsForm" */ `@/components/driver/DriverDetailsForm.vue`)
   },
-  mixins: [downloadFields],
+  // mixins: [downloadFields],
   data: () => ({
     dialog: false,
     driverId: undefined,
@@ -297,11 +296,20 @@ export default {
       ]
     }
   },
-  async asyncData ({ store }) {
-    await store.dispatch('drivers/fetchDrivers')
-    return {}
+  // async fetch ({ store }) {
+  //   await store.dispatch('drivers/fetchDrivers')
+  // },
+  async mounted () {
+    await this.fetchDrivers()
   },
+  // async asyncData ({ store }) {
+  //   await store.dispatch('drivers/fetchDrivers')
+  //   return {}
+  // },
   methods: {
+    ...mapActions({
+      fetchDrivers: 'drivers/fetchDrivers'
+    }),
     dialTo,
     emailTo,
     editDriver (item) {

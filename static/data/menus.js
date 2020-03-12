@@ -1,44 +1,44 @@
 /**
- * Management Mega Menu Config
+ * Account Management Mega Menu Config
  */
-const management = {
-  to: { path: '/management' },
+const account = {
+  to: { path: '/account' },
   categories: [
     {
       key: 'fleet',
       icon: '',
       items: [
-        { key: 'manage_your_online_users', icon: '', to: { path: '/management/online-users' } },
-        { key: 'fleet_policies', icon: 'mdi-database-settings', to: { path: '/management/fleet-policies' } },
-        { key: 'customize_fleet_labels', icon: 'mdi-label-variant', to: { path: '/management/fleet-labels' } },
-        { key: 'manage_your_drivers', icon: 'mdi-account-settings', to: { path: '/management/drivers' } },
-        { key: 'manage_your_driver_fuel_pins', icon: '', to: { path: '/management/driver-fuel-pins' } },
-        { key: 'manage_your_enotifications', icon: '', to: { path: '/management/enotifications' } },
-        { key: 'manage_your_cases', icon: '', to: { path: '/management/cases' } },
-        { key: 'fuel_authorization_profiles', icon: '', to: { path: '/management/fuel-auth-profiles' } }
+        { key: 'manage_your_online_users', icon: '', to: { path: '/account/online-users' } },
+        { key: 'fleet_policies', icon: 'mdi-database-settings', to: { path: '/account/fleet-policies' } },
+        { key: 'customize_fleet_labels', icon: 'mdi-label-variant', to: { path: '/account/customize-fleet-labels' } },
+        { key: 'manage_your_drivers', icon: 'mdi-account-settings', to: { path: '/account/drivers' } },
+        { key: 'manage_your_driver_fuel_pins', icon: '', to: { path: '/account/driver-fuel-pins' } },
+        { key: 'manage_your_enotifications', icon: '', to: { path: '/account/enotifications' } },
+        { key: 'manage_your_cases', icon: '', to: { path: '/account/cases' } },
+        { key: 'fuel_authorization_profiles', icon: '', to: { path: '/account/fuel-auth-profiles' } }
       ]
     },
     {
       key: 'customization',
       icon: '',
       items: [
-        { key: 'approve_your_maintenance_repairs', icon: '', to: { path: '/management/approve-maintenance-repairs' } },
-        { key: 'approve_driver_orders', icon: '', to: { path: '/management/approve-driver-orders' } },
-        { key: 'request_an_mvr', icon: '', to: { path: '/management/request-mvr' } },
-        { key: 'upload_your_odometers', icon: '', to: { path: '/management/upload-odometers' } }
+        { key: 'approve_your_maintenance_repairs', icon: '', to: { path: '/account/approve-maintenance-repairs' } },
+        { key: 'approve_driver_orders', icon: '', to: { path: '/account/approve-driver-orders' } },
+        { key: 'request_an_mvr', icon: '', to: { path: '/account/request-mvr' } },
+        { key: 'upload_your_odometers', icon: '', to: { path: '/account/upload-odometers' } }
       ]
     },
     {
       key: 'tools',
       icon: '',
       items: [
-        { key: 'centers', icon: 'mdi-test-tube', to: { path: '/management/centers' } },
-        { key: 'critical_alerts', icon: 'mdi-bell-ring', to: { path: '/management/critical-alerts' } },
-        { key: 'fleet_navigator', icon: 'mdi-compass', to: { path: '/management/fleet-navigator' } },
-        { key: 'ev_charging_locations', icon: 'mdi-car-electric', to: { path: '/management/charging-locations' } },
-        { key: 'locate_preferred_shops', icon: '', to: { path: '/management/locate-preferred-shops' } },
-        { key: 'quote_a_transport', icon: '', to: { path: '/management/transport-quote' } },
-        { key: 'lcca', icon: '', to: { path: '/management/lcca' } }
+        { key: 'centers', icon: 'mdi-test-tube', to: { path: '/account/centers' } },
+        { key: 'critical_alerts', icon: 'mdi-bell-ring', to: { path: '/account/critical-alerts' } },
+        { key: 'fleet_navigator', icon: 'mdi-compass', to: { path: '/account/fleet-navigator' } },
+        { key: 'ev_charging_locations', icon: 'mdi-car-electric', to: { path: '/account/charging-locations' } },
+        { key: 'locate_preferred_shops', icon: '', to: { path: '/account/locate-preferred-shops' } },
+        { key: 'quote_a_transport', icon: '', to: { path: '/account/transport-quote' } },
+        { key: 'lcca', icon: '', to: { path: '/account/lcca' } }
       ]
     }
   ]
@@ -154,4 +154,4 @@ const reports = {
   ]
 }
 
-export { management, ordering, reports }
+export { account, ordering, reports }

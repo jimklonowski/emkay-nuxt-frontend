@@ -90,14 +90,17 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'Login',
   auth: 'guest',
-  data () {
-    let account, username, password
-    let error, loading, remember
-    return { account, username, password, error, loading, remember }
-  },
+  data: () => ({
+    account: '',
+    username: '',
+    password: '',
+    loading: false,
+    remember: false
+  }),
   head () {
     const title = this.$t('login')
     return {
@@ -111,56 +114,19 @@ export default {
     // debugger
   },
   methods: {
+    ...mapActions({
+      loginLocal: 'account/login'
+    }),
     async login () {
-      this.loading = true
       try {
-        await this.$auth.loginWith('local', {
-          data: {
-            account: this.account,
-            username: this.username,
-            password: this.password
-          }
-        })
+        this.loading = true
+        await this.loginLocal({ account: this.account, username: this.username, password: this.password })
       } catch (error) {
-        // error
         console.error(error.message)
+        // debugger
       } finally {
         this.loading = false
-        // debugger
-        if (this.$auth.loggedIn && this.$auth.user.token) {
-          // save the session cookie
-          this.$cookies.set('SESSIONID', this.$auth.user.token)
-          // debugger
-          console.log('logged in')
-          await this.$store.dispatch('account/init')
-        }
       }
-    },
-    async login2 () {
-      this.loading = true
-      await this.$auth
-        .loginWith('local', {
-          data: {
-            account: this.account,
-            username: this.username,
-            password: this.password
-          }
-        })
-        .then(() => {
-          // debugger
-          // this.$nuxt.$axios.setToken(this.$nuxt.$auth.getToken(this.$nuxt.$auth.strategy.name))
-          console.log('calling account init from login')
-          this.$store.dispatch('account/init')
-          if (this.remember) {
-            // configure a cookie policy for re-auth?
-          }
-        })
-        .catch(e => {
-          this.error = e + ''
-        })
-        .finally(() => {
-          this.loading = false
-        })
     }
   }
 }

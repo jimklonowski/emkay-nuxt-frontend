@@ -65,7 +65,7 @@
       <v-toolbar-items v-show="$auth.loggedIn">
         <mega-menu :menu="reportingMenu" v-if="!isRouteActive('reporting')" />
         <mega-menu :menu="orderingMenu" v-if="!isRouteActive('ordering')" />
-        <mega-menu :menu="managementMenu" v-if="!isRouteActive('management')" />
+        <mega-menu :menu="accountMenu" v-if="!isRouteActive('account')" />
       </v-toolbar-items>
       <v-divider class="mx-4" vertical inset />
       <dark-mode-toggle class="mx-1" />
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { management, ordering, reports } from '@/static/data/menus'
+import { account, ordering, reports } from '@/static/data/menus'
 
 import DarkModeToggle from '@/components/DarkModeToggle'
 import LanguagePicker from '@/components/LanguagePicker'
@@ -85,7 +85,7 @@ import MegaMenu from '@/components/MegaMenu'
 export default {
   // custom properties, reference as this.$options.menus.reports, this.$options.menus.ordering, etc.
   menus: {
-    management,
+    account,
     ordering,
     reports
   },
@@ -106,6 +106,16 @@ export default {
           to: { path: '/' }
         },
         {
+          icon: 'mdi-apps',
+          key: 'account',
+          to: { path: '/account' }
+        },
+        {
+          icon: 'mdi-bell-ring',
+          key: 'critical_alerts',
+          to: { path: '/account/critical-alerts' }
+        },
+        {
           icon: 'mdi-chart-areaspline',
           key: 'fleet_dashboard',
           to: { path: '/fleet' }
@@ -114,11 +124,6 @@ export default {
           icon: 'mdi-car-cruise-control',
           key: 'vehicle_dashboard',
           to: { path: '/vehicle-search' }
-        },
-        {
-          icon: 'mdi-bell-ring',
-          key: 'critical_alerts',
-          to: { path: '/management/critical-alerts' }
         },
         {
           icon: 'mdi-file-certificate',
@@ -134,11 +139,6 @@ export default {
           icon: 'mdi-timetable',
           key: 'ordering',
           to: { path: '/ordering' }
-        },
-        {
-          icon: 'mdi-apps',
-          key: 'account_management',
-          to: { path: '/management' }
         }
       ],
       miniVariant: false,
@@ -157,13 +157,13 @@ export default {
     avatarText () {
       return this.$auth.user.account && this.$auth.user.account.substr(0, 2)
     },
-    managementMenu () {
+    accountMenu () {
       return {
-        categories: this.$options.menus.management.categories,
+        categories: this.$options.menus.account.categories,
         icon: 'mdi-apps',
         subtitleKey: 'configure_your_fleet_settings',
-        titleKey: 'management',
-        path: this.$options.menus.management.to
+        titleKey: 'account',
+        path: this.$options.menus.account.to
       }
     },
     orderingMenu () {
