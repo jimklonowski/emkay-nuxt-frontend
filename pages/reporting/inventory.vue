@@ -222,6 +222,7 @@ export default {
   computed: {
     // Mapped Vuex Getters
     ...mapGetters({
+      center_levels: 'account/getCenterLevels',
       centers: 'account/getCenters',
       items: 'reports/getData',
       error: 'reports/getError',
@@ -269,6 +270,9 @@ export default {
         'level_05',
         'level_06',
         'level_07',
+        'level_08',
+        'level_09',
+        'level_10',
         'license_plate_expiration_date',
         'license_plate_number',
         'license_plate_state_province',

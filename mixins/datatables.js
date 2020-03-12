@@ -30,7 +30,17 @@ export const headers = {
  */
 export const downloadFields = {
   computed: {
-    downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
+    // downloadFields: vm => (Object.assign({}, ...vm.columns.map(column => ({ [vm.$i18n.t(column)]: column }))))
+    downloadFields () {
+      const headers = Object.assign({}, ...this.columns.map(column => {
+        // If this is a center level, lookup center level name from vuex.  Otherwise use the column as i18n translation key.
+        const header = (column.startsWith('level_'))
+          ? this.center_levels[column]
+          : this.$i18n.t(column)
+        return { [header]: column }
+      }, this))
+      return headers
+    }
   }
 }
 

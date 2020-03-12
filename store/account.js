@@ -5,6 +5,18 @@ const getDefaultState = () => ({
   initialized: false,
   login_messages: [],
   centers: [],
+  center_levels: {
+    level_01: '_level01_',
+    level_02: '_level02_',
+    level_03: '_level03_',
+    level_04: '_level04_',
+    level_05: '_level05_',
+    level_06: '_level06_',
+    level_07: '_level07_',
+    level_08: '_level08_',
+    level_09: '_level09_',
+    level_10: '_level10_'
+  },
   custom_labels: {
     client_use_label_1: '',
     client_use_label_2: '',
@@ -29,7 +41,8 @@ export const actions = {
     console.log(`[vuex][account] called init`)
     await Promise.all([
       dispatch('fetchCustomLabels'),
-      dispatch('fetchCenterHierarchy')
+      dispatch('fetchCenterHierarchy'),
+      dispatch('fetchCenterLevels')
     ]).finally(() => {
       commit('setInitialized', true)
     })
@@ -65,7 +78,18 @@ export const actions = {
       commit('setCenters', data)
     } catch (error) {
       console.error('error in fetchCenterHierarchy')
-      console.error(error)
+      // console.error(error)
+    }
+  },
+  async fetchCenterLevels ({ commit }) {
+    try {
+      const { data: { data, success, message } } = await this.$axios.get('/account/center-levels')
+      if (!success) { throw new Error(message) }
+      commit('setCenterLevels', data)
+    } catch (error) {
+      debugger
+      console.error(`[vuex error]: ${error.message}`)
+      // console.error(error)
     }
   },
   async login ({ commit, dispatch }, credentials) {
@@ -99,6 +123,7 @@ export const actions = {
 export const mutations = {
   reset: assign(getDefaultState()),
   setCenters: set('centers'),
+  setCenterLevels: set('center_levels'),
   setCustomLabels (state, data) {
     state.custom_labels = { ...state.custom_labels, ...data }
   },
@@ -109,6 +134,7 @@ export const mutations = {
 
 export const getters = {
   getCenters: state => state.centers,
+  getCenterLevels: state => state.center_levels,
   getClientLabels: state => Object.entries(state.custom_labels).map(([key, value]) => ({ key, value })).slice(0, 5),
   getCustomLabels: state => state.custom_labels,
   getDriverLabels: state => Object.entries(state.custom_labels).map(([key, value]) => ({ key, value })).slice(5),

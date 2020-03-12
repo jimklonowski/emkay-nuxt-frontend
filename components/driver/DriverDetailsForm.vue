@@ -251,7 +251,7 @@ export default {
       default: ''
     }
   },
-  data: vm => ({
+  data: () => ({
     loading: false,
     model: {}
   }),

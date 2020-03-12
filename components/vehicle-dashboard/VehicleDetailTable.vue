@@ -67,10 +67,8 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters({
-      hasVehicle: 'vehicle/hasVehicle',
-      custom_labels: 'account/getCustomLabels',
-      driver_details: 'vehicle/getDriverDetails',
-      vehicle_details: 'vehicle/getVehicleDetails'
+      driver_details: 'vehicle-dashboard/getDriverDetails',
+      vehicle_details: 'vehicle-dashboard/getVehicleDetails'
     }),
     driverAddress () {
       return [this.driver_details.address_1, this.driver_details.address_2].filter(Boolean).join(' ')

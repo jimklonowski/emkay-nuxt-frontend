@@ -215,7 +215,7 @@ import { mapGetters } from 'vuex'
 import { SnotifyPosition } from 'vue-snotify'
 import { vehicleRoute } from '@/mixins/routing'
 import ChangePlate from '@/components/vehicle/ChangePlate'
-import VehicleDetailTable from '@/components/vehicle/VehicleDetailTable'
+import VehicleDetailTable from '@/components/vehicle-dashboard/VehicleDetailTable'
 export default {
   name: 'EditVehicle',
   components: { ChangePlate, VehicleDetailTable },
@@ -249,7 +249,7 @@ export default {
   computed: {
     ...mapGetters({
       custom_labels: 'account/getCustomLabels',
-      driver_details: 'vehicle/getDriverDetails',
+      driver_details: 'vehicle-dashboard/getDriverDetails',
       hasVehicle: 'vehicle/hasVehicle',
       vehicle_details: 'vehicle/getVehicleDetails',
       vehicle_number: 'vehicle/getVehicleNumber'
