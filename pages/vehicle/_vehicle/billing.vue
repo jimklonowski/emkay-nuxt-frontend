@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card outlined tile class="report">
           <v-toolbar flat color="transparent">
-            <v-toolbar-title>{{ $t('billing_history') }}</v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -25,7 +25,7 @@
             <!-- Download as XLS button -->
             <client-only>
               <v-divider vertical inset class="mx-3" />
-              <download-excel :fields="downloadFields" :data="items">
+              <download-excel :fields="downloadFields" :data="items" :name="exportName">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
                 </v-btn>
@@ -137,7 +137,7 @@
               :search="search"
               :sort-by="['bill_date']"
               :sort-desc="[true]"
-              :expanded.sync="expanded"
+              :expanded.sync="invoice_expanded"
               class="striped"
               item-key="invoice_number"
               show-expand
@@ -146,18 +146,6 @@
               <!-- Configure display of columns -->
               <template #item.invoice_number="{ item }">
                 {{ item.invoice_number }}
-                <!-- <nuxt-link @click="dialog = true" :to="invoiceRoute(item.invoice_number)" class="text-decoration-none" nuxt>
-                  {{ item.invoice_number }}
-                </nuxt-link> -->
-                <!-- <v-btn
-                  :to="invoiceRoute(item.invoice_number)"
-                  color="primary"
-                  exact
-                  small
-                  text
-                >
-                  {{ item.invoice_number }}
-                </v-btn> -->
               </template>
               <template #expanded-item="props">
                 <td :colspan="props.headers.length" class="pa-4">
@@ -188,22 +176,16 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
-// import Invoice from '@/components/vehicle/billing/Invoice'
 
+/**
+ * Vehicle Dashboard Billing History
+ */
 export default {
-  name: 'Billing',
+  name: 'VehicleDashboardBillingHistory',
   components: {
-    // Invoice
     'invoice': () => import(/* webpackChunkName: "Invoice" */ `@/components/vehicle-dashboard/billing/Invoice`)
   },
   mixins: [downloadFields, updateQuery, vehicleRoute],
-  data: () => ({
-    expanded: [],
-    panels_expanded: [0],
-    search: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'vehicle-dashboard/getBillingHistory',
@@ -259,10 +241,10 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('billing_history')
   },
   async asyncData ({ $moment, query, store, error }) {
-    console.log('asyncdata')
     const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     // if no date params in query, use 30 day period ending with today
     const report_length = 30
@@ -270,15 +252,22 @@ export default {
     const end = query.end || $moment().format('YYYY-MM-DD')
     // Fetch the report data using the above filters
     await store.dispatch('vehicle-dashboard/fetchBillingHistory', { start, end, vehicle })
-    return { start, end }
+    return {
+      invoice_expanded: [],
+      panels_expanded: [0],
+      search: '',
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end
+    }
   },
   mounted () {
-    console.log('mounted')
     if (this.$route.query.invoice) {
       // if an invoice is in query, find and expand that invoice's row
       const found = this.items.find(x => x.invoice_number === this.$route.query.invoice)
       // if the invoice# in query is not found in the rows of the datatable, then don't expand a row
-      this.expanded = found ? [found] : []
+      this.invoice_expanded = found ? [found] : []
       // remove the invoice# from query
       this.$router.replace({ query: { ...this.$route.query, invoice: undefined } })
     }
@@ -289,11 +278,10 @@ export default {
     }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('billing')}`
     return {
-      title,
+      title: `${this.vehicle_number} - ${this.title}`,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

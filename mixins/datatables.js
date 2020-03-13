@@ -58,11 +58,14 @@ export const downloadFields = {
      * example: EM102-InventoryReport-2020-03-13.xls
      */
     exportName () {
+      const extension = '.xls'
       const acct = this.$auth.user.account || this.$i18n.t('account')
-      const name = this.title || this.$i18n.t('report')
+      const vehicle = this.vehicle_number
+      const title = this.title || this.$i18n.t('report')
       const date = this.$moment().format()
-      const filename = `${acct}-${name}-${date}.xls`
-      return filename.replace(/\s/g, '')
+      // const filename = `${acct}-${name}-${date}.xls`
+      const filename = [acct, vehicle, title, date].filter(Boolean).join('-').concat(extension).replace(/\s/g, '')
+      return filename
     }
   }
 }

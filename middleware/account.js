@@ -11,4 +11,7 @@ export default async ({ app, $axios, store, req, res }) => {
   //   // fetch labels and centers
   //   await store.dispatch('account/init')
   // }
+  if (!store.getters['account/isInitialized']) {
+    await store.dispatch('account/init')
+  }
 }

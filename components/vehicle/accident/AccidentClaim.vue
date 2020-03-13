@@ -389,7 +389,7 @@ export default {
     loading: false
   }),
   computed: {
-    vehicle_number: vm => vm.$store.getters['vehicle/getVehicleNumber']
+    vehicle_number: vm => vm.$store.getters['vehicle-dashboard/getVehicleNumber']
   },
   async mounted () {
     await this.populateClaim()

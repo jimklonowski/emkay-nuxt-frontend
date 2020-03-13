@@ -130,9 +130,9 @@ export default {
     actions () {
       return [
         {
-          text: this.$i18n.t('accident_history'),
-          icon: 'mdi-car-parking-lights',
-          to: this.accidentRoute
+          text: this.$i18n.t('rental_history'),
+          icon: this.icon,
+          to: this.rentalRoute
         }
       ]
     },

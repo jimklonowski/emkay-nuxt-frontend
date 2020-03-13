@@ -38,7 +38,7 @@ export default {
       return reports
     }
   },
-  middleware: ['check-auth'],
+  middleware: ['check-auth', 'account'],
   head () {
     return {
       htmlAttrs: {

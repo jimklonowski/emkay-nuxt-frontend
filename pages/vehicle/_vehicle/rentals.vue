@@ -4,13 +4,14 @@
       <v-col cols="12">
         <v-card outlined class="report">
           <v-toolbar flat color="transparent">
-            <v-toolbar-title>{{ $t('rental_history') }}</v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
               :label="$t('search')"
               background-color="transparent"
               prepend-inner-icon="mdi-magnify"
+              class="mr-2"
               clearable
               dense
               flat
@@ -20,9 +21,9 @@
               single-line
               solo
             />
-            <v-divider vertical inset class="mx-4" />
             <!-- Download as XLS button -->
             <client-only>
+              <v-divider vertical inset class="mx-3" />
               <download-excel :fields="downloadFields" :data="items">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
@@ -55,21 +56,17 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
+/**
+ * Vehicle Dashboard Rental History
+ */
 export default {
-  name: 'Rentals',
+  name: 'VehicleDashboardRentalHistory',
   mixins: [downloadFields, vehicleRoute, updateQuery],
-  data () {
-    return {
-      end_dialog: false,
-      start_dialog: false,
-      search: ''
-    }
-  },
   computed: {
     ...mapGetters({
-      items: 'vehicle/getRentalHistory',
-      loading: 'vehicle/getRentalsLoading',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      items: 'vehicle-dashboard/getRentalHistory',
+      loading: 'vehicle-dashboard/getRentalLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -122,22 +119,29 @@ export default {
     },
     query () {
       return { start: this.start, end: this.end }
-    }
+    },
+    title: vm => vm.$i18n.t('rental_history')
   },
   async asyncData ({ $moment, params, query, store }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('vehicle/fetchRentalHistory', { start, end, vehicle })
-    return { start, end }
+    await store.dispatch('vehicle-dashboard/fetchRentalHistory', { start, end, vehicle })
+    return {
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: ''
+    }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('rental_history')}`
     return {
-      title,
+      title: `${this.vehicle_number} - ${this.title}`,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

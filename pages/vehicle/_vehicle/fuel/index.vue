@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('fuel_history') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -187,14 +187,6 @@ import { updateQuery, vehicleRoute } from '@/mixins/routing'
 export default {
   name: 'VehicleDashboardFuelHistory',
   mixins: [downloadFields, updateQuery, vehicleRoute],
-  data () {
-    return {
-      panels_expanded: [0],
-      search: '',
-      start_dialog: false,
-      end_dialog: false
-    }
-  },
   computed: {
     ...mapGetters({
       items: 'vehicle-dashboard/getFuelHistory',
@@ -263,7 +255,8 @@ export default {
         end: this.end,
         use_bill_date: this.use_bill_date
       }
-    }
+    },
+    title: vm => vm.$i18n.t('fuel_history')
   },
   async asyncData ({ $moment, query, store }) {
     const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
@@ -275,14 +268,21 @@ export default {
     // Fetch report data in vehicle-detail store
     await store.dispatch('vehicle-dashboard/fetchFuelHistory', { start, end, use_bill_date, vehicle })
 
-    return { start, end, use_bill_date }
+    return {
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      use_bill_date
+    }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('fuel')}`
     return {
-      title,
+      title: `${this.vehicle_number} - ${this.title}`,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

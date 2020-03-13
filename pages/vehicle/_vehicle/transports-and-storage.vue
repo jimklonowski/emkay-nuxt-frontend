@@ -44,7 +44,7 @@ export default {
   data: () => ({}),
   computed: {
     ...mapGetters({
-      vehicle_number: 'vehicle/getVehicleNumber'
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     transtorRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/transports-and-storage` }),
     transtorQuoteRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/transports-and-storage/request-quote` }),

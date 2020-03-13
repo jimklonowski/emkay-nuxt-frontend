@@ -38,8 +38,8 @@ export default {
       return account
     }
   },
-  // All pages with the account layout will require auth
-  middleware: ['check-auth'],
+  // All pages with the account layout will require auth, and require centers/labels to be initialized
+  middleware: ['check-auth', 'account'],
   head () {
     return {
       htmlAttrs: {

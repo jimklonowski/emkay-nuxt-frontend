@@ -37,7 +37,7 @@ export default {
       return ordering
     }
   },
-  middleware: ['check-auth'],
+  middleware: ['check-auth', 'account'],
   head () {
     return {
       htmlAttrs: {

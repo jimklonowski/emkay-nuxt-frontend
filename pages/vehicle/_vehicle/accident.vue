@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card outlined tile class="report">
           <v-toolbar flat color="transparent">
-            <v-toolbar-title>{{ $t('accident') }}</v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -25,7 +25,7 @@
             <!-- Download as XLS button -->
             <client-only>
               <v-divider vertical inset class="mx-3" />
-              <download-excel :fields="downloadFields" :data="items">
+              <download-excel :fields="downloadFields" :data="items" :name="exportName">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
                 </v-btn>
@@ -173,24 +173,18 @@ import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
 import AccidentClaim from '@/components/vehicle/accident/AccidentClaim'
+/**
+ * Vehicle Dashboard Accident History
+ */
 export default {
-  name: 'Accident',
+  name: 'VehicleDashboardAccidentHistory',
   components: { AccidentClaim },
   mixins: [downloadFields, updateQuery, vehicleRoute],
-  data () {
-    return {
-      panels_expanded: [0],
-      claim_dialog: false,
-      start_dialog: false,
-      end_dialog: false,
-      search: ''
-    }
-  },
   computed: {
     ...mapGetters({
-      items: 'vehicle/getAccidentHistory',
-      loading: 'vehicle/getAccidentsLoading',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      items: 'vehicle-dashboard/getAccidentHistory',
+      loading: 'vehicle-dashboard/getAccidentLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -243,15 +237,23 @@ export default {
     },
     query () {
       return { start: this.start, end: this.end }
-    }
+    },
+    title: vm => vm.$i18n.t('accident_history')
   },
   async asyncData ({ $moment, params, query, store }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('vehicle/fetchAccidentHistory', { start, end, vehicle })
-    return { start, end }
+    await store.dispatch('vehicle-dashboard/fetchAccidentHistory', { start, end, vehicle })
+    return { panels_expanded: [0],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      claim_dialog: false,
+      search: ''
+    }
   },
   methods: {
     claimRoute (claim) {
@@ -259,11 +261,10 @@ export default {
     }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('accident')}`
     return {
-      title,
+      title: `${this.vehicle_number} - ${this.title}`,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

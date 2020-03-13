@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card outlined tile class="report">
           <v-toolbar flat color="transparent">
-            <v-toolbar-title>{{ $t('odometer_history') }}</v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
             <!-- <v-text-field
               v-model="search"
@@ -34,8 +34,9 @@
               </v-dialog>
 
               <v-divider vertical inset class="mx-3" />
+
               <!-- Download as XLS button -->
-              <download-excel :fields="downloadFields" :data="items">
+              <download-excel :fields="downloadFields" :data="items" :name="exportName">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
                 </v-btn>
@@ -173,19 +174,11 @@ export default {
   name: 'Odometer',
   components: { ReportOdometer },
   mixins: [downloadFields, updateQuery, vehicleRoute],
-  data: () => ({
-    panels_expanded: [0],
-    search: '',
-    report_odometer_dialog: false,
-    start_dialog: false,
-    end_dialog: false,
-    uploading_odometer: false
-  }),
   computed: {
     ...mapGetters({
-      items: 'vehicle/getOdometerHistory',
-      loading: 'vehicle/getOdometerLoading',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      items: 'vehicle-dashboard/getOdometerHistory',
+      loading: 'vehicle-dashboard/getOdometerLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -217,23 +210,32 @@ export default {
     },
     query () {
       return { start: this.start, end: this.end }
-    }
+    },
+    title: vm => vm.$i18n.t('odometer_history')
   },
   async asyncData ({ $moment, params, query, store }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
     // Fetch odometer data
-    await store.dispatch('vehicle/fetchOdometerHistory', { start, end, vehicle })
-    return { start, end }
+    await store.dispatch('vehicle-dashboard/fetchOdometerHistory', { start, end, vehicle })
+    return {
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      report_odometer_dialog: false,
+      uploading_odometer: false
+    }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('odometer')}`
     return {
-      title,
+      title: `${this.vehicle_number} - ${this.title}`,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

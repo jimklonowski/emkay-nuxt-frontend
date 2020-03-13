@@ -490,7 +490,7 @@ export default {
   },
   computed: {
     quote: vm => vm.$store.getters['transtor/getQuote'],
-    driver_info: vm => vm.$store.getters['vehicle/getDriverInfo'],
+    driver_info: vm => vm.$store.getters['vehicle-dashboard/getDriverDetails'],
     isTransportOrStorage () {
       return this.type !== 'transport_out_of_storage'
     },

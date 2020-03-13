@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card outlined tile class="report">
           <v-toolbar flat color="transparent">
-            <v-toolbar-title>{{ $t('toll_history') }}</v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -25,7 +25,7 @@
             <!-- Download as XLS button -->
             <client-only>
               <v-divider vertical inset class="mx-3" />
-              <download-excel :fields="downloadFields" :data="items">
+              <download-excel :fields="downloadFields" :data="items" :name="exportName">
                 <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
                   <v-icon v-text="'mdi-cloud-download'" />
                 </v-btn>
@@ -161,20 +161,13 @@ import { downloadFields } from '@/mixins/datatables'
 import { updateQuery, vehicleRoute } from '@/mixins/routing'
 
 export default {
-  name: 'Toll',
+  name: 'VehicleDashboardTollHistory',
   mixins: [downloadFields, updateQuery, vehicleRoute],
-  data: () => ({
-    panels_expanded: [0],
-    search: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
-      error: 'vehicle-detail/getError',
-      items: 'vehicle-detail/getData',
-      loading: 'vehicle-detail/getLoading',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      items: 'vehicle-dashboard/getTollHistory',
+      loading: 'vehicle-dashboard/getTollLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -210,24 +203,31 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('toll_history')
   },
   async asyncData ({ $moment, params, query, store }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     // if no date params in query, use 30 day period ending with today
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
     // Fetch report data using above filters
-    await store.dispatch('vehicle-detail/fetchTollHistory', { start, end, vehicle })
-    return { start, end }
+    await store.dispatch('vehicle-dashboard/fetchTollHistory', { start, end, vehicle })
+    return {
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: ''
+    }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('toll')}`
     return {
-      title,
+      title: `${this.vehicle_number} - ${this.title}`,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },
