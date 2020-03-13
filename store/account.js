@@ -6,16 +6,16 @@ const getDefaultState = () => ({
   login_messages: [],
   centers: [],
   center_levels: {
-    level_01: '_level01_',
-    level_02: '_level02_',
-    level_03: '_level03_',
-    level_04: '_level04_',
-    level_05: '_level05_',
-    level_06: '_level06_',
-    level_07: '_level07_',
-    level_08: '_level08_',
-    level_09: '_level09_',
-    level_10: '_level10_'
+    level_01: 'level_01',
+    level_02: 'level_02',
+    level_03: 'level_03',
+    level_04: 'level_04',
+    level_05: 'level_05',
+    level_06: 'level_06',
+    level_07: 'level_07',
+    level_08: 'level_08',
+    level_09: 'level_09',
+    level_10: 'level_10'
   },
   custom_labels: {
     client_use_label_1: '',
@@ -93,17 +93,15 @@ export const actions = {
     }
   },
   async login ({ commit, dispatch }, credentials) {
-    debugger
-    try {
-      await this.$auth.loginWith('local', { data: credentials })
+    await this.$auth.loginWith('local', { data: credentials }).then(async () => {
       if (this.$auth.loggedIn && this.$auth.user.token) {
         // save session cookie
         this.$cookies.set('SESSIONID', this.$auth.user.token)
+        await dispatch('account/init', null, { root: true })
+      } else {
+        throw new Error(`[${this.$i18n.t('login')}]: ${this.$i18n.t('invalid_login')}`)
       }
-      await dispatch('account/init', null, { root: true })
-    } catch (error) {
-      console.error(error.message)
-    }
+    })
   },
   async logout ({ commit }) {
     // purge the current vuex state
@@ -111,6 +109,7 @@ export const actions = {
     commit('reports/reset', null, { root: true }) // vuex data from the last report viewed
     commit('vehicle-dashboard/reset', null, { root: true }) // vuex data from the last vehicle dashboard viewed
     commit('drivers/reset', null, { root: true }) // vuex data from drivers
+    this.$cookies.remove('SESSIONID')
     await this.$auth.logout()
     // if a french user is logging out, make sure we redirect to /fr-ca/login instead of /login
     // this.$router.push(this.app.localePath({ name: 'login' }))

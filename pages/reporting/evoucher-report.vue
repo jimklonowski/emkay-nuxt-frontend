@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('evoucher_report') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -211,23 +211,15 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
 /**
  * eVoucher Report
  */
 export default {
   name: 'EvoucherReport',
-  components: { CenterPicker },
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
@@ -247,7 +239,17 @@ export default {
         'last_pm_odometer',
         'next_pm_odometer',
         'due_in_miles',
-        'status'
+        'status',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
     headers () {
@@ -337,7 +339,8 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('evoucher_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
@@ -346,14 +349,23 @@ export default {
 
     // Fetch report data
     await store.dispatch('reports/fetchEvoucherReport', { start, end })
-    return { start, end }
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
   head () {
-    const title = this.$t('evoucher_report')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

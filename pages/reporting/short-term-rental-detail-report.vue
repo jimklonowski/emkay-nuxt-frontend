@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('expenses') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -185,8 +185,8 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="[0]"
-        :sort-desc="[true]"
+        :sort-by="['vehicle_number']"
+        :sort-desc="[false]"
         class="striped"
       >
         <!-- Configure the #no-data message (no data from server) -->
@@ -211,20 +211,15 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
+/**
+ * Short Term Rental Detail Report
+ */
 export default {
-  name: 'Expenses',
-  components: { CenterPicker },
+  name: 'ShortTermRentalDetailReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
@@ -233,6 +228,7 @@ export default {
     }),
     columns () {
       return [
+        'voucher_number',
         'vehicle_number',
         'client_vehicle_number',
         'center_code',
@@ -240,19 +236,39 @@ export default {
         'model_year',
         'vehicle_make',
         'vehicle_model',
-        'bill_sort',
-        'department',
-        'driver_last_name',
-        'driver_first_name',
-        'fuel',
-        'maintenance',
-        'lube_oil_filter',
-        'tires'
-        // ...
+        'vehicle_category',
+        'start_date',
+        'end_date',
+        'days_in_rental',
+        'auth_days',
+        'number_of_days_ext',
+        'number_of_ext',
+        'last_auth_date',
+        'days_past_auth_days',
+        'driver_name',
+        'status',
+        'reason',
+        'rental_cost',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
     headers () {
       return [
+        {
+          text: this.$i18n.t('voucher_number'),
+          value: 'voucher_number',
+          class: 'report-column',
+          divider: true
+        },
         {
           text: this.$i18n.t('vehicle_number'),
           value: 'vehicle_number',
@@ -303,50 +319,82 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('bill_sort'),
-          value: 'bill_sort',
+          text: this.$i18n.t('vehicle_category'),
+          value: 'vehicle_category',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('start_date'),
+          value: 'start_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('department'),
-          value: 'department',
+          text: this.$i18n.t('end_date'),
+          value: 'end_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_last_name'),
-          value: 'driver_last_name',
+          text: this.$i18n.t('days_in_rental'),
+          value: 'days_in_rental',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_first_name'),
-          value: 'driver_first_name',
+          text: this.$i18n.t('auth_days'),
+          value: 'auth_days',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('fuel'),
-          value: 'fuel',
+          text: this.$i18n.t('number_of_days_ext'),
+          value: 'number_of_days_ext',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('maintenance'),
-          value: 'maintenance',
+          text: this.$i18n.t('number_of_ext'),
+          value: 'number_of_ext',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('lube_oil_filter'),
-          value: 'lube_oil_filter',
+          text: this.$i18n.t('last_auth_date'),
+          value: 'last_auth_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('tires'),
-          value: 'tires',
+          text: this.$i18n.t('days_past_auth_days'),
+          value: 'days_past_auth_days',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('status'),
+          value: 'status',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('reason'),
+          value: 'reason',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('rental_cost'),
+          value: 'rental_cost',
           class: 'report-column'
         }
       ]
@@ -357,21 +405,31 @@ export default {
         end: this.end,
         use_bill_date: this.use_bill_date
       }
-    }
+    },
+    title: vm => vm.$i18n.t('short_term_rental_detail_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchExpenseDetailReport', { start, end })
-    return { start, end }
+    await store.dispatch('reports/fetchShortTermRentalDetailReport', { start, end })
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
   head () {
-    const title = this.$t('expense_detail')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('saferoads_fleet_summary') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -61,7 +61,7 @@
                       :value="$moment(start).format('L')"
                       :label="$t('start_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -95,7 +95,7 @@
                       :value="$moment(end).format('L')"
                       :label="$t('end_date')"
                       v-on="on"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       dense
                       outlined
                       readonly
@@ -133,8 +133,8 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['driver_number']"
-        :sort-desc="[false]"
+        :sort-by="['date']"
+        :sort-desc="[true]"
         class="striped"
       >
         <!-- Configure the #no-data message (no data from server) -->
@@ -160,17 +160,11 @@ import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
- * Saferoads Fleet Summary Report
+ * Invoice History Report
  */
 export default {
-  name: 'SaferoadsFleetSummary',
+  name: 'InvoiceHistoryReport',
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    panels_expanded: [0],
-    search: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
@@ -179,113 +173,38 @@ export default {
     }),
     columns () {
       return [
-        'driver_number',
-        'driver_name',
-        'driver_email_address',
-        'number_of_trips',
-        'total_distance_driven',
-        'saferoads_score',
-        'braking',
-        'acceleration',
-        'speeding',
-        'hard_turn',
-        'phone_use',
-        'performance_group',
-        'total_phone_usages',
-        'total_duration_phone_usage',
-        'average_duration_phone_usage'
-        // ...
+        'date',
+        'description',
+        'amount',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
     headers () {
       return [
         {
-          text: this.$i18n.t('driver_number'),
-          value: 'driver_number',
+          text: this.$i18n.t('date'),
+          value: 'date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_name'),
-          value: 'driver_name',
+          text: this.$i18n.t('description'),
+          value: 'description',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_email_address'),
-          value: 'driver_email_address',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('number_of_trips'),
-          value: 'number_of_trips',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('total_distance_driven'),
-          value: 'total_distance_driven',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('saferoads_score'),
-          value: 'saferoads_score',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('braking'),
-          value: 'braking',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('acceleration'),
-          value: 'acceleration',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('speeding'),
-          value: 'speeding',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('hard_turn'),
-          value: 'hard_turn',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('phone_use'),
-          value: 'phone_use',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('performance_group'),
-          value: 'performance_group',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('total_phone_usages'),
-          value: 'total_phone_usages',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('total_duration_phone_usage'),
-          value: 'total_duration_phone_usage',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('average_duration_phone_usage'),
-          value: 'average_duration_phone_usage',
+          text: this.$i18n.t('amount'),
+          value: 'amount',
           class: 'report-column'
         }
       ]
@@ -295,21 +214,32 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('invoice_history_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchSaferoadsFleetSummary', { start, end })
-    return { start, end }
-  },
-  head () {
-    const title = this.$t('saferoads_fleet_summary')
+    await store.dispatch('reports/fetchInvoiceHistory', { start, end })
     return {
-      title,
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: ''
+    }
+  },
+  /**
+   * Set specific <meta> tags for the current page.
+   * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
+   * https://nuxtjs.org/api/pages-head */
+  head () {
+    return {
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

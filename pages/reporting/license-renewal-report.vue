@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('driver_360_mileage') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -211,29 +211,24 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
 /**
- * Driver 360 Mileage Report
+ * License Renewal Report
  */
 export default {
-  name: 'Driver360Mileage',
-  components: { CenterPicker },
+  name: 'LicenseRenewalReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
       error: 'reports/getError',
       loading: 'reports/getLoading'
     }),
+    /**
+     * Implement a computed columns property that returns an array of strings that represent the datatable columns
+     */
     columns () {
       return [
         'vehicle_number',
@@ -241,12 +236,23 @@ export default {
         'center_code',
         'center_name',
         'driver_name',
-        'report_date',
-        'mileage',
-        'type',
-        'origin',
-        'destination',
-        'notes'
+        'in_service_date',
+        'year_make_model',
+        'vin',
+        'license_plate_state_province',
+        'license_plate_number',
+        'license_plate_expiration_date',
+        'renewal_status',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
     headers () {
@@ -280,7 +286,6 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
-          width: 300,
           divider: true
         },
         {
@@ -290,38 +295,44 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('report_date'),
-          value: 'report_date',
+          text: this.$i18n.t('in_service_date'),
+          value: 'in_service_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('mileage'),
-          value: 'mileage',
+          text: this.$i18n.t('year_make_model'),
+          value: 'year_make_model',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('type'),
-          value: 'type',
+          text: this.$i18n.t('vin'),
+          value: 'vin',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('origin'),
-          value: 'origin',
+          text: this.$i18n.t('license_plate_state_province'),
+          value: 'license_plate_state_province',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('destination'),
-          value: 'destination',
+          text: this.$i18n.t('license_plate_number'),
+          value: 'license_plate_number',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('notes'),
-          value: 'notes',
+          text: this.$i18n.t('license_plate_expiration_date'),
+          value: 'license_plate_expiration_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('renewal_status'),
+          value: 'renewal_status',
           class: 'report-column'
         }
       ]
@@ -331,21 +342,32 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('license_renewal_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchDriver360MileageReport', { start, end })
-    return { start, end }
+
+    await store.dispatch('reports/fetchLicenseRenewalReport', { start, end })
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
   head () {
-    const title = this.$t('driver_360_mileage')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('invoice_history') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -47,7 +47,7 @@
         <v-expansion-panel-content>
           <v-container class="pb-0">
             <v-row>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="6" lg="3">
                 <v-dialog
                   ref="start_dialog"
                   v-model="start_dialog"
@@ -81,7 +81,7 @@
                   </v-date-picker>
                 </v-dialog>
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="6" lg="3">
                 <v-dialog
                   ref="end_dialog"
                   v-model="end_dialog"
@@ -115,6 +115,58 @@
                   </v-date-picker>
                 </v-dialog>
               </v-col>
+              <v-col cols="12" sm="6" lg="3">
+                <v-dialog
+                  ref="centers_dialog"
+                  v-model="centers_dialog"
+                  max-width="650"
+                  scrollable
+                >
+                  <template #activator="{ on }">
+                    <v-btn v-on="on" color="primary" width="100%" depressed rounded>
+                      {{ $tc('centers_filtered', centers_selected.length) }}
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-sheet class="pa-0 primary" dark>
+                      <v-toolbar flat color="transparent">
+                        <v-toolbar-title>{{ $t('centers') }}</v-toolbar-title>
+                        <v-spacer />
+                        <v-btn @click="centers_dialog = false" icon>
+                          <v-icon v-text="'mdi-close'" />
+                        </v-btn>
+                      </v-toolbar>
+                      <v-sheet class="primary lighten-1 flex-column pa-4" dark>
+                        <v-text-field
+                          v-model="search_centers"
+                          :label="$t('search_centers')"
+                          dark
+                          flat
+                          solo-inverted
+                          hide-details
+                          clearable
+                          clear-icon="mdi-close-circle-outline"
+                          autocomplete="off"
+                        />
+                      </v-sheet>
+                    </v-sheet>
+                    <v-card-text>
+                      <center-picker v-model="centers_selected" :return-value.sync="centers_selected" :search="search_centers" />
+                    </v-card-text>
+                    <v-divider />
+                    <v-card-actions>
+                      {{ $tc('centers_selected', centers_selected.length) }}
+                      <v-spacer />
+                      <v-btn @click="centers_selected = [], search_centers = ''" color="error" text>
+                        {{ $t('reset') }}
+                      </v-btn>
+                      <v-btn @click="centers_dialog = false" color="primary">
+                        {{ $t('ok') }}
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-col>
             </v-row>
           </v-container>
         </v-expansion-panel-content>
@@ -133,8 +185,8 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['date']"
-        :sort-desc="[true]"
+        :sort-by="['vehicle_number']"
+        :sort-desc="[false]"
         class="striped"
       >
         <!-- Configure the #no-data message (no data from server) -->
@@ -160,17 +212,14 @@ import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
 /**
- * Invoice History Report
+ * Accident Claim Status Report
  */
 export default {
-  name: 'InvoiceHistory',
+  name: 'AccidentClaimStatusReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    panels_expanded: [0],
-    search: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
@@ -179,28 +228,88 @@ export default {
     }),
     columns () {
       return [
-        'date',
-        'description',
-        'amount'
+        'claim_number',
+        'vehicle_number',
+        'client_vehicle_number',
+        'center_code',
+        'center_name',
+        'driver_name',
+        'year_make_model',
+        'report_date',
+        'status',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
     headers () {
       return [
         {
-          text: this.$i18n.t('date'),
-          value: 'date',
+          text: this.$i18n.t('claim_number'),
+          value: 'claim_number',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('description'),
-          value: 'description',
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('amount'),
-          value: 'amount',
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('center_code'),
+          value: 'center_code',
+          class: 'report-column',
+          divider: true,
+          filter: (value) => {
+            if (!this.centers_selected || this.centers_selected.length === 0) {
+              // no centers selected, don't filter anything
+              return true
+            }
+            return this.centers_selected.find(center => center.center_code === value)
+          }
+        },
+        {
+          text: this.$i18n.t('center_name'),
+          value: 'center_name',
+          class: 'report-column',
+          width: 300,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('year_make_model'),
+          value: 'year_make_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('report_date'),
+          value: 'report_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('status'),
+          value: 'status',
           class: 'report-column'
         }
       ]
@@ -210,25 +319,31 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('accident_claim_status_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchInvoiceHistory', { start, end })
-    return { start, end }
-  },
-  /**
-   * Set specific <meta> tags for the current page.
-   * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
-   * https://nuxtjs.org/api/pages-head */
-  head () {
-    const title = this.$t('invoice_history')
+    await store.dispatch('reports/fetchAccidentClaimStatusReport', { start, end })
     return {
-      title,
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
+  },
+  head () {
+    return {
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

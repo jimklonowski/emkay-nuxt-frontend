@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('license_renewal_report') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -185,7 +185,7 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['vehicle_number']"
+        :sort-by="['driver_number']"
         :sort-desc="[false]"
         class="striped"
       >
@@ -211,53 +211,58 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
 /**
- * License Renewal Report
+ * Saferoads Fleet Summary Report
  */
 export default {
-  name: 'LicenseRenewal',
-  components: { CenterPicker },
+  name: 'SaferoadsFleetSummaryReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
       error: 'reports/getError',
       loading: 'reports/getLoading'
     }),
-    /**
-     * Implement a computed columns property that returns an array of strings that represent the datatable columns
-     */
     columns () {
       return [
-        'vehicle_number',
-        'client_vehicle_number',
+        'driver_number',
         'center_code',
         'center_name',
         'driver_name',
-        'in_service_date',
-        'year_make_model',
-        'vin',
-        'license_plate_state_province',
-        'license_plate_number',
-        'license_plate_expiration_date',
-        'renewal_status'
+        'driver_email_address',
+        'number_of_trips',
+        'total_distance_driven',
+        'saferoads_score',
+        'braking',
+        'acceleration',
+        'speeding',
+        'hard_turn',
+        'phone_use',
+        'performance_group',
+        'total_phone_usages',
+        'total_duration_phone_usage',
+        'average_duration_phone_usage',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
+        // ...
       ]
     },
     headers () {
       return [
         {
-          text: this.$i18n.t('vehicle_number'),
-          value: 'vehicle_number',
+          text: this.$i18n.t('driver_number'),
+          value: 'driver_number',
           class: 'report-column',
           divider: true
         },
@@ -281,56 +286,86 @@ export default {
           }
         },
         {
-          text: this.$i18n.t('center_name'),
-          value: 'center_name',
-          class: 'report-column',
-          divider: true
-        },
-        {
           text: this.$i18n.t('driver_name'),
           value: 'driver_name',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('in_service_date'),
-          value: 'in_service_date',
+          text: this.$i18n.t('driver_email_address'),
+          value: 'driver_email_address',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('year_make_model'),
-          value: 'year_make_model',
+          text: this.$i18n.t('number_of_trips'),
+          value: 'number_of_trips',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('vin'),
-          value: 'vin',
+          text: this.$i18n.t('total_distance_driven'),
+          value: 'total_distance_driven',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('license_plate_state_province'),
-          value: 'license_plate_state_province',
+          text: this.$i18n.t('saferoads_score'),
+          value: 'saferoads_score',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('license_plate_number'),
-          value: 'license_plate_number',
+          text: this.$i18n.t('braking'),
+          value: 'braking',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('license_plate_expiration_date'),
-          value: 'license_plate_expiration_date',
+          text: this.$i18n.t('acceleration'),
+          value: 'acceleration',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('renewal_status'),
-          value: 'renewal_status',
+          text: this.$i18n.t('speeding'),
+          value: 'speeding',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('hard_turn'),
+          value: 'hard_turn',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('phone_use'),
+          value: 'phone_use',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('performance_group'),
+          value: 'performance_group',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('total_phone_usages'),
+          value: 'total_phone_usages',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('total_duration_phone_usage'),
+          value: 'total_duration_phone_usage',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('average_duration_phone_usage'),
+          value: 'average_duration_phone_usage',
           class: 'report-column'
         }
       ]
@@ -340,22 +375,31 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('saferoads_fleet_summary_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-
-    await store.dispatch('reports/fetchLicenseRenewalReport', { start, end })
-    return { start, end }
+    await store.dispatch('reports/fetchSaferoadsFleetSummary', { start, end })
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
   head () {
-    const title = this.$t('license_renewal_report')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

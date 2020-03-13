@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('toll_detail') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -185,7 +185,7 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['toll_date']"
+        :sort-by="['driver_id']"
         :sort-desc="[true]"
         class="striped"
       >
@@ -211,54 +211,48 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
 /**
- * Toll Detail Report
+ * Driver Record Report
  */
 export default {
-  name: 'TollDetail',
-  components: { CenterPicker },
+  name: 'DriverRecordReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
-    // Mapped Vuex Getters
     ...mapGetters({
       items: 'reports/getData',
       error: 'reports/getError',
       loading: 'reports/getLoading'
     }),
-    // Downloaded csv contains these columns.
     columns () {
       return [
-        'date',
-        'vehicle_number',
+        'driver_id',
+        'last_name',
+        'first_name',
+        'license_number',
+        'date_of_birth',
+        'state_province',
         'center_code',
         'center_name',
-        'description',
-        'location',
-        'amount'
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
-    // Datatable contains these headers.
     headers () {
       return [
         {
-          text: this.$i18n.t('date'),
-          value: 'date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vehicle_number'),
-          value: 'vehicle_number',
+          text: this.$i18n.t('driver_id'),
+          value: 'driver_id',
           class: 'report-column',
           divider: true
         },
@@ -279,53 +273,70 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
-          width: 300,
-          divider: true
+          divider: true,
+          width: 300
         },
         {
-          text: this.$i18n.t('description'),
-          value: 'description',
+          text: this.$i18n.t('last_name'),
+          value: 'last_name',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('location'),
-          value: 'location',
+          text: this.$i18n.t('first_name'),
+          value: 'first_name',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('amount'),
-          value: 'amount',
+          text: this.$i18n.t('license_number'),
+          value: 'license_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('state_province'),
+          value: 'state_province',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('date_of_birth'),
+          value: 'date_of_birth',
           class: 'report-column'
         }
       ]
     },
-    // Query parameters
     query () {
       return {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('driver_record_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-
-    // Fetch report data
-    await store.dispatch('reports/fetchTollDetailReport', { start, end })
-
-    // Return the report parameters so they are merged with the data() object
-    return { start, end }
+    await store.dispatch('reports/fetchDriverRecordReport', { start, end })
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
   head () {
-    const title = this.$t('toll_detail')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

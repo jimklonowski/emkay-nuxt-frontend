@@ -1,14 +1,14 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('accident_claim_status') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
         :label="$t('search')"
         prepend-inner-icon="mdi-magnify"
         background-color="transparent"
-        class="mr-2"
+        class="mr-1"
         clearable
         dense
         flat
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -185,8 +185,8 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['vehicle_number']"
-        :sort-desc="[false]"
+        :sort-by="[]"
+        :sort-desc="[true]"
         class="striped"
       >
         <!-- Configure the #no-data message (no data from server) -->
@@ -211,20 +211,15 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
+/**
+ * Engine Faults Report
+ */
 export default {
-  name: 'AccidentClaimStatus',
-  components: { CenterPicker },
+  name: 'EngineFaults',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
@@ -233,34 +228,41 @@ export default {
     }),
     columns () {
       return [
-        'claim_number',
+        'date',
         'vehicle_number',
-        'client_vehicle_number',
         'center_code',
         'center_name',
-        'driver_name',
-        'year_make_model',
-        'report_date',
-        'status'
+        'model_year',
+        'vehicle_make',
+        'vehicle_model',
+        'vin',
+        'driver_last_name',
+        'driver_first_name',
+        'fault_code',
+        'fault_detail',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
     headers () {
       return [
         {
-          text: this.$i18n.t('claim_number'),
-          value: 'claim_number',
+          text: this.$i18n.t('date'),
+          value: 'date',
           class: 'report-column',
           divider: true
         },
         {
           text: this.$i18n.t('vehicle_number'),
           value: 'vehicle_number',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_vehicle_number'),
-          value: 'client_vehicle_number',
           class: 'report-column',
           divider: true
         },
@@ -281,30 +283,53 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
-          width: 300,
           divider: true
         },
         {
-          text: this.$i18n.t('driver_name'),
-          value: 'driver_name',
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('year_make_model'),
-          value: 'year_make_model',
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('report_date'),
-          value: 'report_date',
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('status'),
-          value: 'status',
+          text: this.$i18n.t('vin'),
+          value: 'vin',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_last_name'),
+          value: 'driver_last_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_first_name'),
+          value: 'driver_first_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fault_code'),
+          value: 'fault_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fault_detail'),
+          value: 'fault_detail',
           class: 'report-column'
         }
       ]
@@ -314,21 +339,31 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('engine_faults_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchAccidentClaimStatusReport', { start, end })
-    return { start, end }
+    await store.dispatch('reports/fetchEngineFaults', { start, end })
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
   head () {
-    const title = this.$t('accident_claim_status')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

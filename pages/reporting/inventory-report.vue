@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('inventory_report') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -21,7 +21,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -116,7 +116,7 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="[0]"
+        :sort-by="['vehicle_number']"
         :sort-desc="[false]"
         class="striped"
       >
@@ -126,7 +126,6 @@
             {{ $t('no_data_found', { 'message': error }) }}
           </div>
         </template>
-
         <!-- Configure the #no-results message (no rows in filtered search) -->
         <template #no-results>
           <div class="text-left">
@@ -204,26 +203,18 @@ import { mapGetters } from 'vuex'
 import { dialTo, emailTo } from '@/utility/helpers'
 import { downloadFields } from '@/mixins/datatables'
 
-import CenterPicker from '@/components/core/CenterPicker'
 /**
  * Inventory Report (vehicle audit report)
  */
 export default {
-  name: 'Inventory',
-  components: { CenterPicker },
+  name: 'InventoryReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: ''
-  }),
   computed: {
     // Mapped Vuex Getters
     ...mapGetters({
-      center_levels: 'account/getCenterLevels',
-      centers: 'account/getCenters',
       items: 'reports/getData',
       error: 'reports/getError',
       loading: 'reports/getLoading'
@@ -319,6 +310,7 @@ export default {
           text: this.$i18n.t('bill_sort'),
           value: 'bill_sort',
           class: 'report-column',
+          width: 200,
           divider: true
         },
         {
@@ -375,7 +367,7 @@ export default {
           text: this.$i18n.t('contract_description'),
           value: 'contract_description',
           class: 'report-column',
-          width: 250,
+          width: 300,
           divider: true
         },
         {
@@ -665,23 +657,29 @@ export default {
           class: 'report-column'
         }
       ]
-    }
+    },
+    title: vm => vm.$i18n.t('inventory_report')
   },
   async asyncData ({ store }) {
     // Fetch report data
     await store.dispatch('reports/fetchInventoryReport')
-    return {}
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
   methods: {
     dialTo,
     emailTo
   },
   head () {
-    const title = this.$t('inventory_report')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   }

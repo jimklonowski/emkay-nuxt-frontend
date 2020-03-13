@@ -185,7 +185,7 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['driver_reference_number']"
+        :sort-by="['vehicle_number']"
         :sort-desc="[false]"
         class="striped"
       >
@@ -211,11 +211,12 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
+
 /**
- * Driver Safety Report
+ * Expense Detail Report
  */
 export default {
-  name: 'DriverSafetyReport',
+  name: 'ExpenseDetailReport',
   components: {
     'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
   },
@@ -228,16 +229,21 @@ export default {
     }),
     columns () {
       return [
-        'driver_reference_number',
+        'vehicle_number',
+        'client_vehicle_number',
         'center_code',
         'center_name',
+        'model_year',
+        'vehicle_make',
+        'vehicle_model',
+        'bill_sort',
+        'department',
         'driver_last_name',
         'driver_first_name',
-        'driver_city',
-        'driver_state_province',
-        'points',
-        'date_of_birth',
-        'license_number',
+        'fuel',
+        'maintenance',
+        'lube_oil_filter',
+        'tires',
         'level_01',
         'level_02',
         'level_03',
@@ -254,8 +260,14 @@ export default {
     headers () {
       return [
         {
-          text: this.$i18n.t('driver_reference_number'),
-          value: 'driver_reference_number',
+          text: this.$i18n.t('vehicle_number'),
+          value: 'vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_vehicle_number'),
+          value: 'client_vehicle_number',
           class: 'report-column',
           divider: true
         },
@@ -276,8 +288,37 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
-          divider: true,
-          width: 300
+          divider: true
+        },
+        {
+          text: this.$i18n.t('model_year'),
+          value: 'model_year',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_make'),
+          value: 'vehicle_make',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vehicle_model'),
+          value: 'vehicle_model',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('department'),
+          value: 'department',
+          class: 'report-column',
+          divider: true
         },
         {
           text: this.$i18n.t('driver_last_name'),
@@ -292,32 +333,26 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('driver_city'),
-          value: 'driver_city',
+          text: this.$i18n.t('fuel'),
+          value: 'fuel',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_state_province'),
-          value: 'driver_state_province',
+          text: this.$i18n.t('maintenance'),
+          value: 'maintenance',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('points'),
-          value: 'points',
+          text: this.$i18n.t('lube_oil_filter'),
+          value: 'lube_oil_filter',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('date_of_birth'),
-          value: 'date_of_birth',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('license_number'),
-          value: 'license_number',
+          text: this.$i18n.t('tires'),
+          value: 'tires',
           class: 'report-column'
         }
       ]
@@ -325,16 +360,17 @@ export default {
     query () {
       return {
         start: this.start,
-        end: this.end
+        end: this.end,
+        use_bill_date: this.use_bill_date
       }
     },
-    title: vm => vm.$i18n.t('driver_safety_report')
+    title: vm => vm.$i18n.t('expense_detail_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchDriverSafetyReport', { start, end })
+    await store.dispatch('reports/fetchExpenseDetailReport', { start, end })
     return {
       centers_dialog: false,
       centers_selected: [],

@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('order_status_report') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -167,6 +167,18 @@
                   </v-card>
                 </v-dialog>
               </v-col>
+              <v-col cols="12" sm="6" lg="3">
+                <v-switch
+                  v-model="use_bill_date"
+                  :label="$t(`use_bill_date`)"
+                  :loading="loading"
+                  :false-value="false"
+                  :true-value="true"
+                  @change="updateQuery()"
+                  class="mt-1"
+                  inset
+                />
+              </v-col>
             </v-row>
           </v-container>
         </v-expansion-panel-content>
@@ -185,8 +197,8 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['vehicle_number']"
-        :sort-desc="[false]"
+        :sort-by="['service_date']"
+        :sort-desc="[true]"
         class="striped"
       >
         <!-- Configure the #no-data message (no data from server) -->
@@ -203,57 +215,51 @@
           </div>
         </template>
 
-        <!-- configure individual columns -->
+        <!-- configure individual column rendering -->
+        <template #item.service_date="{ item }">
+          {{ item.service_date | date }}
+        </template>
+
+        <template #item.bill_date="{ item }">
+          {{ item.bill_date | date }}
+        </template>
+
         <template #item.vehicle_number="{ item }">
           <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
         </template>
 
-        <template #item.order_received_date="{ item }">
-          {{ item.order_received_date | date }}
+        <!-- <template #item.client_vehicle_number="{ item }">
+          <span v-html="item.client_vehicle_number" />
+        </template> -->
+
+        <template #item.amount="{ item }">
+          {{ item.amount | currency }}
         </template>
 
-        <template #item.order_placed_date="{ item }">
-          {{ item.order_placed_date | date }}
+        <template #item.card_number="{ item }">
+          <v-chip :outlined="$vuetify.theme.dark" x-small>
+            {{ item.card_number }}
+          </v-chip>
         </template>
 
-        <template #item.factory_acknowledged_date="{ item }">
-          {{ item.factory_acknowledged_date | date }}
+        <template #item.emkay_invoice_date="{ item }">
+          {{ item.emkay_invoice_date | date }}
         </template>
 
-        <template #item.sent_to_plant_date="{ item }">
-          {{ item.sent_to_plant_date | date }}
+        <template #item.quantity="{ item }">
+          {{ item.quantity | number }}
         </template>
 
-        <template #item.production_scheduled_date="{ item }">
-          {{ item.production_scheduled_date | date }}
+        <template #item.tank_capacity="{ item }">
+          {{ item.tank_capacity | number }}
         </template>
 
-        <template #item.built_date="{ item }">
-          {{ item.built_date | date }}
+        <template #item.tax_exempt="{ item }">
+          {{ item.tax_exempt | currency }}
         </template>
 
-        <template #item.shipped_to_body_company_date="{ item }">
-          {{ item.shipped_to_body_company_date | date }}
-        </template>
-
-        <template #item.shipped_from_body_company_date="{ item }">
-          {{ item.shipped_from_body_company_date | date }}
-        </template>
-
-        <template #item.shipped_to_dealer_date="{ item }">
-          {{ item.shipped_to_dealer_date | date }}
-        </template>
-
-        <template #item.delivered_to_dealer_date="{ item }">
-          {{ item.delivered_to_dealer_date | date }}
-        </template>
-
-        <template #item.vin_date="{ item }">
-          {{ item.vin_date | date }}
-        </template>
-
-        <template #item.in_service_date="{ item }">
-          {{ item.in_service_date | date }}
+        <template #item.unit_price="{ item }">
+          {{ item.unit_price | currency(3,3) }}
         </template>
       </v-data-table>
     </v-skeleton-loader>
@@ -264,14 +270,16 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
-
 /**
- * Order Status Report
+ * Fuel Detail Report
+ * When a date filter changes, a call is made to updateQuery which updates the route's query parameters (?start=2019-11&end=2019-11&...)
+ * watchQuery listens for changes in the query parameters and onchange triggers all component methods (i.e. asyncData which will re-request data with new parameters)
  */
 export default {
-  name: 'OrderStatus',
-  components: { CenterPicker },
+  name: 'FuelDetailReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker.vue`)
+  },
   /**
    * Mixins
    * https://vuejs.org/v2/guide/mixins.html
@@ -279,15 +287,7 @@ export default {
    * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
+
   /**
    * Computed Properties
    * https://vuejs.org/v2/api/#computed
@@ -299,44 +299,61 @@ export default {
       error: 'reports/getError',
       loading: 'reports/getLoading'
     }),
-    // Downloaded CSV contains these columns.
+    // Downloaded csv contains these columns.
     columns () {
       return [
         'vehicle_number',
         'client_vehicle_number',
+        'service_date',
+        'bill_date',
+        'amount',
+        'bill_sort',
+        'card_number',
         'center_code',
         'center_name',
+        'client_use_1',
+        'client_use_2',
+        'client_use_3',
+        'client_use_4',
+        'client_use_5',
+        'driver_id',
+        'driver_name',
+        'emkay_invoice_date',
+        'emkay_invoice_number',
+        'engine_fuel_type',
+        'exception',
+        'fuel_card_vendor',
+        'fuel_company_name',
+        'fuel_company_number',
+        'invoice_number',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10',
+        'merchant_address',
+        'merchant_city',
+        'merchant_state',
+        'merchant_zip',
         'model_year',
+        'odometer',
+        'premium',
+        'product',
+        'product_type',
+        'quantity',
+        'service_time',
+        'tank_capacity',
+        'tax_exempt',
+        'unit_price',
         'vehicle_make',
         'vehicle_model',
-        'driver_name',
-        'driver_city',
-        'driver_state_province',
-        'driver_postal_code',
-        'order_received_date',
-        'order_placed_date',
-        'factory_order_number',
         'vin',
-        'factory_acknowledged_date',
-        'sent_to_plant_date',
-        'production_scheduled_date',
-        'built_date',
-        'shipped_to_body_company_date',
-        'shipped_from_body_company_date',
-        'shipped_to_dealer_date',
-        'delivered_to_dealer_date',
-        'non_emkay_turnin',
-        'turnin_vehicle',
-        'sell_comment',
-        'status_comment',
-        'delivery_comment',
-        'current_status',
-        'vin_date',
-        'client_turnin',
-        'bill_sort',
-        'dealer_code',
-        'dealer_name',
-        'in_service_date'
+        'voucher'
       ]
     },
     // Datatable contains these headers.
@@ -351,6 +368,36 @@ export default {
         {
           text: this.$i18n.t('client_vehicle_number'),
           value: 'client_vehicle_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('service_date'),
+          value: 'service_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_date'),
+          value: 'bill_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('card_number'),
+          value: 'card_number',
           class: 'report-column',
           divider: true
         },
@@ -371,7 +418,124 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
+          width: 300,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_1'),
+          value: 'client_use_1',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_2'),
+          value: 'client_use_2',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_3'),
+          value: 'client_use_3',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_4'),
+          value: 'client_use_4',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_use_5'),
+          value: 'client_use_5',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_id'),
+          value: 'driver_id',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          width: 225,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('emkay_invoice_date'),
+          value: 'emkay_invoice_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('emkay_invoice_number'),
+          value: 'emkay_invoice_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('engine_fuel_type'),
+          value: 'engine_fuel_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('exception'),
+          value: 'exception',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_card_vendor'),
+          value: 'fuel_card_vendor',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_company_name'),
+          value: 'fuel_company_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('fuel_company_number'),
+          value: 'fuel_company_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('invoice_number'),
+          value: 'invoice_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_address'),
+          value: 'merchant_address',
+          class: 'report-column',
+          width: 225,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_city'),
+          value: 'merchant_city',
+          class: 'report-column',
           width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_state'),
+          value: 'merchant_state',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('merchant_zip'),
+          value: 'merchant_zip',
+          class: 'report-column',
           divider: true
         },
         {
@@ -381,10 +545,63 @@ export default {
           divider: true
         },
         {
+          text: this.$i18n.t('odometer'),
+          value: 'odometer',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('premium'),
+          value: 'premium',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('product'),
+          value: 'product',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('product_type'),
+          value: 'product_type',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('service_time'),
+          value: 'service_time',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tank_capacity'),
+          value: 'tank_capacity',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('tax_exempt'),
+          value: 'tax_exempt',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('unit_price'),
+          value: 'unit_price',
+          class: 'report-column',
+          divider: true
+        },
+        {
           text: this.$i18n.t('vehicle_make'),
           value: 'vehicle_make',
           class: 'report-column',
-          width: 150,
           divider: true
         },
         {
@@ -395,190 +612,27 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('driver_name'),
-          value: 'driver_name',
-          class: 'report-column',
-          width: 250,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('driver_city'),
-          value: 'driver_city',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('driver_state_province'),
-          value: 'driver_state_province',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('driver_postal_code'),
-          value: 'driver_postal_code',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('order_received_date'),
-          value: 'order_received_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('order_placed_date'),
-          value: 'order_placed_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('factory_order_number'),
-          value: 'factory_order_number',
-          class: 'report-column',
-          divider: true
-        },
-        {
           text: this.$i18n.t('vin'),
           value: 'vin',
           class: 'report-column',
-          width: 200,
           divider: true
         },
         {
-          text: this.$i18n.t('factory_acknowledged_date'),
-          value: 'factory_acknowledged_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('sent_to_plant_date'),
-          value: 'sent_to_plant_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('production_scheduled_date'),
-          value: 'production_scheduled_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('built_date'),
-          value: 'built_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('shipped_to_body_company_date'),
-          value: 'shipped_to_body_company_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('shipped_from_body_company_date'),
-          value: 'shipped_from_body_company_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('shipped_to_dealer_date'),
-          value: 'shipped_to_dealer_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('delivered_to_dealer_date'),
-          value: 'delivered_to_dealer_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('non_emkay_turnin'),
-          value: 'non_emkay_turnin',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('turnin_vehicle'),
-          value: 'turnin_vehicle',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('sell_comment'),
-          value: 'sell_comment',
-          class: 'report-column',
-          width: 300,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('status_comment'),
-          value: 'status_comment',
-          class: 'report-column',
-          width: 300,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('delivery_comment'),
-          value: 'delivery_comment',
-          class: 'report-column',
-          width: 300,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('current_status'),
-          value: 'current_status',
-          class: 'report-column',
-          width: 420,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vin_date'),
-          value: 'vin_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_turnin'),
-          value: 'client_turnin',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('bill_sort'),
-          value: 'bill_sort',
-          class: 'report-column',
-          width: 200,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('dealer_code'),
-          value: 'dealer_code',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('dealer_name'),
-          value: 'dealer_name',
-          class: 'report-column',
-          width: 300,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('in_service_date'),
-          value: 'in_service_date',
+          text: this.$i18n.t('voucher'),
+          value: 'voucher',
           class: 'report-column'
         }
       ]
     },
+    // Query parameters
     query () {
       return {
         start: this.start,
-        end: this.end
+        end: this.end,
+        use_bill_date: this.use_bill_date
       }
-    }
+    },
+    title: vm => vm.$i18n.t('fuel_detail_report')
   },
 
   /**
@@ -587,11 +641,28 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store }) {
+    // if no date params in query, then use 30day period ending with today
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchOrderStatusReport', { start, end })
-    return { start, end }
+    const use_bill_date = query.use_bill_date || false
+
+    // Fetch the report data using the above filters
+    await store.dispatch('reports/fetchFuelDetailReport', { start, end, use_bill_date })
+
+    // Return the report parameters so they are merged with the data() object
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: '',
+      use_bill_date
+    }
   },
 
   /**
@@ -599,14 +670,18 @@ export default {
    * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
    * https://nuxtjs.org/api/pages-head */
   head () {
-    const title = this.$t('order_status')
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },
-  watchQuery: ['start', 'end']
+
+  /**
+   * Watch query strings and execute component methods on change (asyncData, fetch, validate, layout, ...)
+   * https://nuxtjs.org/api/pages-watchquery
+   */
+  watchQuery: ['start', 'end', 'use_bill_date']
 }
 </script>

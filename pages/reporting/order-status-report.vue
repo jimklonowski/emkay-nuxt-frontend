@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('maintenance_detail') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -167,18 +167,6 @@
                   </v-card>
                 </v-dialog>
               </v-col>
-              <v-col cols="12" sm="6" lg="3">
-                <v-switch
-                  v-model="use_bill_date"
-                  :label="$t(`use_bill_date`)"
-                  :loading="loading"
-                  :false-value="false"
-                  :true-value="true"
-                  @change="updateQuery()"
-                  class="mt-1"
-                  inset
-                />
-              </v-col>
             </v-row>
           </v-container>
         </v-expansion-panel-content>
@@ -197,8 +185,8 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['service_date']"
-        :sort-desc="[true]"
+        :sort-by="['vehicle_number']"
+        :sort-desc="[false]"
         class="striped"
       >
         <!-- Configure the #no-data message (no data from server) -->
@@ -215,25 +203,57 @@
           </div>
         </template>
 
-        <!-- configure each column rendering -->
-        <template #item.service_date="{ item }">
-          {{ item.service_date | date }}
-        </template>
-
-        <template #item.bill_date="{ item }">
-          {{ item.bill_date | date }}
-        </template>
-
+        <!-- configure individual columns -->
         <template #item.vehicle_number="{ item }">
           <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
         </template>
 
-        <template #item.amount="{ item }">
-          {{ item.amount | currency }}
+        <template #item.order_received_date="{ item }">
+          {{ item.order_received_date | date }}
         </template>
 
-        <template #item.quantity="{ item }">
-          {{ item.quantity | number }}
+        <template #item.order_placed_date="{ item }">
+          {{ item.order_placed_date | date }}
+        </template>
+
+        <template #item.factory_acknowledged_date="{ item }">
+          {{ item.factory_acknowledged_date | date }}
+        </template>
+
+        <template #item.sent_to_plant_date="{ item }">
+          {{ item.sent_to_plant_date | date }}
+        </template>
+
+        <template #item.production_scheduled_date="{ item }">
+          {{ item.production_scheduled_date | date }}
+        </template>
+
+        <template #item.built_date="{ item }">
+          {{ item.built_date | date }}
+        </template>
+
+        <template #item.shipped_to_body_company_date="{ item }">
+          {{ item.shipped_to_body_company_date | date }}
+        </template>
+
+        <template #item.shipped_from_body_company_date="{ item }">
+          {{ item.shipped_from_body_company_date | date }}
+        </template>
+
+        <template #item.shipped_to_dealer_date="{ item }">
+          {{ item.shipped_to_dealer_date | date }}
+        </template>
+
+        <template #item.delivered_to_dealer_date="{ item }">
+          {{ item.delivered_to_dealer_date | date }}
+        </template>
+
+        <template #item.vin_date="{ item }">
+          {{ item.vin_date | date }}
+        </template>
+
+        <template #item.in_service_date="{ item }">
+          {{ item.in_service_date | date }}
         </template>
       </v-data-table>
     </v-skeleton-loader>
@@ -244,81 +264,68 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
+
 /**
- * Maintenance Detail Report
- * When a date filter changes, a call is made to updateQuery which updates the route's query parameters (?start=2019-11&end=2019-11&...)
- * watchQuery listens for changes in the query parameters and onchange triggers all component methods (i.e. asyncData which will re-request data with new parameters)
+ * Order Status Report
  */
 export default {
-  name: 'MaintenanceDetail',
-  components: { CenterPicker },
-  mixins: [downloadFields, updateQuery],
-
+  name: 'OrderStatusReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   /**
-   * The data object for the Vue instance.
-   * https://vuejs.org/v2/api/#data
-   * Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain!
+   * Mixins
+   * https://vuejs.org/v2/guide/mixins.html
+   * Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options.
+   * When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.
    */
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
-
+  mixins: [downloadFields, updateQuery],
   /**
    * Computed Properties
    * https://vuejs.org/v2/api/#computed
    */
   computed: {
+    // Mapped Vuex Getters
     ...mapGetters({
       items: 'reports/getData',
       error: 'reports/getError',
       loading: 'reports/getLoading'
     }),
-    // Downloaded csv contains these columns.
+    // Downloaded CSV contains these columns.
     columns () {
       return [
         'vehicle_number',
         'client_vehicle_number',
-        'service_date',
-        'bill_date',
-        'active',
-        'amount',
-        'ata_group',
-        'ata_group_description',
-        'bill_sort',
-        'brake_manufacturer',
-        'brake_thickness',
         'center_code',
         'center_name',
-        'charge_code',
-        'client_use_1',
-        'client_use_2',
-        'client_use_3',
-        'client_use_4',
-        'client_use_5',
-        'customer_po',
-        'description',
-        'driver_first_name',
-        'driver_last_name',
-        'engine_hours',
-        'expense_category',
-        'front_left_brake',
-        'front_left_drum',
-        'front_left_rotor',
-        'front_left_tire',
-        'front_right_brake',
-        'front_right_drum',
-        'front_right_rotor',
-        'front_right_tire',
-        'gl_code',
-        'invoice_number',
-        'labor_or_part',
+        'model_year',
+        'vehicle_make',
+        'vehicle_model',
+        'driver_name',
+        'driver_city',
+        'driver_state_province',
+        'driver_postal_code',
+        'order_received_date',
+        'order_placed_date',
+        'factory_order_number',
+        'vin',
+        'factory_acknowledged_date',
+        'sent_to_plant_date',
+        'production_scheduled_date',
+        'built_date',
+        'shipped_to_body_company_date',
+        'shipped_from_body_company_date',
+        'shipped_to_dealer_date',
+        'delivered_to_dealer_date',
+        'non_emkay_turnin',
+        'turnin_vehicle',
+        'sell_comment',
+        'status_comment',
+        'delivery_comment',
+        'current_status',
+        'vin_date',
+        'client_turnin',
+        'bill_sort',
         'level_01',
         'level_02',
         'level_03',
@@ -326,31 +333,15 @@ export default {
         'level_05',
         'level_06',
         'level_07',
-        'maintenance_category',
-        'maintenance_code',
-        'model_year',
-        'odometer',
-        'quantity',
-        'rear_left_brake',
-        'rear_left_drum',
-        'rear_left_rotor',
-        'rear_left_tire',
-        'rear_right_brake',
-        'rear_right_drum',
-        'rear_right_rotor',
-        'rear_right_tire',
-        'tire_manufacturer',
-        'tire_model',
-        'tire_size',
-        'vehicle_make',
-        'vehicle_model',
-        'vendor_factor',
-        'vendor_name',
-        'vendor_number',
-        'voucher'
+        'level_08',
+        'level_09',
+        'level_10',
+        'dealer_code',
+        'dealer_name',
+        'in_service_date'
       ]
     },
-    // Datatable contains these columns
+    // Datatable contains these headers.
     headers () {
       return [
         {
@@ -362,62 +353,6 @@ export default {
         {
           text: this.$i18n.t('client_vehicle_number'),
           value: 'client_vehicle_number',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('service_date'),
-          value: 'service_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('bill_date'),
-          value: 'bill_date',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('active'),
-          value: 'active',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('amount'),
-          value: 'amount',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('ata_group'),
-          value: 'ata_group',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('ata_group_description'),
-          value: 'ata_group_description',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('bill_sort'),
-          value: 'bill_sort',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('brake_manufacturer'),
-          value: 'brake_manufacturer',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('brake_thickness'),
-          value: 'brake_thickness',
           class: 'report-column',
           divider: true
         },
@@ -438,161 +373,7 @@ export default {
           text: this.$i18n.t('center_name'),
           value: 'center_name',
           class: 'report-column',
-          width: 300,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('charge_code'),
-          value: 'charge_code',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_use_1'),
-          value: 'client_use_1',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_use_2'),
-          value: 'client_use_2',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_use_3'),
-          value: 'client_use_3',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_use_4'),
-          value: 'client_use_4',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_use_5'),
-          value: 'client_use_5',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('customer_po'),
-          value: 'customer_po',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('description'),
-          value: 'description',
-          class: 'report-column',
           width: 200,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('driver_last_name'),
-          value: 'driver_last_name',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('driver_first_name'),
-          value: 'driver_first_name',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('engine_hours'),
-          value: 'engine_hours',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('expense_category'),
-          value: 'expense_category',
-          class: 'report-column',
-          width: 150,
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_left_brake'),
-          value: 'front_left_brake',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_left_drum'),
-          value: 'front_left_drum',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_left_rotor'),
-          value: 'front_left_rotor',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_left_tire'),
-          value: 'front_left_tire',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_right_brake'),
-          value: 'front_right_brake',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_right_drum'),
-          value: 'front_right_drum',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_right_rotor'),
-          value: 'front_right_rotor',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('front_right_tire'),
-          value: 'front_right_tire',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('gl_code'),
-          value: 'gl_code',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('invoice_number'),
-          value: 'invoice_number',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('labor_or_part'),
-          value: 'labor_or_part',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('maintenance_category'),
-          value: 'maintenance_category',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('maintenance_code'),
-          value: 'maintenance_code',
-          class: 'report-column',
           divider: true
         },
         {
@@ -602,129 +383,205 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('odometer'),
-          value: 'odometer',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('quantity'),
-          value: 'quantity',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_left_brake'),
-          value: 'rear_left_brake',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_left_drum'),
-          value: 'rear_left_drum',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_left_rotor'),
-          value: 'rear_left_rotor',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_left_tire'),
-          value: 'rear_left_tire',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_right_brake'),
-          value: 'rear_right_brake',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_right_drum'),
-          value: 'rear_right_drum',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_right_rotor'),
-          value: 'rear_right_rotor',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('rear_right_tire'),
-          value: 'rear_right_tire',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('tire_manufacturer'),
-          value: 'tire_manufacturer',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('tire_model'),
-          value: 'tire_model',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('tire_size'),
-          value: 'tire_size',
-          class: 'report-column',
-          divider: true
-        },
-        {
           text: this.$i18n.t('vehicle_make'),
           value: 'vehicle_make',
           class: 'report-column',
+          width: 150,
           divider: true
         },
         {
           text: this.$i18n.t('vehicle_model'),
           value: 'vehicle_model',
           class: 'report-column',
+          width: 200,
           divider: true
         },
         {
-          text: this.$i18n.t('vendor_factor'),
-          value: 'vendor_factor',
+          text: this.$i18n.t('driver_name'),
+          value: 'driver_name',
+          class: 'report-column',
+          width: 250,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_city'),
+          value: 'driver_city',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_state_province'),
+          value: 'driver_state_province',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('vendor_name'),
-          value: 'vendor_name',
+          text: this.$i18n.t('driver_postal_code'),
+          value: 'driver_postal_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('order_received_date'),
+          value: 'order_received_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('order_placed_date'),
+          value: 'order_placed_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('factory_order_number'),
+          value: 'factory_order_number',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vin'),
+          value: 'vin',
           class: 'report-column',
           width: 200,
           divider: true
         },
         {
-          text: this.$i18n.t('vendor_number'),
-          value: 'vendor_number',
+          text: this.$i18n.t('factory_acknowledged_date'),
+          value: 'factory_acknowledged_date',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('voucher'),
-          value: 'voucher',
+          text: this.$i18n.t('sent_to_plant_date'),
+          value: 'sent_to_plant_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('production_scheduled_date'),
+          value: 'production_scheduled_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('built_date'),
+          value: 'built_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('shipped_to_body_company_date'),
+          value: 'shipped_to_body_company_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('shipped_from_body_company_date'),
+          value: 'shipped_from_body_company_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('shipped_to_dealer_date'),
+          value: 'shipped_to_dealer_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('delivered_to_dealer_date'),
+          value: 'delivered_to_dealer_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('non_emkay_turnin'),
+          value: 'non_emkay_turnin',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('turnin_vehicle'),
+          value: 'turnin_vehicle',
+          class: 'report-column',
+          width: 150,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('sell_comment'),
+          value: 'sell_comment',
+          class: 'report-column',
+          width: 300,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('status_comment'),
+          value: 'status_comment',
+          class: 'report-column',
+          width: 300,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('delivery_comment'),
+          value: 'delivery_comment',
+          class: 'report-column',
+          width: 300,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('current_status'),
+          value: 'current_status',
+          class: 'report-column',
+          width: 420,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('vin_date'),
+          value: 'vin_date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('client_turnin'),
+          value: 'client_turnin',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('bill_sort'),
+          value: 'bill_sort',
+          class: 'report-column',
+          width: 200,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('dealer_code'),
+          value: 'dealer_code',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('dealer_name'),
+          value: 'dealer_name',
+          class: 'report-column',
+          width: 300,
+          divider: true
+        },
+        {
+          text: this.$i18n.t('in_service_date'),
+          value: 'in_service_date',
           class: 'report-column'
         }
       ]
     },
-    // Query parameters
     query () {
       return {
         start: this.start,
-        end: this.end,
-        use_bill_date: this.use_bill_date
+        end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('order_status_report')
   },
 
   /**
@@ -733,16 +590,21 @@ export default {
    * https://nuxtjs.org/guide/async-data
    */
   async asyncData ({ $moment, query, store }) {
-    // if no date params in query, then use 30day period ending with today
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    const use_bill_date = query.use_bill_date || false
-
-    // Fetch the report data using the above filters
-    await store.dispatch('reports/fetchMaintenanceDetailReport', { start, end, use_bill_date })
-
-    return { start, end, use_bill_date }
+    await store.dispatch('reports/fetchOrderStatusReport', { start, end })
+    return {
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
   },
 
   /**
@@ -750,19 +612,13 @@ export default {
    * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
    * https://nuxtjs.org/api/pages-head */
   head () {
-    const title = this.$t(`maintenance_detail`)
     return {
-      title,
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },
-
-  /**
-   * Watch query strings and execute component methods on change (asyncData, fetch, validate, layout, ...)
-   * https://nuxtjs.org/api/pages-watchquery
-   */
-  watchQuery: ['start', 'end', 'use_bill_date']
+  watchQuery: ['start', 'end']
 }
 </script>

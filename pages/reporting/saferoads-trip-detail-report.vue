@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="report">
     <v-toolbar flat color="transparent">
-      <v-toolbar-title>{{ $t('sold_vehicle_analysis') }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -22,7 +22,7 @@
       <!-- Download as XLS button -->
       <client-only>
         <v-divider vertical inset class="mx-3" />
-        <download-excel :fields="downloadFields" :data="items">
+        <download-excel :fields="downloadFields" :data="items" :name="exportName">
           <v-btn :title="`${$t('save')} .xls`" color="primary" large icon>
             <v-icon v-text="'mdi-cloud-download'" />
           </v-btn>
@@ -185,8 +185,8 @@
         :loading="loading"
         :mobile-breakpoint="0"
         :search="search"
-        :sort-by="['vehicle_number']"
-        :sort-desc="[true]"
+        :sort-by="['driver_number']"
+        :sort-desc="[false]"
         class="striped"
       >
         <!-- Configure the #no-data message (no data from server) -->
@@ -211,23 +211,15 @@
 import { mapGetters } from 'vuex'
 import { downloadFields } from '@/mixins/datatables'
 import { updateQuery } from '@/mixins/routing'
-import CenterPicker from '@/components/core/CenterPicker'
 /**
- * Sold Vehicle Analysis Report
+ * Saferoads Trip Detail Report
  */
 export default {
-  name: 'SoldVehicleAnalysis',
-  components: { CenterPicker },
+  name: 'SaferoadsTripDetailReport',
+  components: {
+    'center-picker': () => import(/* webpackChunkName: "CenterPicker" */ `@/components/core/CenterPicker`)
+  },
   mixins: [downloadFields, updateQuery],
-  data: () => ({
-    centers_dialog: false,
-    centers_selected: [],
-    panels_expanded: [0],
-    search: '',
-    search_centers: '',
-    start_dialog: false,
-    end_dialog: false
-  }),
   computed: {
     ...mapGetters({
       items: 'reports/getData',
@@ -236,44 +228,43 @@ export default {
     }),
     columns () {
       return [
-        'vehicle_number',
-        'client_vehicle_number',
+        'driver_number',
         'center_code',
         'center_name',
-        'sort',
-        'model_year',
-        'vehicle_make',
-        'vehicle_model',
-        'depreciation_percent',
-        'capitalized_cost',
-        'sold_amount',
-        'black_book_percent',
-        'date_sold',
-        'gain_loss',
-        'months',
-        'cost_per_month',
-        'odometer',
-        'cost_per_mile',
-        'net_depreciation_percent',
-        'condition',
-        'priced_by',
-        'vehicle_color',
-        'buyer',
-        'vin',
-        'driver_name'
+        'driver_name',
+        'driver_email_address',
+        'date',
+        'start_time',
+        'end_time',
+        'duration',
+        'distance',
+        'saferoads_score',
+        'braking',
+        'acceleration',
+        'speeding',
+        'hard_turn',
+        'phone_use',
+        'trip_start_latitude',
+        'trip_start_longitude',
+        'trip_end_latitude',
+        'trip_end_longitude',
+        'level_01',
+        'level_02',
+        'level_03',
+        'level_04',
+        'level_05',
+        'level_06',
+        'level_07',
+        'level_08',
+        'level_09',
+        'level_10'
       ]
     },
     headers () {
       return [
         {
-          text: this.$i18n.t('vehicle_number'),
-          value: 'vehicle_number',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('client_vehicle_number'),
-          value: 'client_vehicle_number',
+          text: this.$i18n.t('driver_number'),
+          value: 'driver_number',
           class: 'report-column',
           divider: true
         },
@@ -297,122 +288,104 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('model_year'),
-          value: 'model_year',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vehicle_make'),
-          value: 'vehicle_make',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vehicle_model'),
-          value: 'vehicle_model',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('depreciation_percent'),
-          value: 'depreciation_percent',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('capitalized_cost'),
-          value: 'capitalized_cost',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('sold_amount'),
-          value: 'sold_amount',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('black_book_percent'),
-          value: 'black_book_percent',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('date_sold'),
-          value: 'date_sold',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('gain_loss'),
-          value: 'gain_loss',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('months'),
-          value: 'months',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('cost_per_month'),
-          value: 'cost_per_month',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('odometer'),
-          value: 'odometer',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('cost_per_mile'),
-          value: 'cost_per_mile',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('net_depreciation_percent'),
-          value: 'net_depreciation_percent',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('condition'),
-          value: 'condition',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('priced_by'),
-          value: 'priced_by',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vehicle_color'),
-          value: 'vehicle_color',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('buyer'),
-          value: 'buyer',
-          class: 'report-column',
-          divider: true
-        },
-        {
-          text: this.$i18n.t('vin'),
-          value: 'vin',
-          class: 'report-column',
-          divider: true
-        },
-        {
           text: this.$i18n.t('driver_name'),
           value: 'driver_name',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('driver_email_address'),
+          value: 'driver_email_address',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('date'),
+          value: 'date',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('start_time'),
+          value: 'start_time',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('end_time'),
+          value: 'end_time',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('duration'),
+          value: 'duration',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('distance'),
+          value: 'distance',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('saferoads_score'),
+          value: 'saferoads_score',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('braking'),
+          value: 'braking',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('acceleration'),
+          value: 'acceleration',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('speeding'),
+          value: 'speeding',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('hard_turn'),
+          value: 'hard_turn',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('phone_use'),
+          value: 'phone_use',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('trip_start_latitude'),
+          value: 'trip_start_latitude',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('trip_start_longitude'),
+          value: 'trip_start_longitude',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('trip_end_latitude'),
+          value: 'trip_end_latitude',
+          class: 'report-column',
+          divider: true
+        },
+        {
+          text: this.$i18n.t('trip_end_longitude'),
+          value: 'trip_end_longitude',
           class: 'report-column'
         }
       ]
@@ -422,34 +395,34 @@ export default {
         start: this.start,
         end: this.end
       }
-    }
+    },
+    title: vm => vm.$i18n.t('saferoads_trip_detail_report')
   },
   async asyncData ({ $moment, query, store }) {
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('reports/fetchSoldVehicleAnalysisReport', { start, end })
-    return { start, end }
-  },
-
-  /**
-   * Set specific <meta> tags for the current page.
-   * Nuxt.js uses vue-meta to update the headers and html attributes of your application.
-   * https://nuxtjs.org/api/pages-head */
-  head () {
-    const title = this.$t('sold_vehicle_analysis')
+    await store.dispatch('reports/fetchSaferoadsTripDetailReport', { start, end })
     return {
-      title,
+      centers_dialog: false,
+      centers_selected: [],
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: '',
+      search_centers: ''
+    }
+  },
+  head () {
+    return {
+      title: this.title,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },
-
-  /**
-   * Watch query strings and execute component methods on change (asyncData, fetch, validate, layout, ...)
-   * https://nuxtjs.org/api/pages-watchquery
-   */
   watchQuery: ['start', 'end']
 }
 </script>

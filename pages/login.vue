@@ -91,6 +91,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { SnotifyPosition } from 'vue-snotify'
 export default {
   name: 'Login',
   auth: 'guest',
@@ -122,8 +123,7 @@ export default {
         this.loading = true
         await this.loginLocal({ account: this.account, username: this.username, password: this.password })
       } catch (error) {
-        console.error(error.message)
-        // debugger
+        this.$snotify.error(error.message, this.$i18n.t('error'), { position: SnotifyPosition.centerBottom })
       } finally {
         this.loading = false
       }
