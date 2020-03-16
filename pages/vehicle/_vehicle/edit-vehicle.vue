@@ -2,6 +2,16 @@
   <v-container>
     <v-row>
       <v-col cols="12">
+        <vehicle-details-form :vehicle-number="vehicle_number">
+          <template #title>
+            {{ $t('edit_vehicle') }}
+          </template>
+          <template #subtitle>
+            {{ vehicle_number }}
+          </template>
+        </vehicle-details-form>
+      </v-col>
+      <!-- <v-col cols="12">
         <v-card :loading="loading" outlined tile class="form">
           <v-expansion-panels v-model="panel" value="0" accordion hover tile>
             <v-expansion-panel v-show="hasVehicle" tile>
@@ -206,7 +216,7 @@
             </v-form>
           </ValidationObserver>
         </v-card>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-container>
 </template>
@@ -214,11 +224,13 @@
 import { mapGetters } from 'vuex'
 import { SnotifyPosition } from 'vue-snotify'
 import { vehicleRoute } from '@/mixins/routing'
-import ChangePlate from '@/components/vehicle/ChangePlate'
-import VehicleDetailTable from '@/components/vehicle-dashboard/VehicleDetailTable'
 export default {
   name: 'EditVehicle',
-  components: { ChangePlate, VehicleDetailTable },
+  components: {
+    'vehicle-details-form': () => import(/* webpackChunkName: "VehicleDetailsForm" */ `@/components/vehicle-dashboard/forms/VehicleDetailsForm`)
+    // 'vehicle-detail-table': () => import(/* webpackChunkName: "VehicleDetailTable" */ `@/components/vehicle-dashboard/VehicleDetailTable`),
+    // 'change-plate': () => import(/* webpackChunkName: "ChangePlateForm" */ `@/components/vehicle-dashboard/forms/ChangePlate`)
+  },
   mixins: [vehicleRoute],
   head () {
     const title = this.$t('edit_vehicle')
@@ -250,12 +262,12 @@ export default {
     ...mapGetters({
       custom_labels: 'account/getCustomLabels',
       driver_details: 'vehicle-dashboard/getDriverDetails',
-      hasVehicle: 'vehicle/hasVehicle',
-      vehicle_details: 'vehicle/getVehicleDetails',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      hasVehicle: 'vehicle-dashboard/hasVehicle',
+      vehicle_details: 'vehicle-dashboard/getVehicleDetails',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
-    editDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/edit-driver` }),
-    reassignVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.$route.params.vehicle}/reassign-vehicle` }),
+    editDriverRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/edit-driver` }),
+    reassignVehicleRoute: vm => vm.localePath({ path: `/vehicle/${vm.vehicle_number}/reassign-vehicle` }),
     model () {
       return {
         vehicle_number: this.vehicle_number,
@@ -308,7 +320,8 @@ export default {
       this.driver_effective_date = this.vehicle_details.driver_effective_date
     },
     reset () {
-      this.$refs.vehicleForm.reset()
+      console.log('reset')
+      // this.$refs.vehicleForm.reset()
     },
     async submitEditVehicle () {
       this.loading = true

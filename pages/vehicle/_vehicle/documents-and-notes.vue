@@ -203,10 +203,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      documents: 'vehicle/getDocuments',
-      documents_loading: 'vehicle/getDocumentsLoading',
-      notes: 'vehicle/getNotes',
-      notes_loading: 'vehicle/getNotesLoading'
+      documents: 'vehicle-dashboard/getDocuments',
+      documents_loading: 'vehicle-dashboard/getDocumentsLoading',
+      notes: 'vehicle-dashboard/getNotes',
+      notes_loading: 'vehicle-dashboard/getNotesLoading'
     }),
     documents_columns () {
       return [
@@ -259,7 +259,7 @@ export default {
     }
   },
   async asyncData ({ $params, query, store, error }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     // Fetch Documents and Notes
     await Promise.all([
       store.dispatch('vehicle/fetchDocuments', { vehicle }),

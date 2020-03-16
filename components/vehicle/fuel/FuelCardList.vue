@@ -96,7 +96,7 @@ export default {
         }
       ]
     }
-    // items: vm => vm.$store.getters['vehicle/getFuelCardList']
+    // items: vm => vm.$store.getters['vehicle-dashboard/getFuelCardList']
   },
   async mounted () {
     const vehicle_number = this.$route.params.vehicle
@@ -112,7 +112,7 @@ export default {
       vehicle_number,
       json: 'Y'
     }
-    await this.$store.dispatch('vehicle/fetchFuelCardList', filters)
+    await this.$store.dispatch('vehicle-dashboard/fetchFuelCardList', filters)
     this.initialized = true
   }
 }

@@ -29,7 +29,7 @@
           <v-stepper-content step="2">
             <v-list class="font-roboto-condensed" color="transparent" dense shaped subheader>
               <v-list-item-group v-model="config.columns_selected" multiple class="row no-gutters">
-                <v-col v-for="(column_group, g) in column_groups" :key="`group-${column_group}-${g}`" cols="12" sm="6" md="4">
+                <v-col v-for="(group, g) in available_column_groups" :key="`group-${group}-${g}`" cols="12" sm="6" md="4">
                   <v-toolbar
                     class="mx-1 font-lato my-2"
                     color="primary"
@@ -38,10 +38,10 @@
                     dense
                   >
                     <v-toolbar-title>
-                      {{ $t(column_group.group) }}
+                      {{ $t(group.category) }}
                     </v-toolbar-title>
                   </v-toolbar>
-                  <template v-for="(column, c) in column_group.columns">
+                  <template v-for="(column, c) in group.columns">
                     <v-list-item :key="`col-${column}-${c}`" :value="column" active-class="primary--text text--accent-4" class="mx-1">
                       <template #default="{ active }">
                         <v-list-item-content>
@@ -397,7 +397,7 @@
   </v-container>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'MyReports',
   layout: 'myreports',
@@ -405,6 +405,7 @@ export default {
     save_dialog: false,
     save_loading: false,
     saved_reports: [],
+    available_column_groups: [],
     suggested_emails: [],
     email_input: '',
     items: [],
@@ -429,9 +430,7 @@ export default {
   }),
   computed: {
     ...mapGetters({
-      center_hierarchy: 'account/getCenters',
-      report_types: 'my-reports/getReportTypes',
-      column_groups: 'my-reports/getColumnGroups'
+      center_hierarchy: 'account/getCenters'
     }),
     listCenters () {
       return this.config.centers_selected.join(', ')
@@ -473,6 +472,119 @@ export default {
         end: this.$moment().format('YYYY-MM-DD')
       }
     },
+    // center_hierarchy () {
+    //   // TODO: this will probably be coming from $store.getters['account/getCenterHierarchy'], but here is some test data:
+    //   return [
+    //     {
+    //       center_code: 'A01',
+    //       center_name: 'Emkay Inc',
+    //       children: [
+    //         {
+    //           center_code: '001',
+    //           center_name: 'Executive',
+    //           children: []
+    //         },
+    //         {
+    //           center_code: 'B01',
+    //           center_name: 'Sales',
+    //           children: [
+    //             {
+    //               center_code: '002',
+    //               center_name: 'Sales',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '003',
+    //               center_name: 'Account Managers',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '004',
+    //               center_name: 'Short Term & Unassigned Demos',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '005',
+    //               center_name: 'Sales/Canada',
+    //               children: []
+    //             },
+    //             {
+    //               center_code: '006',
+    //               center_name: 'Board of Directors',
+    //               children: []
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'A02',
+    //       center_name: 'Jessica Tepas',
+    //       children: []
+    //     },
+    //     {
+    //       center_code: 'A03',
+    //       center_name: 'Dan Corbett',
+    //       children: [
+    //         {
+    //           center_code: 'B03',
+    //           center_name: 'Dan Corbett',
+    //           children: [
+    //             {
+    //               center_code: '008',
+    //               center_name: 'Dan Corbett',
+    //               children: []
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'A04',
+    //       center_name: 'Greg Depace',
+    //       children: [
+    //         {
+    //           center_code: 'B04',
+    //           center_name: 'Greg Depace',
+    //           children: [
+    //             {
+    //               center_code: '009',
+    //               center_name: 'Greg Depace',
+    //               children: []
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'A05',
+    //       center_name: 'Chris Tepas',
+    //       children: [
+    //         {
+    //           center_code: '010',
+    //           center_name: 'Chris Tepas',
+    //           children: []
+    //         },
+    //         {
+    //           center_code: 'B05',
+    //           center_name: 'Chris Tepas',
+    //           children: []
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       center_code: 'B02',
+    //       center_name: 'Jessica Tepas',
+    //       children: [
+    //         {
+    //           center_code: '007',
+    //           center_name: 'Jessica Tepas',
+    //           children: []
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // },
     report_headers () {
       return this.config.columns_selected.map((column, index) => {
         return {
@@ -482,24 +594,24 @@ export default {
           divider: index < this.config.columns_selected.length - 1
         }
       })
+    },
+    report_types () {
+      return [
+        { type: 'vehicle', icon: 'mdi-car' },
+        { type: 'billing', icon: 'mdi-receipt' },
+        { type: 'fuel', icon: 'mdi-gas-station' },
+        { type: 'maintenance', icon: 'mdi-tools' },
+        { type: 'expenses', icon: 'mdi-cash-usd' },
+        { type: 'claims', icon: 'mdi-car-parking-lights' },
+        { type: 'violations', icon: 'mdi-shield-car' }
+      ]
     }
-    // report_types () {
-    //   return [
-    //     { type: 'vehicle', icon: 'mdi-car' },
-    //     { type: 'billing', icon: 'mdi-receipt' },
-    //     { type: 'expense', icon: 'mdi-cash-usd' },
-    //     { type: 'maintenance', icon: 'mdi-tools' },
-    //     { type: 'fuel', icon: 'mdi-gas-station' },
-    //     { type: 'accident', icon: 'mdi-car-parking-lights' },
-    //     { type: 'violation', icon: 'mdi-shield-car' }
-    //   ]
-    // }
   },
   watch: {
     async 'config.report_type' () {
       console.log(`Report Type Changed: ${this.config.report_type}`)
-      // Fetch columns for this report type
-      await this.loadColumnGroups(this.config.report_type)
+      // Fetch available columns for this report type
+      await this.getAvailableColumns(this.config.report_type)
     },
     'config.centers_selected' () {
       console.log(`Centers Changed: ${this.config.centers_selected}`)
@@ -537,9 +649,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      loadColumnGroups: 'my-reports/fetchColumnGroups'
-    }),
     async getMyReport () {
       this.loading = true
       try {
@@ -551,13 +660,13 @@ export default {
         await setTimeout(() => { this.loading = false }, 2000)
       }
     },
-    // async getAvailableColumns (type) {
-    //   if (type) {
-    //     const { data: { groups, success, message } } = await this.$axios.get('/reports/my-reports-columns', { params: { type } })
-    //     if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
-    //     this.available_column_groups = groups
-    //   }
-    // },
+    async getAvailableColumns (type) {
+      if (type) {
+        const { data: { groups, success, message } } = await this.$axios.get('/reports/my-reports-columns', { params: { type } })
+        if (!success) { this.$snotify.error(message, this.$i18n.t('error')) }
+        this.available_column_groups = groups
+      }
+    },
     async getSuggestedEmails () {
       await console.log('Getting suggested emails')
       // TODO: load email suggestions from account settings or other
@@ -605,7 +714,7 @@ export default {
     startOver () {
       // Start Over button pressed, restore blank default configuration and remove reportId from query param
       this.step = 1
-      // this.available_column_groups = []
+      this.available_column_groups = []
       this.suggested_emails = []
       this.email_input = ''
       this.items = []

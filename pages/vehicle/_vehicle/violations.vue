@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card outlined tile class="report">
           <v-toolbar flat color="transparent">
-            <v-toolbar-title>{{ $t('violation_history') }}</v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -170,17 +170,11 @@ import { updateQuery, vehicleRoute } from '@/mixins/routing'
 export default {
   name: 'Violation',
   mixins: [downloadFields, updateQuery, vehicleRoute],
-  data: () => ({
-    panels_expanded: [0],
-    start_dialog: false,
-    end_dialog: false,
-    search: ''
-  }),
   computed: {
     ...mapGetters({
-      items: 'vehicle/getViolationHistory',
-      loading: 'vehicle/getViolationsLoading',
-      vehicle_number: 'vehicle/getVehicleNumber'
+      items: 'vehicle-dashboard/getViolationHistory',
+      loading: 'vehicle-dashboard/getViolationLoading',
+      vehicle_number: 'vehicle-dashboard/getVehicleNumber'
     }),
     columns () {
       return [
@@ -240,15 +234,23 @@ export default {
     },
     query () {
       return { start: this.start, end: this.end }
-    }
+    },
+    title: vm => vm.$i18n.t('violation_history')
   },
   async asyncData ({ $moment, params, query, store }) {
-    const vehicle = store.getters['vehicle/getVehicleNumber']
+    const vehicle = store.getters['vehicle-dashboard/getVehicleNumber']
     const report_length = 30
     const start = query.start || $moment().subtract(report_length, 'days').format('YYYY-MM-DD')
     const end = query.end || $moment().format('YYYY-MM-DD')
-    await store.dispatch('vehicle/fetchViolationHistory', { start, end, vehicle })
-    return { start, end }
+    await store.dispatch('vehicle-dashboard/fetchViolationHistory', { start, end, vehicle })
+    return {
+      start_dialog: false,
+      start,
+      end_dialog: false,
+      end,
+      panels_expanded: [0],
+      search: ''
+    }
   },
   methods: {
     getViolationPdfUrl (path, file) {
@@ -262,11 +264,10 @@ export default {
     }
   },
   head () {
-    const title = `${this.vehicle_number} - ${this.$t('violations')}`
     return {
-      title,
+      title: `${this.vehicle_number} - ${this.title}`,
       meta: [
-        { hid: 'og:description', property: 'og:description', content: title }
+        { hid: 'og:description', property: 'og:description', content: this.title }
       ]
     }
   },

@@ -297,6 +297,29 @@ export const actions = {
       commit('setInspectionLoading', false)
     }
   },
+  /**
+   * VEHICLE ADD/UPDATE. Maybe these go into Fleet store?
+   */
+  async addVehicle ({ commit, dispatch }, payload) {
+    try {
+      const { data: { success, message } } = await this.$axios.post('vehicle/add-vehicle', payload)
+      if (!success) { throw new Error(message) }
+      // await dispatch('init', payl)
+    } catch (error) {
+      console.error(`[vuex error]: ${error.message}`)
+      throw new Error(error.message)
+    }
+  },
+  async updateVehicle ({ commit, dispatch }, payload) {
+    try {
+      const { data: { success, message } } = await this.$axios.post('vehicle/update-vehicle', payload)
+      if (!success) { throw new Error(message) }
+      // await dispatch('init', payload.vehicle_number)
+    } catch (error) {
+      console.error(`[vuex error]: ${error.message}`)
+      throw new Error(error.message)
+    }
+  },
   reset ({ commit }) {
     commit('reset')
   }
@@ -360,5 +383,6 @@ export const getters = {
   getViolationHistory: state => state.violation_history,
   getViolationLoading: state => state.violation_loading,
   hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0,
-  hasSaleInfo: state => !!state.sale_info && !!state.sale_info.sale_date
+  hasSaleInfo: state => !!state.sale_info && !!state.sale_info.sale_date,
+  hasVehicle: state => !!state.vehicle_number
 }

@@ -23,8 +23,8 @@ export default {
         'actions'
       ]
     },
-    vehicleNumber: vm => vm.$store.getters['vehicle/getVehicleNumber'],
-    items: vm => vm.$store.getters['vehicle/getTransportStatus']
+    vehicle_number: vm => vm.$store.getters['vehicle-dashboard/getVehicleNumber'],
+    items: vm => vm.$store.getters['vehicle-dashboard/getTransportStatus']
   },
   async mounted () {
     const filters = {
@@ -33,7 +33,7 @@ export default {
       vehicle_number: this.vehicleNumber,
       json: 'Y'
     }
-    await this.$store.dispatch('vehicle/fetchTransportStatus', filters)
+    await this.$store.dispatch('vehicle-dashboard/fetchTransportStatus', filters)
   }
 }
 </script>
