@@ -5,7 +5,8 @@
         <v-stepper v-model="step" vertical class="pb-0">
           <!-- Step 1: Pick Report Type -->
           <v-stepper-step :complete="step > 1" step="1" class="font-roboto">
-            {{ step1Header }}
+            <span v-if="step <= 1">{{ $t('report_type') }}</span>
+            <span v-else>{{ `${$t('report_type')}: ${$t(config.report_type)}` }}</span>
           </v-stepper-step>
           <v-stepper-content step="1">
             <v-list color="transparent" class="font-roboto-condensed" shaped>
@@ -24,7 +25,8 @@
 
           <!-- Step 2: Choose Columns -->
           <v-stepper-step :complete="step > 2" step="2" class="font-roboto">
-            {{ step2Header }}
+            <span v-if="step <= 2">{{ $t('report_columns') }}</span>
+            <span v-else>{{ `${$t('report_columns')}: ${$tc('columns_selected', config.columns_selected.length)}` }}</span>
           </v-stepper-step>
           <v-stepper-content step="2">
             <v-list class="font-roboto-condensed" color="transparent" dense shaped subheader>
@@ -63,7 +65,8 @@
 
           <!-- Step 3: Date Range and Center Selection -->
           <v-stepper-step :complete="step > 3" step="3" class="font-roboto">
-            {{ step3Header }}
+            <span v-if="step <= 3">{{ $t('report_scope') }}</span>
+            <span v-else>{{ `${$t('report_scope')}: ${$moment(config.start).format('L')} - ${$moment(config.end).format('L')}, ${$tc('centers_selected', config.centers_selected.length)}` }}</span>
           </v-stepper-step>
           <v-stepper-content step="3">
             <v-subheader v-text="$t('filters')" />
@@ -149,7 +152,7 @@
 
           <!-- Step 4: Saving and Schedule -->
           <v-stepper-step :complete="step > 4" step="4" class="font-roboto">
-            {{ step4Header }}
+            {{ $t('scheduling') }}
           </v-stepper-step>
           <v-stepper-content step="4">
             <v-container>
@@ -433,33 +436,9 @@ export default {
       report_types: 'my-reports/getReportTypes',
       column_groups: 'my-reports/getColumnGroups'
     }),
-    listCenters () {
-      return this.config.centers_selected.join(', ')
-    },
-    translatedColumns () {
-      return this.config.columns_selected.join(', ')
-    },
-    downloadFields () {
-      return (Object.assign({}, ...this.config.columns_selected.map(column => ({ [this.$i18n.t(column)]: column }))))
-    },
-    step1Header () {
-      return (this.step <= 1)
-        ? this.$i18n.t('report_type')
-        : `${this.$i18n.t('report_type')}: ${this.$i18n.t(this.config.report_type)}`
-    },
-    step2Header () {
-      return (this.step <= 2)
-        ? this.$i18n.t('report_columns')
-        : `${this.$i18n.t('report_columns')}: ${this.$i18n.tc('columns_selected', this.config.columns_selected.length)}`
-    },
-    step3Header () {
-      return (this.step <= 3)
-        ? this.$i18n.t('report_scope')
-        : `${this.$i18n.t('report_scope')}: ${this.$moment(this.config.start).format('L')} - ${this.$moment(this.config.end).format('L')}, ${this.$i18n.tc('centers_selected', this.config.centers_selected.length)}`
-    },
-    step4Header () {
-      return this.$i18n.t('scheduling')
-    },
+    listCenters: vm => vm.config.centers_selected.join(', '),
+    translatedColumns: vm => vm.config.columns_selected.join(', '),
+    downloadFields: vm => (Object.assign({}, ...vm.config.columns_selected.map(column => ({ [vm.$i18n.t(column)]: column })))),
     defaultConfig () {
       return {
         auto_send: false,
@@ -473,6 +452,9 @@ export default {
         end: this.$moment().format('YYYY-MM-DD')
       }
     },
+    /**
+     * This generates the array of header[] objects that vuetify uses for the datatable, with locale translations.
+     */
     report_headers () {
       return this.config.columns_selected.map((column, index) => {
         return {
@@ -483,17 +465,6 @@ export default {
         }
       })
     }
-    // report_types () {
-    //   return [
-    //     { type: 'vehicle', icon: 'mdi-car' },
-    //     { type: 'billing', icon: 'mdi-receipt' },
-    //     { type: 'expense', icon: 'mdi-cash-usd' },
-    //     { type: 'maintenance', icon: 'mdi-tools' },
-    //     { type: 'fuel', icon: 'mdi-gas-station' },
-    //     { type: 'accident', icon: 'mdi-car-parking-lights' },
-    //     { type: 'violation', icon: 'mdi-shield-car' }
-    //   ]
-    // }
   },
   watch: {
     async 'config.report_type' () {
