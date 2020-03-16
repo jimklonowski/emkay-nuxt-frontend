@@ -4,8 +4,8 @@ const getDefaultState = () => ({
   column_groups: [],
   report_types: [
     {
-      type: 'vehicle',
-      icon: 'mdi-car'
+      type: 'accident',
+      icon: 'mdi-car-parking-lights'
     },
     {
       type: 'billing',
@@ -16,16 +16,16 @@ const getDefaultState = () => ({
       icon: 'mdi-cash-usd'
     },
     {
-      type: 'maintenance',
-      icon: 'mdi-tools'
-    },
-    {
       type: 'fuel',
       icon: 'mdi-gas-station'
     },
     {
-      type: 'accident',
-      icon: 'mdi-car-parking-lights'
+      type: 'maintenance',
+      icon: 'mdi-tools'
+    },
+    {
+      type: 'vehicle',
+      icon: 'mdi-car'
     },
     {
       type: 'violation',
@@ -45,8 +45,8 @@ export const actions = {
     try {
       const { data: { success, message, data } } = await this.$axios.get('/my-reports/columns', { params: { reportType } })
       if (!success) { throw new Error(message) }
-      // filter out blank groups
-      const filteredData = data.filter(x => x.columns && !!x.columns.length)
+      // filter out blank groups and sort columns
+      const filteredData = data.filter(x => x.columns && !!x.columns.length && x.columns.sort())
       commit('setColumnGroups', filteredData)
     } catch (error) {
       commit('setColumnGroups', [])
