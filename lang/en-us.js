@@ -715,6 +715,7 @@ export default {
   report_filters: "Report Filters",
   report_number: "Report Number",
   report_odometer: "Report Odometer",
+  report_schedule: "Report Schedule",
   report_scope: "Report Scope",
   report_title: "Report Title",
   report_type: "Report Type",

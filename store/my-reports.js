@@ -2,6 +2,8 @@ import { assign, set } from '@/utility/vuex'
 
 const getDefaultState = () => ({
   column_groups: [],
+  report_data: [],
+  report_loading: false,
   report_types: [
     {
       type: 'accident',
@@ -32,15 +34,25 @@ const getDefaultState = () => ({
       icon: 'mdi-shield-car'
     }
   ],
-  selected_report: undefined,
   saved_reports: [],
-  error: null,
-  loading: false
+  selected_report: undefined,
+  suggested_emails: []
 })
 
 export const state = () => getDefaultState()
 
 export const actions = {
+  async init ({ commit, dispatch }) {
+    console.log('Fetching saved reports and emails')
+    await Promise.all([
+      dispatch('fetchSavedReports'),
+      dispatch('fetchSuggestedEmails')
+    ])
+  },
+  /**
+   * Fetch Available My Reports Column Groups
+   * @param {*} reportType
+   */
   async fetchColumnGroups ({ commit }, reportType) {
     try {
       const { data: { success, message, data } } = await this.$axios.get('/my-reports/columns', { params: { reportType } })
@@ -53,18 +65,50 @@ export const actions = {
       throw error
     }
   },
+  /**
+   * Fetch My Report Data
+   * @param {*} reportConfig
+   */
+  async fetchReportData ({ commit }, reportConfig) {
+    try {
+      commit('setReportLoading', true)
+      // const { data: { success, message, data } } = await this.$axios.post('/my-reports/build-report', reportConfig)
+      // if (!success) { throw new Error(message) }
+      await console.log('TODO: fetch data')
+      const data = [
+        { 'center_code': '001', 'vehicle_number': 'E22444' },
+        { 'center_code': 'A01', 'vehicle_number': 'E22445' },
+        { 'center_code': 'B01', 'vehicle_number': 'E22446' }
+      ]
+      commit('setReportData', data)
+    } catch (error) {
+      commit('setReportData', [])
+    } finally {
+      commit('setReportLoading', false)
+    }
+  },
   async fetchSavedReports ({ commit }) {
-    commit('setError', null)
-    commit('setLoading', true)
     try {
       const { data: { success, message, data } } = await this.$axios.get('/my-reports/saved-reports')
       if (!success) { throw new Error(message) }
       commit('setSavedReports', data)
     } catch (error) {
-      commit('setError', error.message)
       commit('setData', [])
-    } finally {
-      commit('setLoading', false)
+    }
+  },
+  async fetchSuggestedEmails ({ commit }) {
+    try {
+      // const { data: { success, message, data } } = await this.$axios.get('/my-reports/suggested-emails')
+      // if (!success) { throw new Error(message) }
+      await console.log('TODO: suggested emails')
+      const emails = [
+        'agriffith@emkay.com',
+        'jklonowski@emkay.com',
+        'jim@jimklonowski.com'
+      ]
+      commit('setSuggestedEmails', emails)
+    } catch (error) {
+      commit('setSuggestedEmails', [])
     }
   },
   reset ({ commit }) {
@@ -75,17 +119,19 @@ export const actions = {
 export const mutations = {
   reset: assign(getDefaultState()),
   setColumnGroups: set('column_groups'),
-  setError: set('error'),
-  setLoading: set('loading'),
+  setReportData: set('report_data'),
+  setReportLoading: set('report_loading'),
   setSavedReports: set('saved_reports'),
-  setSelectedReport: set('selected_report')
+  setSelectedReport: set('selected_report'),
+  setSuggestedEmails: set('suggested_emails')
 }
 
 export const getters = {
   getColumnGroups: state => state.column_groups,
-  getError: state => state.error,
-  getLoading: state => state.loading,
+  getReportData: state => state.report_data,
+  getReportLoading: state => state.report_loading,
   getReportTypes: state => state.report_types,
   getSavedReports: state => state.saved_reports,
-  getSelectedReport: state => state.selected_report
+  getSelectedReport: state => state.selected_report,
+  getSuggestedEmails: state => state.suggested_emails
 }
