@@ -588,6 +588,7 @@ export default {
   next_step: "Next Step",
   next_vehicle_number: "Next Vehicle Number",
   no_data_found: "No data returned. {message}",
+  no_expenses_added: "No Expenses Added",
   no_results: "No Results",
   no_search_results: "Your search for \"{query}\" found no results.",
   non_emkay_turnin: "Non-EMKAY Turnin",

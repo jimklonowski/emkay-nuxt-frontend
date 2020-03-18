@@ -22,7 +22,7 @@
                   <v-card-text>
                     <v-container class="pb-0">
                       <v-row dense>
-                        <v-col cols="12" sm="6" lg="3">
+                        <v-col cols="12">
                           <ValidationProvider v-slot="{ errors }" :name="$t('category')" rules="required">
                             <v-select
                               v-model="item.category"
@@ -31,37 +31,40 @@
                               :label="$t('category')"
                               dense
                               outlined
-                              rounded
                             />
                           </ValidationProvider>
                         </v-col>
-                        <v-col cols="12" sm="6" lg="3">
-                          <v-text-field
+                        <v-col cols="12">
+                          <v-textarea
                             v-model="item.description"
                             :label="$t('description')"
                             dense
                             outlined
-                            rounded
                           />
                         </v-col>
-                        <v-col cols="12" sm="6" lg="3">
+                        <v-col cols="12">
                           <v-text-field
                             v-model="item.quantity"
                             :label="$t('quantity')"
+                            type="number"
+                            autocomplete="off"
                             dense
                             outlined
-                            rounded
                           />
                         </v-col>
-                        <v-col cols="12" sm="6" lg="3">
-                          <v-text-field
-                            v-model="item.amount"
-                            :label="$t('amount')"
-                            prefix="$"
-                            dense
-                            outlined
-                            rounded
-                          />
+                        <v-col cols="12">
+                          <ValidationProvider v-slot="{ errors }" :name="$t('amount')" rules="required">
+                            <v-text-field
+                              v-model="item.amount"
+                              :error-messages="errors"
+                              :label="$t('amount')"
+                              type="number"
+                              prefix="$"
+                              autocomplete="off"
+                              dense
+                              outlined
+                            />
+                          </ValidationProvider>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -85,15 +88,49 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-simple-table class="striped">
+              <v-data-table
+                :headers="headers"
+                :hide-default-footer="true"
+                :items="expenses"
+                :items-per-page="10"
+                :mobile-breakpoint="0"
+              >
+                <template #no-data>
+                  <div class="text-left">
+                    {{ $t('no_expenses_added') }}
+                  </div>
+                </template>
+                <template #item.category="{ item }">
+                  {{ $t(item.category) }}
+                </template>
+                <template #item.amount="{ item }">
+                  {{ item.amount | currency }}
+                </template>
+                <template #item.action="{ item }">
+                  <v-btn @click="removeExpense(item)" icon>
+                    <v-icon v-text="'mdi-close'" color="error" />
+                  </v-btn>
+                </template>
+              </v-data-table>
+              <!-- <v-simple-table class="striped">
                 <template #default>
                   <thead>
                     <tr>
-                      <th>{{ $t('category') }}</th>
-                      <th>{{ $t('description') }}</th>
-                      <th>{{ $t('quantity') }}</th>
-                      <th>{{ $t('amount') }}</th>
-                      <th>{{ $t('action') }}</th>
+                      <th style="width:20%">
+                        {{ $t('category') }}
+                      </th>
+                      <th style="width:20%">
+                        {{ $t('description') }}
+                      </th>
+                      <th style="width:20%">
+                        {{ $t('quantity') }}
+                      </th>
+                      <th style="width:20%">
+                        {{ $t('amount') }}
+                      </th>
+                      <th style="width:20%">
+                        {{ $t('action') }}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -119,12 +156,12 @@
                     </template>
                   </tbody>
                 </template>
-              </v-simple-table>
+              </v-simple-table> -->
             </v-col>
           </v-row>
-          <v-subheader>Enter Mileage and Expenses</v-subheader>
-          <v-row dense>
-            <v-col cols="6" lg="4">
+          <v-divider v-show="hasExpenses" class="py-4" />
+          <v-row v-show="hasExpenses">
+            <v-col cols="6">
               <v-dialog
                 ref="expense_date_dialog"
                 v-model="expense_date_dialog"
@@ -141,10 +178,8 @@
                       :error-messages="errors"
                       v-on="on"
                       prepend-inner-icon="mdi-calendar"
-                      dense
                       outlined
                       readonly
-                      rounded
                     />
                   </ValidationProvider>
                 </template>
@@ -161,16 +196,15 @@
                 </v-date-picker>
               </v-dialog>
             </v-col>
-            <v-col cols="6" lg="4">
+            <v-col cols="6">
               <ValidationProvider v-slot="{ errors }" :name="$t('odometer_reading')" rules="required">
                 <v-text-field
                   v-model="odometer_reading"
                   :label="$t('odometer_reading')"
                   :error-messages="errors"
+                  autocomplete="off"
                   type="number"
-                  dense
                   outlined
-                  rounded
                 />
               </ValidationProvider>
             </v-col>
@@ -180,7 +214,7 @@
       <v-card-actions>
         <v-btn
           @click="handleSubmit(submitExpenses)"
-          :disabled="expenses.length === 0 || invalid"
+          :disabled="!hasExpenses || invalid"
           :loading="loading"
           type="submit"
           color="primary"
@@ -244,6 +278,36 @@ export default {
         { text: this.$i18n.t('tire_expense'), value: 'tire_expense' },
         { text: this.$i18n.t('violation_fedex_misc'), value: 'violation_fedex_misc' }
       ]
+    },
+    hasExpenses: vm => vm.expenses.length > 0,
+    headers () {
+      return [
+        {
+          text: this.$i18n.t('category'),
+          value: 'category',
+          width: '25%'
+        },
+        {
+          text: this.$i18n.t('description'),
+          value: 'description',
+          width: '25%'
+        },
+        {
+          text: this.$i18n.t('quantity'),
+          value: 'quantity',
+          width: '20%'
+        },
+        {
+          text: this.$i18n.t('amount'),
+          value: 'amount',
+          width: '20%'
+        },
+        {
+          text: this.$i18n.t('action'),
+          value: 'action',
+          width: '10%'
+        }
+      ]
     }
   },
   watch: {
@@ -260,8 +324,8 @@ export default {
       this.$refs.expenseRowForm.reset()
       this.dialog = false
     },
-    removeExpense (index) {
-      this.expenses.splice(index, 1)
+    removeExpense (item) {
+      this.expenses.splice(this.expenses.indexOf(item), 1)
     },
     async submitExpenses () {
       try {
