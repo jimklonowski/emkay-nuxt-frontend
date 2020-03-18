@@ -110,7 +110,9 @@ export const actions = {
     commit('vehicle-dashboard/reset', null, { root: true }) // vuex data from the last vehicle dashboard viewed
     commit('drivers/reset', null, { root: true }) // vuex data from drivers
     this.$cookies.remove('SESSIONID')
-    await this.$auth.logout()
+    if (process.client) {
+      await this.$auth.logout()
+    }
     // if a french user is logging out, make sure we redirect to /fr-ca/login instead of /login
     // this.$router.push(this.app.localePath({ name: 'login' }))
   },
