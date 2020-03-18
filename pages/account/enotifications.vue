@@ -114,10 +114,13 @@ export default {
       return [
         {
           text: this.$i18n.t('critical_alerts'),
-          icon: 'mdi-bell-ring',
+          icon: 'mdi-bell-alert',
           items: [
             {
-              name: this.$i18n.t('exceed_premium_fuel_purchases')
+              name: this.$i18n.t('exceed_fillups_per_day')
+            },
+            {
+              name: this.$i18n.t('exceed_maximum_fuel_purchase')
             },
             {
               name: this.$i18n.t('exceed_non_fuel_purchase_count')
@@ -126,22 +129,22 @@ export default {
               name: this.$i18n.t('exceed_non_fuel_purchase_amount')
             },
             {
-              name: this.$i18n.t('over_tank_capacity')
-            },
-            {
-              name: this.$i18n.t('exceed_maximum_fuel_purchase')
-            },
-            {
-              name: this.$i18n.t('exceed_fillups_per_day')
-            },
-            {
               name: this.$i18n.t('exceed_oil_change_purchases')
+            },
+            {
+              name: this.$i18n.t('exceed_premium_fuel_purchases')
+            },
+            {
+              name: this.$i18n.t('oil_change_due')
+            },
+            {
+              name: this.$i18n.t('over_tank_capacity')
             },
             {
               name: this.$i18n.t('plates_expired')
             },
             {
-              name: this.$i18n.t('oil_change_due')
+              name: this.$i18n.t('rental_exceeds_last_auth_date')
             },
             {
               name: this.$i18n.t('vehicle_exceeds_overall_lead')
@@ -151,51 +154,155 @@ export default {
             },
             {
               name: this.$i18n.t('vehicle_exceeds_unit_lead')
-            },
-            {
-              name: this.$i18n.t('rental_exceeds_last_auth_date')
             }
           ]
         },
         {
           text: this.$i18n.t('accident'),
           icon: 'mdi-car-parking-lights',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('claim_closed')
+            },
+            {
+              name: this.$i18n.t('claim_opened')
+            }
+          ]
         },
         {
           text: this.$i18n.t('billing'),
           icon: 'mdi-cash-usd',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('vehicle_on_billing')
+            },
+            {
+              name: this.$i18n.t('vehicle_out_of_service')
+            }
+          ]
         },
         {
           text: this.$i18n.t('fuel'),
           icon: 'mdi-gas-station',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('fuel_card_cancelled')
+            },
+            {
+              name: this.$i18n.t('fuel_card_lost_stolen')
+            },
+            {
+              name: this.$i18n.t('fuel_card_mailed')
+            },
+            {
+              name: this.$i18n.t('fuel_card_ordered')
+            },
+            {
+              name: this.$i18n.t('fuel_card_replaced')
+            }
+          ]
         },
         {
           text: this.$i18n.t('licensing'),
           icon: 'mdi-smart-card',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('driver_contests_violation')
+            },
+            {
+              name: this.$i18n.t('driver_paying_violation')
+            },
+            {
+              name: this.$i18n.t('renewal_coming_due')
+            },
+            {
+              name: this.$i18n.t('renewal_sent')
+            },
+            {
+              name: this.$i18n.t('requirements_needed')
+            },
+            {
+              name: this.$i18n.t('requirements_received')
+            },
+            {
+              name: this.$i18n.t('state_transfer_completed')
+            },
+            {
+              name: this.$i18n.t('state_transfer_initiated')
+            },
+            {
+              name: this.$i18n.t('violation_received')
+            }
+          ]
         },
         {
           text: this.$i18n.t('maintenance'),
           icon: 'mdi-tools',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('emergency_road_call_completed')
+            },
+            {
+              name: this.$i18n.t('emergency_road_call_started')
+            },
+            {
+              name: this.$i18n.t('maintenance_service_invoiced_over_90')
+            },
+            {
+              name: this.$i18n.t('open_recall')
+            },
+            {
+              name: this.$i18n.t('recall_satisfied')
+            }
+          ]
         },
         {
           text: this.$i18n.t('remarketing'),
           icon: 'mdi-point-of-sale',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('vehicle_consigned')
+            },
+            {
+              name: this.$i18n.t('vehicle_picked_up_for_auction')
+            },
+            {
+              name: this.$i18n.t('vehicle_sold')
+            }
+          ]
         },
         {
           text: this.$i18n.t('rental'),
           icon: 'mdi-bus-clock',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('rental_closed')
+            },
+            {
+              name: this.$i18n.t('rental_open')
+            }
+          ]
         },
         {
           text: this.$i18n.t('vehicle_acquisitions'),
           icon: 'mdi-bus-multiple',
-          items: []
+          items: [
+            {
+              name: this.$i18n.t('vehicle_delivered_to_dealer')
+            },
+            {
+              name: this.$i18n.t('vehicle_picked_up_by_driver')
+            },
+            {
+              name: this.$i18n.t('scheduled_build_date')
+            },
+            {
+              name: this.$i18n.t('scheduled_production_date')
+            },
+            {
+              name: this.$i18n.t('shipped_to_delivery_dealer')
+            }
+          ]
         }
       ]
     },

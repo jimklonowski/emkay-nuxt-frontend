@@ -11,9 +11,9 @@ const account = {
         { key: 'manage_your_online_users', icon: '', to: { path: '/account/online-users' } },
         { key: 'fleet_policies', icon: 'mdi-database-settings', to: { path: '/account/fleet-policies' } },
         { key: 'customize_fleet_labels', icon: 'mdi-label-variant', to: { path: '/account/customize-fleet-labels' } },
-        { key: 'manage_your_drivers', icon: 'mdi-account-settings', to: { path: '/account/drivers' } },
+        { key: 'manage_your_drivers', icon: 'mdi-account-settings', to: { path: '/account/manage-your-drivers' } },
         { key: 'manage_your_driver_fuel_pins', icon: '', to: { path: '/account/driver-fuel-pins' } },
-        { key: 'manage_your_enotifications', icon: '', to: { path: '/account/enotifications' } },
+        { key: 'enotifications', icon: 'mdi-bell-ring', to: { path: '/account/enotifications' } },
         { key: 'manage_your_cases', icon: '', to: { path: '/account/cases' } },
         { key: 'fuel_authorization_profiles', icon: '', to: { path: '/account/fuel-auth-profiles' } }
       ]

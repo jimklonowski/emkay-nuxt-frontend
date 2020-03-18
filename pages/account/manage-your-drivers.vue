@@ -78,46 +78,46 @@
           </v-btn>
         </template>
 
-        <template #item.vehicle_number="{ item }">
-          <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.vehicle_number}` })" v-text="item.vehicle_number" class="text-decoration-none" nuxt />
+        <template #item.driver_vehicle="{ item }">
+          <nuxt-link :title="$t(`to_vehicle_dashboard`)" :to="localePath({ path: `/vehicle/${item.driver_vehicle}` })" v-text="item.driver_vehicle" class="text-decoration-none" nuxt />
         </template>
 
-        <template #item.driver_phone="{ item }">
+        <template #item.phone="{ item }">
           <v-btn
-            v-show="item.driver_phone"
-            @click="dialTo(item.driver_phone)"
+            v-show="item.phone"
+            @click="dialTo(item.phone)"
             text
             small
             tile
           >
             <v-icon v-text="'mdi-phone'" class="mr-2" />
-            {{ item.driver_phone | phone }}
+            {{ item.phone | phone }}
           </v-btn>
         </template>
 
-        <template #item.driver_mobile="{ item }">
+        <template #item.mobile="{ item }">
           <v-btn
-            v-show="item.driver_mobile"
-            @click="dialTo(item.driver_mobile)"
+            v-show="item.mobile"
+            @click="dialTo(item.mobile)"
             text
             small
             tile
           >
             <v-icon v-text="'mdi-cellphone-iphone'" class="mr-2" />
-            {{ item.driver_mobile | phone }}
+            {{ item.mobile | phone }}
           </v-btn>
         </template>
 
-        <template #item.driver_email_address="{ item }">
+        <template #item.email="{ item }">
           <v-btn
-            v-show="item.driver_email_address"
-            @click="emailTo(item.driver_email_address)"
+            v-show="item.email"
+            @click="emailTo(item.email)"
             text
             small
             tile
           >
             <v-icon v-text="'mdi-email-edit'" class="mr-2" />
-            {{ item.driver_email_address }}
+            {{ item.email }}
           </v-btn>
         </template>
       </v-data-table>
@@ -145,7 +145,8 @@ export default {
     ...mapGetters({
       items: 'drivers/getDrivers',
       error: 'drivers/getError',
-      loading: 'drivers/getLoading'
+      loading: 'drivers/getLoading',
+      custom_labels: 'account/getCustomLabels'
     }),
     columns () {
       return [
@@ -270,25 +271,25 @@ export default {
           divider: true
         },
         {
-          text: this.$i18n.t('driver_misc_1'),
+          text: this.custom_labels.driver_use_label_1 || this.$i18n.t('driver_use_label_1'),
           value: 'misc_1',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_misc_2'),
+          text: this.custom_labels.driver_use_label_2 || this.$i18n.t('driver_use_label_2'),
           value: 'misc_2',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_misc_3'),
+          text: this.custom_labels.driver_use_label_3 || this.$i18n.t('driver_use_label_3'),
           value: 'misc_3',
           class: 'report-column',
           divider: true
         },
         {
-          text: this.$i18n.t('driver_misc_4'),
+          text: this.custom_labels.driver_use_label_4 || this.$i18n.t('driver_use_label_4'),
           value: 'misc_4',
           class: 'report-column',
           divider: true
