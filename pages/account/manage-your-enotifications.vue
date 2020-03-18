@@ -103,7 +103,7 @@
 
 <script>
 export default {
-  name: 'ManageEnotifications',
+  name: 'ManageYourENotifications',
   data: () => ({
     tab: 0,
     loading: false,
