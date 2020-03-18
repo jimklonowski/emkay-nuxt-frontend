@@ -66,6 +66,11 @@ export default {
           to: { path: `/vehicle/${this.$route.params.vehicle}/documents-and-notes` }
         },
         {
+          key: 'report_expenses',
+          icon: '',
+          to: { path: `/vehicle/${this.$route.params.vehicle}/report-expenses` }
+        },
+        {
           key: 'saferoads',
           icon: '',
           to: { path: `/vehicle/${this.$route.params.vehicle}/saferoads` }

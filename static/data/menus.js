@@ -8,22 +8,22 @@ const account = {
       key: 'fleet',
       icon: '',
       items: [
-        { key: 'manage_your_online_users', icon: '', to: { path: '/account/online-users' } },
-        { key: 'fleet_policies', icon: 'mdi-database-settings', to: { path: '/account/fleet-policies' } },
         { key: 'customize_fleet_labels', icon: 'mdi-label-variant', to: { path: '/account/customize-fleet-labels' } },
+        { key: 'fleet_policies', icon: 'mdi-database-settings', to: { path: '/account/fleet-policies' } },
+        { key: 'fuel_authorization_profiles', icon: '', to: { path: '/account/fuel-auth-profiles' } },
+        { key: 'manage_your_online_users', icon: '', to: { path: '/account/online-users' } },
         { key: 'manage_your_drivers', icon: 'mdi-account-settings', to: { path: '/account/manage-your-drivers' } },
         { key: 'manage_your_driver_fuel_pins', icon: '', to: { path: '/account/driver-fuel-pins' } },
         { key: 'manage_your_enotifications', icon: 'mdi-bell-ring', to: { path: '/account/manage-your-enotifications' } },
-        { key: 'manage_your_cases', icon: '', to: { path: '/account/cases' } },
-        { key: 'fuel_authorization_profiles', icon: '', to: { path: '/account/fuel-auth-profiles' } }
+        { key: 'manage_your_cases', icon: '', to: { path: '/account/cases' } }
       ]
     },
     {
       key: 'customization',
       icon: '',
       items: [
-        { key: 'approve_your_maintenance_repairs', icon: '', to: { path: '/account/approve-maintenance-repairs' } },
         { key: 'approve_driver_orders', icon: '', to: { path: '/account/approve-driver-orders' } },
+        { key: 'approve_your_maintenance_repairs', icon: '', to: { path: '/account/approve-maintenance-repairs' } },
         { key: 'request_an_mvr', icon: '', to: { path: '/account/request-mvr' } },
         { key: 'upload_your_odometers', icon: '', to: { path: '/account/upload-odometers' } }
       ]
@@ -34,11 +34,11 @@ const account = {
       items: [
         { key: 'centers', icon: 'mdi-test-tube', to: { path: '/account/centers' } },
         { key: 'critical_alerts', icon: 'mdi-bell-ring', to: { path: '/account/critical-alerts' } },
-        { key: 'fleet_navigator', icon: 'mdi-compass', to: { path: '/account/fleet-navigator' } },
         { key: 'ev_charging_locations', icon: 'mdi-car-electric', to: { path: '/account/charging-locations' } },
+        { key: 'fleet_navigator', icon: 'mdi-compass', to: { path: '/account/fleet-navigator' } },
+        { key: 'lcca', icon: '', to: { path: '/account/lcca' } },
         { key: 'locate_preferred_shops', icon: '', to: { path: '/account/locate-preferred-shops' } },
-        { key: 'quote_a_transport', icon: '', to: { path: '/account/transport-quote' } },
-        { key: 'lcca', icon: '', to: { path: '/account/lcca' } }
+        { key: 'quote_a_transport', icon: '', to: { path: '/account/transport-quote' } }
       ]
     }
   ]
@@ -65,9 +65,9 @@ const ordering = {
       icon: '',
       color: '',
       items: [
-        { key: 'manage_driver_order_settings', icon: 'mdi-account-settings', to: { path: '/ordering/manage-driver-order-settings' } },
         { key: 'allow_drivers_to_order', icon: 'mdi-shield-car', to: { path: '/ordering/allow-drivers-to-order' } },
-        { key: 'approve_driver_orders', icon: 'mdi-check-decagram', to: { path: '/ordering/approve-driver-orders' } }
+        { key: 'approve_driver_orders', icon: 'mdi-check-decagram', to: { path: '/ordering/approve-driver-orders' } },
+        { key: 'manage_driver_order_settings', icon: 'mdi-account-settings', to: { path: '/ordering/manage-driver-order-settings' } }
       ]
     },
     {
