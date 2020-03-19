@@ -6,83 +6,75 @@
     <v-card-text class="py-0">
       <v-container>
         <v-row>
-          <v-col cols="12" md="6">
-            <v-dialog v-model="dialog" max-width="1000">
-              <template #activator="{ on }">
-                <v-btn v-on="on" color="primary" rounded depressed>
-                  {{ $t('add_expense') }}
-                </v-btn>
-              </template>
-              <ValidationObserver ref="expenseRowForm" @submit.prevent v-slot="{ handleSubmit }">
-                <v-card>
-                  <v-card-title>
-                    {{ $t('add_expense') }}
-                  </v-card-title>
-                  <v-divider />
-                  <v-card-text>
-                    <v-container class="pb-0">
-                      <v-row dense>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors }" :name="$t('category')" rules="required">
-                            <v-select
-                              v-model="item.category"
-                              :error-messages="errors"
-                              :items="categories"
-                              :label="$t('category')"
-                              dense
-                              outlined
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-textarea
-                            v-model="item.description"
-                            :label="$t('description')"
-                            dense
+          <v-col cols="12" lg="6">
+            <ValidationObserver ref="expenseRowForm" @submit.prevent v-slot="{ handleSubmit: handleSubmitExpense }">
+              <v-card flat>
+                <v-card-title>Add expenses as needed and then submit.</v-card-title>
+                <v-card-text class="pa-0">
+                  <v-container>
+                    <v-row dense>
+                      <v-col cols="12">
+                        <ValidationProvider v-slot="{ errors }" :name="$t('category')" rules="required">
+                          <v-select
+                            v-model="item.category"
+                            :error-messages="errors"
+                            :items="categories"
+                            :label="$t('category')"
                             outlined
+                            dense
                           />
-                        </v-col>
-                        <v-col cols="12">
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-textarea
+                          v-model="item.description"
+                          :label="$t('description')"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="item.quantity"
+                          :label="$t('quantity')"
+                          type="number"
+                          autocomplete="off"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="6">
+                        <ValidationProvider v-slot="{ errors }" :name="$t('amount')" rules="required">
                           <v-text-field
-                            v-model="item.quantity"
-                            :label="$t('quantity')"
+                            v-model="item.amount"
+                            :error-messages="errors"
+                            :label="$t('amount')"
                             type="number"
+                            prefix="$ "
                             autocomplete="off"
-                            dense
                             outlined
+                            dense
                           />
-                        </v-col>
-                        <v-col cols="12">
-                          <ValidationProvider v-slot="{ errors }" :name="$t('amount')" rules="required">
-                            <v-text-field
-                              v-model="item.amount"
-                              :error-messages="errors"
-                              :label="$t('amount')"
-                              type="number"
-                              prefix="$"
-                              autocomplete="off"
-                              dense
-                              outlined
-                            />
-                          </ValidationProvider>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-divider />
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn @click="handleSubmit(addExpense)" color="primary" depressed>
-                      {{ $t('add_expense') }}
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </ValidationObserver>
-            </v-dialog>
+                        </ValidationProvider>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn @click="handleSubmitExpense(addExpense)" color="primary" block outlined>
+                    {{ $t('add_expense') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </ValidationObserver>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <slot name="details" />
           </v-col>
         </v-row>
       </v-container>
     </v-card-text>
+    <v-divider class="py-4" />
     <ValidationObserver ref="reportExpensesForm" @submit.prevent v-slot="{ handleSubmit, invalid }" tag="form">
       <v-card-text>
         <v-container>
@@ -103,6 +95,12 @@
                 <template #item.category="{ item }">
                   {{ $t(item.category) }}
                 </template>
+                <template #item.description="{ item }">
+                  {{ item.description || '--' }}
+                </template>
+                <template #item.quantity="{ item }">
+                  {{ item.quantity || '--' }}
+                </template>
                 <template #item.amount="{ item }">
                   {{ item.amount | currency }}
                 </template>
@@ -112,51 +110,6 @@
                   </v-btn>
                 </template>
               </v-data-table>
-              <!-- <v-simple-table class="striped">
-                <template #default>
-                  <thead>
-                    <tr>
-                      <th style="width:20%">
-                        {{ $t('category') }}
-                      </th>
-                      <th style="width:20%">
-                        {{ $t('description') }}
-                      </th>
-                      <th style="width:20%">
-                        {{ $t('quantity') }}
-                      </th>
-                      <th style="width:20%">
-                        {{ $t('amount') }}
-                      </th>
-                      <th style="width:20%">
-                        {{ $t('action') }}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <template v-if="expenses.length === 0">
-                      <tr>
-                        <td colspan="5" class="text--disabled">
-                          No expenses added
-                        </td>
-                      </tr>
-                    </template>
-                    <template v-else>
-                      <tr v-for="(expense, e) in expenses" :key="`row-${e}`">
-                        <td>{{ $t(expense.category) }}</td>
-                        <td>{{ expense.description || '--' }}</td>
-                        <td>{{ expense.quantity || '--' }}</td>
-                        <td>{{ expense.amount | currency }}</td>
-                        <td>
-                          <v-btn @click="removeExpense(e)" icon>
-                            <v-icon v-text="'mdi-close'" color="error" />
-                          </v-btn>
-                        </td>
-                      </tr>
-                    </template>
-                  </tbody>
-                </template>
-              </v-simple-table> -->
             </v-col>
           </v-row>
           <v-divider v-show="hasExpenses" class="py-4" />
@@ -180,6 +133,7 @@
                       prepend-inner-icon="mdi-calendar"
                       outlined
                       readonly
+                      dense
                     />
                   </ValidationProvider>
                 </template>
@@ -205,6 +159,7 @@
                   autocomplete="off"
                   type="number"
                   outlined
+                  dense
                 />
               </ValidationProvider>
             </v-col>
@@ -285,27 +240,32 @@ export default {
         {
           text: this.$i18n.t('category'),
           value: 'category',
+          class: 'report-column',
           width: '25%'
         },
         {
           text: this.$i18n.t('description'),
           value: 'description',
+          class: 'report-column',
           width: '25%'
         },
         {
           text: this.$i18n.t('quantity'),
           value: 'quantity',
-          width: '20%'
+          class: 'report-column',
+          width: '16%'
         },
         {
           text: this.$i18n.t('amount'),
           value: 'amount',
-          width: '20%'
+          class: 'report-column',
+          width: '25%'
         },
         {
           text: this.$i18n.t('action'),
           value: 'action',
-          width: '10%'
+          class: 'report-column',
+          width: '9%'
         }
       ]
     }

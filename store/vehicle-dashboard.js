@@ -361,6 +361,7 @@ export const getters = {
   getBillingHistory: state => state.billing_history,
   getBillingLoading: state => state.billing_loading,
   getDriverDetails: state => state.driver_details,
+  getDriverName: state => [state.driver_details.last_name, state.driver_details.first_name].filter(Boolean).join(', '),
   getDriverNumber: state => state.driver_number,
   getFuelHistory: state => state.fuel_history,
   getFuelLoading: state => state.fuel_loading,
@@ -382,6 +383,7 @@ export const getters = {
   getVehicleNumber: state => state.vehicle_number,
   getViolationHistory: state => state.violation_history,
   getViolationLoading: state => state.violation_loading,
+  getYearMakeModel: state => [state.vehicle_details.year, state.vehicle_details.make, state.vehicle_details.model].filter(Boolean).join(' '),
   hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0,
   hasSaleInfo: state => !!state.sale_info && !!state.sale_info.sale_date,
   hasVehicle: state => !!state.vehicle_number
