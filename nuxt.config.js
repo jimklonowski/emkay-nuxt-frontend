@@ -104,15 +104,17 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    { src: '~/plugins/vuex-persist', ssr: false },
-    '~/plugins/axios',
-    '~/plugins/custom-filters',
-    '~/plugins/vue-mock-axios',
-    '~/plugins/vee-validate',
-    '~/plugins/i18n/vue-i18n',
-    { src: '~/plugins/polyfills', ssr: false },
-    { src: '~/plugins/vue-json-excel', ssr: false },
-    { src: '~/plugins/vue-snotify', ssr: false }
+    { src: '~/plugins/vuex-persist', mode: 'client' },
+    { src: '~/plugins/axios' },
+    { src: '~/plugins/custom-filters' },
+    { src: '~/plugins/vue-mock-axios' },
+    { src: '~/plugins/vee-validate' },
+    { src: '~/plugins/i18n/vue-i18n' },
+    { src: '~/plugins/polyfills', mode: 'client' },
+    { src: '~/plugins/vue-json-excel', mode: 'client' },
+    { src: '~/plugins/vue-snotify', mode: 'client' },
+    { src: '~/plugins/vue-chart.js', mode: 'client' }
+    // { src: '~/plugins/kendo-ui', ssr: false }
   ],
   /*
   ** Nuxt.js dev-modules
