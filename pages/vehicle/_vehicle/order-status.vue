@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import OrderStatusWidget from '@/components/vehicle-dashboard/OrderStatusWidget'
+import OrderStatusWidget from '@/components/vehicle-dashboard/widgets/OrderStatusWidget'
 export default {
   name: 'OrderStatus',
   components: { OrderStatusWidget },

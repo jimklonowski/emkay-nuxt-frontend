@@ -7,6 +7,9 @@
       <v-col cols="12" lg="6">
         <driver-widget />
       </v-col>
+      <v-col cols="12">
+        <expense-summary-widget />
+      </v-col>
       <v-col cols="12" xl="6">
         <fuel-widget />
       </v-col>
@@ -56,20 +59,21 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'VehicleDashboard',
   components: {
-    'vehicle-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/VehicleWidget`),
-    'driver-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/DriverWidget`),
-    'fuel-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/FuelWidget`),
-    'maintenance-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/MaintenanceWidget`),
-    'billing-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/BillingWidget`),
-    'licensing-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/LicensingWidget`),
-    'odometer-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/OdometerWidget`),
-    'toll-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/TollWidget`),
-    'accident-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/AccidentWidget`),
-    'rental-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/RentalWidget`),
-    'violation-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/ViolationWidget`),
-    'inspection-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/InspectionWidget`),
-    'order-status-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/OrderStatusWidget`),
-    'sale-info-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/SaleInfoWidget`)
+    'vehicle-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/VehicleWidget`),
+    'driver-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/DriverWidget`),
+    'expense-summary-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/ExpenseSummaryWidget`),
+    'fuel-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/FuelWidget`),
+    'maintenance-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/MaintenanceWidget`),
+    'billing-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/BillingWidget`),
+    'licensing-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/LicensingWidget`),
+    'odometer-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/OdometerWidget`),
+    'toll-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/TollWidget`),
+    'accident-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/AccidentWidget`),
+    'rental-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/RentalWidget`),
+    'violation-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/ViolationWidget`),
+    'inspection-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/InspectionWidget`),
+    'order-status-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/OrderStatusWidget`),
+    'sale-info-widget': () => import(/* webpackChunkName: "VehicleDashboardWidgets" */ `@/components/vehicle-dashboard/widgets/SaleInfoWidget`)
   },
   computed: {
     ...mapGetters({

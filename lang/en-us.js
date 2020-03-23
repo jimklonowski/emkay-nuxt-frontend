@@ -892,6 +892,8 @@ export default {
   tools: "Tools",
   total: "Total",
   total_amount: "Total Amount",
+  total_costs: "Total Costs",
+  total_cpm: "Total Cost Per Mile",
   total_distance_driven: "Total Distance Driven",
   total_duration_phone_usage: "Total Duration Phone Usage",
   total_fixed: "Total Fixed",

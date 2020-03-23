@@ -7,6 +7,8 @@ const getDefaultState = () => ({
   billing_loading: false,
   driver_details: {},
   driver_number: null,
+  expense_summary: {},
+  expense_summary_loading: false,
   fuel_history: [],
   fuel_loading: false,
   inspection_history: [],
@@ -298,6 +300,23 @@ export const actions = {
     }
   },
   /**
+   * Fetch Expense Summary table
+   * @param {*} vehicle Vehicle Number
+   */
+  async fetchExpenseSummary ({ commit }, { vehicle }) {
+    try {
+      commit('setExpenseSummaryLoading', true)
+      const { data: { success, message, data } } = await this.$axios.get('/vehicle/expense-summary', { params: { vehicle } })
+      if (!success) { throw new Error(message) }
+      commit('setExpenseSummary', data)
+    } catch (error) {
+      console.error(`[vuex error]: ${error.message}`)
+      commit('setExpenseSummary', {})
+    } finally {
+      commit('setExpenseSummaryLoading', false)
+    }
+  },
+  /**
    * VEHICLE ADD/UPDATE. Maybe these go into Fleet store?
    */
   async addVehicle ({ commit, dispatch }, payload) {
@@ -333,6 +352,8 @@ export const mutations = {
   setBillingLoading: set('billing_loading'),
   setDriverDetails: set('driver_details'),
   setDriverNumber: set('driver_number'),
+  setExpenseSummary: set('expense_summary'),
+  setExpenseSummaryLoading: set('expense_summary_loading'),
   setFuelHistory: set('fuel_history'),
   setFuelLoading: set('fuel_loading'),
   setInspectionHistory: set('inspection_history'),
@@ -363,6 +384,8 @@ export const getters = {
   getDriverDetails: state => state.driver_details,
   getDriverName: state => [state.driver_details.last_name, state.driver_details.first_name].filter(Boolean).join(', '),
   getDriverNumber: state => state.driver_number,
+  getExpenseSummary: state => state.expense_summary,
+  getExpenseSummaryLoading: state => state.expense_summary_loading,
   getFuelHistory: state => state.fuel_history,
   getFuelLoading: state => state.fuel_loading,
   getInspectionHistory: state => state.inspection_history,
@@ -386,5 +409,40 @@ export const getters = {
   getYearMakeModel: state => [state.vehicle_details.year, state.vehicle_details.make, state.vehicle_details.model].filter(Boolean).join(' '),
   hasOrderStatus: state => !!state.order_status && Object.keys(state.order_status).length !== 0,
   hasSaleInfo: state => !!state.sale_info && !!state.sale_info.sale_date,
-  hasVehicle: state => !!state.vehicle_number
+  hasVehicle: state => !!state.vehicle_number,
+
+  getTotalFixed: state =>
+    state.expense_summary.depreciation +
+    state.expense_summary.interest +
+    state.expense_summary.licensing +
+    state.expense_summary.tax,
+  getTotalFixedCPM: state =>
+    state.expense_summary.depreciation_cpm +
+    state.expense_summary.interest_cpm +
+    state.expense_summary.licensing_cpm +
+    state.expense_summary.tax_cpm,
+  getTotalVariable: state =>
+    state.expense_summary.maintenance +
+    state.expense_summary.accident +
+    state.expense_summary.fuel,
+  getTotalVariableCPM: state =>
+    state.expense_summary.maintenance_cpm +
+    state.expense_summary.accident_cpm +
+    state.expense_summary.fuel_cpm,
+  getTotalCosts: state =>
+    state.expense_summary.depreciation +
+    state.expense_summary.interest +
+    state.expense_summary.licensing +
+    state.expense_summary.tax +
+    state.expense_summary.maintenance +
+    state.expense_summary.accident +
+    state.expense_summary.fuel,
+  getTotalCPM: state =>
+    state.expense_summary.depreciation_cpm +
+    state.expense_summary.interest_cpm +
+    state.expense_summary.licensing_cpm +
+    state.expense_summary.tax_cpm +
+    state.expense_summary.maintenance_cpm +
+    state.expense_summary.accident_cpm +
+    state.expense_summary.fuel_cpm
 }
